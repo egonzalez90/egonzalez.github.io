@@ -1,196 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-
-  <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  
-  
-  <title>Nova en Compute Node</title>
-  <meta name="description" content="Primero instalaremos los paquetes necesarios de nova. # yum install openstack-nova-compute Configuraremos el uso de la base de datos y de la autenticación en keystone. # openstack-config --set /etc/nova/nova.conf database connection mysql://nova:PASSWD@controller/nova">
-  
-
-  <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="http://217.182.136.201:8080/nova-en-compute-node/">
-  
-  
-  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
-
-  
-
-  
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="egongu90">
-  <meta name="twitter:title" content="Nova en Compute Node">
-  <meta name="twitter:description" content="Primero instalaremos los paquetes necesarios de nova. # yum install openstack-nova-compute Configuraremos el uso de la base de datos y de la autenticación en keystone. # openstack-config --set /etc...">
-  
-    <meta name="twitter:creator" content="egongu90">
-  
-  
-
-  <script type="text/javascript">
-  WebFontConfig = {
-    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
-  };
-  (function() {
-    var wf = document.createElement('script');
-    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-    wf.type = 'text/javascript';
-    wf.async = 'true';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(wf, s);
-  })();
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = 'https://egonzalez-1.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
-
-  
-
-</head>
-
-
-  <body>
-
-    <header class="site-header">
-
-  <div class="wrapper">
-
-    <a class="site-title" href="/">OpenStack things</a>
-
-    <nav class="site-nav">
-      
-        
-        <a class="page-link" href="/about/">About</a>
-      
-        
-        <a class="page-link" href="/archives/">Archives</a>
-      
-        
-        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
-      
-    </nav>
-
-  </div>
-
-</header>
-
-
-    <main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-
-  <header class="post-header">
-    
-      <h1 class="post-title" itemprop="name headline">Nova en Compute Node</h1>
-    
-    <p class="post-meta"><time datetime="2015-02-05T18:37:51+01:00" itemprop="datePublished">Feb 5, 2015</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
-  
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-      <a href="/categories/openstack/">OpenStack</a>
-    
-  
-    
-  
-    
-  
-
-</p>
-  </header>
-
-  <div class="post-content" itemprop="articleBody">
-    <p>Primero instalaremos los paquetes necesarios de nova.</p>
-<blockquote># yum install openstack-nova-compute</blockquote>
-<p>Configuraremos el uso de la base de datos y de la autenticación en keystone.</p>
-<blockquote># openstack-config --set /etc/nova/nova.conf database connection mysql://nova:PASSWD@controller/nova
-
-# openstack-config --set /etc/nova/nova.conf DEFAULT auth_strategy keystone
-
-# openstack-config --set /etc/nova/nova.conf DEFAULT keystone_authtoken auth_uri http://controller:5000
-
-# openstack-config --set /etc/nova/nova.conf DEFAULT keystone_authtoken auth_host controller
-
-# openstack-config --set /etc/nova/nova.conf DEFAULT keystone_authtoken auth_port 35357
-
-# openstack-config --set /etc/nova/nova.conf DEFAULT keystone_authtoken auth_protocol http
-
-# openstack-config --set /etc/nova/nova.conf DEFAULT keystone_authtoken admin_user nova
-
-# openstack-config --set /etc/nova/nova.conf DEFAULT keystone_authtoken admin_tenant_name service
-
-# openstack-config --set /etc/nova/nova.conf DEFAULT keystone_authtoken admin_password PASSWD</blockquote>
-<p>Configuramos el uso de QPID.</p>
-<blockquote># openstack-config --set /etc/nova/nova.conf DEFAULT rpc_backend qpid
-
-# openstack-config --set /etc/nova/nova.conf DEFAULT qpid_hostname controller</blockquote>
-<p>Configuramos VNC.</p>
-<blockquote># openstack-config --set /etc/nova/nova.conf DEFAULT my_ip 192.168.1.31
-
-# openstack-config --set /etc/nova/nova.conf DEFAULT vnc_enabled True
-
-# openstack-config --set /etc/nova/nova.conf DEFAULT vncserver_listen 0.0.0.0
-
-# openstack-config --set /etc/nova/nova.conf DEFAULT vncserver_proxyclient_address 192.168.1.31
-
-# openstack-config --set /etc/nova/nova.conf DEFAULT novncproxy_base_url http://controller:6080/vnc_auto.html
-
-Configuramos acceso a Glance Image Service.
-
-# openstack-config --set /etc/nova/nova.conf DEFAULT glance_host controller</blockquote>
-<p>Comprobamos si la CPU soporta aceleración por hardware, si es 1 o mas el resultado si que soporta, si no, configurar libvirt para que utilice QEMU en vez de KVM.</p>
-<blockquote># egrep -c '(vmx|svm)' /proc/cpuinfo</blockquote>
-<hr />
-
-<p>Configurar libvirt para que use QEMU</p>
-<blockquote># openstack-config --set /etc/nova/nova.conf libvirt virt_type qemu</blockquote>
-<hr />
-
-<p>Iniciar servicios y ejecución en el arranque.</p>
-<blockquote># service libvirtd start
-
-# service messagebus start
-
-# service openstack-nova-compute start
-
-# chkconfig libvirt on
-
-#chkconfig messagebus on
-
-# chkconfig openstack-nova-compute on</blockquote>
-
-  </div>
-
-</article>
-
-      </div>
-    </main>
-
-    <footer class="site-footer">
-
-  <div class="wrapper">
-
-    <p>
-      
-
-&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
-
-    </p>
-
-  </div>
-
-</footer>
-
-
-  </body>
-
-</html>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>

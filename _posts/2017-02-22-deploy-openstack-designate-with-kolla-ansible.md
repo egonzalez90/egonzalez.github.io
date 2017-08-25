@@ -22,17 +22,17 @@ tags:
   - ocata
   - openstack
 ---
-During Ocata release, OpenStack DNS-as-a-Service (Designate) support was implemented in OpenStack kolla project
+During Ocata release, OpenStack DNS-as-a-Service (Designate) support was implemented in OpenStack kolla project.
+
+
 This post will guide you through a basic deployment and tests of designate service.
 
 Install required dependencies and tools for kolla-ansible and designate.
-
-```
-  # yum install -y epel-release
-  # yum install -y python-pip python-devel libffi-devel gcc openssl-devel ansible ntp wget bind-utils
-  # pip install -U pip
-```
-
+<pre>
+# yum install -y epel-release
+# yum install -y python-pip python-devel libffi-devel gcc openssl-devel ansible ntp wget bind-utils
+# pip install -U pip
+</pre>
 Install Docker and downgrade to 1.12.6. At the time of writing this post libvirt had issues to connect with D-Bus due SElinux issues with Docker 1.13.
 <pre>
 # curl -sSL https://get.docker.io | bash

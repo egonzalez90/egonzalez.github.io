@@ -1,171 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-
-  <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  
-  
-  <title>MySQL</title>
-  <meta name="description" content="MySQL en Controller node Instalamos MySQL yum install mysql mysql-server MySQL-python Editamos el fichero de configuracion de MySQL vi /etc/my.cnf Modificamos la linea bind-address con la IP de eth0 y añadimos las siguientes entradas: [mysqld]">
-  
-
-  <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="http://217.182.136.201:8080/mysql/">
-  
-  
-  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
-
-  
-
-  
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="egongu90">
-  <meta name="twitter:title" content="MySQL">
-  <meta name="twitter:description" content="MySQL en Controller node Instalamos MySQL yum install mysql mysql-server MySQL-python Editamos el fichero de configuracion de MySQL vi /etc/my.cnf Modificamos la linea bind-address con la IP de eth...">
-  
-    <meta name="twitter:creator" content="egongu90">
-  
-  
-
-  <script type="text/javascript">
-  WebFontConfig = {
-    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
-  };
-  (function() {
-    var wf = document.createElement('script');
-    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-    wf.type = 'text/javascript';
-    wf.async = 'true';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(wf, s);
-  })();
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = 'https://egonzalez-1.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
-
-  
-
-</head>
-
-
-  <body>
-
-    <header class="site-header">
-
-  <div class="wrapper">
-
-    <a class="site-title" href="/">OpenStack things</a>
-
-    <nav class="site-nav">
-      
-        
-        <a class="page-link" href="/about/">About</a>
-      
-        
-        <a class="page-link" href="/archives/">Archives</a>
-      
-        
-        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
-      
-    </nav>
-
-  </div>
-
-</header>
-
-
-    <main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-
-  <header class="post-header">
-    
-      <h1 class="post-title" itemprop="name headline">MySQL</h1>
-    
-    <p class="post-meta"><time datetime="2014-11-02T17:01:24+01:00" itemprop="datePublished">Nov 2, 2014</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
-  
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-      <a href="/categories/openstack/">OpenStack</a>
-    
-  
-    
-  
-    
-  
-
-</p>
-  </header>
-
-  <div class="post-content" itemprop="articleBody">
-    <h2>MySQL en Controller node</h2>
-<p>Instalamos MySQL</p>
-<blockquote>yum install mysql mysql-server MySQL-python</blockquote>
-<p>Editamos el fichero de configuracion de MySQL</p>
-<blockquote>vi /etc/my.cnf</blockquote>
-<p>Modificamos la linea bind-address con la IP de eth0 y añadimos las siguientes entradas:</p>
-<blockquote>[mysqld]
-
-bind-address=192.168.1.11
-
-default-storage-engine=innodb
-
-innodb_file_per_table
-
-collation-server=utf8_general_ci
-
-init-connect='SET NAMES utf8'
-
-character-set-server=utf8</blockquote>
-<p>Iniciamos el servicio mysqld y lo añadimos al arranque del sistema</p>
-<blockquote>service mysqld start
-
-chkconfig mysqld on</blockquote>
-<p>Instalamos la base de datos nueva, establecemos contraseña de root y quitamos los usuarios anónimos. El primer comando puede no ser necesario a no ser que el segundo comando nos diera error</p>
-<blockquote>mysql_install_db
-
-mysql_secure_installation</blockquote>
-<h2>Nodos Network y Compute</h2>
-<p>En estos nodos solamente necesitamos instalar el paquete MySQL-python</p>
-<blockquote>yum install MySQL-python</blockquote>
-<p> </p>
-
-<p>Un saludo</p>
-
-  </div>
-
-</article>
-
-      </div>
-    </main>
-
-    <footer class="site-footer">
-
-  <div class="wrapper">
-
-    <p>
-      
-
-&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
-
-    </p>
-
-  </div>
-
-</footer>
-
-
-  </body>
-
-</html>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>

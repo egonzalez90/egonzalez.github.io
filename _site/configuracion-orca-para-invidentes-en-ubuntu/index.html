@@ -1,161 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-
-  <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  
-  
-  <title>Configuracion Orca para invidentes en Ubuntu</title>
-  <meta name="description" content="En primer lugar quiero dedicar esta entrada a un amigo y compañero de clase, a Iñaki, que me a dado a conocer la accesibilidad para invidentes y  personas con deficiencia visual. Yo nunca supe que habia aplicaciones de este tipo para hacer la vida mas facil y posibilitar el uso de las nuevas tecnologias a estas personas.">
-  
-
-  <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="http://217.182.136.201:8080/configuracion-orca-para-invidentes-en-ubuntu/">
-  
-  
-  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
-
-  
-
-  
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="egongu90">
-  <meta name="twitter:title" content="Configuracion Orca para invidentes en Ubuntu">
-  <meta name="twitter:description" content="En primer lugar quiero dedicar esta entrada a un amigo y compañero de clase, a Iñaki, que me a dado a conocer la accesibilidad para invidentes y  personas con deficiencia visual. Yo nunca supe que ...">
-  
-    <meta name="twitter:creator" content="egongu90">
-  
-  
-
-  <script type="text/javascript">
-  WebFontConfig = {
-    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
-  };
-  (function() {
-    var wf = document.createElement('script');
-    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-    wf.type = 'text/javascript';
-    wf.async = 'true';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(wf, s);
-  })();
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = 'https://egonzalez-1.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
-
-  
-
-</head>
-
-
-  <body>
-
-    <header class="site-header">
-
-  <div class="wrapper">
-
-    <a class="site-title" href="/">OpenStack things</a>
-
-    <nav class="site-nav">
-      
-        
-        <a class="page-link" href="/about/">About</a>
-      
-        
-        <a class="page-link" href="/archives/">Archives</a>
-      
-        
-        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
-      
-    </nav>
-
-  </div>
-
-</header>
-
-
-    <main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-
-  <header class="post-header">
-    
-      <h1 class="post-title" itemprop="name headline">Configuracion Orca para invidentes en Ubuntu</h1>
-    
-    <p class="post-meta"><time datetime="2013-01-22T21:00:45+01:00" itemprop="datePublished">Jan 22, 2013</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
-  
-  
-    
-      <a href="/categories/linux/">Linux</a>
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-
-</p>
-  </header>
-
-  <div class="post-content" itemprop="articleBody">
-    <p>En primer lugar quiero dedicar esta entrada a un amigo y compañero de clase, a Iñaki, que me a dado a conocer la accesibilidad para invidentes y  personas con deficiencia visual. Yo nunca supe que habia aplicaciones de este tipo para hacer la vida mas facil y posibilitar el uso de las nuevas tecnologias a estas personas.<!--more--></p>
-
-<p>Despues de conocer este tipo de aplicaciones empece a investigar un poco sobre ellas, y hoy voy a compartir mis conocimientos con ustedes, porque es importante poder configurar las aplicaciones correctamente para que despues puedan hacer uso total sobre los equipos.</p>
-
-<p>La aplicacion mas conocida en el mundo de Linux me parece a mi que es Orca. Pues bien es facil configurarla para nosotros, pero para ellos no, por eso de la importancia de esta entrada, que con unos pocos minutos de nuestro tiempo podemos conseguir que los que no tienen nuestras capacidades visuales, puedan disfrutar de horas y horas de un equipo.</p>
-
-<p>En mi caso voy a usar Ubuntu 12.10, en el cual viene instalado por defecto, solamente se tiene que buscar en las apliciones Orca y saldra el lector de pantalla.</p>
-
-<p>Cuando le habres te pregunta que tipo de lector de voz quieres, predeterminado o dummy, yo le seleciono predeterminado pulsando 1.</p>
-
-<p>Despues te salen una serie de configuraciones que deberas ir diciendo si o no a ellas, esas hay que configurarlas dependiendo de la persona que vaya a usar el equipo despues.</p>
-
-<p>Al final te pedira salir para poder empezar a usar la aplicacion.</p>
-
-<p>Se abre de nuevo la aplicacion y se va a preferencias.</p>
-
-<p>Se va configurando todo lo necesario dependiendo tambien del usuario final y de sus gustos.</p>
-
-<p>Y con eso ya estaria configurado Orca, mas adelante el usuario final lo puede configurar el solo, puesto que se lo leera y no tendra problemas en configurarlo.</p>
-
-<p>Ahora solo espero que le hagan muy felices a vuestros amigos, familiares, conocidos, compañeros,etc y que disfruten de la maravillosa compañia que siempre hace Linux.</p>
-
-<p>Un saludo</p>
-
-  </div>
-
-</article>
-
-      </div>
-    </main>
-
-    <footer class="site-footer">
-
-  <div class="wrapper">
-
-    <p>
-      
-
-&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
-
-    </p>
-
-  </div>
-
-</footer>
-
-
-  </body>
-
-</html>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>

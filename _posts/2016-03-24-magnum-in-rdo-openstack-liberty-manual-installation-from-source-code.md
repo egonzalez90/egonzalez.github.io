@@ -432,9 +432,11 @@ Was solved installing MySQL-python from pip instead of yum
 pip install MySQL-python
 </pre>
 Issues with policies, admin privileges weren't recognized by Magnum api.
-<pre>
-PolicyNotAuthorized: magnum-service:get_all{{ bunch of stuff }} disallowed by policy
-</pre>
+
+```
+PolicyNotAuthorized: magnum-service:get_all < bunch of stuff > disallowed by policy
+```
+
 Was solved removing admin_api rule at Magnum policy.json file
 <pre>
 vi /etc/magnum/policy.json

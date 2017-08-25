@@ -1,177 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-
-  <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  
-  
-  <title>Instalación Identity Service (Keystone)</title>
-  <meta name="description" content="Primero instalaremos los paquetes necesarios de Openstack Identity Service yum install openstack-keystone python-keystoneclient A Continuación configuraremos keystone para usar la base de datos MySQL que habiamos creado openstack-config --set /etc/keystone/keystone.conf database connection mysql://keystone:PASSWORD@controller/keystone Crearemos la base de datos para keystone y el usuario keystone mysql -u root -p">
-  
-
-  <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="http://217.182.136.201:8080/816/">
-  
-  
-  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
-
-  
-
-  
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="egongu90">
-  <meta name="twitter:title" content="Instalación Identity Service (Keystone)">
-  <meta name="twitter:description" content="Primero instalaremos los paquetes necesarios de Openstack Identity Service yum install openstack-keystone python-keystoneclient A Continuación configuraremos keystone para usar la base de datos MyS...">
-  
-    <meta name="twitter:creator" content="egongu90">
-  
-  
-
-  <script type="text/javascript">
-  WebFontConfig = {
-    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
-  };
-  (function() {
-    var wf = document.createElement('script');
-    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-    wf.type = 'text/javascript';
-    wf.async = 'true';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(wf, s);
-  })();
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = 'https://egonzalez-1.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
-
-  
-
-</head>
-
-
-  <body>
-
-    <header class="site-header">
-
-  <div class="wrapper">
-
-    <a class="site-title" href="/">OpenStack things</a>
-
-    <nav class="site-nav">
-      
-        
-        <a class="page-link" href="/about/">About</a>
-      
-        
-        <a class="page-link" href="/archives/">Archives</a>
-      
-        
-        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
-      
-    </nav>
-
-  </div>
-
-</header>
-
-
-    <main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-
-  <header class="post-header">
-    
-      <h1 class="post-title" itemprop="name headline">Instalación Identity Service (Keystone)</h1>
-    
-    <p class="post-meta"><time datetime="2014-11-21T17:49:07+01:00" itemprop="datePublished">Nov 21, 2014</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
-  
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-      <a href="/categories/openstack/">OpenStack</a>
-    
-  
-    
-  
-    
-  
-
-</p>
-  </header>
-
-  <div class="post-content" itemprop="articleBody">
-    <p>Primero instalaremos los paquetes necesarios de Openstack Identity Service</p>
-<blockquote>yum install openstack-keystone python-keystoneclient</blockquote>
-<p>A Continuación configuraremos keystone para usar la base de datos MySQL que habiamos creado</p>
-<blockquote>openstack-config --set /etc/keystone/keystone.conf database connection mysql://keystone:PASSWORD@controller/keystone</blockquote>
-<p>Crearemos la base de datos para keystone y el usuario keystone</p>
-<blockquote>mysql -u root -p
-
-CREATE DATABASE keystone;
-
-GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'localhost' IDENTIFIED BY 'keystonepassword';
-
-GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' IDENTIFIED BY 'keystonepassword';
-
-exit</blockquote>
-<p>Creamos las tablas de keystone</p>
-<blockquote>su -s /bin/sh -c "keystone-manage db_sync" keystone</blockquote>
-<p>Creamos un token de autenticacion para usar como clave entre keystone y los demás servicios de openstack</p>
-<blockquote>ADMIN_TOKEN=$(openssl rand -hex 10)
-
-echo $ADMIN_TOKEN
-
-openstack-config --set /etc/keystone/keystone.conf DEFAULT admin_token $ADMIN_TOKEN</blockquote>
-<p>Creamos las claves firmadas y los certificados, también restringimos el acceso a la información generada</p>
-<blockquote>keystone-manage pki_setup --keystone-user keystone --keystone-group keystone
-
-chown -R keystone:keystone /etc/keystone/ssl
-
-chmod -R o-rwx /etc/keystone/ssl</blockquote>
-<p>Iniciamos el servicio keystone y establecemos el arranque del servicio con el arranque del sistema</p>
-<blockquote>service openstack-keystone start
-
-chkconfig openstack-keystone on</blockquote>
-<p>Creamos una tarea en cron para que elimine los tokens caducados y prevenir  una acumulación innecesaria</p>
-<blockquote>(crontab -l -u keystone 2&gt;&amp;1 | grep -q token_flush) || 
-echo '@hourly /usr/bin/keystone-manage token_flush &gt;/var/log/keystone/
-keystone-tokenflush.log 2&gt;&amp;1' &gt;&gt; /var/spool/cron/keystone</blockquote>
-<p>Ya tendríamos instalado keystone, el siguiente paso sera crear los usuarios, tenants y roles de administración, eso lo veremos en la siguiente entrada.</p>
-
-<p> </p>
-
-  </div>
-
-</article>
-
-      </div>
-    </main>
-
-    <footer class="site-footer">
-
-  <div class="wrapper">
-
-    <p>
-      
-
-&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
-
-    </p>
-
-  </div>
-
-</footer>
-
-
-  </body>
-
-</html>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>

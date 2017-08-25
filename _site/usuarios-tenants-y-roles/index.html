@@ -1,172 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-
-  <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  
-  
-  <title>Usuarios, Tenants y Roles</title>
-  <meta name="description" content="Una vez tenemos instalado el servicio de Keystone, deberemos crear el usuario de administración, su rol y su tenant. Para ello seguiremos los siguientes pasos:">
-  
-
-  <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="http://217.182.136.201:8080/usuarios-tenants-y-roles/">
-  
-  
-  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
-
-  
-
-  
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="egongu90">
-  <meta name="twitter:title" content="Usuarios, Tenants y Roles">
-  <meta name="twitter:description" content="Una vez tenemos instalado el servicio de Keystone, deberemos crear el usuario de administración, su rol y su tenant. Para ello seguiremos los siguientes pasos:">
-  
-    <meta name="twitter:creator" content="egongu90">
-  
-  
-
-  <script type="text/javascript">
-  WebFontConfig = {
-    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
-  };
-  (function() {
-    var wf = document.createElement('script');
-    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-    wf.type = 'text/javascript';
-    wf.async = 'true';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(wf, s);
-  })();
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = 'https://egonzalez-1.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
-
-  
-
-</head>
-
-
-  <body>
-
-    <header class="site-header">
-
-  <div class="wrapper">
-
-    <a class="site-title" href="/">OpenStack things</a>
-
-    <nav class="site-nav">
-      
-        
-        <a class="page-link" href="/about/">About</a>
-      
-        
-        <a class="page-link" href="/archives/">Archives</a>
-      
-        
-        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
-      
-    </nav>
-
-  </div>
-
-</header>
-
-
-    <main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-
-  <header class="post-header">
-    
-      <h1 class="post-title" itemprop="name headline">Usuarios, Tenants y Roles</h1>
-    
-    <p class="post-meta"><time datetime="2014-11-28T17:22:57+01:00" itemprop="datePublished">Nov 28, 2014</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
-  
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-      <a href="/categories/openstack/">OpenStack</a>
-    
-  
-    
-  
-    
-  
-
-</p>
-  </header>
-
-  <div class="post-content" itemprop="articleBody">
-    <p>Una vez tenemos instalado el servicio de Keystone, deberemos crear el usuario de administración, su rol y su tenant. Para ello seguiremos los siguientes pasos:</p>
-
-<p>Como aun no tenemos el usuario de administración, utilizaremos ADMIN_TOKEN para poder utilizar comandos de keystone. Introduciremos estos comandos para establecer ADMIN_TOKEN y el ENDPOINT del servicio:</p>
-<blockquote>export OS_SERVICE_TOKEN=$ADMIN_TOKEN
-
-export OS_SERVICE_ENDPOINT=http://controller:35357/v2.0</blockquote>
-<h2>USUARIO ADMIN</h2>
-<p>A continuación crearemos el usuario Admin mediante el siguiente comando:</p>
-<blockquote>keystone user-create --name=admin --pass=PASSWORD --email=mail@mail.com</blockquote>
-<p>Una vez creado el usuario deberemos crear el rol de administración</p>
-<blockquote>keystone role-create --name=admin</blockquote>
-<p>El siguiente es crear el tenant de administración</p>
-<blockquote>keystone tenant-create --name=admin --description"Admin Tenant"</blockquote>
-<p>Una vez creados el usuario, rol y tenant de administración, deberemos  asignárselos al usuario Admin</p>
-<blockquote>keystone user-role-add --user=admin --tenant=admin</blockquote>
-<p>Ahora asignaremos al usuario Admin el rol de <em>member</em></p>
-<blockquote>keystone user-role-add --user=admin --role=_member_ --tenant=admin</blockquote>
-<h2>USUARIOS NORMALES</h2>
-<p>Ya tenemos el usuario de administración, ahora crearemos usuarios “normales”</p>
-
-<p>Crearemos un usuario llamado demo</p>
-<blockquote>keystone user-create --name=demo --pass=PASSWORD --email=demomail@mail.com</blockquote>
-<p>Creamos el tenant demo</p>
-<blockquote>keystone tenant-create --name=demo --description="Demo Tenant"</blockquote>
-<p>#No volver a crear este mismo tenant cuando se creen otros usuarios que pertenezcan a el</p>
-
-<p>Asignaremos rol y tenant al usuario demo</p>
-<blockquote>keystone user-role-add --name=demo --role__member_ tenant=demo</blockquote>
-<h2>TENANT SERVICE</h2>
-<p>Crearemos el tenant “Service” para los servicios de nuestra instalación de Openstack</p>
-<blockquote>keystone tenant-create --name=service --description="Service Tenant"</blockquote>
-<p>Con esto ya tendríamos los tenants, roles y usuarios básicos para nuestro entorno.</p>
-
-<p>Un saludo</p>
-
-  </div>
-
-</article>
-
-      </div>
-    </main>
-
-    <footer class="site-footer">
-
-  <div class="wrapper">
-
-    <p>
-      
-
-&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
-
-    </p>
-
-  </div>
-
-</footer>
-
-
-  </body>
-
-</html>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>

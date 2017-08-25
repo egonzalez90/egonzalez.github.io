@@ -1,175 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-
-  <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  
-  
-  <title>ELB en AWS (Elastic Load Balancers)</title>
-  <meta name="description" content="Hoy mostraré como crear Elastic Load Balancer (ELB) en Amazon Web Services el cual nos permitirá distribuir automáticamente el trafico entre las aplicaciones de las distintas instancias y obtener una mejor tolerancia a fallos.">
-  
-
-  <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="http://217.182.136.201:8080/elb-en-aws-elastic-load-balancers/">
-  
-  
-  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
-
-  
-
-  
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="egongu90">
-  <meta name="twitter:title" content="ELB en AWS (Elastic Load Balancers)">
-  <meta name="twitter:description" content="Hoy mostraré como crear Elastic Load Balancer (ELB) en Amazon Web Services el cual nos permitirá distribuir automáticamente el trafico entre las aplicaciones de las distintas instancias y obtener u...">
-  
-    <meta name="twitter:creator" content="egongu90">
-  
-  
-
-  <script type="text/javascript">
-  WebFontConfig = {
-    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
-  };
-  (function() {
-    var wf = document.createElement('script');
-    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-    wf.type = 'text/javascript';
-    wf.async = 'true';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(wf, s);
-  })();
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = 'https://egonzalez-1.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
-
-  
-
-</head>
-
-
-  <body>
-
-    <header class="site-header">
-
-  <div class="wrapper">
-
-    <a class="site-title" href="/">OpenStack things</a>
-
-    <nav class="site-nav">
-      
-        
-        <a class="page-link" href="/about/">About</a>
-      
-        
-        <a class="page-link" href="/archives/">Archives</a>
-      
-        
-        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
-      
-    </nav>
-
-  </div>
-
-</header>
-
-
-    <main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-
-  <header class="post-header">
-    
-      <h1 class="post-title" itemprop="name headline">ELB en AWS (Elastic Load Balancers)</h1>
-    
-    <p class="post-meta"><time datetime="2014-09-25T18:43:42+02:00" itemprop="datePublished">Sep 25, 2014</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
-  
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-      <a href="/categories/openstack/">OpenStack</a>
-    
-  
-    
-  
-    
-  
-
-</p>
-  </header>
-
-  <div class="post-content" itemprop="articleBody">
-    <p>Hoy mostraré como crear Elastic Load Balancer (ELB) en Amazon Web Services el cual nos permitirá distribuir automáticamente el trafico entre las aplicaciones de las distintas instancias y obtener una mejor tolerancia a fallos.<!--more--></p>
-
-<p>Primero nos logearemos en AWS e iremos a la pestaña EC2, una vez a, aquí pulsaremos sobre Load Balancers del menú izquierdo.</p>
-
-<p>Se nos abrirá esta ventana en la que pulsaremos Create Load Balancer para configurar un ELB nuevo. En esta misa ventana nos mostraría los ELB ya creados</p>
-
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/011.png"><img class="aligncenter size-full wp-image-685" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/011.png" alt="01" width="1277" height="600" /></a></p>
-
-<p>Una vez abierto Create Load Balancer, rellenaremos el Nombre del ELB a crear y estableceremos los protocolos que soportara el ELB, por defecto viene activado HTTP por el puerto 80</p>
-
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/021.png"><img class="aligncenter size-full wp-image-686" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/021.png" alt="02" width="951" height="520" /></a></p>
-
-<p>En esta próxima pantalla configuraremos los análisis de salud de nuestras instancias, para ello ajustaremos los parámetros inferiores a nuestro gusto</p>
-
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/031.png"><img class="aligncenter size-full wp-image-687" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/031.png" alt="03" width="947" height="588" /></a></p>
-
-<p>Aquí asignaremos o crearemos un Security Group, en mi caso utilizare uno ya existente</p>
-
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/041.png"><img class="aligncenter size-full wp-image-688" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/041.png" alt="04" width="1001" height="384" /></a></p>
-
-<p>Lo ultimo que configuraremos serán las instancias que harán uso del ELB, seleccionamos las que queramos y pulsaremos en Continue</p>
-
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/051.png"><img class="aligncenter size-full wp-image-689" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/051.png" alt="05" width="963" height="653" /></a></p>
-
-<p>Finalizaremos estableciendo una etiqueta a nuestro ELB</p>
-
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/061.png"><img class="aligncenter size-full wp-image-690" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/061.png" alt="06" width="941" height="394" /></a></p>
-
-<p>Antes de terminar de crear el ELB, nos mostrara una resumen de la configuración, si estuviéramos de acuerdo pulsaríamos en Create, de lo contrario modificaremos alguna de las partes anteriores</p>
-
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/071.png"><img class="aligncenter size-full wp-image-691" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/071.png" alt="07" width="939" height="727" /></a></p>
-
-<p>Esta seria una imagen del ELB creado, tendremos que esperar un rato hasta que este activo, una vez activo veremos In Service el Status de las Instancias, aunque en algunas ocasiones aunque este In Service aun no tenemos conexión a través del ELB</p>
-
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/081.png"><img class="aligncenter size-full wp-image-692" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/081.png" alt="08" width="1053" height="771" /></a></p>
-
-<p>Un saludo</p>
-
-  </div>
-
-</article>
-
-      </div>
-    </main>
-
-    <footer class="site-footer">
-
-  <div class="wrapper">
-
-    <p>
-      
-
-&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
-
-    </p>
-
-  </div>
-
-</footer>
-
-
-  </body>
-
-</html>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>

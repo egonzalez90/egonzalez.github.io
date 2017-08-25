@@ -1,153 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-
-  <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  
-  
-  <title>Desplegar OVF VM Shared Disk</title>
-  <meta name="description" content="Cuando se exporta una maquina virtual en formato OVF conVMware, en el entorno ESXi 5.1 es en donde lo tengo comprobado, los OVF que disponen de disco compartido o en diferentes controladoras SCSi se despliegan incorrectamente, intercambiando los discos compartidos de una controladora por los de otra y cambiando la numeración ejemplo. VM1.vmdk por VM1_01.vmdk, por lo que al iniciar la maquina esta no encontrara el sistema operativo y dará un Boot error. Pues bien, para poder exportar y desplegar correctamente estas maquinas con disco compartido lo que debemos de hacer es lo siguiente:">
-  
-
-  <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="http://217.182.136.201:8080/desplegar-ovf-vm-shared-disk/">
-  
-  
-  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
-
-  
-
-  
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="egongu90">
-  <meta name="twitter:title" content="Desplegar OVF VM Shared Disk">
-  <meta name="twitter:description" content="Cuando se exporta una maquina virtual en formato OVF conVMware, en el entorno ESXi 5.1 es en donde lo tengo comprobado, los OVF que disponen de disco compartido o en diferentes controladoras SCSi s...">
-  
-    <meta name="twitter:creator" content="egongu90">
-  
-  
-
-  <script type="text/javascript">
-  WebFontConfig = {
-    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
-  };
-  (function() {
-    var wf = document.createElement('script');
-    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-    wf.type = 'text/javascript';
-    wf.async = 'true';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(wf, s);
-  })();
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = 'https://egonzalez-1.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
-
-  
-
-</head>
-
-
-  <body>
-
-    <header class="site-header">
-
-  <div class="wrapper">
-
-    <a class="site-title" href="/">OpenStack things</a>
-
-    <nav class="site-nav">
-      
-        
-        <a class="page-link" href="/about/">About</a>
-      
-        
-        <a class="page-link" href="/archives/">Archives</a>
-      
-        
-        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
-      
-    </nav>
-
-  </div>
-
-</header>
-
-
-    <main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-
-  <header class="post-header">
-    
-      <h1 class="post-title" itemprop="name headline">Desplegar OVF VM Shared Disk</h1>
-    
-    <p class="post-meta"><time datetime="2014-08-26T16:22:41+02:00" itemprop="datePublished">Aug 26, 2014</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
-  
-  
-    
-  
-    
-  
-    
-  
-    
-      <a href="/categories/virtualizacion/">Virtualizacion</a>
-    
-  
-    
-  
-    
-  
-    
-  
-
-</p>
-  </header>
-
-  <div class="post-content" itemprop="articleBody">
-    <p>Cuando se exporta una maquina virtual en formato OVF conVMware, en el entorno ESXi 5.1 es en donde lo tengo comprobado, los OVF que disponen de disco compartido o en diferentes controladoras SCSi se despliegan incorrectamente, intercambiando los discos compartidos de una controladora por los de otra y cambiando la numeración ejemplo. VM1.vmdk por VM1_01.vmdk, por lo que al iniciar la maquina esta no encontrara el sistema operativo y dará un Boot error.
-Pues bien, para poder exportar y desplegar correctamente estas maquinas con disco compartido lo que debemos de hacer es lo siguiente:</p>
-
-<p>1º Copiar los discos compartidos a otro almacenamiento y quitar de la configuración de las maquinas virtuales que tengan esos discos compartidos.
-2º Exportar en formato OVF la maquina virtual</p>
-
-<p>Para un correcto despliegue de las VM hay que seguir unos pasos:</p>
-
-<p>1º Desplegar OVF
-2º Sin encender las VM, copiar los discos compartidos al Datastore correcto
-3º Añadir el disco compartido a la configuración de de cada VM que comparta el disco</p>
-
-<p>Para las VM que no tienen disco compartido solamente se desplegara e iniciara, habiendo antes configurado la red o los parámetros necesarios para el correcto funcionamiento.
-La controladoras de los discos SCSi de discos compartidos deberán de ponerse en virtual y los discos en independiente/persistente.
-Recordar que al desplegar la VM se cambiara la MAC de las NIC, por lo que se perderá la configuración de red que tenia configurada previamente, dentro de el directorio /etc/sysconfig/network-script/ se creara un archivo llamado eth*.bak en donde esta la configuración de red antigua.</p>
-
-  </div>
-
-</article>
-
-      </div>
-    </main>
-
-    <footer class="site-footer">
-
-  <div class="wrapper">
-
-    <p>
-      
-
-&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
-
-    </p>
-
-  </div>
-
-</footer>
-
-
-  </body>
-
-</html>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>

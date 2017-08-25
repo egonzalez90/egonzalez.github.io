@@ -1,171 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-
-  <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  
-  
-  <title>Carpetas compartidas Virtual Box y Ubuntu</title>
-  <meta name="description" content="La primera vez que entras a Ubuntu con VirtualBox te puedes volver loco buscando la carpeta compartida, que no la encontraras.No es como Windows que te aparece en red, esta hay que montarla para poder acceder a ella.">
-  
-
-  <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="http://217.182.136.201:8080/carpetas-compartidas-virtual-box-y-ubuntu/">
-  
-  
-  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
-
-  
-
-  
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="egongu90">
-  <meta name="twitter:title" content="Carpetas compartidas Virtual Box y Ubuntu">
-  <meta name="twitter:description" content="La primera vez que entras a Ubuntu con VirtualBox te puedes volver loco buscando la carpeta compartida, que no la encontraras.No es como Windows que te aparece en red, esta hay que montarla para po...">
-  
-    <meta name="twitter:creator" content="egongu90">
-  
-  
-
-  <script type="text/javascript">
-  WebFontConfig = {
-    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
-  };
-  (function() {
-    var wf = document.createElement('script');
-    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-    wf.type = 'text/javascript';
-    wf.async = 'true';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(wf, s);
-  })();
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = 'https://egonzalez-1.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
-
-  
-
-</head>
-
-
-  <body>
-
-    <header class="site-header">
-
-  <div class="wrapper">
-
-    <a class="site-title" href="/">OpenStack things</a>
-
-    <nav class="site-nav">
-      
-        
-        <a class="page-link" href="/about/">About</a>
-      
-        
-        <a class="page-link" href="/archives/">Archives</a>
-      
-        
-        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
-      
-    </nav>
-
-  </div>
-
-</header>
-
-
-    <main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-
-  <header class="post-header">
-    
-      <h1 class="post-title" itemprop="name headline">Carpetas compartidas Virtual Box y Ubuntu</h1>
-    
-    <p class="post-meta"><time datetime="2013-01-19T21:00:26+01:00" itemprop="datePublished">Jan 19, 2013</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
-  
-  
-    
-      <a href="/categories/linux/">Linux</a>
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-
-</p>
-  </header>
-
-  <div class="post-content" itemprop="articleBody">
-    <p>La primera vez que entras a Ubuntu con VirtualBox te puedes volver loco buscando la carpeta compartida, que no la encontraras.No es como Windows que te aparece en red, esta hay que montarla para poder acceder a ella.<!--more--></p>
-
-<p>El mayor problema son las Guest Additions que muchas veces dan fallo para compartir las carpetas, pues bien, si no te deja montar la carpeta con el método que voy a describir abajo, deberás reinstalar las Guest Additions, y con esto debería de permitírtelo, aunque si continua repitelo de nuevo, ya te  digo que falla bastante.</p>
-
-<p>Con esto entendido vamos a empezar creando la carpeta compartida desde el menú de VirtualBox después de haber instalado las Guest Additions, doy por hecho que eso si lo sabéis crear, a partir de ese momento se enciende la maquina virtual de Ubuntu.</p>
-
-<p>Se abre un terminal y se crea una carpeta, que sera la compartida después:</p>
-<ul>
-	<li>mkdir /media/nombredelacarpeta</li>
-</ul>
-<p>Después se crea el punto de montaje de la carpeta compartida:</p>
-<ul>
-	<li><address>sudo mount -t vboxsf Nombre /media/Nombre de la carpeta de antes</address></li>
-</ul>
-<p>Donde Nombre es como hemos llamado a la carpeta compartida en VirtualBox al principio.</p>
-
-<p>Si te diera error aquí es donde tienes que volver a instalar las Guest Additions, antes puedes probar a ejecutar el comando dentro del fichero donde esta vboxsf:</p>
-<ul>
-	<li><address>cd /sbin/vboxsf</address></li>
-</ul>
-<p>Después se ha de ir a</p>
-<ul>
-	<li><address>cd /etc/init.d</address></li>
-</ul>
-<p>Aquí hay que editar un archivo para que se auto monte la carpeta compartida cada vez que se encienda el equipo:</p>
-<ul>
-	<li><address>gksudo gedit rc.local</address></li>
-</ul>
-<p>En este momento se copia el comando de montaje de la carpeta en el final del archivo, se guarda y ya estaría todo hecho.</p>
-<ul>
-	<li><address>sudo mount -t vboxsf Nombre /media/Nombre de la carpeta</address></li>
-</ul>
-<p>Si hubiera algún error comenten para arreglarlo. Un saludo</p>
-
-  </div>
-
-</article>
-
-      </div>
-    </main>
-
-    <footer class="site-footer">
-
-  <div class="wrapper">
-
-    <p>
-      
-
-&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
-
-    </p>
-
-  </div>
-
-</footer>
-
-
-  </body>
-
-</html>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>

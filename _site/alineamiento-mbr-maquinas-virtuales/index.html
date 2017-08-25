@@ -1,182 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-
-  <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  
-  
-  <title>Alineamiento MBR maquinas virtuales</title>
-  <meta name="description" content="Antes de la llegada de el sistema de ficheros EXT4, cuando creabas maquinas virtuales, estas estaban desalineadas el mbr del vmfs y de el almacenamiento,  lo que generaba menor rendimiento.">
-  
-
-  <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="http://217.182.136.201:8080/alineamiento-mbr-maquinas-virtuales/">
-  
-  
-  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
-
-  
-
-  
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="egongu90">
-  <meta name="twitter:title" content="Alineamiento MBR maquinas virtuales">
-  <meta name="twitter:description" content="Antes de la llegada de el sistema de ficheros EXT4, cuando creabas maquinas virtuales, estas estaban desalineadas el mbr del vmfs y de el almacenamiento,  lo que generaba menor rendimiento.">
-  
-    <meta name="twitter:creator" content="egongu90">
-  
-  
-
-  <script type="text/javascript">
-  WebFontConfig = {
-    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
-  };
-  (function() {
-    var wf = document.createElement('script');
-    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-    wf.type = 'text/javascript';
-    wf.async = 'true';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(wf, s);
-  })();
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = 'https://egonzalez-1.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
-
-  
-
-</head>
-
-
-  <body>
-
-    <header class="site-header">
-
-  <div class="wrapper">
-
-    <a class="site-title" href="/">OpenStack things</a>
-
-    <nav class="site-nav">
-      
-        
-        <a class="page-link" href="/about/">About</a>
-      
-        
-        <a class="page-link" href="/archives/">Archives</a>
-      
-        
-        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
-      
-    </nav>
-
-  </div>
-
-</header>
-
-
-    <main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-
-  <header class="post-header">
-    
-      <h1 class="post-title" itemprop="name headline">Alineamiento MBR maquinas virtuales</h1>
-    
-    <p class="post-meta"><time datetime="2014-09-03T17:21:58+02:00" itemprop="datePublished">Sep 3, 2014</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
-  
-  
-    
-      <a href="/categories/linux/">Linux</a>,
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-
-  
-  
-    
-  
-    
-  
-    
-  
-    
-      <a href="/categories/virtualizacion/">Virtualizacion</a>
-    
-  
-    
-  
-    
-  
-    
-  
-
-</p>
-  </header>
-
-  <div class="post-content" itemprop="articleBody">
-    <p>Antes de la llegada de el sistema de ficheros EXT4, cuando creabas maquinas virtuales, estas estaban desalineadas el mbr del vmfs y de el almacenamiento,  lo que generaba menor rendimiento.<!--more--></p>
-
-<p>Para ello dedico esta entrada, con la que mostrare como alinear el mbr.</p>
-
-<p>Lo primero que necesitaremos es el paquete con las tools mbrscan y mbralign, este paquete le copiaremos a el directorio /opt/ontap/ de un host ESXi que tenga acceso al almacenamiento donde tenemos la maquina guardada.</p>
-
-<p>Una vez copiado el paquete a dicho directorio pasaremos a escanear y a realinear el mbr de la maquina, para ello necesitamos que este apagada.</p>
-
-<p>Una vez apagada iremos al directorio /opt/ontap/ y ejecutaremos el siguiente comando con el que analizaremos el disco de la maquina para ver si necesita ser alineado.</p>
-<blockquote>./mbrscan /vmfs/volumes/ALMACENAMIENTO/maquinavirtual/maquinavirtual-flat.vmdk</blockquote>
-<p>Esto nos mostrara un mensaje en el que pondra:</p>
-<blockquote>Aligned yes o Aligned no</blockquote>
-<p>En el caso de que pusiera align no, deberemos realinear el mbr de la maquina, lo haremos mediante este comando:</p>
-<blockquote>./mbralign /vmfs/volumes/ALMACENAMIENTO/maquinavirtual/maquinavirtual-flat.vmdk</blockquote>
-<p>Esto nos creara un archivo .bak del disco que vamos a alinear por si fallara este proceso poder recuperarlo, este proceso tardara bastante(dependiendo del tamaño del disco)</p>
-
-<p>Una vez acabado ese proceso de alineamiento, volveremos a utilizar el comando mbrscan para comprobar que este bien hecho.</p>
-
-<p>Por ultimo, el alineado del mbr se carga totalmente el GRUB de la maquina, por lo que deberemos recuperarlo.</p>
-
-<p>En esta entrada tienes como hacerlo: <a title="Recuperar GRUB RHEL y CentOS" href="http://egonzalez.org/recuperar-grub-rhel-y-centos/ " target="_blank"><span id="sample-permalink" style="color: #666666;" tabindex="-1">http://egonzalez.org/<span id="editable-post-name" title="Enlace permanente temporal. Haz clic para editar esta parte.">recuperar-grub-rhel-y-centos</span>/</span><span style="color: #666666;"> </span></a></p>
-
-<p>Una vez recuperado el GRUB y comprobado que la maquina funciona correctamente, borraremos el archivo .bak que se había creado.</p>
-
-<p>Espero poder ayudar, un saludo</p>
-
-  </div>
-
-</article>
-
-      </div>
-    </main>
-
-    <footer class="site-footer">
-
-  <div class="wrapper">
-
-    <p>
-      
-
-&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
-
-    </p>
-
-  </div>
-
-</footer>
-
-
-  </body>
-
-</html>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
