@@ -7,7 +7,7 @@ github_username:  egonzalez90
 
 # Build settings
 markdown: kramdown
-theme: jekyll-whiteglass
+theme: jekyll-theme-slate
 plugins:
   - jekyll-feed
 gems:
