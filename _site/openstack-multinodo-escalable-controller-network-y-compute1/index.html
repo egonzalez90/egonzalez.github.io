@@ -1,3 +1,102 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <meta name="description" content="OpenStack things : OpenStack, Docker, Ansible, Ceph, Linux">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/style.css?v=9a6333a51cf04996f04338046deefb14dd69cda4">
+
+<!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Openstack multinodo – Guia Básica | OpenStack things</title>
+<meta property="og:title" content="Openstack multinodo – Guia Básica">
+<meta name="author" content="Editor">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="Inicio un proyecto nuevo en el blog en el que configuraremos nuestro Cloud en Openstack Icehouse con una arquitectura de 2 nodos, dicha instalación va a llevar el siguiente orden, con el que configuraremos los principales componentes de Openstack. Configuración de red básica Pre-requisitos MySQL Paquetes de Openstack Servidor de mensajes Qpid Keystone Instalacion Usuarios, tenants y roles Servicios y endpoints Comprobacion Clientes de Openstack Glance Instalacion Comprobación Nova Nova en Controller Node Nova en Compute Node Legacy Network Dashboard Instancias Esta página será el menú principal de la instalación, en ella iré publicando los enlaces de los módulos configurados. Esta instalación se irá actualizando periódicamente hasta acabar por completo con todas las configuraciones necesarias.">
+<meta property="og:description" content="Inicio un proyecto nuevo en el blog en el que configuraremos nuestro Cloud en Openstack Icehouse con una arquitectura de 2 nodos, dicha instalación va a llevar el siguiente orden, con el que configuraremos los principales componentes de Openstack. Configuración de red básica Pre-requisitos MySQL Paquetes de Openstack Servidor de mensajes Qpid Keystone Instalacion Usuarios, tenants y roles Servicios y endpoints Comprobacion Clientes de Openstack Glance Instalacion Comprobación Nova Nova en Controller Node Nova en Compute Node Legacy Network Dashboard Instancias Esta página será el menú principal de la instalación, en ella iré publicando los enlaces de los módulos configurados. Esta instalación se irá actualizando periódicamente hasta acabar por completo con todas las configuraciones necesarias.">
+<link rel="canonical" href="http://217.182.136.201:5000/openstack-multinodo-escalable-controller-network-y-compute1/">
+<meta property="og:url" content="http://217.182.136.201:5000/openstack-multinodo-escalable-controller-network-y-compute1/">
+<meta property="og:site_name" content="OpenStack things">
+<meta property="og:image" content="http://217.182.136.201:5000/wp-content/uploads/2014/09/openstack-logo_0.png">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2014-10-19T16:25:49+00:00">
+<script type="application/ld+json">
+{"name":null,"description":"Inicio un proyecto nuevo en el blog en el que configuraremos nuestro Cloud en Openstack Icehouse con una arquitectura de 2 nodos, dicha instalación va a llevar el siguiente orden, con el que configuraremos los principales componentes de Openstack. Configuración de red básica Pre-requisitos MySQL Paquetes de Openstack Servidor de mensajes Qpid Keystone Instalacion Usuarios, tenants y roles Servicios y endpoints Comprobacion Clientes de Openstack Glance Instalacion Comprobación Nova Nova en Controller Node Nova en Compute Node Legacy Network Dashboard Instancias Esta página será el menú principal de la instalación, en ella iré publicando los enlaces de los módulos configurados. Esta instalación se irá actualizando periódicamente hasta acabar por completo con todas las configuraciones necesarias.","author":{"@type":"Person","name":"Editor"},"@type":"BlogPosting","url":"http://217.182.136.201:5000/openstack-multinodo-escalable-controller-network-y-compute1/","publisher":null,"image":"http://217.182.136.201:5000/wp-content/uploads/2014/09/openstack-logo_0.png","headline":"Openstack multinodo – Guia Básica","dateModified":"2014-10-19T16:25:49+00:00","datePublished":"2014-10-19T16:25:49+00:00","sameAs":null,"mainEntityOfPage":{"@type":"WebPage","@id":"http://217.182.136.201:5000/openstack-multinodo-escalable-controller-network-y-compute1/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="http://github.com/egonzalez90/egonzalez90.github.io">View on GitHub</a>
+
+          <h1 id="project_title">OpenStack things</h1>
+          <h2 id="project_tagline">OpenStack, Docker, Ansible, Ceph, Linux</h2>
+
+          
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>Inicio un proyecto nuevo en el blog en el que configuraremos nuestro Cloud en Openstack Icehouse con una arquitectura de 2 nodos, dicha instalación va a llevar el siguiente orden, con el que configuraremos los principales componentes de Openstack.<!--more--></p>
+<ol>
+	<li><a title="Configuracion de red basica Openstack" href="http://egonzalez.org/configuracion-de-red-basica-openstack/" target="_blank">Configuración de red básica</a></li>
+	<li><a title="Pre-requisitos Openstack" href="http://egonzalez.org/pre-requisitos-openstack/" target="_blank">Pre-requisitos</a></li>
+	<li><a title="MySQL" href="http://egonzalez.org/mysql/" target="_blank">MySQL</a></li>
+	<li><a title="Paquetes de Openstack" href="http://egonzalez.org/paquetes-de-openstack/" target="_blank">Paquetes de Openstack</a></li>
+	<li><a title="Servidor de mensajes Qpid" href="http://egonzalez.org/servidor-de-mensajes-qpid/" target="_blank">Servidor de mensajes Qpid</a></li>
+	<li>Keystone
+<ol>
+	<li><a title="Instalación Identity Service (Keystone)" href="http://egonzalez.org/816/" target="_blank">Instalacion</a></li>
+	<li><a title="Usuarios, Tenants y Roles" href="http://egonzalez.org/usuarios-tenants-y-roles/" target="_blank">Usuarios, tenants y roles</a></li>
+	<li><a title="Keystone API endpoint" href="http://egonzalez.org/keystone-api-endpoint/" target="_blank">Servicios y endpoints</a></li>
+	<li><a title="Comprobar Keystone" href="http://egonzalez.org/comprobar-keystone/" target="_blank">Comprobacion</a></li>
+</ol>
+</li>
+	<li><a title="Openstack Clients" href="http://egonzalez.org/openstack-clients/" target="_blank">Clientes de Openstack</a></li>
+	<li>Glance
+<ol>
+	<li><a title="Configuración de Image Service Glance" href="http://egonzalez.org/configuracion-de-image-service-glance/" target="_blank">Instalacion</a></li>
+	<li><a title="Comprobar Glance Image Service" href="http://egonzalez.org/comprobar-glance-image-service/" target="_blank">Comprobación</a></li>
+</ol>
+</li>
+	<li>Nova
+<ol>
+	<li><a title="Nova en Controller Node" href="http://egonzalez.org/nova-en-controller-node/" target="_blank">Nova en Controller Node</a></li>
+	<li>Nova en Compute Node</li>
+</ol>
+</li>
+	<li>Legacy Network</li>
+	<li>Dashboard</li>
+	<li>Instancias</li>
+</ol>
+<p>Esta página será el menú principal de la instalación, en ella iré publicando los enlaces de los módulos configurados.
+Esta instalación se irá actualizando periódicamente hasta acabar por completo con todas las configuraciones necesarias.</p>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        
+        <p class="copyright">OpenStack things maintained by <a href="http://github.com/egonzalez90">egonzalez90</a></p>
+        
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+  </body>
+
 <div id="disqus_thread"></div>
 <script>
     /**
@@ -19,4 +118,6 @@
         (d.head || d.body).appendChild(s);
     })();
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+</html>

@@ -1,3 +1,92 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <meta name="description" content="OpenStack things : OpenStack, Docker, Ansible, Ceph, Linux">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/style.css?v=9a6333a51cf04996f04338046deefb14dd69cda4">
+
+<!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Openstack-nova-api start error (Could not bind to 0.0.0.0, Address already in use) | OpenStack things</title>
+<meta property="og:title" content="Openstack-nova-api start error (Could not bind to 0.0.0.0, Address already in use)">
+<meta name="author" content="Editor">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="  Openstack-nova-api doesn’t start, this error is  from the services boot priority in many times. # service openstack-nova-api start 2015-03-03 15:05:06.402 3313 ERROR nova.wsgi [-] Could not bind to 0.0.0.0:8775 2015-03-03 15:05:06.402 3313 CRITICAL nova [-] error: [Errno 98] Address already in use # service openstack-nova-api status openstack-nova-api dead but pid file exists* This Error happens because openstack-nova-api and openstack-nova-metadata-api use the same ports. You can start nova-api stopping metadata-api service and starting nova-api before, then start again metadata-api service. # service openstack-nova-metadata-api stop # service openstack-nova-api start # service openstack-nova-metadata-api This should fix your issue. After this you can set up boot order to this processes # update-rc.d openstack-nova-api defaults &lt;order&gt; Example: If openstack-nova-metadata-api got an order boot of S90openstack-nova-metadata-api, you should use update-rc to set nova-api start before nova-metadata-api # update-rc.d openstack-nova-api defaults 90 This will set the priority of nova-api with the priority of nova-metadata-api, wich means that nova-api will run before metadata-api.  ">
+<meta property="og:description" content="  Openstack-nova-api doesn’t start, this error is  from the services boot priority in many times. # service openstack-nova-api start 2015-03-03 15:05:06.402 3313 ERROR nova.wsgi [-] Could not bind to 0.0.0.0:8775 2015-03-03 15:05:06.402 3313 CRITICAL nova [-] error: [Errno 98] Address already in use # service openstack-nova-api status openstack-nova-api dead but pid file exists* This Error happens because openstack-nova-api and openstack-nova-metadata-api use the same ports. You can start nova-api stopping metadata-api service and starting nova-api before, then start again metadata-api service. # service openstack-nova-metadata-api stop # service openstack-nova-api start # service openstack-nova-metadata-api This should fix your issue. After this you can set up boot order to this processes # update-rc.d openstack-nova-api defaults &lt;order&gt; Example: If openstack-nova-metadata-api got an order boot of S90openstack-nova-metadata-api, you should use update-rc to set nova-api start before nova-metadata-api # update-rc.d openstack-nova-api defaults 90 This will set the priority of nova-api with the priority of nova-metadata-api, wich means that nova-api will run before metadata-api.  ">
+<link rel="canonical" href="http://217.182.136.201:5000/openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use/">
+<meta property="og:url" content="http://217.182.136.201:5000/openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use/">
+<meta property="og:site_name" content="OpenStack things">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2015-03-16T17:23:45+00:00">
+<script type="application/ld+json">
+{"name":null,"description":"  Openstack-nova-api doesn’t start, this error is  from the services boot priority in many times. # service openstack-nova-api start 2015-03-03 15:05:06.402 3313 ERROR nova.wsgi [-] Could not bind to 0.0.0.0:8775 2015-03-03 15:05:06.402 3313 CRITICAL nova [-] error: [Errno 98] Address already in use # service openstack-nova-api status openstack-nova-api dead but pid file exists* This Error happens because openstack-nova-api and openstack-nova-metadata-api use the same ports. You can start nova-api stopping metadata-api service and starting nova-api before, then start again metadata-api service. # service openstack-nova-metadata-api stop # service openstack-nova-api start # service openstack-nova-metadata-api This should fix your issue. After this you can set up boot order to this processes # update-rc.d openstack-nova-api defaults &lt;order&gt; Example: If openstack-nova-metadata-api got an order boot of S90openstack-nova-metadata-api, you should use update-rc to set nova-api start before nova-metadata-api # update-rc.d openstack-nova-api defaults 90 This will set the priority of nova-api with the priority of nova-metadata-api, wich means that nova-api will run before metadata-api.  ","author":{"@type":"Person","name":"Editor"},"@type":"BlogPosting","url":"http://217.182.136.201:5000/openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use/","publisher":null,"image":null,"headline":"Openstack-nova-api start error (Could not bind to 0.0.0.0, Address already in use)","dateModified":"2015-03-16T17:23:45+00:00","datePublished":"2015-03-16T17:23:45+00:00","sameAs":null,"mainEntityOfPage":{"@type":"WebPage","@id":"http://217.182.136.201:5000/openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="http://github.com/egonzalez90/egonzalez90.github.io">View on GitHub</a>
+
+          <h1 id="project_title">OpenStack things</h1>
+          <h2 id="project_tagline">OpenStack, Docker, Ansible, Ceph, Linux</h2>
+
+          
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p> </p>
+
+<p>Openstack-nova-api doesn’t start, this error is  from the services boot priority in many times.</p>
+<blockquote># service openstack-nova-api start
+
+2015-03-03 15:05:06.402 3313 ERROR nova.wsgi [-] Could not bind to
+0.0.0.0:8775
+2015-03-03 15:05:06.402 3313 CRITICAL nova [-] error: [Errno 98] Address
+already in use
+
+# service openstack-nova-api status
+
+openstack-nova-api dead but pid file exists*</blockquote>
+<p>This Error happens because openstack-nova-api and openstack-nova-metadata-api use the same ports.
+You can start nova-api stopping metadata-api service and starting nova-api before, then start again metadata-api service.</p>
+<blockquote># service openstack-nova-metadata-api stop
+# service openstack-nova-api start
+# service openstack-nova-metadata-api</blockquote>
+<p>This should fix your issue. After this you can set up boot order to this processes</p>
+<blockquote># update-rc.d openstack-nova-api defaults &lt;order&gt;</blockquote>
+<p>Example: If openstack-nova-metadata-api got an order boot of S90openstack-nova-metadata-api, you should use update-rc to set nova-api start before nova-metadata-api</p>
+<blockquote># update-rc.d openstack-nova-api defaults 90</blockquote>
+<p>This will set the priority of nova-api with the priority of nova-metadata-api, wich means that nova-api will run before metadata-api.</p>
+
+<p> </p>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        
+        <p class="copyright">OpenStack things maintained by <a href="http://github.com/egonzalez90">egonzalez90</a></p>
+        
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+  </body>
+
 <div id="disqus_thread"></div>
 <script>
     /**
@@ -19,4 +108,6 @@
         (d.head || d.body).appendChild(s);
     })();
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+</html>

@@ -1,3 +1,83 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <meta name="description" content="OpenStack things : OpenStack, Docker, Ansible, Ceph, Linux">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/style.css?v=9a6333a51cf04996f04338046deefb14dd69cda4">
+
+<!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Convertir claves .pem a .ppk PuTTy AWS | OpenStack things</title>
+<meta property="og:title" content="Convertir claves .pem a .ppk PuTTy AWS">
+<meta name="author" content="Editor">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="Para poder conectarse a Amazon Web Services desde PuTTy, es necesario que la clave .pem que nos proporciona AWS esté en formato .ppk que es el que reconoce PuTTy. Para convertir las .pem a .ppk seguiremos los siguientes pasos: ">
+<meta property="og:description" content="Para poder conectarse a Amazon Web Services desde PuTTy, es necesario que la clave .pem que nos proporciona AWS esté en formato .ppk que es el que reconoce PuTTy. Para convertir las .pem a .ppk seguiremos los siguientes pasos: ">
+<link rel="canonical" href="http://217.182.136.201:5000/convertir-claves-pem-a-ppk-putty-aws/">
+<meta property="og:url" content="http://217.182.136.201:5000/convertir-claves-pem-a-ppk-putty-aws/">
+<meta property="og:site_name" content="OpenStack things">
+<meta property="og:image" content="http://217.182.136.201:5000/wp-content/uploads/2014/09/supporter_1401479988.png">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2014-09-13T15:40:54+00:00">
+<script type="application/ld+json">
+{"name":null,"description":"Para poder conectarse a Amazon Web Services desde PuTTy, es necesario que la clave .pem que nos proporciona AWS esté en formato .ppk que es el que reconoce PuTTy. Para convertir las .pem a .ppk seguiremos los siguientes pasos: ","author":{"@type":"Person","name":"Editor"},"@type":"BlogPosting","url":"http://217.182.136.201:5000/convertir-claves-pem-a-ppk-putty-aws/","publisher":null,"image":"http://217.182.136.201:5000/wp-content/uploads/2014/09/supporter_1401479988.png","headline":"Convertir claves .pem a .ppk PuTTy AWS","dateModified":"2014-09-13T15:40:54+00:00","datePublished":"2014-09-13T15:40:54+00:00","sameAs":null,"mainEntityOfPage":{"@type":"WebPage","@id":"http://217.182.136.201:5000/convertir-claves-pem-a-ppk-putty-aws/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="http://github.com/egonzalez90/egonzalez90.github.io">View on GitHub</a>
+
+          <h1 id="project_title">OpenStack things</h1>
+          <h2 id="project_tagline">OpenStack, Docker, Ansible, Ceph, Linux</h2>
+
+          
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>Para poder conectarse a Amazon Web Services desde PuTTy, es necesario que la clave .pem que nos proporciona AWS esté en formato .ppk que es el que reconoce PuTTy. Para convertir las .pem a .ppk seguiremos los siguientes pasos: <!--more--></p>
+
+<p>Debes tener instalado Putty en el equipo con la tool PuTTygen</p>
+
+<p>Una vez abierta la tool PuTTygen, pulsaremos en LOAD</p>
+
+<p>Nos abrirá el explorador de archivos y marcaremos todos los archivos, ya que PuTTY solo mostrara las claves .ppk</p>
+
+<p>Seleccionaremos nuestra clave .pem</p>
+
+<p>Por ultimo daremos a Save Private Key, nos preguntara si la queremos guardar sin contraseña y pulsaremos YES.</p>
+
+<p>Pondremos el mismo nombre que la clave .pem, PuTTY pondrá la extensión .ppk</p>
+
+<p>Ya estaría la clave creada en formato .ppk para poder conectarnos a AWS a través de PuTTy</p>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        
+        <p class="copyright">OpenStack things maintained by <a href="http://github.com/egonzalez90">egonzalez90</a></p>
+        
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+  </body>
+
 <div id="disqus_thread"></div>
 <script>
     /**
@@ -19,4 +99,6 @@
         (d.head || d.body).appendChild(s);
     })();
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+</html>

@@ -1,3 +1,107 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <meta name="description" content="OpenStack things : OpenStack, Docker, Ansible, Ceph, Linux">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/style.css?v=9a6333a51cf04996f04338046deefb14dd69cda4">
+
+<!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>List all tenants belonging an user Keystone v2 | OpenStack things</title>
+<meta property="og:title" content="List all tenants belonging an user Keystone v2">
+<meta name="author" content="Editor">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="  Here is a simple script to list all tenants belonging an user:   #!/bin/bash echo -n &quot;Username : &quot; ; read usercheck for userid in $(keystone user-list | grep -w $usercheck | awk '{print$2}') do for tenant in $(keystone tenant-list | awk 'NR&gt;3 &amp;&amp; /^|/ {print$2}') do for tenantid in $(keystone user-role-list --user $userid --tenant $tenant | awk 'NR&gt;3 &amp;&amp; /^|/ {print$8}') do keystone tenant-list | grep $tenantid | awk '{print$4}' done done done   Also you can run all in a simple cmd line:   echo -n &quot;user name &quot;; read usercheck; for userid in $(keystone user-list | grep $usercheck | awk '{print$2}'); do echo $userid | for tenant in $(keystone tenant-list | awk 'NR&gt;3 &amp;&amp; /^|/ {print$2}'); do echo $tenant | for tenantid in $(keystone user-role-list --user $userid --tenant $tenant | awk 'NR&gt;3 &amp;&amp; /^|/ {print$8}'); do keystone tenant-list | grep $tenantid | awk '{print$4}'; done ; done ; done   If you are a developer, probably you need to list all tenants in a HTTP request, for this purpose you can use curl to the port 5000 of keystone   curl -i -X GET http://KEYSTONEIP:5000/v2.0/tenants -H &quot;User-Agent: python-keystoneclient&quot; -H &quot;X-Auth-Token: USERTOKEN&quot;   I have saved the user token in a OS_VARIABLE called OS_TOKEN, if you don’t do that, you should input all the token in the HTTP request. For example:   curl -i -X GET http://192.168.1.11:5000/v2.0/tenants -H &quot;User-Agent: python-keystoneclient&quot; -H &quot;X-Auth-Token: $OS_TOKEN&quot;">
+<meta property="og:description" content="  Here is a simple script to list all tenants belonging an user:   #!/bin/bash echo -n &quot;Username : &quot; ; read usercheck for userid in $(keystone user-list | grep -w $usercheck | awk '{print$2}') do for tenant in $(keystone tenant-list | awk 'NR&gt;3 &amp;&amp; /^|/ {print$2}') do for tenantid in $(keystone user-role-list --user $userid --tenant $tenant | awk 'NR&gt;3 &amp;&amp; /^|/ {print$8}') do keystone tenant-list | grep $tenantid | awk '{print$4}' done done done   Also you can run all in a simple cmd line:   echo -n &quot;user name &quot;; read usercheck; for userid in $(keystone user-list | grep $usercheck | awk '{print$2}'); do echo $userid | for tenant in $(keystone tenant-list | awk 'NR&gt;3 &amp;&amp; /^|/ {print$2}'); do echo $tenant | for tenantid in $(keystone user-role-list --user $userid --tenant $tenant | awk 'NR&gt;3 &amp;&amp; /^|/ {print$8}'); do keystone tenant-list | grep $tenantid | awk '{print$4}'; done ; done ; done   If you are a developer, probably you need to list all tenants in a HTTP request, for this purpose you can use curl to the port 5000 of keystone   curl -i -X GET http://KEYSTONEIP:5000/v2.0/tenants -H &quot;User-Agent: python-keystoneclient&quot; -H &quot;X-Auth-Token: USERTOKEN&quot;   I have saved the user token in a OS_VARIABLE called OS_TOKEN, if you don’t do that, you should input all the token in the HTTP request. For example:   curl -i -X GET http://192.168.1.11:5000/v2.0/tenants -H &quot;User-Agent: python-keystoneclient&quot; -H &quot;X-Auth-Token: $OS_TOKEN&quot;">
+<link rel="canonical" href="http://217.182.136.201:5000/list-all-tenants-belonging-an-user/">
+<meta property="og:url" content="http://217.182.136.201:5000/list-all-tenants-belonging-an-user/">
+<meta property="og:site_name" content="OpenStack things">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2015-07-02T14:29:33+00:00">
+<script type="application/ld+json">
+{"name":null,"description":"  Here is a simple script to list all tenants belonging an user:   #!/bin/bash echo -n &quot;Username : &quot; ; read usercheck for userid in $(keystone user-list | grep -w $usercheck | awk &#39;{print$2}&#39;) do for tenant in $(keystone tenant-list | awk &#39;NR&gt;3 &amp;&amp; /^|/ {print$2}&#39;) do for tenantid in $(keystone user-role-list --user $userid --tenant $tenant | awk &#39;NR&gt;3 &amp;&amp; /^|/ {print$8}&#39;) do keystone tenant-list | grep $tenantid | awk &#39;{print$4}&#39; done done done   Also you can run all in a simple cmd line:   echo -n &quot;user name &quot;; read usercheck; for userid in $(keystone user-list | grep $usercheck | awk &#39;{print$2}&#39;); do echo $userid | for tenant in $(keystone tenant-list | awk &#39;NR&gt;3 &amp;&amp; /^|/ {print$2}&#39;); do echo $tenant | for tenantid in $(keystone user-role-list --user $userid --tenant $tenant | awk &#39;NR&gt;3 &amp;&amp; /^|/ {print$8}&#39;); do keystone tenant-list | grep $tenantid | awk &#39;{print$4}&#39;; done ; done ; done   If you are a developer, probably you need to list all tenants in a HTTP request, for this purpose you can use curl to the port 5000 of keystone   curl -i -X GET http://KEYSTONEIP:5000/v2.0/tenants -H &quot;User-Agent: python-keystoneclient&quot; -H &quot;X-Auth-Token: USERTOKEN&quot;   I have saved the user token in a OS_VARIABLE called OS_TOKEN, if you don’t do that, you should input all the token in the HTTP request. For example:   curl -i -X GET http://192.168.1.11:5000/v2.0/tenants -H &quot;User-Agent: python-keystoneclient&quot; -H &quot;X-Auth-Token: $OS_TOKEN&quot;","author":{"@type":"Person","name":"Editor"},"@type":"BlogPosting","url":"http://217.182.136.201:5000/list-all-tenants-belonging-an-user/","publisher":null,"image":null,"headline":"List all tenants belonging an user Keystone v2","dateModified":"2015-07-02T14:29:33+00:00","datePublished":"2015-07-02T14:29:33+00:00","sameAs":null,"mainEntityOfPage":{"@type":"WebPage","@id":"http://217.182.136.201:5000/list-all-tenants-belonging-an-user/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="http://github.com/egonzalez90/egonzalez90.github.io">View on GitHub</a>
+
+          <h1 id="project_title">OpenStack things</h1>
+          <h2 id="project_tagline">OpenStack, Docker, Ansible, Ceph, Linux</h2>
+
+          
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p> </p>
+
+<p>Here is a simple script to list all tenants belonging an user:</p>
+
+<p> </p>
+<pre><code>#!/bin/bash
+
+echo -n "Username : " ; read usercheck
+
+for userid in $(keystone user-list | grep -w $usercheck | awk '{print$2}')
+	do
+	for tenant in $(keystone tenant-list | awk 'NR&gt;3 &amp;&amp; /^|/ {print$2}')
+	do
+		for tenantid in $(keystone user-role-list --user $userid --tenant $tenant | awk 'NR&gt;3 &amp;&amp; /^|/ {print$8}')
+		do
+			keystone tenant-list | grep $tenantid | awk '{print$4}'
+		done
+	done
+done
+</code></pre>
+<p> 
+Also you can run all in a simple cmd line:
+ </p>
+<pre><code>
+echo -n "user name "; read usercheck; for userid in $(keystone user-list | grep $usercheck | awk '{print$2}'); do echo $userid | for tenant in $(keystone tenant-list | awk 'NR&gt;3 &amp;&amp; /^|/ {print$2}'); do echo $tenant | for tenantid in $(keystone user-role-list --user $userid --tenant $tenant | awk 'NR&gt;3 &amp;&amp; /^|/ {print$8}'); do keystone tenant-list | grep $tenantid | awk '{print$4}'; done ; done ; done
+
+</code></pre>
+<p> 
+If you are a developer, probably you need to list all tenants in a HTTP request, for this purpose you can use curl to the port 5000 of keystone
+ </p>
+<pre><code>
+curl -i -X GET http://KEYSTONEIP:5000/v2.0/tenants -H "User-Agent: python-keystoneclient" -H "X-Auth-Token: USERTOKEN"
+</code></pre>
+<p> 
+I have saved the user token in a OS_VARIABLE called OS_TOKEN, if you don’t do that, you should input all the token in the HTTP request.
+For example: 
+ </p>
+<pre><code>
+curl -i -X GET http://192.168.1.11:5000/v2.0/tenants -H "User-Agent: python-keystoneclient" -H "X-Auth-Token: $OS_TOKEN"
+</code></pre>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        
+        <p class="copyright">OpenStack things maintained by <a href="http://github.com/egonzalez90">egonzalez90</a></p>
+        
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+  </body>
+
 <div id="disqus_thread"></div>
 <script>
     /**
@@ -19,4 +123,6 @@
         (d.head || d.body).appendChild(s);
     })();
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+</html>

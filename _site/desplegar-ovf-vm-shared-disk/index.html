@@ -1,3 +1,83 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <meta name="description" content="OpenStack things : OpenStack, Docker, Ansible, Ceph, Linux">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/style.css?v=9a6333a51cf04996f04338046deefb14dd69cda4">
+
+<!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Desplegar OVF VM Shared Disk | OpenStack things</title>
+<meta property="og:title" content="Desplegar OVF VM Shared Disk">
+<meta name="author" content="Editor">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="Cuando se exporta una maquina virtual en formato OVF conVMware, en el entorno ESXi 5.1 es en donde lo tengo comprobado, los OVF que disponen de disco compartido o en diferentes controladoras SCSi se despliegan incorrectamente, intercambiando los discos compartidos de una controladora por los de otra y cambiando la numeración ejemplo. VM1.vmdk por VM1_01.vmdk, por lo que al iniciar la maquina esta no encontrara el sistema operativo y dará un Boot error. Pues bien, para poder exportar y desplegar correctamente estas maquinas con disco compartido lo que debemos de hacer es lo siguiente:">
+<meta property="og:description" content="Cuando se exporta una maquina virtual en formato OVF conVMware, en el entorno ESXi 5.1 es en donde lo tengo comprobado, los OVF que disponen de disco compartido o en diferentes controladoras SCSi se despliegan incorrectamente, intercambiando los discos compartidos de una controladora por los de otra y cambiando la numeración ejemplo. VM1.vmdk por VM1_01.vmdk, por lo que al iniciar la maquina esta no encontrara el sistema operativo y dará un Boot error. Pues bien, para poder exportar y desplegar correctamente estas maquinas con disco compartido lo que debemos de hacer es lo siguiente:">
+<link rel="canonical" href="http://217.182.136.201:5000/desplegar-ovf-vm-shared-disk/">
+<meta property="og:url" content="http://217.182.136.201:5000/desplegar-ovf-vm-shared-disk/">
+<meta property="og:site_name" content="OpenStack things">
+<meta property="og:image" content="http://217.182.136.201:5000/wp-content/uploads/2014/08/Captura.png">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2014-08-26T14:22:41+00:00">
+<script type="application/ld+json">
+{"name":null,"description":"Cuando se exporta una maquina virtual en formato OVF conVMware, en el entorno ESXi 5.1 es en donde lo tengo comprobado, los OVF que disponen de disco compartido o en diferentes controladoras SCSi se despliegan incorrectamente, intercambiando los discos compartidos de una controladora por los de otra y cambiando la numeración ejemplo. VM1.vmdk por VM1_01.vmdk, por lo que al iniciar la maquina esta no encontrara el sistema operativo y dará un Boot error. Pues bien, para poder exportar y desplegar correctamente estas maquinas con disco compartido lo que debemos de hacer es lo siguiente:","author":{"@type":"Person","name":"Editor"},"@type":"BlogPosting","url":"http://217.182.136.201:5000/desplegar-ovf-vm-shared-disk/","publisher":null,"image":"http://217.182.136.201:5000/wp-content/uploads/2014/08/Captura.png","headline":"Desplegar OVF VM Shared Disk","dateModified":"2014-08-26T14:22:41+00:00","datePublished":"2014-08-26T14:22:41+00:00","sameAs":null,"mainEntityOfPage":{"@type":"WebPage","@id":"http://217.182.136.201:5000/desplegar-ovf-vm-shared-disk/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="http://github.com/egonzalez90/egonzalez90.github.io">View on GitHub</a>
+
+          <h1 id="project_title">OpenStack things</h1>
+          <h2 id="project_tagline">OpenStack, Docker, Ansible, Ceph, Linux</h2>
+
+          
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>Cuando se exporta una maquina virtual en formato OVF conVMware, en el entorno ESXi 5.1 es en donde lo tengo comprobado, los OVF que disponen de disco compartido o en diferentes controladoras SCSi se despliegan incorrectamente, intercambiando los discos compartidos de una controladora por los de otra y cambiando la numeración ejemplo. VM1.vmdk por VM1_01.vmdk, por lo que al iniciar la maquina esta no encontrara el sistema operativo y dará un Boot error.
+Pues bien, para poder exportar y desplegar correctamente estas maquinas con disco compartido lo que debemos de hacer es lo siguiente:</p>
+
+<p>1º Copiar los discos compartidos a otro almacenamiento y quitar de la configuración de las maquinas virtuales que tengan esos discos compartidos.
+2º Exportar en formato OVF la maquina virtual</p>
+
+<p>Para un correcto despliegue de las VM hay que seguir unos pasos:</p>
+
+<p>1º Desplegar OVF
+2º Sin encender las VM, copiar los discos compartidos al Datastore correcto
+3º Añadir el disco compartido a la configuración de de cada VM que comparta el disco</p>
+
+<p>Para las VM que no tienen disco compartido solamente se desplegara e iniciara, habiendo antes configurado la red o los parámetros necesarios para el correcto funcionamiento.
+La controladoras de los discos SCSi de discos compartidos deberán de ponerse en virtual y los discos en independiente/persistente.
+Recordar que al desplegar la VM se cambiara la MAC de las NIC, por lo que se perderá la configuración de red que tenia configurada previamente, dentro de el directorio /etc/sysconfig/network-script/ se creara un archivo llamado eth*.bak en donde esta la configuración de red antigua.</p>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        
+        <p class="copyright">OpenStack things maintained by <a href="http://github.com/egonzalez90">egonzalez90</a></p>
+        
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+  </body>
+
 <div id="disqus_thread"></div>
 <script>
     /**
@@ -19,4 +99,6 @@
         (d.head || d.body).appendChild(s);
     })();
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+</html>
