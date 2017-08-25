@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>OpenStack things</title>
+  <meta name="description" content="OpenStack, Docker, Ansible, Ceph, Linux">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://217.182.136.201:8080/posts/6/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="egongu90">
+  <meta name="twitter:title" content="OpenStack things">
+  <meta name="twitter:description" content="OpenStack, Docker, Ansible, Ceph, Linux">
+  
+    <meta name="twitter:creator" content="egongu90">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">OpenStack things</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="home">
+
+  
+
+  
+
+  <ul class="post-list">
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/primera-instancia/">Primera instancia</a>
+          </h1>
+
+          <p class="post-meta">Feb 23, 2015 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p>Primero creamos la clave.</p>
+<blockquote># ssh-keygen</blockquote>
+<p>Añadimos la clave creada a openstack.</p>
+<blockquote># nova keypair-add --pub-key ~/.ssh/id_rsa.pub [nombre]</blockquote>
+<p>Comprobamos que está asociada en nuestro entorno.</p>
+<blockquote># nova keypair-list</blockquote>
+<p>Para crear instancias necesitaremos los siguientes valores:</p>
+<ul>
+	<li>Flavors (# nova flavor-list)</li>
+	<li>Imagenes (# nova image-list)</li>
+	<li>Networks (# nova net-list)</li>
+	<li>securityGroups (# nova secgroup-list)</li>
+</ul>
+<p>Una vez tenemos esos valores necesarios procederemos a crear una instancia.</p>
+<blockquote># nova boot --flavor [flavor] --image [image_ID] --nic net-id=[net_ID] --security-group [SecGroup] --key-name [keyname] [NombreInstancia]</blockquote>
+<p>Ejemplo:</p>
+<blockquote>nova boot --flavor m1.tiny --image cirros-0.3.2-x86_64 --nic net-id=[NET_ID] --security-group default --key-name demo-key Instancia1</blockquote>
+<p>Comprobremos el estado de la instancia.</p>
+<blockquote># nova list</blockquote>
+<p>Crearemos una sesion por VNC.</p>
+<blockquote># nova get-vnc-console [Instancia] novnc</blockquote>
+<p>Habilitamos Ping y SSH al Security Group “Default”.</p>
+<blockquote># nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0
+
+# nova secgroup-add-rule default tcp 22 22 0.0.0.0/0</blockquote>
+<p>Comprobamos las conexiones por ping y por SSH.</p>
+<blockquote># ssh cirros@IP
+
+*Password por defecto cubswin:)</blockquote>
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/primera-instancia/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/dashboard/">Dashboard</a>
+          </h1>
+
+          <p class="post-meta">Feb 16, 2015 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p>Instalamos los paquetes necesarios para usar Dashboard.</p>
+<blockquote># yum install memcached python-memcached mod_wsgi openstack-dashboard</blockquote>
+<p>Editamos el siguiente fichero y añadimos/modificamos las lineas Allowed_hosts y Openstack_host.</p>
+<blockquote># vi /etc/openstack-dashboard/local-settings
+
+ALLOWED_HOSTS=['*']
+
+OPENSTACK_HOST="controller"</blockquote>
+<p>Permitimos conexiones al servicio httpd en la politica de SElinux.</p>
+<blockquote># setsebool -P httpd_can_network_connect on</blockquote>
+<p>Iniciamos los servicios y establecemos el nivel de ejecución.</p>
+<blockquote># service httpd start
+
+# service memcached start
+
+# chkconfig httpd on
+
+# chkconfig memcached on</blockquote>
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/dashboard/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/legacy-network/">Legacy Network</a>
+          </h1>
+
+          <p class="post-meta">Feb 10, 2015 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <h4>CONTROLLER</h4>
+<p>En controller node configuraremos nova para el uso de legacy network.</p>
+<blockquote># openstack-config --set /etc/nova/nova.conf DEFAULT network_api_class nova.network.api.API
+
+</blockquote>
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/legacy-network/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/nova-en-compute-node/">Nova en Compute Node</a>
+          </h1>
+
+          <p class="post-meta">Feb 5, 2015 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p>Primero instalaremos los paquetes necesarios de nova.</p>
+<blockquote># yum install openstack-nova-compute</blockquote>
+<p>Configuraremos el uso de la base de datos y de la autenticación en keystone.</p>
+<blockquote># openstack-config --set /etc/nova/nova.conf database connection mysql://nova:PASSWD@controller/nova
+
+</blockquote>
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/nova-en-compute-node/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/fix-keystone-malformed-endpoint-url-500-openstack/">Fix Keystone malformed endpoint url 500 Openstack</a>
+          </h1>
+
+          <p class="post-meta">Feb 4, 2015 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p> </p>
+
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/fix-keystone-malformed-endpoint-url-500-openstack/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="pagination">
+    
+      <a class="previous" href="/posts/7/">&laquo; Older</a>
+    
+
+    
+      <a class="next" href="/posts/5/">Newer &raquo;</a>
+    
+  </div>
+
+
+
+</div>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>OpenStack things</title>
+  <meta name="description" content="OpenStack, Docker, Ansible, Ceph, Linux">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://217.182.136.201:8080/posts/5/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="egongu90">
+  <meta name="twitter:title" content="OpenStack things">
+  <meta name="twitter:description" content="OpenStack, Docker, Ansible, Ceph, Linux">
+  
+    <meta name="twitter:creator" content="egongu90">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">OpenStack things</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="home">
+
+  
+
+  
+
+  <ul class="post-list">
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/multiple-store-locations-for-glance-images/">Multiple store locations for Glance images</a>
+          </h1>
+
+          <p class="post-meta">Aug 13, 2015 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p><br />&lt;/br&gt;
+In this post i will show you how to add multiple store locations for glance images.
+This will allow you to extend your glance capacity without affect your current stored images.
+The location can be any device or directory mounted at your glance host as  a NFS, a physical hard disk, or an extended partition.
+Let’s start:</p>
+
+<p>First we need to create the directories where hard disks are going to be mounted
+<code>
+sudo mkdir /var/lib/glance/lvm-images
+sudo mkdir /var/lib/glance/extended-images
+</code></p>
+
+<p>Next, we mount the devices at the directories created in the previous step</p>
+
+<p><code>
+sudo mount /dev/sdc1 /var/lib/glance/lvm-images/
+sudo mount /dev/sdd1 /var/lib/glance/extended-images/
+</code></p>
+
+<p>An important step is making the glance user the owner of that directories</p>
+
+<p><code>
+chown glance:glance /var/lib/glance/lvm-images/
+chown glance:glance /var/lib/glance/extended-images/
+</code></p>
+
+<p>Once the previous steps has been made, we need to configure the /etc/glance/glance-api.conf file.
+In this file, we’re going to configure glance to use multiple directories to store images.
+We search the section “Filesystem Store Options” and modify/create the following:
+We will leave the option “filesystem_store_datadir=” empty, if we comment this option, glance will use it as default store location and will show us an error during image creation.
+And we add the option “filesystem_store_datadirs”, once for any directory we created in previous steps.
+We can use priorities on glance, priority 200 has precedence over priority 100, if we don’t specify any priority, default will be 0</p>
+
+<p><code></code></p>
+<h1 id="-filesystem-store-options-">============ Filesystem Store Options ========================</h1>
+<p>filesystem_store_datadir=
+filesystem_store_datadirs=/var/lib/glance/images
+filesystem_store_datadirs=/var/lib/glance/lvm-images:200
+filesystem_store_datadirs=/var/lib/glance/extended-images:100
+&lt;/code&gt;</p>
+
+<p>Once we have configured glance-api.conf, restart glance-api service</p>
+
+<p><code>
+systemctl restart openstack-glance-api
+</code></p>
+
+<p>Now we’re going to create an image</p>
+<pre><code>
+glance image-create --name CirrosDatadir --file ~/Images/cirros-0.3.4-i386-disk.img --disk-format qcow2 --container-format bare --progress
+[=============================&gt;] 100%
++------------------+--------------------------------------+
+| Property         | Value                                |
++------------------+--------------------------------------+
+| checksum         | 79b4436412283bb63c2cba4ac796bcd9     |
+| container_format | bare                                 |
+| created_at       | 2015-08-13T11:34:00.000000           |
+| deleted          | False                                |
+| deleted_at       | None                                 |
+| disk_format      | qcow2                                |
+| id               | 6ac8f5b9-5863-46ca-bb04-db352d35d829 |
+| is_public        | False                                |
+| min_disk         | 0                                    |
+| min_ram          | 0                                    |
+| name             | CirrosDatadir                        |
+| owner            | 738ec25d8b9c41f9b0cf84ce25730e92     |
+| protected        | False                                |
+| size             | 12506112                             |
+| status           | active                               |
+| updated_at       | 2015-08-13T11:34:09.000000           |
+| virtual_size     | None                                 |
++------------------+--------------------------------------+
+
+ </code></pre>
+<p>The image has been properly created at glance, we’re going to check if the image has been properly created in the expected location.
+As we have configured a priority of 200 on this directory, the image must be here.</p>
+
+<p><code>
+ls -lsrt /var/lib/glance/extended-images/
+total 12216
+12216 -rw-r-----. 1 glance glance 12506112 ago 13 13:34 6ac8f5b9-5863-46ca-bb04-db352d35d829
+</code></p>
+
+<p>We have to keep the store location that we have been using till now, the images remain available here.</p>
+
+<p><code>
+ls -lsrt /var/lib/glance/images/
+total 12892
+12892 -rw-r-----. 1 glance glance 13200896 ago 6 11:09 10a7a49f-2533-4513-881f-c4c6e419b778
+</code></p>
+
+<p>Finally we check if the images are in active status</p>
+
+<pre><code>
+glance image-list
++--------------------------------------+----------------+-------------+------------------+----------+--------+
+| ID                                   | Name           | Disk Format | Container Format | Size     | Status |
++--------------------------------------+----------------+-------------+------------------+----------+--------+
+| 10a7a49f-2533-4513-881f-c4c6e419b778 | cirros         | qcow2       | bare             | 13200896 | active |
+| 6ac8f5b9-5863-46ca-bb04-db352d35d829 | CirrosDatadir  | qcow2       | bare             | 12506112 | active |
+| 9e957bad-d0f8-4294-a438-77ad0d6af02b | CirrosDatadir2 | qcow2       | bare             | 12506112 | active |
++--------------------------------------+----------------+-------------+------------------+----------+--------+
+</code></pre>
+
+<p> </p>
+
+<p>Regards</p>
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/multiple-store-locations-for-glance-images/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/list-all-tenants-belonging-an-user/">List all tenants belonging an user  Keystone v2</a>
+          </h1>
+
+          <p class="post-meta">Jul 2, 2015 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p> </p>
+
+<p>Here is a simple script to list all tenants belonging an user:</p>
+
+<p> </p>
+<pre><code>#!/bin/bash
+
+echo -n "Username : " ; read usercheck
+
+for userid in $(keystone user-list | grep -w $usercheck | awk '{print$2}')
+	do
+	for tenant in $(keystone tenant-list | awk 'NR&gt;3 &amp;&amp; /^|/ {print$2}')
+	do
+		for tenantid in $(keystone user-role-list --user $userid --tenant $tenant | awk 'NR&gt;3 &amp;&amp; /^|/ {print$8}')
+		do
+			keystone tenant-list | grep $tenantid | awk '{print$4}'
+		done
+	done
+done
+</code></pre>
+<p> 
+Also you can run all in a simple cmd line:
+ </p>
+<pre><code>
+echo -n "user name "; read usercheck; for userid in $(keystone user-list | grep $usercheck | awk '{print$2}'); do echo $userid | for tenant in $(keystone tenant-list | awk 'NR&gt;3 &amp;&amp; /^|/ {print$2}'); do echo $tenant | for tenantid in $(keystone user-role-list --user $userid --tenant $tenant | awk 'NR&gt;3 &amp;&amp; /^|/ {print$8}'); do keystone tenant-list | grep $tenantid | awk '{print$4}'; done ; done ; done
+
+</code></pre>
+<p> 
+If you are a developer, probably you need to list all tenants in a HTTP request, for this purpose you can use curl to the port 5000 of keystone
+ </p>
+<pre><code>
+curl -i -X GET http://KEYSTONEIP:5000/v2.0/tenants -H "User-Agent: python-keystoneclient" -H "X-Auth-Token: USERTOKEN"
+</code></pre>
+<p> 
+I have saved the user token in a OS_VARIABLE called OS_TOKEN, if you don’t do that, you should input all the token in the HTTP request.
+For example: 
+ </p>
+<pre><code>
+curl -i -X GET http://192.168.1.11:5000/v2.0/tenants -H "User-Agent: python-keystoneclient" -H "X-Auth-Token: $OS_TOKEN"
+</code></pre>
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/list-all-tenants-belonging-an-user/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/load-balancer-as-a-service-lbaas/">Load Balancer as a Service LBaaS</a>
+          </h1>
+
+          <p class="post-meta">Mar 24, 2015 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p> </p>
+
+<p> </p>
+
+<p>The following guide will show you how to deploy a LoadBalancer in Openstack with Neutron, but first, you should understand how it works, and what his components do.</p>
+
+<p>A Load Balancer is composed of the following components:</p>
+<ul>
+	<li>Pool - A pool is a group of servers(members) who are designed to make the same job, <span id=":p2" dir="ltr">generally, a pool of web servers is used for balancing traffic between the members of the pool. </span>Here we will configure the Load Balancing Method (ROUND_ROBIN,LEAST_CONNECTIONS,SOURCE_IP)</li>
+	<li>Members - Members are instances, a server, any aplication that you can balance the load. They are assigned as pool members.</li>
+	<li>VIP - VIPs are Virtual IPs that logically represents the pool members. It is the IP where the load will be balanced between instances.</li>
+	<li>Healthmonitor - Healthmonitor will check if the members of a pool are healthy, if an member is not working or the port/protocol monitored is down, healthmonitor will send a message to the pool to not balance the load to this member.</li>
+</ul>
+<p>Now will create a Pool with 2 members, this Pool have a VIP and a Healthmonitor on it.</p>
+
+<p>First we create a Pool</p>
+
+<p> </p>
+<pre><del></del>[stack@localhost devstack]$ neutron lb-pool-create --lb-method ROUND_ROBIN --name LoadBalancerPool --protocol HTTP --subnet-id e5a90ab2-918e-412b-9723-0d822804f022
+Created a new pool:
++------------------------+--------------------------------------+
+| Field                  | Value                                |
++------------------------+--------------------------------------+
+| admin_state_up         | True                                 |
+| description            |                                      |
+| health_monitors        |                                      |
+| health_monitors_status |                                      |
+| id                     | 3eb0d41c-3df5-4beb-9758-ebfef56909df |
+| lb_method              | ROUND_ROBIN                          |
+| members                |                                      |
+| name                   | LoadBalancerPool                     |
+| protocol               | HTTP                                 |
+| provider               | haproxy                              |
+| status                 | PENDING_CREATE                       |
+| status_description     |                                      |
+| subnet_id              | e5a90ab2-918e-412b-9723-0d822804f022 |
+| tenant_id              | b1aaddea9f694e60aea5f1c0d1dd7c24     |
+| vip_id                 |                                      |
++------------------------+--------------------------------------+
+
+</pre>
+<p> </p>
+
+<p>Next boot 2 instances in the same network</p>
+<pre>[stack@localhost devstack]$ nova boot --flavor m1.tiny --image 6a3a7880-bc6f-454d-9a62-d9c2d268ef78 --security-groups default --nic net-id=daddce32-b6e8-4e3f-bd55-32459ed327ea WebServer1
+[stack@localhost devstack]$ nova boot --flavor m1.tiny --image 6a3a7880-bc6f-454d-9a62-d9c2d268ef78 --security-groups default --nic net-id=daddce32-b6e8-4e3f-bd55-32459ed327ea WebServer2
+
+[stack@localhost devstack]$ nova list
++--------------------------------------+------------+--------+------------+-------------+------------------+
+| ID                                   | Name       | Status | Task State | Power State | Networks         |
++--------------------------------------+------------+--------+------------+-------------+------------------+
+| c10e63c6-f342-4d1c-ae22-146c392ce398 | WebServer1 | BUILD  | spawning   | NOSTATE     | private=10.0.0.3 |
+| ceef9e6b-6198-4118-8027-00898dee1abe | WebServer2 | BUILD  | spawning   | NOSTATE     | private=10.0.0.4 |
++--------------------------------------+------------+--------+------------+-------------+------------------+</pre>
+<p> </p>
+
+<p>Assign both instances to the Pool</p>
+<pre>[stack@localhost devstack]$ neutron lb-member-create --address 10.0.0.3 --protocol-port 80 LoadBalancerPool
+Created a new member:
++--------------------+--------------------------------------+
+| Field              | Value                                |
++--------------------+--------------------------------------+
+| address            | 10.0.0.3                             |
+| admin_state_up     | True                                 |
+| id                 | a6de6bf0-3191-4721-aa01-5781ff05876e |
+| pool_id            | 3eb0d41c-3df5-4beb-9758-ebfef56909df |
+| protocol_port      | 80                                   |
+| status             | PENDING_CREATE                       |
+| status_description |                                      |
+| tenant_id          | b1aaddea9f694e60aea5f1c0d1dd7c24     |
+| weight             | 1                                    |
++--------------------+--------------------------------------+
+
+[stack@localhost devstack]$ neutron lb-member-create --address 10.0.0.4 --protocol-port 80 LoadBalancerPool
+Created a new member:
++--------------------+--------------------------------------+
+| Field              | Value                                |
++--------------------+--------------------------------------+
+| address            | 10.0.0.4                             |
+| admin_state_up     | True                                 |
+| id                 | 9688a770-6494-4599-88fa-6afcd18c4dd1 |
+| pool_id            | 3eb0d41c-3df5-4beb-9758-ebfef56909df |
+| protocol_port      | 80                                   |
+| status             | PENDING_CREATE                       |
+| status_description |                                      |
+| tenant_id          | b1aaddea9f694e60aea5f1c0d1dd7c24     |
+| weight             | 1                                    |
++--------------------+--------------------------------------+
+</pre>
+<p> </p>
+
+<p>Then create a Healthmonitor and associate it to the Pool</p>
+<pre>[stack@localhost devstack]$ neutron lb-healthmonitor-create --timeout 3 --max-retries 3 --delay 60 --type HTTP
+Created a new health_monitor:
++----------------+--------------------------------------+
+| Field          | Value                                |
++----------------+--------------------------------------+
+| admin_state_up | True                                 |
+| delay          | 60                                   |
+| expected_codes | 200                                  |
+| http_method    | GET                                  |
+| id             | cb73f8fd-14ea-4937-aa10-019e3da8432f |
+| max_retries    | 3                                    |
+| pools          |                                      |
+| tenant_id      | b1aaddea9f694e60aea5f1c0d1dd7c24     |
+| timeout        | 3                                    |
+| type           | HTTP                                 |
+| url_path       | /                                    |
++----------------+--------------------------------------+
+[stack@localhost devstack]$ neutron lb-healthmonitor-associate cb73f8fd-14ea-4937-aa10-019e3da8432f LoadBalancerPool
+Associated health monitor cb73f8fd-14ea-4937-aa10-019e3da8432f
+
+</pre>
+<p> </p>
+
+<p>Create a VIP to the Pool</p>
+<pre>[stack@localhost devstack]$ neutron lb-vip-create --name LoadBalancerVIP --protocol-port 80 --protocol HTTP --subnet-id e5a90ab2-918e-412b-9723-0d822804f022 LoadBalancerPool
+Created a new vip:
++---------------------+--------------------------------------+
+| Field               | Value                                |
++---------------------+--------------------------------------+
+| address             | 10.0.0.5                             |
+| admin_state_up      | True                                 |
+| connection_limit    | -1                                   |
+| description         |                                      |
+| id                  | 4e3c2b84-a286-4999-a258-51c44965a81a |
+| name                | LoadBalancerVIP                      |
+| pool_id             | 3eb0d41c-3df5-4beb-9758-ebfef56909df |
+| port_id             | d4ed46ac-aabf-40b6-8f28-1a2013971391 |
+| protocol            | HTTP                                 |
+| protocol_port       | 80                                   |
+| session_persistence |                                      |
+| status              | PENDING_CREATE                       |
+| status_description  |                                      |
+| subnet_id           | e5a90ab2-918e-412b-9723-0d822804f022 |
+| tenant_id           | b1aaddea9f694e60aea5f1c0d1dd7c24     |
++---------------------+--------------------------------------+
+
+</pre>
+<p> </p>
+
+<p>Create a floating IP to the VIP</p>
+<pre>[stack@localhost devstack]$ neutron floatingip-create 23101147-e724-4574-82c7-a05ccb661d4d
+Created a new floatingip:
++---------------------+--------------------------------------+
+| Field               | Value                                |
++---------------------+--------------------------------------+
+| fixed_ip_address    |                                      |
+| floating_ip_address | 172.24.4.3                           |
+| floating_network_id | 23101147-e724-4574-82c7-a05ccb661d4d |
+| id                  | 62fbf609-77db-4471-b6ae-9fe25a091a21 |
+| port_id             |                                      |
+| router_id           |                                      |
+| status              | DOWN                                 |
+| tenant_id           | b1aaddea9f694e60aea5f1c0d1dd7c24     |
++---------------------+--------------------------------------+
+
+</pre>
+<p>Associate the floating IP with the VIP port</p>
+<pre>[stack@localhost devstack]$ neutron floatingip-associate 62fbf609-77db-4471-b6ae-9fe25a091a21 d4ed46ac-aabf-40b6-8f28-1a2013971391
+Associated floating IP 62fbf609-77db-4471-b6ae-9fe25a091a21
+</pre>
+<p>Create security rules to allow HTTP, SSH and ICMP traffic</p>
+<pre>[stack@localhost devstack]$ neutron security-group-rule-create --protocol TCP --port-range-min 80 --port-range-max 80 be0b2264-744a-48b8-9a1e-033227d78f2b
+Created a new security_group_rule:
++-------------------+--------------------------------------+
+| Field             | Value                                |
++-------------------+--------------------------------------+
+| direction         | ingress                              |
+| ethertype         | IPv4                                 |
+| id                | 4635cbb6-d939-40b3-ac11-637c8b63b027 |
+| port_range_max    | 80                                   |
+| port_range_min    | 80                                   |
+| protocol          | tcp                                  |
+| remote_group_id   |                                      |
+| remote_ip_prefix  |                                      |
+| security_group_id | be0b2264-744a-48b8-9a1e-033227d78f2b |
+| tenant_id         | b1aaddea9f694e60aea5f1c0d1dd7c24     |
++-------------------+--------------------------------------+
+
+[stack@localhost devstack]$ neutron security-group-rule-create --protocol icmp be0b2264-744a-48b8-9a1e-033227d78f2b
+Created a new security_group_rule:
++-------------------+--------------------------------------+
+| Field             | Value                                |
++-------------------+--------------------------------------+
+| direction         | ingress                              |
+| ethertype         | IPv4                                 |
+| id                | 988329a1-d686-4541-8950-a22c721f847b |
+| port_range_max    |                                      |
+| port_range_min    |                                      |
+| protocol          | icmp                                 |
+| remote_group_id   |                                      |
+| remote_ip_prefix  |                                      |
+| security_group_id | be0b2264-744a-48b8-9a1e-033227d78f2b |
+| tenant_id         | b1aaddea9f694e60aea5f1c0d1dd7c24     |
++-------------------+--------------------------------------+
+
+[stack@localhost devstack]$ neutron security-group-rule-create --protocol TCP --port-range-min 22 --port-range-max 22 be0b2264-744a-48b8-9a1e-033227d78f2b
+Created a new security_group_rule:
++-------------------+--------------------------------------+
+| Field             | Value                                |
++-------------------+--------------------------------------+
+| direction         | ingress                              |
+| ethertype         | IPv4                                 |
+| id                | d18724dc-2eda-4031-be88-202a73c30c24 |
+| port_range_max    | 22                                   |
+| port_range_min    | 22                                   |
+| protocol          | tcp                                  |
+| remote_group_id   |                                      |
+| remote_ip_pref                          |
+| security_group_id | d7412bb3-9824-4eb7-bc4b-cd80ab6a570d |
+| tenant_id         | b1aaddea9f694e60aea5f1c0d1dd7c24     |
++-------------------+--------------------------------------+
+</pre>
+<p> </p>
+
+<p>Login to both instances and run the command below to run a “webserver”.</p>
+<pre>[stack@localhost devstack]$ ssh cirros@INSTANCEIP
+The authenticity of host '10.0.0.3 (10.0.0.3)' can't be established.
+RSA key fingerprint is 94:00:8e:fe:9a:9d:af:ef:bc:e3:fd:9d:ad:d3:ab:a3.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '10.0.0.3' (RSA) to the list of known hosts.
+
+$ while true; do echo -e 'HTTP/1.0 200 OK \r\n\r\nServer1' | sudo nc -l -p 80 ; done
+$ while true; do echo -e 'HTTP/1.0 200 OK \r\n\r\nServer2' | sudo nc -l -p 80 ; done
+</pre>
+<p> </p>
+
+<p>If we check with curl the VIP’s floating IP, we’ll see that in every connection one of both servers reply with his name.</p>
+<pre>[stack@localhost ~]$ curl http://172.24.4.3
+Server1
+[stack@localhost ~]$ curl http://172.24.4.3
+Server2
+[stack@localhost ~]$ curl http://172.24.4.3
+Server1
+[stack@localhost ~]$ curl http://172.24.4.3
+Server2
+</pre>
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/load-balancer-as-a-service-lbaas/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use/">Openstack-nova-api start error (Could not bind to 0.0.0.0, Address already in use)</a>
+          </h1>
+
+          <p class="post-meta">Mar 16, 2015 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p> </p>
+
+<p>Openstack-nova-api doesn’t start, this error is  from the services boot priority in many times.</p>
+<blockquote># service openstack-nova-api start
+
+2015-03-03 15:05:06.402 3313 ERROR nova.wsgi [-] Could not bind to
+0.0.0.0:8775
+2015-03-03 15:05:06.402 3313 CRITICAL nova [-] error: [Errno 98] Address
+already in use
+
+# service openstack-nova-api status
+
+openstack-nova-api dead but pid file exists*</blockquote>
+<p>This Error happens because openstack-nova-api and openstack-nova-metadata-api use the same ports.
+You can start nova-api stopping metadata-api service and starting nova-api before, then start again metadata-api service.</p>
+<blockquote># service openstack-nova-metadata-api stop
+# service openstack-nova-api start
+# service openstack-nova-metadata-api</blockquote>
+<p>This should fix your issue. After this you can set up boot order to this processes</p>
+<blockquote># update-rc.d openstack-nova-api defaults &lt;order&gt;</blockquote>
+<p>Example: If openstack-nova-metadata-api got an order boot of S90openstack-nova-metadata-api, you should use update-rc to set nova-api start before nova-metadata-api</p>
+<blockquote># update-rc.d openstack-nova-api defaults 90</blockquote>
+<p>This will set the priority of nova-api with the priority of nova-metadata-api, wich means that nova-api will run before metadata-api.</p>
+
+<p> </p>
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/delete-openstack-neutron-networks-solution-to-unable-to-complete-operation-on-subnet/">Delete openstack Neutron networks (Solution to: Unable to complete operation on subnet)</a>
+          </h1>
+
+          <p class="post-meta">Mar 9, 2015 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <pre>[root@rdoicehouse ~(keystone_admin)]# neutron router-list
++--------------------------------------+------------------+-----------------------------------------------------------------------------+
+| id                                   | name             | external_gateway_info                                                       |
++--------------------------------------+------------------+-----------------------------------------------------------------------------+
+| e34d94ad-7fe1-4704-8156-d255a2daa167 | demodeleterouter | {"network_id": "8b2ceda2-4d77-4c5c-ae21-6a7ba133e4fc", "enable_snat": true} |
++--------------------------------------+------------------+-----------------------------------------------------------------------------+
+
+[root@rdoicehouse ~(keystone_admin)]# neutron router-gateway-clear e34d94ad-7fe1-4704-8156-d255a2daa167
+Removed gateway from router e34d94ad-7fe1-4704-8156-d255a2daa167
+
+[root@rdoicehouse ~(keystone_admin)]# neutron router-port-list e34d94ad-7fe1-4704-8156-d255a2daa167
+
+If Apply: 
+          [[ neutron router-interface-delete &lt;router-id&gt; &lt;subnet-id&gt; ]]
+
+[root@rdoicehouse ~(keystone_admin)]# neutron router-delete e34d94ad-7fe1-4704-8156-d255a2daa167
+Deleted router: e34d94ad-7fe1-4704-8156-d255a2daa167
+
+[root@rdoicehouse ~(keystone_admin)]# neutron subnet-list
++--------------------------------------+------------------+------------------+--------------------------------------------------------+
+| id                                   | name             | cidr             | allocation_pools                                       |
++--------------------------------------+------------------+------------------+--------------------------------------------------------+
+| d50e28f7-47ee-4bdf-8594-e1108f25586b | demosubnetdelete | 192.168.137.0/24 | {"start": "192.168.137.100", "end": "192.168.137.120"} |
+| c93fd5a7-d672-4b0c-8f2e-6e74f487e45d | private_subnet   | 10.0.0.0/24      | {"start": "10.0.0.2", "end": "10.0.0.254"}             |
++--------------------------------------+------------------+------------------+--------------------------------------------------------+
+[root@rdoicehouse ~(keystone_admin)]# neutron subnet-delete d50e28f7-47ee-4bdf-8594-e1108f25586b
+409-{u'NeutronError': {u'message': u'Unable to complete operation on subnet d50e28f7-47ee-4bdf-8594-e1108f25586b. One or more ports have an IP allocation from this subnet.', u'type': u'SubnetInUse', u'detail': u''}}
+
+[root@rdoicehouse ~(keystone_admin)]# neutron port-list
++--------------------------------------+------+-------------------+----------------------------------------------------------------------------------------+
+| id                                   | name | mac_address       | fixed_ips                                                                              |
++--------------------------------------+------+-------------------+----------------------------------------------------------------------------------------+
+| 4655e13a-9767-4750-8f44-4eee8410ca70 |      | fa:16:3e:03:c7:cf | {"subnet_id": "d50e28f7-47ee-4bdf-8594-e1108f25586b", "ip_address": "192.168.137.103"} |
+| 767f2f83-f99a-46d1-b2c2-2e47bae4bb90 |      | fa:16:3e:ff:94:28 | {"subnet_id": "d50e28f7-47ee-4bdf-8594-e1108f25586b", "ip_address": "192.168.137.102"} |
++--------------------------------------+------+-------------------+----------------------------------------------------------------------------------------+
+
+[root@rdoicehouse ~(keystone_admin)]# neutron port-delete 767f2f83-f99a-46d1-b2c2-2e47bae4bb90
+Deleted port: 767f2f83-f99a-46d1-b2c2-2e47bae4bb90
+
+[root@rdoicehouse ~(keystone_admin)]# neutron port-delete 4655e13a-9767-4750-8f44-4eee8410ca70
+409-{u'NeutronError': {u'message': u'Port 4655e13a-9767-4750-8f44-4eee8410ca70 has owner network:floatingip and therefore cannot be deleted directly via the port API.', u'type': u'L3PortInUse', u'detail': u''}}
+
+[root@rdoicehouse ~(keystone_admin)]# neutron floatingip-list
++--------------------------------------+------------------+---------------------+---------+
+| id                                   | fixed_ip_address | floating_ip_address | port_id |
++--------------------------------------+------------------+---------------------+---------+
+| 0a74679b-b469-4ae5-97a0-08c3aeeb2129 |                  | 192.168.137.103     |         |
++--------------------------------------+------------------+---------------------+---------+
+
+[root@rdoicehouse ~(keystone_admin)]# neutron floatingip-delete 0a74679b-b469-4ae5-97a0-08c3aeeb2129
+Deleted floatingip: 0a74679b-b469-4ae5-97a0-08c3aeeb2129
+
+[root@rdoicehouse ~(keystone_admin)]# neutron port-list
+
+[root@rdoicehouse ~(keystone_admin)]# neutron subnet-delete d50e28f7-47ee-4bdf-8594-e1108f25586b
+Deleted subnet: d50e28f7-47ee-4bdf-8594-e1108f25586b
+
+[root@rdoicehouse ~(keystone_admin)]# neutron net-list
++--------------------------------------+------------+--------------------------------------------------+
+| id                                   | name       | subnets                                          |
++--------------------------------------+------------+--------------------------------------------------+
+| 77dd5a93-b63e-44be-84d6-f6ef4fd8771b | private    | c93fd5a7-d672-4b0c-8f2e-6e74f487e45d 10.0.0.0/24 |
+| 8b2ceda2-4d77-4c5c-ae21-6a7ba133e4fc | demodelete |                                                  |
++--------------------------------------+------------+--------------------------------------------------+
+[root@rdoicehouse ~(keystone_admin)]# neutron net-delete 8b2ceda2-4d77-4c5c-ae21-6a7ba133e4fc
+Deleted network: 8b2ceda2-4d77-4c5c-ae21-6a7ba133e4fc
+
+</pre>
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/delete-openstack-neutron-networks-solution-to-unable-to-complete-operation-on-subnet/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="pagination">
+    
+      <a class="previous" href="/posts/6/">&laquo; Older</a>
+    
+
+    
+      <a class="next" href="/posts/4/">Newer &raquo;</a>
+    
+  </div>
+
+
+
+</div>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

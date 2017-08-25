@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Pre-requisitos Openstack</title>
+  <meta name="description" content="NTP Deberemos tener instalado NTP en todos los nodos. yum install ntp">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://217.182.136.201:8080/pre-requisitos-openstack/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="egongu90">
+  <meta name="twitter:title" content="Pre-requisitos Openstack">
+  <meta name="twitter:description" content="NTP Deberemos tener instalado NTP en todos los nodos. yum install ntp">
+  
+    <meta name="twitter:creator" content="egongu90">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">OpenStack things</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Pre-requisitos Openstack</h1>
+    
+    <p class="post-meta"><time datetime="2014-10-26T17:43:07+01:00" itemprop="datePublished">Oct 26, 2014</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h2>NTP</h2>
+<p>Deberemos tener instalado NTP en todos los nodos.</p>
+<blockquote>yum install ntp</blockquote>
+<!--more-->
+
+<p>A continuacion tenemos que configurar los nodos para que usen NTP del nodo controller</p>
+<blockquote>vi /etc/ntp.conf</blockquote>
+<p>Editamos la linea server para que aparezca lo siguiente</p>
+<blockquote>server controller iburst</blockquote>
+<p>En el nodo controller borramos las opciones nopeer y noquery de las lineas restrict</p>
+
+<p>Por ultimo iniciaremos el servicio y el nivel de ejecución en el arranque del sistema</p>
+<blockquote>service ntpd start
+
+chkconfig ntpd on</blockquote>
+<h2>Servicios de red</h2>
+<p>Deshabilitamos NetworkManager y habilitamos el servicio network, asi como quitamos y establecemos el nivel de ejecución a cada servicio respectivamente</p>
+<blockquote>service NetworkManager stop
+
+service network start
+
+chkconfig NetworkManager off
+
+chkconfig network on</blockquote>
+<h2>Servicios cortafuegos</h2>
+<p>Paramos y deshabilitamos firewalld por defecto y activamos e iniciamos iptables. Es posible que no tengas instalado firewalld, por lo que no tendrás que deshabilitarlo</p>
+<blockquote>service firewalld stop
+
+service iptables start
+
+chkconfig firewalld off
+
+chkconfig iptables on</blockquote>
+<p>Estos son los prerequisitos necesarios para iniciar la instalación de un entorno con Openstack</p>
+
+<p>Un saludo</p>
+
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

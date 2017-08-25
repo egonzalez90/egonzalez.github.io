@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>s3cmd, administración bucket AWS</title>
+  <meta name="description" content="Buenos días, en esta entrada mostrare el proceso para instalar s3cmd con el que podremos administrar nuestros contenedores de AWS.">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://217.182.136.201:8080/s3cmd-administracion-bucket-aws/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="egongu90">
+  <meta name="twitter:title" content="s3cmd, administración bucket AWS">
+  <meta name="twitter:description" content="Buenos días, en esta entrada mostrare el proceso para instalar s3cmd con el que podremos administrar nuestros contenedores de AWS.">
+  
+    <meta name="twitter:creator" content="egongu90">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">OpenStack things</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">s3cmd, administración bucket AWS</h1>
+    
+    <p class="post-meta"><time datetime="2014-09-29T20:42:28+02:00" itemprop="datePublished">Sep 29, 2014</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
+  
+  
+    
+      <a href="/categories/linux/">Linux</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Buenos días, en esta entrada mostrare el proceso para instalar s3cmd con el que podremos administrar nuestros contenedores de AWS.<!--more--></p>
+
+<p>Para ello primero deberemos localizar el repositorio para la versión de nuestro RHEL, lo podéis hacer en este enlace: <a title="Repositorios s3tools" href="http://s3tools.org/repositories" target="_blank">http://s3tools.org/repositories</a></p>
+
+<p>En mi caso uso la versión 6.5 de RHEL, por lo que usare el repositorio de la versión 6, descargaremos el archivo .repo acorde con nuestra versión, cambiando el enlace por el proporcionado por la pagina anterior si fuera otra versión fuera de la 6</p>
+<blockquote>wget http://s3tools.org/repo/RHEL_6/s3tools.repo</blockquote>
+<p>A continuación moveremos el archivo .repo a la localización de los repositorios en el SO, este paso se puede saltar si el comando wget se lanza desde el mismo directorio /etc/yum.repos.d/</p>
+<blockquote>mv s3tools.repo /etc/yum.repos.d/</blockquote>
+<p>Ahora actualizaremos la lista de repositorios para que el SO la reconozca</p>
+<blockquote>sudo yum repolist</blockquote>
+<p>Después instalaremos s3cmd mediante el siguiente comando</p>
+<blockquote>sudo yum install s3cmd</blockquote>
+<p>Para acabar, procederemos a configurar s3cmd para que pueda acceder a nuestros contenedores en AWS</p>
+<blockquote>s3cmd --configure</blockquote>
+<p> </p>
+<blockquote>
+<pre>Enter new values or accept defaults in <span id="IL_AD1" class="IL_AD">brackets</span> with Enter.
+Refer to user manual for detailed description of all options.
+
+Access key and Secret key are your identifiers for Amazon S3
+Access Key: xxxxxxxxxxxxxxxxxxxxxx
+Secret Key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+Encryption password is used to protect your files from reading
+by unauthorized persons while in transfer to S3
+Encryption password: xxxxxxxxxx
+Path to GPG program [/usr/bin/gpg]:
+
+When using secure HTTPS protocol all communication with Amazon S3
+servers is protected from 3rd party eavesdropping. This method is
+slower than plain HTTP and can't be used if you're behind a proxy
+Use HTTPS protocol [No]: Yes
+
+New settings:
+  Access Key: xxxxxxxxxxxxxxxxxxxxxx
+  Secret Key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  Encryption password: xxxxxxxxxx
+  Path to GPG program: /usr/bin/gpg
+  Use HTTPS protocol: True
+  HTTP Proxy server name:
+  HTTP Proxy server port: 0
+
+Test access with supplied credentials? [Y/n] Y
+Please wait, attempting to list all buckets...
+Success. Your access key and secret key worked fine :-)
+
+Now verifying that encryption works...
+Success. Encryption and decryption worked fine :-)
+
+Save settings? [y/N] y
+Configuration saved to '/root/.s3cfg'</pre>
+</blockquote>
+<p>Access Key la puedes encontrar en: Security Credentials/ Users/ Access Credentials</p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/access.png"><img class="aligncenter size-full wp-image-708" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/access.png" alt="access" width="1000" height="387" /></a></p>
+
+<p>Secret Key solo se puede descargar una única vez, al crear las claves de acceso, si fuera necesario, deberías de crear unas nuevas para poder obtener Secret Key para esa clave.</p>
+
+<p>Seguramente que te de un error si lanzas el comando ahora, para que no te de el error Access Denied, tienes que agregar una política de usuario con permisos</p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/userpolicy.png"><img class="aligncenter size-full wp-image-709" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/userpolicy.png" alt="userpolicy" width="1020" height="298" /></a></p>
+
+<p>Por ultimo probaremos que tenemos acceso a los bucket</p>
+<blockquote>s3cmd ls</blockquote>
+<p>Esto nos debería de mostrar los contenedores a los que tenemos permisos dentro de AWS</p>
+
+<p>Ahora solo te queda investigar las diferentes posibilidades que te da s3cmd</p>
+
+<p>Un saludo</p>
+
+<p> </p>
+
+<p> </p>
+
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Instalar aws-cli</title>
+  <meta name="description" content="AWS-cli es una potente línea de comandos que permite interactuar con todos los servicios de AWS, en esta entrada mostrare como instalarlo en un Ubuntu Server.">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://217.182.136.201:8080/instalar-aws-cli/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="egongu90">
+  <meta name="twitter:title" content="Instalar aws-cli">
+  <meta name="twitter:description" content="AWS-cli es una potente línea de comandos que permite interactuar con todos los servicios de AWS, en esta entrada mostrare como instalarlo en un Ubuntu Server.">
+  
+    <meta name="twitter:creator" content="egongu90">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">OpenStack things</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Instalar aws-cli</h1>
+    
+    <p class="post-meta"><time datetime="2014-10-03T19:11:26+02:00" itemprop="datePublished">Oct 3, 2014</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
+  
+  
+    
+      <a href="/categories/linux/">Linux</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>AWS-cli es una potente línea de comandos que permite interactuar con todos los servicios de AWS, en esta entrada mostrare como instalarlo en un Ubuntu Server.<!--more--></p>
+
+<hr />
+
+<p>Esto mismo lo podrás instalar en RHEL cambiando el gestor de paquetes apt por yum.</p>
+
+<p>Primero instalaremos python y pip</p>
+<blockquote>sudo apt-get install -y python-pip</blockquote>
+<p>A continuación instalaremos awscli con pip</p>
+<blockquote>sudo pip install awscli</blockquote>
+<p>Después configuraremos awscli para que conecte con nuestra cuenta de AWS</p>
+<blockquote>aws configure</blockquote>
+<p>Aquí introduciremos los siguientes parámetros:</p>
+<ul>
+	<li>Access Key ID: En el archivo credentials que se descarga al crear una nueva Access Key en IAM</li>
+	<li>Secret Access Key:<span style="line-height: 20.7999992370605px;"> En el archivo credentials que se descarga al crear una nueva Access Key en IAM</span></li>
+	<li>Region Name: La region de EC2 (no la zona de disponibilidad), es importante no poner el ultimo dígito(a,b,c,d) porque dará error de configuración y no conectará</li>
+	<li>Output format: Formato en que queremos que nos muestre los datos awscli, lo normal suele ser table o text</li>
+</ul>
+<blockquote>AWS Access Key ID [None]: AK***XCLG******XYR7A
+AWS Secret Access Key [None]: m*********q**********r5Zpyqsb*********AOL
+Default region name [None]: eu-west-1
+Default output format [None]: table</blockquote>
+<p>Por ultimo probaremos que funciona, listando las regiones que tenemos disponibles, si este comando funciona quiere decir que esta bien configurado</p>
+<blockquote>aws ec2 describe-regions</blockquote>
+<div>
+<div>
+
+<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/describe-regions.png"><img class="aligncenter size-full wp-image-739" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/describe-regions.png" alt="describe-regions" width="470" height="255" /></a>
+
+&nbsp;
+
+</div>
+<div></div>
+</div>
+<p>Un saludo</p>
+
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

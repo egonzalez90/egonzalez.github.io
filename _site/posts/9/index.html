@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>OpenStack things</title>
+  <meta name="description" content="OpenStack, Docker, Ansible, Ceph, Linux">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://217.182.136.201:8080/posts/9/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="egongu90">
+  <meta name="twitter:title" content="OpenStack things">
+  <meta name="twitter:description" content="OpenStack, Docker, Ansible, Ceph, Linux">
+  
+    <meta name="twitter:creator" content="egongu90">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">OpenStack things</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="home">
+
+  
+
+  
+
+  <ul class="post-list">
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/paquetes-de-openstack/">Paquetes de Openstack</a>
+          </h1>
+
+          <p class="post-meta">Nov 9, 2014 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p>Esta instalación de paquetes deberemos hacerla en todos los nodos de Openstack(Controller,Network y Compute)</p>
+
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/paquetes-de-openstack/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/mysql/">MySQL</a>
+          </h1>
+
+          <p class="post-meta">Nov 2, 2014 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <h2>MySQL en Controller node</h2>
+<p>Instalamos MySQL</p>
+<blockquote>yum install mysql mysql-server MySQL-python</blockquote>
+<p>Editamos el fichero de configuracion de MySQL</p>
+<blockquote>vi /etc/my.cnf</blockquote>
+<p>Modificamos la linea bind-address con la IP de eth0 y añadimos las siguientes entradas:</p>
+<blockquote>[mysqld]
+
+</blockquote>
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/mysql/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/pre-requisitos-openstack/">Pre-requisitos Openstack</a>
+          </h1>
+
+          <p class="post-meta">Oct 26, 2014 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <h2>NTP</h2>
+<p>Deberemos tener instalado NTP en todos los nodos.</p>
+<blockquote>yum install ntp</blockquote>
+<!--more-->
+
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/pre-requisitos-openstack/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/configuracion-de-red-basica-openstack/">Configuracion de red basica Openstack</a>
+          </h1>
+
+          <p class="post-meta">Oct 19, 2014 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p>En la siguiente entrada tienes como configurar las tarjetas de red para realizar esta instalación de Openstack: <a title="Configuracion basica red RHEL y centOS" href="http://egonzalez.org/configuracion-basica-red-rhel-y-centos/" target="_blank">Configuración básica de red RHEL</a></p>
+
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/configuracion-de-red-basica-openstack/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/openstack-multinodo-escalable-controller-network-y-compute1/">Openstack multinodo &amp;#8211; Guia Básica</a>
+          </h1>
+
+          <p class="post-meta">Oct 19, 2014 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p>Inicio un proyecto nuevo en el blog en el que configuraremos nuestro Cloud en Openstack Icehouse con una arquitectura de 2 nodos, dicha instalación va a llevar el siguiente orden, con el que configuraremos los principales componentes de Openstack.<!--more--></p>
+<ol>
+	<li><a title="Configuracion de red basica Openstack" href="http://egonzalez.org/configuracion-de-red-basica-openstack/" target="_blank">Configuración de red básica</a></li>
+	<li><a title="Pre-requisitos Openstack" href="http://egonzalez.org/pre-requisitos-openstack/" target="_blank">Pre-requisitos</a></li>
+	<li><a title="MySQL" href="http://egonzalez.org/mysql/" target="_blank">MySQL</a></li>
+	<li><a title="Paquetes de Openstack" href="http://egonzalez.org/paquetes-de-openstack/" target="_blank">Paquetes de Openstack</a></li>
+	<li><a title="Servidor de mensajes Qpid" href="http://egonzalez.org/servidor-de-mensajes-qpid/" target="_blank">Servidor de mensajes Qpid</a></li>
+	<li>Keystone
+<ol>
+	<li><a title="Instalación Identity Service (Keystone)" href="http://egonzalez.org/816/" target="_blank">Instalacion</a></li>
+	<li><a title="Usuarios, Tenants y Roles" href="http://egonzalez.org/usuarios-tenants-y-roles/" target="_blank">Usuarios, tenants y roles</a></li>
+	<li><a title="Keystone API endpoint" href="http://egonzalez.org/keystone-api-endpoint/" target="_blank">Servicios y endpoints</a></li>
+	<li><a title="Comprobar Keystone" href="http://egonzalez.org/comprobar-keystone/" target="_blank">Comprobacion</a></li>
+</ol>
+</li>
+	<li><a title="Openstack Clients" href="http://egonzalez.org/openstack-clients/" target="_blank">Clientes de Openstack</a></li>
+	<li>Glance
+<ol>
+	<li><a title="Configuración de Image Service Glance" href="http://egonzalez.org/configuracion-de-image-service-glance/" target="_blank">Instalacion</a></li>
+	<li><a title="Comprobar Glance Image Service" href="http://egonzalez.org/comprobar-glance-image-service/" target="_blank">Comprobación</a></li>
+</ol>
+</li>
+	<li>Nova
+<ol>
+	<li><a title="Nova en Controller Node" href="http://egonzalez.org/nova-en-controller-node/" target="_blank">Nova en Controller Node</a></li>
+	<li>Nova en Compute Node</li>
+</ol>
+</li>
+	<li>Legacy Network</li>
+	<li>Dashboard</li>
+	<li>Instancias</li>
+</ol>
+<p>Esta página será el menú principal de la instalación, en ella iré publicando los enlaces de los módulos configurados.
+Esta instalación se irá actualizando periódicamente hasta acabar por completo con todas las configuraciones necesarias.</p>
+
+        </div>
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="pagination">
+    
+      <a class="previous" href="/posts/10/">&laquo; Older</a>
+    
+
+    
+      <a class="next" href="/posts/8/">Newer &raquo;</a>
+    
+  </div>
+
+
+
+</div>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

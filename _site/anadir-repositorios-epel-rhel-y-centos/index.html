@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Añadir repositorios EPEL RHEL y CentOS</title>
+  <meta name="description" content="Primero descargaremos el repositorio para nuestra versión de CentOS o RHEL mediante wget.">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://217.182.136.201:8080/anadir-repositorios-epel-rhel-y-centos/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="egongu90">
+  <meta name="twitter:title" content="Añadir repositorios EPEL RHEL y CentOS">
+  <meta name="twitter:description" content="Primero descargaremos el repositorio para nuestra versión de CentOS o RHEL mediante wget.">
+  
+    <meta name="twitter:creator" content="egongu90">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">OpenStack things</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Añadir repositorios EPEL RHEL y CentOS</h1>
+    
+    <p class="post-meta"><time datetime="2014-09-09T17:32:52+02:00" itemprop="datePublished">Sep 9, 2014</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
+  
+  
+    
+      <a href="/categories/linux/">Linux</a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Primero descargaremos el repositorio para nuestra versión de CentOS o RHEL mediante wget.</p>
+
+<p>A continuacion instalaremos el paquete que habiamos descargado con rpm.</p>
+
+<p>Esta son las diferentes versiones de CentOS y RHEL</p>
+<blockquote>## RHEL/CentOS 7 64-Bit ##
+# wget http://mirror.rackcentral.com.au/epel/7/x86_64/epel-release-7-1.noarch.rpm
+# rpm -ivh epel-release-7-0.2.noarch.rpm</blockquote>
+<p> </p>
+<blockquote>## RHEL/CentOS 6 32-Bit ##
+# wget http://mirror.rackcentral.com.au/epel/6/i386/epel-release-6-8.noarch.rpm
+# rpm -ivh epel-release-6-8.noarch.rpm</blockquote>
+<p> </p>
+<blockquote>## RHEL/CentOS 6 64-Bit ##
+# wget http://mirror.rackcentral.com.au/epel/6/x86_64/epel-release-6-8.noarch.rpm
+# rpm -ivh epel-release-6-8.noarch.rpm</blockquote>
+<p>Lo siguiente que haremos sera comprobar que esta en la lista de repositorios mediante este comando</p>
+<blockquote>yum repolist</blockquote>
+<p>Por ultimo habilitaremos el repositorio, para que podamos usarlo habitualmente</p>
+<blockquote>yum --enablerepo=epel</blockquote>
+
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>OpenStack things</title>
+  <meta name="description" content="OpenStack, Docker, Ansible, Ceph, Linux">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://217.182.136.201:8080/posts/16/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="egongu90">
+  <meta name="twitter:title" content="OpenStack things">
+  <meta name="twitter:description" content="OpenStack, Docker, Ansible, Ceph, Linux">
+  
+    <meta name="twitter:creator" content="egongu90">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">OpenStack things</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="home">
+
+  
+
+  
+
+  <ul class="post-list">
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/listar-vlan-con-id-con-vmware-powercli/">Listar vlan ID con VMware PowerCLI</a>
+          </h1>
+
+          <p class="post-meta">Aug 22, 2014 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/virtualizacion/">Virtualizacion</a>
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p>Para poder listar todas las VLans de un host ESXi con su ID primero nos deberemos conectar a ese host por PowerCLI, usaremos este comando:</p>
+<blockquote>Connect_VIServer -server "host" -user "usuario" -password "contraseña"</blockquote>
+<p>Una vez conectados a dicho ESXi, utilizaremos el siguiente comando con el que listaremos las vlans y los ID, ademas lo exportaremos a un formato CSV para poder analizarlo con Excel</p>
+<blockquote>Get-VirtualPortGroup -VMHost "Host" | Select Name, VirtualSwitch, VLanId | Export-Csv C:nombre.csv</blockquote>
+<p>Espero les sirva, un saludo</p>
+
+        </div>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/syslog-y-coredump-vcenter/">Syslog y coredump vCenter</a>
+          </h1>
+
+          <p class="post-meta">Aug 8, 2014 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/virtualizacion/">Virtualizacion</a>
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p>Vamos a configurar syslog y coredump de los host ESXi para que un vCenter recoja los logs de estos host</p>
+
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/syslog-y-coredump-vcenter/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/error-configuracion-red-en-rhel-6-y-vmware-esxi-5-5/">Error configuración red en RHEL 6 y VMware ESXi 5.5</a>
+          </h1>
+
+          <p class="post-meta">Aug 7, 2014 • 
+  
+  
+    
+      <a href="/categories/linux/">Linux</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/virtualizacion/">Virtualizacion</a>
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p>Ultimamente, desde que hemos empezado a trabajar mas con RHEL 6, nos dimos cuenta que tras el clonado de las VM, las interfaces de red no se configuraban bien.</p>
+
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/error-configuracion-red-en-rhel-6-y-vmware-esxi-5-5/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/solucion-the-parent-virtual-disk-has-been-modified-since-the-child-was-created/">Solucion The parent virtual disk has been modified since the child was created</a>
+          </h1>
+
+          <p class="post-meta">May 10, 2014 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/virtualizacion/">Virtualizacion</a>
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p>Es frecuente que con determinadas soluciones de copias de seguridad como Veeam Backup de este error a la hora de arrancar la VM o incluso a no llegar a generarse ese Backup, también puede pasar si se ha modificado el .vmdk  o el snapshot del que depende otro snapshot.<!--more-->Cuando das a consolidar los snapshots de una maquina virtual te aparece este error:</p>
+
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/solucion-the-parent-virtual-disk-has-been-modified-since-the-child-was-created/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/habilitar-ssh-a-host-esxi/">Habilitar SSH a host ESXi</a>
+          </h1>
+
+          <p class="post-meta">May 6, 2014 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/virtualizacion/">Virtualizacion</a>
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p> </p>
+
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/habilitar-ssh-a-host-esxi/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="pagination">
+    
+      <a class="previous" href="/posts/17/">&laquo; Older</a>
+    
+
+    
+      <a class="next" href="/posts/15/">Newer &raquo;</a>
+    
+  </div>
+
+
+
+</div>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

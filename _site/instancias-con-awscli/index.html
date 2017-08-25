@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Instancias con AWScli</title>
+  <meta name="description" content="Crear una instancia en EC2 classic: aws ec2 run-instances --image-id ami-d02386a7 --count 1 --instance-type t1.micro --key-name kp1 --security-groups default run-instances: comando para ejecutar una instancia --image-id: ID de la imagen AMI a ejecutar --count: numero de instancias a ejecutar --instance-type: expecificaciones de hardware de la instancia(CPU,RAM) --key-name: keypair para poder conectarnos a la instancia --security-groups: grupo de seguridad del que dependera la instancia Después comprobaremos que el estado de la instancia mediante el siguiente comando:  aws ec2 describe-instance-status --instance-id i-7815253a">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://217.182.136.201:8080/instancias-con-awscli/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="egongu90">
+  <meta name="twitter:title" content="Instancias con AWScli">
+  <meta name="twitter:description" content="Crear una instancia en EC2 classic: aws ec2 run-instances --image-id ami-d02386a7 --count 1 --instance-type t1.micro --key-name kp1 --security-groups default run-instances: comando para ejecutar un...">
+  
+    <meta name="twitter:creator" content="egongu90">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">OpenStack things</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Instancias con AWScli</h1>
+    
+    <p class="post-meta"><time datetime="2014-10-09T17:56:23+02:00" itemprop="datePublished">Oct 9, 2014</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Crear una instancia en EC2 classic:</p>
+<blockquote>aws ec2 run-instances --image-id ami-d02386a7 --count 1 --instance-type t1.micro --key-name kp1 --security-groups default</blockquote>
+<!--more-->
+<ul>
+	<li>run-instances: comando para ejecutar una instancia</li>
+	<li>--image-id: ID de la imagen AMI a ejecutar</li>
+	<li>--count: numero de instancias a ejecutar</li>
+	<li>--instance-type: expecificaciones de hardware de la instancia(CPU,RAM)</li>
+	<li>--key-name: keypair para poder conectarnos a la instancia</li>
+	<li>--security-groups: grupo de seguridad del que dependera la instancia</li>
+</ul>
+<p>Después comprobaremos que el estado de la instancia mediante el siguiente comando:</p>
+<blockquote> aws ec2 describe-instance-status --instance-id i-7815253a</blockquote>
+
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

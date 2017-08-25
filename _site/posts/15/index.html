@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>OpenStack things</title>
+  <meta name="description" content="OpenStack, Docker, Ansible, Ceph, Linux">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://217.182.136.201:8080/posts/15/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="egongu90">
+  <meta name="twitter:title" content="OpenStack things">
+  <meta name="twitter:description" content="OpenStack, Docker, Ansible, Ceph, Linux">
+  
+    <meta name="twitter:creator" content="egongu90">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">OpenStack things</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="home">
+
+  
+
+  
+
+  <ul class="post-list">
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/componentes-de-openstack/">Componentes de OpenStack</a>
+          </h1>
+
+          <p class="post-meta">Aug 27, 2014 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p>Desde su aparición en  2010, la comunidad de Openstack ha estado añadiendo nuevos componentes y funcionalidades.</p>
+
+<p>A día de hoy estos son los componentes oficiales de OpenStack</p>
+<table width="85%">
+<tbody>
+<tr>
+<td><strong>Servicio</strong></td>
+<td><strong>Componente</strong></td>
+<td><strong> Descripcion</strong></td>
+</tr>
+<tr>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Dashboard</a></td>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Horizon</a></td>
+<td>&nbsp;
+
+Interfaz gráfica que permite interactuar con Openstack para la administración básica del servicio
+
+&nbsp;</td>
+</tr>
+<tr>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Compute</a></td>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Nova</a></td>
+<td>&nbsp;
+
+Encargada de la computación de la nube, gestiona y automatiza los recursos. Es la parte principal de OpenStack
+
+&nbsp;</td>
+</tr>
+<tr>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Networking</a></td>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Neutron</a></td>
+<td>&nbsp;
+
+Gestiona la red y la asignación de IPs a las diferentes instancias
+
+&nbsp;</td>
+</tr>
+<tr>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Object Storage</a></td>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Swift</a></td>
+<td>&nbsp;
+
+Proporciona un Sistema de almacenamiento redundado y escalable. No es persistente el almacenamiento
+
+&nbsp;</td>
+</tr>
+<tr>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Block Storage</a></td>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Cinder</a></td>
+<td>&nbsp;
+
+Proporciona un almacenamiento en bloque persistente
+
+&nbsp;</td>
+</tr>
+<tr>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Identity service</a></td>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Keystone</a></td>
+<td>&nbsp;
+
+Servicio de autenticación y autorización de Openstack
+
+&nbsp;</td>
+</tr>
+<tr>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Image Service</a></td>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Glance</a></td>
+<td>&nbsp;
+
+Openstack utiliza este servicio para el uso de las imagines de disco durante la asignación de instancias
+
+&nbsp;</td>
+</tr>
+<tr>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Telemetry</a></td>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Ceilometer</a></td>
+<td>&nbsp;
+
+Monitorización para facturación con el cliente
+
+&nbsp;</td>
+</tr>
+<tr>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Orchestration</a></td>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Heat</a></td>
+<td>&nbsp;
+
+Permite la orquestación de diferentes aplicaciones basadas en la nube, tales como AWS, etc.
+
+&nbsp;</td>
+</tr>
+<tr>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Database </a></td>
+<td><a href="http://docs.openstack.org/admin-guide-cloud/content/ch_getting-started-with-openstack.html">Trove</a></td>
+<td>&nbsp;
+
+Una base de datos escalable para el uso de DBaaS
+
+&nbsp;</td>
+</tr>
+</tbody>
+</table>
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/componentes-de-openstack/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/leer-manga-en-amazon-kindle/">Leer manga en Amazon Kindle</a>
+          </h1>
+
+          <p class="post-meta">Aug 26, 2014 • 
+  
+  
+    
+  
+    
+  
+    
+      <a href="/categories/various/">Various</a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p>Muchos de los que tenemos un kindle somos fieles lectores de manga y comics, seguro que a ninguno nos gusta leer los pdf o las imágenes sueltas. Para poder crear los archivos en formato de kindle .MOBI, utilizaremos estos programas:</p>
+
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/leer-manga-en-amazon-kindle/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/desplegar-ovf-vm-shared-disk/">Desplegar OVF VM Shared Disk</a>
+          </h1>
+
+          <p class="post-meta">Aug 26, 2014 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/virtualizacion/">Virtualizacion</a>
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p>Cuando se exporta una maquina virtual en formato OVF conVMware, en el entorno ESXi 5.1 es en donde lo tengo comprobado, los OVF que disponen de disco compartido o en diferentes controladoras SCSi se despliegan incorrectamente, intercambiando los discos compartidos de una controladora por los de otra y cambiando la numeración ejemplo. VM1.vmdk por VM1_01.vmdk, por lo que al iniciar la maquina esta no encontrara el sistema operativo y dará un Boot error.
+Pues bien, para poder exportar y desplegar correctamente estas maquinas con disco compartido lo que debemos de hacer es lo siguiente:</p>
+
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/desplegar-ovf-vm-shared-disk/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/diferencias-entre-quota-y-limit-openstack/">Diferencias entre Quota y Limit Openstack</a>
+          </h1>
+
+          <p class="post-meta">Aug 25, 2014 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p>Las quotas en OpenStack se usan para evitar la saturacion de las capacidades del sistema, por ejemplo el máximo de GB permitidos a un tenant(o proyecto), de esta forma se controlará mas y se tendrá un rendimiento optimo de nuestra nube.
+Mucha gente no sabe cual es la diferencia entre estos dos terminos en OpenStack, pues bien, para hacerlo mas visual lanzaremos el comando:</p>
+<pre class="prettyprint"><code style="color: inherit;"><span class="pln" style="color: #000000;">$ nova quota</span><span class="pun" style="color: #666600;">-</span><span class="pln" style="color: #000000;">defaults
+</span><span class="pun" style="color: #666600;">+-----------------------------+-------+
+</span><span class="pun" style="color: #666600;">|</span><span class="typ" style="color: #660066;">Quota                        </span><span class="pun" style="color: #666600;">| </span><span class="typ" style="color: #660066;">Limit </span><span class="pun" style="color: #666600;">|
+</span><span class="pun" style="color: #666600;">+-----------------------------+-------+</span><span class="pun" style="color: #666600;">
+</span><span class="pln" style="color: #000000;">| instances                   </span><span class="pun" style="color: #666600;">|  </span><span class="lit" style="color: #006666;">10   </span><span class="pun" style="color: #666600;">|
+</span><span class="pun" style="color: #666600;">|</span><span class="pln" style="color: #000000;"> cores                       </span><span class="pun" style="color: #666600;">|  </span><span class="lit" style="color: #006666;">20   </span><span class="pun" style="color: #666600;">|
+</span><span class="pun" style="color: #666600;">|</span><span class="pln" style="color: #000000;"> ram                         </span><span class="pun" style="color: #666600;">|  </span><span class="lit" style="color: #006666;">51200</span><span class="pun" style="color: #666600;">|
+</span><span class="pun" style="color: #666600;">|</span><span class="pln" style="color: #000000;"> floating_ips                </span><span class="pun" style="color: #666600;">|  </span><span class="lit" style="color: #006666;">10   </span><span class="pun" style="color: #666600;">|
+</span><span class="pun" style="color: #666600;">|</span><span class="pln" style="color: #000000;"> fixed_ips                   </span><span class="pun" style="color: #666600;">|  </span><span class="pun" style="color: #666600;">-</span><span class="lit" style="color: #006666;">1   </span><span class="pun" style="color: #666600;">|
+</span><span class="pun" style="color: #666600;">|</span><span class="pln" style="color: #000000;"> metadata_items              </span><span class="pun" style="color: #666600;">|  </span><span class="lit" style="color: #006666;">128  </span><span class="pun" style="color: #666600;">|
+</span><span class="pun" style="color: #666600;">|</span><span class="pln" style="color: #000000;"> injected_files              </span><span class="pun" style="color: #666600;">|  </span><span class="lit" style="color: #006666;">5    </span><span class="pun" style="color: #666600;">|
+</span><span class="pun" style="color: #666600;">|</span><span class="pln" style="color: #000000;"> injected_file_content_bytes </span><span class="pun" style="color: #666600;">|  </span><span class="lit" style="color: #006666;">10240</span><span class="pun" style="color: #666600;">|
+</span><span class="pun" style="color: #666600;">|</span><span class="pln" style="color: #000000;"> injected_file_path_bytes    </span><span class="pun" style="color: #666600;">|  </span><span class="lit" style="color: #006666;">255  </span><span class="pun" style="color: #666600;">|
+</span><span class="pun" style="color: #666600;">|</span><span class="pln" style="color: #000000;"> key_pairs                   </span><span class="pun" style="color: #666600;">|  </span><span class="lit" style="color: #006666;">100  </span><span class="pun" style="color: #666600;">|
+</span><span class="pun" style="color: #666600;">|</span><span class="pln" style="color: #000000;"> security_groups             </span><span class="pun" style="color: #666600;">|  </span><span class="lit" style="color: #006666;">10   </span><span class="pun" style="color: #666600;">|
+</span><span class="pun" style="color: #666600;">|</span><span class="pln" style="color: #000000;"> security_group_rules        </span><span class="pun" style="color: #666600;">|  </span><span class="lit" style="color: #006666;">20   </span><span class="pun" style="color: #666600;">|
+</span><span class="pun" style="color: #666600;">+-----------------------------+-------+</span></code></pre>
+<p>Este comando nos muestra 2 columnas delimitadas, en una Quota y en otra Limit</p>
+
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/diferencias-entre-quota-y-limit-openstack/">Read on &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/permitrootlogin-ssh-rhel-access-denied/">PermitRootLogin ssh RHEL (Access Denied)</a>
+          </h1>
+
+          <p class="post-meta">Aug 25, 2014 • 
+  
+  
+    
+      <a href="/categories/linux/">Linux</a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <p>En algunos sistemas, el acceso por ssh al usuario root esta deshabilitado por defecto, cuando intentemos logearnos nos mostrara el error Access Denied, para habilitarlo deberemos modificar este archivo</p>
+<blockquote>/etc/ssh/sshd/sshd_config</blockquote>
+<p>Aquí buscaremos una linea en la que aparezca:</p>
+<blockquote>PermitRootLogin no</blockquote>
+<p>Lo cambiaremos por:</p>
+<blockquote>PermitRootLogin yes</blockquote>
+<p>Guardaremos y reiniciamos el servicio sshd</p>
+<blockquote>service sshd restart</blockquote>
+<p>Ya podriamos acceder con el usuario root por ssh</p>
+
+        </div>
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="pagination">
+    
+      <a class="previous" href="/posts/16/">&laquo; Older</a>
+    
+
+    
+      <a class="next" href="/posts/14/">Newer &raquo;</a>
+    
+  </div>
+
+
+
+</div>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

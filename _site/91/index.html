@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Configuración VPN en Linux</title>
+  <meta name="description" content="Para configurar una VPN en Linux a veces si no se conoce o mira un tutorial puede ser dificil, incluso imposible realizarla.Pero una vez se adivina como es, piensas en lo tonto que has sido durante el tiempo que pasastes buscando y buscando informacion.">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://217.182.136.201:8080/91/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="egongu90">
+  <meta name="twitter:title" content="Configuración VPN en Linux">
+  <meta name="twitter:description" content="Para configurar una VPN en Linux a veces si no se conoce o mira un tutorial puede ser dificil, incluso imposible realizarla.Pero una vez se adivina como es, piensas en lo tonto que has sido durante...">
+  
+    <meta name="twitter:creator" content="egongu90">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">OpenStack things</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Configuración VPN en Linux</h1>
+    
+    <p class="post-meta"><time datetime="2013-01-18T21:00:48+01:00" itemprop="datePublished">Jan 18, 2013</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
+  
+  
+    
+      <a href="/categories/linux/">Linux</a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Para configurar una VPN en Linux a veces si no se conoce o mira un tutorial puede ser dificil, incluso imposible realizarla.Pero una vez se adivina como es, piensas en lo tonto que has sido durante el tiempo que pasastes buscando y buscando informacion.<!--more--></p>
+
+<p>Para este ejemplo vamos a usar una VPN gratuita, como SecurityKiss <a href="http://www.securitykiss.com/">http://www.securitykiss.com/</a> Lo unico que tienes que hacer es registrarte en la pagina, yo uso <a href="http://10minutemail.com/">http://10minutemail.com</a> asi no me llenan de SPAM ni tienen mis datos, aunque si la IP, pero bueno es de los metodos mas seguros, siempre y cuando se complemente con otros. En el email tambien te vienen unos datos sobre los servidores, que son los que tendras que utilizar. Te enviaran un email con un usuario y contraseña que es lo que utilizaras para entrar a la zona de descargas, en la cual selecionaras Linux y te descargara el paquete personalizado. Para poder instalar las VPN deberas instalar antes OpenVPN o algun similar, si lo tienes instalado sigue al siguiente paso. Es un simple comando:</p>
+<ul>
+	<li><address>sudo apt-get install network-manager-openvpn</address></li>
+</ul>
+<p>Despues hay que reiniciar el gestor de redes</p>
+<ul>
+	<li>sudo restart network-manager</li>
+</ul>
+<p>Con esto estaria instalado y ya solo quedaria configurar la VPN. Se iria al gestor de redes/conexiones VPN/configurar VPN</p>
+<p style="text-align:center;"><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/seleccic3b3n_001.png"><img class="size-medium wp-image-86 aligncenter" alt="Selección_001" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/seleccic3b3n_001.png?w=300" width="300" height="298" /></a></p>
+<p style="text-align:left;">Despues dentro de la configuracion VPN, se le de a añadir, se selecciona OpenVPN que es lo que vamos a utilizar, se le da a crear:</p>
+<p style="text-align:left;"><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/seleccic3b3n_002.png"><img class="aligncenter size-medium wp-image-87" alt="Selección_002" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/seleccic3b3n_002.png?w=300" width="300" height="265" /></a></p>
+<p style="text-align:left;">Aqui es donde se va a configurar todo lo correspondiente a la VPN.</p>
+<p style="text-align:left;">Se puede seleccionar conectar automaticamente o no, eso como quieras, yo le pongo que no porque va mas lenta la conexion.</p>
+<p style="text-align:left;">Se abre el archivo descargado anteriormente, y se busca el servidor que nos dijeron en el email.</p>
+<p style="text-align:left;">Se copia la IP y se pega en la casilla de pasarela o gateway.</p>
+<p style="text-align:left;">Se pone SecurityKISS nombredelservidor protocolo y puerto. Como ejemplo la imagen:</p>
+<p style="text-align:left;"><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/editando-securitykiss-maidenhead-udp-123-_003.png"><img class="aligncenter size-medium wp-image-88" alt="Editando SecurityKISS Maidenhead UDP 123 _003" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/editando-securitykiss-maidenhead-udp-123-_003.png?w=274" width="274" height="300" /></a></p>
+<p style="text-align:left;">PD: entre UDP y 123 hay un espacio, que se quedo editando.</p>
+<p style="text-align:left;">En tipo de certificado hay que poner certificados TLS</p>
+<p style="text-align:left;">Se pincha en la carpeta de certificado de usuario, en la que deberas buscar los archivos descargados.</p>
+<p style="text-align:left;">Una vez encontrados se selecciona client.crt, en certificado se pone ca.crt y en clase privada client.key</p>
+<p style="text-align:left;">,<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/editando-securitykiss-maidenhead-udp-123-_004.png"><img class="aligncenter size-medium wp-image-89" alt="Editando SecurityKISS Maidenhead UDP 123 _004" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/editando-securitykiss-maidenhead-udp-123-_004.png?w=274" width="274" height="300" /></a></p>
+<p style="text-align:left;">Despues se entra en avanzado y se pone el puerto que se puso en el nombre de conexion, que deberia ser el mismo que el del servidor escogido, en  mi caso el 123, tambien se seleciona el check de usar compresion LZO, quedaria de esta manera:</p>
+<p style="text-align:left;"><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/opciones-avanzadas-de-openvpn_005.png"><img class="aligncenter size-medium wp-image-90" alt="Opciones avanzadas de OpenVPN_005" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/opciones-avanzadas-de-openvpn_005.png?w=300" width="300" height="228" /></a></p>
+<p style="text-align:left;">Si se puso como protocolo TCP tambien tendra que marcar la de usar compresion TCP.</p>
+<p style="text-align:left;">Se acepta, se guarda.</p>
+<p style="text-align:left;">Se reinicia el gestor de red</p>
+
+<ul>
+	<li><address>sudo restart network-manager</address></li>
+</ul>
+<p style="text-align:left;">Se abre la pestaña de conexiones VPN de nuevo se selecciona la VPN que hemos creado,se debería conectar, ahora miras la IP y debería ser la del servidor seleccionado para la VPN.</p>
+<p style="text-align:left;">Con esto ya estaría configurada y funcional la VPN.</p>
+<p style="text-align:left;">Si hubiera alguna pregunta, duda o aclaración no duden en comentar para corregirlo o añadir información adicional</p>
+
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

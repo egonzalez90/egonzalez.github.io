@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Eliminar VM (LDOM) en SPARC</title>
+  <meta name="description" content="Primero comprobaremos que maquinas tenemos y el estado de ellas ldm list A continuación, si la maquina que queremos borrar esta encendida la apagaremos ldm stop LDOM   Lo siguiente será quitar la consola de la maquina ldm unbind LDOM Listaremos la configuración de la maquina y buscaremos los discos que tenga asignados, normalmente está al final del archivo ldm list-bindings LDOM Quitaremos el controlador del disco de la maquina ldm remove-vdiskserverdevice VOLUMEN@LDOM Eliminaremos el disco de la configuración de la maquina ldm remove-vdisk DISKNAME LDOM Eliminamos las NIC ldm remove-vnet NIC_NAME LDOM Borramos VDS ldm remove-vds LDOM Eliminamos configuración de la maquina ldm remove-domain LDOM Borramos los datos de la maquina, esto se hace eliminando la carpeta donde están las maquinas guardadas rm -R /ruta/carpeta/LDOM/">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://217.182.136.201:8080/eliminar-vm-ldom-en-sparc/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="egongu90">
+  <meta name="twitter:title" content="Eliminar VM (LDOM) en SPARC">
+  <meta name="twitter:description" content="Primero comprobaremos que maquinas tenemos y el estado de ellas ldm list A continuación, si la maquina que queremos borrar esta encendida la apagaremos ldm stop LDOM   Lo siguiente será quitar la c...">
+  
+    <meta name="twitter:creator" content="egongu90">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">OpenStack things</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Eliminar VM (LDOM) en SPARC</h1>
+    
+    <p class="post-meta"><time datetime="2014-12-02T15:51:11+01:00" itemprop="datePublished">Dec 2, 2014</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/virtualizacion/">Virtualizacion</a>
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Primero comprobaremos que maquinas tenemos y el estado de ellas</p>
+<blockquote>ldm list</blockquote>
+<p>A continuación, si la maquina que queremos borrar esta encendida la apagaremos</p>
+<blockquote>ldm stop LDOM</blockquote>
+<p> </p>
+
+<p>Lo siguiente será quitar la consola de la maquina</p>
+<blockquote>ldm unbind LDOM</blockquote>
+<p>Listaremos la configuración de la maquina y buscaremos los discos que tenga asignados, normalmente está al final del archivo</p>
+<blockquote>ldm list-bindings LDOM</blockquote>
+<p>Quitaremos el controlador del disco de la maquina</p>
+<blockquote>ldm remove-vdiskserverdevice VOLUMEN@LDOM</blockquote>
+<p>Eliminaremos el disco de la configuración de la maquina</p>
+<blockquote>ldm remove-vdisk DISKNAME LDOM</blockquote>
+<p>Eliminamos las NIC</p>
+<blockquote>ldm remove-vnet NIC_NAME LDOM</blockquote>
+<p>Borramos VDS</p>
+<blockquote>ldm remove-vds LDOM</blockquote>
+<p>Eliminamos configuración de la maquina</p>
+<blockquote>ldm remove-domain LDOM</blockquote>
+<p>Borramos los datos de la maquina, esto se hace eliminando la carpeta donde están las maquinas guardadas</p>
+<blockquote>rm -R /ruta/carpeta/LDOM/</blockquote>
+
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

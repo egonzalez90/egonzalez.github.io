@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Crear Raid 1 en Linux</title>
+  <meta name="description" content=" ">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://217.182.136.201:8080/crear-raid-1-en-linux/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="egongu90">
+  <meta name="twitter:title" content="Crear Raid 1 en Linux">
+  <meta name="twitter:description" content=" ">
+  
+    <meta name="twitter:creator" content="egongu90">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">OpenStack things</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Crear Raid 1 en Linux</h1>
+    
+    <p class="post-meta"><time datetime="2014-02-14T01:34:24+01:00" itemprop="datePublished">Feb 14, 2014</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
+  
+  
+    
+      <a href="/categories/linux/">Linux</a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p> </p>
+
+<p><strong>En esta entrada, voy a mostrar como se crea un raid de nivel 1 bajo Linux, también simulare como cambiar un disco en caso de que uno falle.<!--more--></strong></p>
+
+<p><strong> Empecemos:</strong></p>
+
+<p><b>Cuando iniciamos la consola de Linux, comprobaremos que discos duros tenemos disponibles, en esta pantalla vemos que están sda, sdb</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/1.jpg"><img class="aligncenter size-full wp-image-264" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/1.jpg" alt="1" width="628" height="353" /></a></p>
+
+<p><b>En esta otra esta sdc, vemos que tanto sdb como sdc están sin formato alguno</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/2.jpg"><img class="aligncenter size-full wp-image-265" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/2.jpg" alt="2" width="502" height="143" /></a></p>
+
+<p><b>Ahora instalaremos el paquete mdadm, que será el que nos permita configurar un raid en el sistema </b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/3.jpg"><img class="aligncenter size-full wp-image-266" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/3.jpg" alt="3" width="469" height="24" /></a></p>
+
+<p><b>Ahora crearemos un nuevo dispositivo llamado md0, con un raid de nivel 1, añadiendo los dispositivos sdb y sdc a este</b></p>
+
+<p> </p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/4.jpg"><img class="aligncenter size-full wp-image-267" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/4.jpg" alt="4" width="643" height="37" /></a></p>
+
+<p><b>Ahora configuraremos este dispositivo que hemos creado previamente</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/5.jpg"><img class="aligncenter size-full wp-image-268" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/5.jpg" alt="5" width="428" height="22" /></a></p>
+
+<p><b>Utilizaremos la opción N para crear una nueva partición</b></p>
+
+<p><b>Seleccionaremos P para hacerla primaria</b></p>
+
+<p><b>Estableceremos que la partición es la numero 1</b></p>
+
+<p><b>Pondremos el cilindro número 1 como primero, y el último de los que tengamos disponibles como final</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/6.jpg"><img class="aligncenter size-full wp-image-269" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/6.jpg" alt="6" width="635" height="184" /></a></p>
+
+<p><b>Después utilizaremos la opción W para escribir los cambios al disco</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/7.jpg"><img class="aligncenter size-full wp-image-270" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/7.jpg" alt="7" width="391" height="91" /></a></p>
+
+<p><b>Ahora crearemos el sistema de fichero mediante el comando mkfs y el dispositivo que habíamos creado</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/8.jpg"><img class="aligncenter size-full wp-image-271" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/8.jpg" alt="8" width="555" height="338" /></a></p>
+
+<p><b>Ahora crearemos una carpeta de montaje de nuestro dispositivo mediante mkdir</b></p>
+
+<p><b>Después montaremos el dispositivo a dicha carpeta mediante el comando mount</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/9.jpg"><img class="aligncenter size-full wp-image-272" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/9.jpg" alt="9" width="536" height="38" /></a></p>
+
+<p><b>Ahora crearemos un fichero de un tamaño determinado que se especifica en la opción bs </b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/10.jpg"><img class="aligncenter size-full wp-image-273" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/10.jpg" alt="10" width="594" height="87" /></a></p>
+
+<p><b>Ahora comprobamos esta carpeta, y vemos que los tamaños están bien configurados</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/11.jpg"><img class="aligncenter size-full wp-image-274" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/11.jpg" alt="11" width="460" height="83" /></a></p>
+
+<p><b>Ahora comprobaremos en este archivo que el raid está activo, y tiene los dispositivos sdb y sdc</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/12.jpg"><img class="aligncenter size-full wp-image-275" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/12.jpg" alt="12" width="437" height="104" /></a></p>
+
+<p><b>Ahora haremos como que el disco sdb ha fallado, para poder quitarle del raid para remplazarle primero hay que marcarle como disco fallido mediante este comando</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/13.jpg"><img class="aligncenter size-full wp-image-276" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/13.jpg" alt="13" width="563" height="37" /></a></p>
+
+<p><b>Ahora le quitaremos del raid el disco sdb</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/14.jpg"><img class="aligncenter size-full wp-image-277" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/14.jpg" alt="14" width="560" height="37" /></a></p>
+
+<p><b>Iremos al archivo del raid y comprobamos que no está el disco sdb dentro de el</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/15.jpg"><img class="aligncenter size-full wp-image-278" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/15.jpg" alt="15" width="459" height="102" /></a></p>
+
+<p><b>Ahora borraremos los datos de configuración anterior del disco sdb mediante el primer comando.</b></p>
+
+<p><b>Después añadimos el disco sdb al disco raid, esto si tiene datos tardara un tiempo en sincronizar</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/16.jpg"><img class="aligncenter size-full wp-image-279" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/16.jpg" alt="16" width="573" height="52" /></a></p>
+
+<p><b>Ahora desactivaremos el raid mediante este comando</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/17.jpg"><img class="aligncenter size-full wp-image-280" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/17.jpg" alt="17" width="484" height="19" /></a></p>
+
+<p><b>Si queremos volver a activarle, lo haremos mediante este otro comando</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/18.jpg"><img class="aligncenter size-full wp-image-281" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/18.jpg" alt="18" width="490" height="24" /></a></p>
+
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

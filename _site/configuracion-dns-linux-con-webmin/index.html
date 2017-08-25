@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Configuración DNS Linux con Webmin</title>
+  <meta name="description" content="En este tutorial/practica voy a explicar como configurar las DNS en un servidor Linux bajo la aplicacion gráfica Webmin. Para realizar este tutorial voy a utilizar la distribución cliente de Debian, se puede realizar con cualquier SO Linux este ejercicio, pero podrían variar los pasos a seguir durante la configuración del sistema.">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://217.182.136.201:8080/configuracion-dns-linux-con-webmin/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="egongu90">
+  <meta name="twitter:title" content="Configuración DNS Linux con Webmin">
+  <meta name="twitter:description" content="En este tutorial/practica voy a explicar como configurar las DNS en un servidor Linux bajo la aplicacion gráfica Webmin. Para realizar este tutorial voy a utilizar la distribución cliente de Debian...">
+  
+    <meta name="twitter:creator" content="egongu90">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">OpenStack things</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Configuración DNS Linux con Webmin</h1>
+    
+    <p class="post-meta"><time datetime="2013-10-17T17:09:55+02:00" itemprop="datePublished">Oct 17, 2013</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
+  
+  
+    
+      <a href="/categories/linux/">Linux</a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>En este tutorial/practica voy a explicar como configurar las DNS en un servidor Linux bajo la aplicacion gráfica Webmin.
+Para realizar este tutorial voy a utilizar la distribución cliente de Debian, se puede realizar con cualquier SO Linux este ejercicio, pero podrían variar los pasos a seguir durante la configuración del sistema.
+<!--more--></p>
+
+<p>-Primero se instala el servidor de Linux, en mi caso uso Debian
+-Durante la instalación te solicitara que servicios de servidor se quieren instalar, en nuestro caso seleccionamos DNS <a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/1.png"><img class="aligncenter size-medium wp-image-187" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/1.png?w=300" alt="1" width="300" height="232" /></a></p>
+
+<p>-Una vez instalado, se descarga e instala el Webmin desde la pagina oficial.
+-Una vez instalado se entra en el navegador y se escribe la dirección http://localhost:10000 , esto podría variar y ser el nombre del dominio si se ha creado, también puede salir una rectificación del enlace, se selecciona ese y se pasa a la pagina de login de Webmin
+-Una vez entrado con tu cuenta de usuario,se pincha sobre la pestaña servers y dentro de esa BIND DNS Server.
+-Dentro de la pantalla de configuracion de DNS se observa que en la parte de abajo esta la zona donde estan las zona que tenemos creadas de DNS, se da a crear zona maestra y se configura de la siguiente forma.<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/2.png"><img class="aligncenter size-medium wp-image-188" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/2.png?w=300" alt="2" width="300" height="148" /></a></p>
+
+<p>-Se vuelve a la pantalla principal dándole a module index y una vez allí se da a apply configuración y después a crear otra zona maestra
+-Se configura de la siguiente forma <a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/3.png"><img class="aligncenter size-medium wp-image-189" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/3.png?w=300" alt="3" width="300" height="169" /></a></p>
+
+<p>-Se crea, se vuelve a module index y se aplica la configuración como antes.
+-Se entra en la zona server y se selecciona address, una vez allí se configura de la siguiente forma y se da a crear <a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/4.png"><img class="aligncenter size-medium wp-image-190" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/4.png?w=300" alt="4" width="300" height="92" /></a></p>
+
+<p>-Índice de modulo y aplicar configuración
+-Se accede donde antes y en vez de seleccionar address se selecciona name alias y se configura así
+<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/5.png"><img class="aligncenter size-medium wp-image-191" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/5.png?w=300" alt="5" width="300" height="53" /></a></p>
+
+<p>-Índice de modulo, aplicar configuración
+-Se accede a la zona server, y a ahí se entra en mail server, se configura <a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/6.png"><img class="aligncenter size-medium wp-image-192" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/6.png?w=300" alt="6" width="300" height="99" /></a></p>
+
+<p>-Ahora se configura el cliente con la Ip necesaria <a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/7.png"><img class="aligncenter size-medium wp-image-193" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/7.png?w=229" alt="7" width="229" height="300" /></a></p>
+
+<p>-Para que el servidor actúe como cliente y resuelva sus propias DNS hay que configurar lo siguiente:
+-Entrar en configuración de red, nombre de máquina y DNS y configurar lo siguiente
+<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/8.png"><img class="aligncenter size-medium wp-image-194" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/8.png?w=300" alt="8" width="300" height="104" /></a></p>
+
+<p>Después entrar a ruteo y gateways y configurar lo siguiente <a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/9.png"><img class="aligncenter size-medium wp-image-195" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/9.png?w=300" alt="9" width="300" height="148" /></a></p>
+
+<p>-Y por último, entrar a interfaces y configurar de esta forma <a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/10.png"><img class="aligncenter size-medium wp-image-196" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/10.png?w=300" alt="10" width="300" height="221" /></a></p>
+
+<p>-Se crea y aplica y ya estaría configurado el server
+Para comprobar que funciona el servicio DNS, desde el cliente se entra en aplicaciones/herramientas del sistema/ herramientas de red
+-Dentro de la aplicación se selecciona lookup y se comprueba de la siguiente forma
+-De forma directa <a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/11.png"><img class="aligncenter size-medium wp-image-197" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/11.png?w=300" alt="11" width="300" height="256" /></a></p>
+
+<p>-De forma inversa <a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/12.png"><img class="aligncenter size-medium wp-image-198" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/12.png?w=300" alt="12" width="300" height="161" /></a></p>
+
+<p>-Se comprueba que el servicio DNS funciona correctamente en otros/Estado del sistema y servidor y quedaría seleccionado con un check verde el servicio <a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/13.png"><img class="aligncenter size-medium wp-image-199" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/13.png?w=300" alt="13" width="300" height="208" /></a></p>
+
+<p>Con esto y estaría configurado el servicio DNS localmente.
+Puede fallar dependiendo de los nombres que se le asigne, suele dar fallo al ponerlo con mayúsculas</p>
+
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

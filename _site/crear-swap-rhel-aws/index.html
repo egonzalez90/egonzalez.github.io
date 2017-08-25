@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Crear Swap AWS en RHEL</title>
+  <meta name="description" content="Cuando creas una instancia, esta se hace sin swap, el cual es necesario para el uso de determinadas aplicaciones.">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://217.182.136.201:8080/crear-swap-rhel-aws/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="OpenStack things" href="http://217.182.136.201:8080/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="egongu90">
+  <meta name="twitter:title" content="Crear Swap AWS en RHEL">
+  <meta name="twitter:description" content="Cuando creas una instancia, esta se hace sin swap, el cual es necesario para el uso de determinadas aplicaciones.">
+  
+    <meta name="twitter:creator" content="egongu90">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">OpenStack things</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/yous/whiteglass">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Crear Swap AWS en RHEL</h1>
+    
+    <p class="post-meta"><time datetime="2014-09-19T18:28:40+02:00" itemprop="datePublished">Sep 19, 2014</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Editor</span></span> • 
+  
+  
+    
+      <a href="/categories/linux/">Linux</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/openstack/">OpenStack</a>
+    
+  
+    
+  
+    
+  
+
+</p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Cuando creas una instancia, esta se hace sin swap, el cual es necesario para el uso de determinadas aplicaciones.<!--more--></p>
+
+<p>Para ello deberemos tener espacio en disco, si no tuvieras suficiente puedes seguir esta entrada pare ver como se hace: <a title="Montar volumen AWS en RHEL" href="http://egonzalez.org/?p=662" target="_blank">http://egonzalez.org/?p=635</a></p>
+
+<p>A continuación iremos a la consola y ejecutaremos los siguientes comandos:</p>
+<blockquote>sudo /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024
+
+sudo /sbin/mkswap /var/swap.1
+
+sudo /sbin/swapon /var/swap.1</blockquote>
+<p>Con ello crearemos el archivo swap y lo montaremos.
+Con este comando se crea de un tamaño de 1024 MB, si se quisiera mas, abría que cambiar el valor count a el deseado.</p>
+
+<p>Por ultimo abría que añadir esta linea al archivo /etc/fstab , esto permitirá que se monte durante el arranque automáticamente.</p>
+<blockquote>/var/swap.1 swap swap defaults 0 0</blockquote>
+<p>Espero ser de ayuda, un saludo</p>
+
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy;  - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://217.182.136.201:8080/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
