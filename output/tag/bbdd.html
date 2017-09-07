@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - bbdd</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="/category/linux.html">Linux</a></li>
+                    <li><a href="/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="/category/misc.html">misc</a></li>
+                    <li><a href="/category/openstack.html">OpenStack</a></li>
+                    <li><a href="/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="/category/various.html">Various</a></li>
+                    <li><a href="/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/mysql.html">MySQL</a></h1>
+<footer class="post-info">
+        <span>Sun 02 November 2014</span>
+<span>| tags: <a href="/tag/bbdd.html">bbdd</a><a href="/tag/compute.html">compute</a><a href="/tag/configuracion.html">configuracion</a><a href="/tag/controller-network.html">controller. network</a><a href="/tag/instalacion.html">instalacion</a><a href="/tag/mysql.html">mysql</a><a href="/tag/openstack.html">openstack</a></span>
+</footer><!-- /.post-info --><h2>MySQL en Controller node</h2>
+<p>Instalamos MySQL</p>
+<blockquote>
+<p>yum install mysql mysql-server MySQL-python</p>
+</blockquote>
+<p>Editamos el fichero de configuracion de MySQL</p>
+<blockquote>
+<p>vi /etc/my.cnf</p>
+</blockquote>
+<p>Modificamos la linea bind-address con la IP de eth0 y añadimos las
+siguientes entradas:</p>
+<blockquote>
+<p>[mysqld]</p>
+<p>bind-address=192.168.1.11</p>
+<p>default-storage-engine=innodb</p>
+<p>innodb_file_per_table</p>
+<p>collation-server=utf8_general_ci</p>
+<p>init-connect='SET NAMES utf8'</p>
+<p>character-set-server=utf8</p>
+</blockquote>
+<p>Iniciamos el servicio mysqld y lo añadimos al arranque del sistema</p>
+<blockquote>
+<p>service mysqld start</p>
+<p>chkconfig mysqld on</p>
+</blockquote>
+<p>Instalamos la base de datos nueva, establecemos contraseña de root y
+quitamos los usuarios anónimos. El primer comando puede no ser necesario
+a no ser que el segundo comando nos diera error</p>
+<blockquote>
+<p>mysql_install_db</p>
+<p>mysql_secure_installation</p>
+</blockquote>
+<h2>Nodos Network y Compute</h2>
+<p>En estos nodos solamente necesitamos instalar el paquete MySQL-python</p>
+<blockquote>
+<p>yum install MySQL-python</p>
+</blockquote>
+<p>Un saludo</p><p><a href="/mysql.html#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/reiniciar-quota-count-incorrecto-openstack.html" rel="bookmark"
+                           title="Permalink to Reiniciar quota count incorrecto Openstack">Reiniciar quota count incorrecto Openstack</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 07 September 2014</span>
+<span>| tags: <a href="/tag/bbdd.html">bbdd</a><a href="/tag/cloud.html">cloud</a><a href="/tag/count.html">count</a><a href="/tag/cuenta.html">cuenta</a><a href="/tag/cuota.html">cuota</a><a href="/tag/error.html">error</a><a href="/tag/id.html">ID</a><a href="/tag/incorrecto.html">incorrecto</a><a href="/tag/nova.html">nova</a><a href="/tag/openstack.html">openstack</a><a href="/tag/quota.html">quota</a><a href="/tag/reinicio.html">reinicio</a><a href="/tag/reset.html">reset</a><a href="/tag/tenant.html">tenant</a><a href="/tag/usage.html">usage</a></span>
+</footer><!-- /.post-info -->                <p>Para reiniciar quota count, deberemos conectarnos a la base de datos y
+establecer in_use en "-1"</p>
+<blockquote>
+<p>mysql -u nova -p\&lt;password> nova</p>
+<p>select*from quota_usages;</p>
+<p>update quota_usages set in_use='-1'where project_id='\&lt;my project
+id>';</p>
+</blockquote>
+<p>A partir de la versión Icehouse, ya no se usa -1 y se pasa a usar …</p>
+                <a class="readmore" href="/reiniciar-quota-count-incorrecto-openstack.html">read more</a>
+<p><a href="/reiniciar-quota-count-incorrecto-openstack.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

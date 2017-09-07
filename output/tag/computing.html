@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - computing</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="/category/linux.html">Linux</a></li>
+                    <li><a href="/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="/category/misc.html">misc</a></li>
+                    <li><a href="/category/openstack.html">OpenStack</a></li>
+                    <li><a href="/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="/category/various.html">Various</a></li>
+                    <li><a href="/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/crear-plantilla-ami-en-aws.html">Crear Plantilla AMI en AWS</a></h1>
+<footer class="post-info">
+        <span>Mon 22 September 2014</span>
+<span>| tags: <a href="/tag/amazon.html">amazon</a><a href="/tag/ami.html">AMI</a><a href="/tag/aws.html">AWS</a><a href="/tag/cloud.html">cloud</a><a href="/tag/computing.html">computing</a><a href="/tag/crear.html">crear</a><a href="/tag/ejecutar.html">ejecutar</a><a href="/tag/hybrid.html">hybrid</a><a href="/tag/imagen.html">imagen</a><a href="/tag/instancia.html">instancia</a><a href="/tag/launch.html">launch</a><a href="/tag/plantilla.html">plantilla</a><a href="/tag/private.html">private</a><a href="/tag/public.html">public</a><a href="/tag/services.html">services</a><a href="/tag/web.html">web</a></span>
+</footer><!-- /.post-info --><p>El primer paso es estar logeado en AWS, y en la pestaña Instances de
+EC2.<!--more--></p>
+<p>Una vez aquí pulsaremos con el botón derecho sobre la instancia que
+queremos convertir en plantilla AMI.</p>
+<p>Aquí pulsaremos sobre Create
+Image<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/Captura.png"><img alt="Captura" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/Captura.png"><br>
+</a></p>
+<p>Lo siguiente sera ponerle un nombre a la plantilla y una descripcion,
+para finalizar le daremos a Create Image</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/Captura2.png"><img alt="Captura2" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/Captura2.png"></a></p>
+<p>A continuación nos mostrara un mensage que indica que esta en proceso de
+creacion, pulsaremos sobre View Pending Image **** para ver el
+estado de la peticion</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/Captura3.png"><img alt="Captura3" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/Captura3.png"> </a>En
+esta ventana veremos el estado de la peticion, una vez acabada la
+creacion de la plantilla aparecera en verde Available, estos sencillos
+pasos nos permitiran tener imagenes personalizadas para ejecutar tantas
+instancias como queramos sobre esa plantilla</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/Captura4.png"><img alt="Captura4" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/Captura4.png"></a> Para
+ejecutar la imagen como una instancia, solo tienes que pulsar sobre
+Launch y crear la instancia como cualquier otra.</p>
+<p>Si quieres saber como se crea una instancia puedes hacerlo siguiendo
+esta entrada del blog: <a href="http://egonzalez.org/?p=635">http://egonzalez.org/?p=635</a></p><p><a href="/crear-plantilla-ami-en-aws.html#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/montar-volumen-aws-en-rhel.html" rel="bookmark"
+                           title="Permalink to Montar volumen AWS en RHEL">Montar volumen AWS en RHEL</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Wed 17 September 2014</span>
+<span>| tags: <a href="/tag/amazon.html">amazon</a><a href="/tag/anadir.html">añadir</a><a href="/tag/aws.html">AWS</a><a href="/tag/cloud.html">cloud</a><a href="/tag/computing.html">computing</a><a href="/tag/formatear.html">formatear</a><a href="/tag/linux.html">linux</a><a href="/tag/montar.html">montar</a><a href="/tag/red-hat.html">red hat</a><a href="/tag/rhel.html">rhel</a><a href="/tag/services.html">services</a><a href="/tag/volumen.html">volumen</a><a href="/tag/web.html">web</a><a href="/tag/xvdf.html">xvdf</a></span>
+</footer><!-- /.post-info -->                <p>Para poder realizar estos pasos es necesario que se haya creado un
+volumen previamente en EC2 de AWS, nos conectaremos a la maquina por SSH
+y seguiremos los siguientes pasos<!--more--></p>
+<p>Primero comprobaremos que el volumen que habíamos creado en EC2 le ve el
+SO, utilizaremos este comando</p>
+<blockquote>
+<p><span class="command" style="color: #000000;">lsblk</span><span
+style="color: #000000;"> </span></p>
+</blockquote>
+<p>Lo normal …</p>
+                <a class="readmore" href="/montar-volumen-aws-en-rhel.html">read more</a>
+<p><a href="/montar-volumen-aws-en-rhel.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/crear-instancia-amazon-web-services-aws.html" rel="bookmark"
+                           title="Permalink to Crear instancia Amazon Web Services (AWS)">Crear instancia Amazon Web Services (AWS)</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 15 September 2014</span>
+<span>| tags: <a href="/tag/amazon.html">amazon</a><a href="/tag/aws.html">AWS</a><a href="/tag/cloud.html">cloud</a><a href="/tag/computing.html">computing</a><a href="/tag/creacion.html">creacion</a><a href="/tag/crear.html">crear</a><a href="/tag/ec2.html">ec2</a><a href="/tag/instancia.html">instancia</a><a href="/tag/linux.html">linux</a><a href="/tag/pem.html">pem</a><a href="/tag/ppk.html">ppk</a><a href="/tag/primera.html">primera</a><a href="/tag/putty.html">putty</a><a href="/tag/services.html">services</a><a href="/tag/web.html">web</a></span>
+</footer><!-- /.post-info -->                <p>Buenos días, en esta entrada mostrare como crear una instancia en la
+plataforma cloud de Amazon Web Services.</p>
+<!--more-->
+
+<p>Para poder crear las instancias, deberemos tener cuenta de
+AWS y nos logearemos en la consola.</p>
+<p>Lo primero que nos encontraremos sera el dashboard principal, aqui
+podremos administrar las diferentes secciones de …</p>
+                <a class="readmore" href="/crear-instancia-amazon-web-services-aws.html">read more</a>
+<p><a href="/crear-instancia-amazon-web-services-aws.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 2
+        <a href="/tag/computing2.html">&raquo;</a>
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

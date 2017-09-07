@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - configuracion</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="/category/linux.html">Linux</a></li>
+                    <li><a href="/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="/category/misc.html">misc</a></li>
+                    <li><a href="/category/openstack.html">OpenStack</a></li>
+                    <li><a href="/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="/category/various.html">Various</a></li>
+                    <li><a href="/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/configuracion-de-image-service-glance.html">Configuración de Image Service Glance</a></h1>
+<footer class="post-info">
+        <span>Thu 29 January 2015</span>
+<span>| tags: <a href="/tag/configuracion.html">configuracion</a><a href="/tag/glance.html">glance</a><a href="/tag/glance-api.html">glance-api</a><a href="/tag/image-service.html">image service</a><a href="/tag/instalacion.html">instalacion</a><a href="/tag/openstack.html">openstack</a></span>
+</footer><!-- /.post-info --><p>Lo primero que debemos instalar son los paquetes de Glance en Controller
+Node.</p>
+<blockquote>
+<p># yum install openstack-glance python-glanceclient</p>
+</blockquote>
+<p>Después configuraremos en enlace con la base de datos en los ficheros de
+configuración de Glance:</p>
+<blockquote>
+<p># openstack-config --set /etc/glance/glance-api.conf</p>
+<p>database connection mysql://glance:PASSWD@controller/glance</p>
+<p># openstack-config --set /etc/glance/glance-registry.conf</p>
+<p>database connection mysql://glance:PASSWD@controller/glance</p>
+</blockquote>
+<p>A continuación crearemos el usuario y la base de datos de Glance</p>
+<blockquote>
+<p>mysql -u root -p</p>
+<p># CREATE DATABASE glance;</p>
+<p>#GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' IDENTIFIED
+BY 'PASSWD'</p>
+<p>#GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' IDENTIFIED BY
+'PASSWD'</p>
+</blockquote>
+<p>Crearemos las tablas en la base de datos</p>
+<blockquote>
+<p># su -s /bin/sh -c "glance-manage db_sync" glance</p>
+</blockquote>
+<p>Creamos el usuario Glance en keystone con tenant "service" y rol "admin"</p>
+<blockquote>
+<p># keystone user-create --name=glance --pass=PASSWD
+--email=email@mail.com</p>
+<p># keystone user-role-add --user=glance --tenant-service --role=admin</p>
+</blockquote>
+<p>A continuación modificaremos los ficheros de configuración de Glance</p>
+<blockquote>
+<p># openstack-config --set /etc/glance/glance-api.conf
+keystone_authtoken auth_uri http://controller:5000</p>
+<p># openstack-config --set /etc/glance/glance-api.conf
+keystone_authtoken  auth_host controller</p>
+<p># openstack-config --set /etc/glance/glance-api.conf
+keystone_authtoken auth_port 35357</p>
+<p># openstack-config --set /etc/glance/glance-api.conf
+keystone_authtoken auth_protocol http</p>
+<p># openstack-config --set /etc/glance/glance-api.conf
+keystone_authtoken admin_tenant_name service</p>
+<p># openstack-config --set /etc/glance/glance-api.conf
+keystone_authtoken admin_user glance</p>
+<p># openstack-config --set /etc/glance/glance-api.conf
+keystone_authtoken admin_password PASSWD</p>
+<p># openstack-config --set /etc/glance/glance-api.conf paste_deploy
+flavor keystone</p>
+<p># openstack-config --set /etc/glance/glance-registry.conf
+keystone_authtoken auth_uri http://controller:5000</p>
+<p># openstack-config --set /etc/glance/glance-registry.conf
+keystone_authtoken auth_host controller</p>
+<p># openstack-config --set /etc/glance/glance-registry.conf
+keystone_authtoken auth_port 35357</p>
+<p># openstack-config --set /etc/glance/glance-registry.conf
+keystone_authtoken auth_protocol http</p>
+<p># openstack-config --set /etc/glance/glance-registry.conf
+keystone_authtoken admin_tenant_name service</p>
+<p># openstack-config --set /etc/glance/glance-registry.conf
+keystone_authtoken admin_user glance</p>
+<p># openstack-config --set /etc/glance/glance-registry.conf
+keystone_authtoken admin_password PASSWD</p>
+<p># openstack-config --set /etc/glance/glance-registry.conf
+paste_deploy flavor keystone</p>
+</blockquote>
+<p>Después de configurar los ficheros anteriores, registraremos el servicio
+y creamos el endpoint</p>
+<blockquote>
+<p># keystone service-create --name=glance --type=image
+--description="Image Service"</p>
+<p># keystone endpoint-create --service-id=\&lt;ID></p>
+<p>--publicurl=http://controller:9292</p>
+<p>--internalurl=http://controller:9292</p>
+<p>--adminurl=http://controller:9292</p>
+</blockquote>
+<p>Iniciamos el servicio y habilitamos la ejecución en el arranque</p>
+<blockquote>
+<p># service openstack-glance-api start</p>
+<p># service openstack-glance-registry start</p>
+<p>#chkconfig openstack-glance-api on</p>
+<p># chkconfig openstack-glance-registry on</p>
+</blockquote><p><a href="/configuracion-de-image-service-glance.html#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/816.html" rel="bookmark"
+                           title="Permalink to Instalación Identity Service (Keystone)">Instalación Identity Service (Keystone)</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 21 November 2014</span>
+<span>| tags: <a href="/tag/cloud.html">cloud</a><a href="/tag/configuracion.html">configuracion</a><a href="/tag/guia.html">guia</a><a href="/tag/identity.html">identity</a><a href="/tag/instalacion.html">instalacion</a><a href="/tag/keystone.html">keystone</a><a href="/tag/openstack.html">openstack</a></span>
+</footer><!-- /.post-info -->                <p>Primero instalaremos los paquetes necesarios de Openstack Identity
+Service</p>
+<blockquote>
+<p>yum install openstack-keystone python-keystoneclient</p>
+</blockquote>
+<p>A Continuación configuraremos keystone para usar la base de datos MySQL
+que habiamos creado</p>
+<blockquote>
+<p>openstack-config --set /etc/keystone/keystone.conf database connection
+mysql://keystone:PASSWORD@controller/keystone</p>
+</blockquote>
+<p>Crearemos la base de datos para keystone y el usuario …</p>
+                <a class="readmore" href="/816.html">read more</a>
+<p><a href="/816.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/servidor-de-mensajes-qpid.html" rel="bookmark"
+                           title="Permalink to Servidor de mensajes Qpid">Servidor de mensajes Qpid</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 16 November 2014</span>
+<span>| tags: <a href="/tag/configuracion.html">configuracion</a><a href="/tag/guia.html">guia</a><a href="/tag/instalacion.html">instalacion</a><a href="/tag/openstack.html">openstack</a><a href="/tag/qpid.html">qpid</a><a href="/tag/servidor-de-mensaje.html">servidor de mensaje</a></span>
+</footer><!-- /.post-info -->                <p>En nuestro entorno, necesitaremos un servidor de mensajes con el que se
+comunicaran los diferentes nodos y complementos de Openstack. Openstack
+soporta algunos servidores de mensajes, nosotros utilizaremos Qpid,
+siendo fácil su instalación y configuración básica sin autenticacion</p>
+<p>Instalar Qpid</p>
+<blockquote>
+<p>yum install qpid-cpp-server</p>
+</blockquote>
+<p>Deshabilitar el uso de la autenticación en …</p>
+                <a class="readmore" href="/servidor-de-mensajes-qpid.html">read more</a>
+<p><a href="/servidor-de-mensajes-qpid.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 3
+        <a href="/tag/configuracion2.html">&raquo;</a>
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

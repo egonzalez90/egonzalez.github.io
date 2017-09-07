@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - mbralign</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="/category/linux.html">Linux</a></li>
+                    <li><a href="/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="/category/misc.html">misc</a></li>
+                    <li><a href="/category/openstack.html">OpenStack</a></li>
+                    <li><a href="/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="/category/various.html">Various</a></li>
+                    <li><a href="/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/alineamiento-mbr-maquinas-virtuales.html">Alineamiento MBR maquinas virtuales</a></h1>
+<footer class="post-info">
+        <span>Wed 03 September 2014</span>
+<span>| tags: <a href="/tag/alinear.html">alinear</a><a href="/tag/esxi.html">esxi</a><a href="/tag/ext3.html">ext3</a><a href="/tag/ext4.html">ext4</a><a href="/tag/grub.html">grub</a><a href="/tag/maquina-virtual.html">maquina virtual</a><a href="/tag/mbr.html">mbr</a><a href="/tag/mbralign.html">mbralign</a><a href="/tag/mbrscan.html">mbrscan</a><a href="/tag/netapp.html">netapp</a><a href="/tag/redhat.html">redhat</a><a href="/tag/rhel.html">rhel</a><a href="/tag/vm.html">VM</a><a href="/tag/vmfs.html">vmfs</a><a href="/tag/vmware.html">vmware</a><a href="/tag/volumes.html">volumes</a></span>
+</footer><!-- /.post-info --><p>Antes de la llegada de el sistema de ficheros EXT4, cuando creabas
+maquinas virtuales, estas estaban desalineadas el mbr del vmfs y de el
+almacenamiento,  lo que generaba menor rendimiento.<!--more--></p>
+<p>Para ello dedico esta entrada, con la que mostrare como alinear el mbr.</p>
+<p>Lo primero que necesitaremos es el paquete con las tools mbrscan y
+mbralign, este paquete le copiaremos a el directorio /opt/ontap/ de un
+host ESXi que tenga acceso al almacenamiento donde tenemos la maquina
+guardada.</p>
+<p>Una vez copiado el paquete a dicho directorio pasaremos a escanear y a
+realinear el mbr de la maquina, para ello necesitamos que este apagada.</p>
+<p>Una vez apagada iremos al directorio /opt/ontap/ y ejecutaremos el
+siguiente comando con el que analizaremos el disco de la maquina para
+ver si necesita ser alineado.</p>
+<blockquote>
+<p>./mbrscan
+/vmfs/volumes/ALMACENAMIENTO/maquinavirtual/maquinavirtual-flat.vmdk</p>
+</blockquote>
+<p>Esto nos mostrara un mensaje en el que pondra:</p>
+<blockquote>
+<p>Aligned yes o Aligned no</p>
+</blockquote>
+<p>En el caso de que pusiera align no, deberemos realinear el mbr de la
+maquina, lo haremos mediante este comando:</p>
+<blockquote>
+<p>./mbralign
+/vmfs/volumes/ALMACENAMIENTO/maquinavirtual/maquinavirtual-flat.vmdk</p>
+</blockquote>
+<p>Esto nos creara un archivo .bak del disco que vamos a alinear por si
+fallara este proceso poder recuperarlo, este proceso tardara
+bastante(dependiendo del tamaño del disco)</p>
+<p>Una vez acabado ese proceso de alineamiento, volveremos a utilizar el
+comando mbrscan para comprobar que este bien hecho.</p>
+<p>Por ultimo, el alineado del mbr se carga totalmente el GRUB de la
+maquina, por lo que deberemos recuperarlo.</p>
+<p>En esta entrada tienes como hacerlo: <a href="http://egonzalez.org/recuperar-grub-rhel-y-centos/%20" title="Recuperar GRUB RHEL y CentOS"><span id="sample-permalink"
+style="color: #666666;" tabindex="-1">http://egonzalez.org/<span
+id="editable-post-name"
+title="Enlace permanente temporal. Haz clic para editar esta parte.">recuperar-grub-rhel-y-centos</span>/</span><span
+style="color: #666666;"> </span></a></p>
+<p>Una vez recuperado el GRUB y comprobado que la maquina funciona
+correctamente, borraremos el archivo .bak que se había creado.</p>
+<p>Espero poder ayudar, un saludo</p><p><a href="/alineamiento-mbr-maquinas-virtuales.html#disqus_thread">comments</a></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

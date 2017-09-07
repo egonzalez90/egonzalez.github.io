@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - que es</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="/category/linux.html">Linux</a></li>
+                    <li><a href="/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="/category/misc.html">misc</a></li>
+                    <li><a href="/category/openstack.html">OpenStack</a></li>
+                    <li><a href="/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="/category/various.html">Various</a></li>
+                    <li><a href="/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/diferencias-entre-quota-y-limit-openstack.html">Diferencias entre Quota y Limit Openstack</a></h1>
+<footer class="post-info">
+        <span>Mon 25 August 2014</span>
+<span>| tags: <a href="/tag/cloud.html">cloud</a><a href="/tag/computing.html">computing</a><a href="/tag/diference.html">diference</a><a href="/tag/diferencia.html">diferencia</a><a href="/tag/limit.html">limit</a><a href="/tag/limite-operacional.html">limite operacional</a><a href="/tag/nova.html">nova</a><a href="/tag/openstack.html">openstack</a><a href="/tag/que-es.html">que es</a><a href="/tag/quota.html">quota</a><a href="/tag/quota-defaults.html">quota-defaults</a></span>
+</footer><!-- /.post-info --><p>Las quotas en OpenStack se usan para evitar la saturacion de las
+capacidades del sistema, por ejemplo el máximo de GB permitidos a un
+tenant(o proyecto), de esta forma se controlará mas y se tendrá un
+rendimiento optimo de nuestra nube.<br>
+Mucha gente no sabe cual es la diferencia entre estos dos terminos en
+OpenStack, pues bien, para hacerlo mas visual lanzaremos el comando:</p>
+<div class="highlight"><pre><span></span>$ nova quota-defaults
++-----------------------------+-------+
+<span class="p">|</span>Quota                        <span class="p">|</span> Limit <span class="p">|</span>
++-----------------------------+-------+
+<span class="p">|</span> instances                   <span class="p">|</span>  <span class="m">10</span>   <span class="p">|</span>
+<span class="p">|</span> cores                       <span class="p">|</span>  <span class="m">20</span>   <span class="p">|</span>
+<span class="p">|</span> ram                         <span class="p">|</span>  <span class="m">51200</span><span class="p">|</span>
+<span class="p">|</span> floating_ips                <span class="p">|</span>  <span class="m">10</span>   <span class="p">|</span>
+<span class="p">|</span> fixed_ips                   <span class="p">|</span>  -1   <span class="p">|</span>
+<span class="p">|</span> metadata_items              <span class="p">|</span>  <span class="m">128</span>  <span class="p">|</span>
+<span class="p">|</span> injected_files              <span class="p">|</span>  <span class="m">5</span>    <span class="p">|</span>
+<span class="p">|</span> injected_file_content_bytes <span class="p">|</span>  <span class="m">10240</span><span class="p">|</span>
+<span class="p">|</span> injected_file_path_bytes    <span class="p">|</span>  <span class="m">255</span>  <span class="p">|</span>
+<span class="p">|</span> key_pairs                   <span class="p">|</span>  <span class="m">100</span>  <span class="p">|</span>
+<span class="p">|</span> security_groups             <span class="p">|</span>  <span class="m">10</span>   <span class="p">|</span>
+<span class="p">|</span> security_group_rules        <span class="p">|</span>  <span class="m">20</span>   <span class="p">|</span>
++-----------------------------+-------+
+</pre></div>
+
+
+<p>Este comando nos muestra 2 columnas delimitadas, en una Quota y en otra
+Limit</p>
+<p>* Quota es el nombre del limite operacional<br>
+* Limit son los valores limite de las quotas, lo que es lo mismo, el
+valor del limite operacional que se le va a poder asignar a un tenant o
+proyecto</p>
+<p>Visto asi es mas facil de asimilarlo en nuestra cabeza para un mejor
+entendimiento ¿verdad?<br>
+Espero haber ayudado en vuestras dudas, un saludo</p><p><a href="/diferencias-entre-quota-y-limit-openstack.html#disqus_thread">comments</a></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

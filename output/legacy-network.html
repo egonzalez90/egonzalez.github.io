@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Legacy Network</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="/category/linux.html">Linux</a></li>
+                    <li><a href="/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="/category/misc.html">misc</a></li>
+                    <li class="active"><a href="/category/openstack.html">OpenStack</a></li>
+                    <li><a href="/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="/category/various.html">Various</a></li>
+                    <li><a href="/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/legacy-network.html" rel="bookmark"
+           title="Permalink to Legacy Network">Legacy Network</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 10 February 2015</span>
+<span>| tags: <a href="/tag/configurar.html">configurar</a><a href="/tag/crear.html">crear</a><a href="/tag/icehouse.html">icehouse</a><a href="/tag/legacy.html">legacy</a><a href="/tag/network.html">network</a><a href="/tag/network-create.html">network-create</a><a href="/tag/nova.html">nova</a><a href="/tag/openstack.html">openstack</a><a href="/tag/red.html">red</a></span>
+</footer><!-- /.post-info -->      <h4>CONTROLLER</h4>
+<p>En controller node configuraremos nova para el uso de legacy network.</p>
+<blockquote>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+network_api_class nova.network.api.API</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+security_group_api nova</p>
+</blockquote>
+<p>Reiniciamos los servicios para que aplique la configuración.</p>
+<blockquote>
+<p># service openstack-nova api restart</p>
+<p># service openstack-nova-scheduler restart</p>
+<p># service openstack-nova-conductor restart</p>
+</blockquote>
+<h4>COMPUTE</h4>
+<p>Instalamos los paquetes de nova-network en controller node.</p>
+<blockquote>
+<p># yum install openstack-nova-network openstack-nova-api</p>
+</blockquote>
+<p>Configuramos varias opciones en nova para el uso de legacy network.</p>
+<blockquote>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+network_api_class nova.network.api.API</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+security_group_api nova</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT network_manager
+     nova.network.manager.FlatDHCPManager</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT firewall_driver
+   nova.virt.libvirt.firewall.IptablesFirewallDriver</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT network_size
+254</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+allow_same_net_traffic False</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT multi_host True</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+send_arp_for_ha True</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+force_dhcp_release True</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+share_dhcp_address True</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+flat_network_bridge br100</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT flat_interface
+eth1</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+public_interface eth1</p>
+</blockquote>
+<p>Iniciamos los servicios y establecemos el arranque con el host.</p>
+<blockquote>
+<p># service openstack-nova-network start</p>
+<p># service openstack-nova-metadata-api start</p>
+<p># chkconfig openstack-nova-network on</p>
+<p># chkconfig openstack-nova-metadata-api on</p>
+</blockquote>
+<h4>CREAR REDES</h4>
+<p>Ahora crearemos la primera red.</p>
+<blockquote>
+<p># nova network-create [name] --bridge br100 --multi-host T
+--fixed-range-v4 [IP_RANGE/*]</p>
+</blockquote>
+<p>Ejemplo, teniendo en cuenta que mi NAT usa el rango 192.168.207.0/24:</p>
+<blockquote>
+<p># nova network-create demo-net --bridge br100 --multi-host T
+--fixed-range-v4 192.168.207.0/24</p>
+</blockquote>
+<p>Listamos la red.</p>
+<blockquote>
+<p># nova net-list</p>
+</blockquote>
+<p>Podemos borrarla de la siguiente forma:</p>
+<blockquote>
+<p># nova net-delete [nombre o ID]</p>
+</blockquote>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

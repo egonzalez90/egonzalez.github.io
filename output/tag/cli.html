@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - CLI</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="/category/linux.html">Linux</a></li>
+                    <li><a href="/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="/category/misc.html">misc</a></li>
+                    <li><a href="/category/openstack.html">OpenStack</a></li>
+                    <li><a href="/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="/category/various.html">Various</a></li>
+                    <li><a href="/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/crear-imagen-ami-con-awscli.html">Crear Imagen AMI con AWScli</a></h1>
+<footer class="post-info">
+        <span>Sun 12 October 2014</span>
+<span>| tags: <a href="/tag/amazon.html">amazon</a><a href="/tag/ami.html">AMI</a><a href="/tag/aws.html">AWS</a><a href="/tag/awscli.html">awscli</a><a href="/tag/cli.html">CLI</a><a href="/tag/createimage.html">create.image</a><a href="/tag/deregister-image.html">deregister-image</a><a href="/tag/describe-images.html">describe-images</a><a href="/tag/image.html">image</a><a href="/tag/images.html">images</a><a href="/tag/instancia.html">instancia</a><a href="/tag/services.html">services</a><a href="/tag/web.html">web</a></span>
+</footer><!-- /.post-info --><p>Crear imagen AMI de una instancia</p>
+<blockquote>
+<p>aws ec2 create-image --instance-id i-7ac29a38 --name "PruebaImagen"
+--description "ImagenPrueba" --no-reboot</p>
+</blockquote>
+<!--more-->
+
+<p>Ver información de una imagen AMI</p>
+<blockquote>
+<p>aws ec2 describe-images --image-id ami-defc5ea9</p>
+</blockquote>
+<p>Des-registrar una imagen AMI (borrarla)</p>
+<blockquote>
+<p>aws ec2 deregister-image --image-id ami-f4fc5e83</p>
+</blockquote><p><a href="/crear-imagen-ami-con-awscli.html#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/instancias-con-awscli.html" rel="bookmark"
+                           title="Permalink to Instancias con AWScli">Instancias con AWScli</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 09 October 2014</span>
+<span>| tags: <a href="/tag/amazon.html">amazon</a><a href="/tag/aws.html">AWS</a><a href="/tag/aws-cli.html">aws cli</a><a href="/tag/cli.html">CLI</a><a href="/tag/cloud.html">cloud</a><a href="/tag/crear.html">crear</a><a href="/tag/describe-instance-status.html">describe-instance-status</a><a href="/tag/image-id.html">image-id</a><a href="/tag/instance-id.html">instance-id</a><a href="/tag/instancia.html">instancia</a><a href="/tag/key-name.html">key-name</a><a href="/tag/run-instance.html">run-instance</a><a href="/tag/security-groupscount.html">security-groups.count</a><a href="/tag/services.html">services</a><a href="/tag/web.html">web</a></span>
+</footer><!-- /.post-info -->                <p>Crear una instancia en EC2 classic:</p>
+<blockquote>
+<p>aws ec2 run-instances --image-id ami-d02386a7 --count 1
+--instance-type t1.micro --key-name kp1 --security-groups default</p>
+</blockquote>
+<!--more-->
+
+<ul>
+<li>run-instances: comando para ejecutar una instancia</li>
+<li>--image-id: ID de la imagen AMI a ejecutar</li>
+<li>--count: numero de instancias a ejecutar</li>
+<li>--instance-type: expecificaciones de hardware de la
+    instancia(CPU,RAM)</li>
+<li>--key-name …</li></ul>
+                <a class="readmore" href="/instancias-con-awscli.html">read more</a>
+<p><a href="/instancias-con-awscli.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/listar-vlan-con-id-con-vmware-powercli.html" rel="bookmark"
+                           title="Permalink to Listar vlan ID con VMware PowerCLI">Listar vlan ID con VMware PowerCLI</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 22 August 2014</span>
+<span>| tags: <a href="/tag/all-vlan.html">all vlan</a><a href="/tag/cli.html">CLI</a><a href="/tag/csv.html">CSV</a><a href="/tag/esxi.html">esxi</a><a href="/tag/excel.html">Excel</a><a href="/tag/host.html">host</a><a href="/tag/id.html">ID</a><a href="/tag/list-portgroup-id.html">list portgroup id</a><a href="/tag/list-vlan.html">list vlan</a><a href="/tag/listar.html">listar</a><a href="/tag/portgroup.html">portgroup</a><a href="/tag/powercli.html">powercli</a><a href="/tag/todas-vlan.html">todas vlan</a><a href="/tag/virtualizacion.html">virtualizacion</a><a href="/tag/vlan.html">Vlan</a><a href="/tag/vlan-id.html">vlan id</a><a href="/tag/vmware.html">vmware</a></span>
+</footer><!-- /.post-info -->                <p>Para poder listar todas las VLans de un host ESXi con su ID primero nos
+deberemos conectar a ese host por PowerCLI, usaremos este comando:</p>
+<blockquote>
+<p>Connect_VIServer -server "host" -user "usuario" -password
+"contraseña"</p>
+</blockquote>
+<p>Una vez conectados a dicho ESXi, utilizaremos el siguiente comando con
+el que listaremos las vlans y los …</p>
+                <a class="readmore" href="/listar-vlan-con-id-con-vmware-powercli.html">read more</a>
+<p><a href="/listar-vlan-con-id-con-vmware-powercli.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

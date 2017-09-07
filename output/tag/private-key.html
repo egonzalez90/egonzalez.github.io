@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - private key</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="/category/linux.html">Linux</a></li>
+                    <li><a href="/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="/category/misc.html">misc</a></li>
+                    <li><a href="/category/openstack.html">OpenStack</a></li>
+                    <li><a href="/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="/category/various.html">Various</a></li>
+                    <li><a href="/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/convertir-claves-pem-a-ppk-putty-aws.html">Convertir claves .pem a .ppk PuTTy AWS</a></h1>
+<footer class="post-info">
+        <span>Sat 13 September 2014</span>
+<span>| tags: <a href="/tag/amazon.html">amazon</a><a href="/tag/aws.html">AWS</a><a href="/tag/cloud.html">cloud</a><a href="/tag/convertir.html">convertir</a><a href="/tag/extension.html">extension</a><a href="/tag/formato.html">formato</a><a href="/tag/pem.html">pem</a><a href="/tag/ppk.html">ppk</a><a href="/tag/private-key.html">private key</a><a href="/tag/putty.html">putty</a><a href="/tag/puttygen.html">puttygen</a><a href="/tag/services.html">services</a><a href="/tag/web.html">web</a></span>
+</footer><!-- /.post-info --><p>Para poder conectarse a Amazon Web Services desde PuTTy, es necesario
+que la clave .pem que nos proporciona AWS esté en formato .ppk que es el
+que reconoce PuTTy. Para convertir las .pem a .ppk seguiremos los
+siguientes pasos: <!--more--></p>
+<p>Debes tener instalado Putty en el equipo con la tool PuTTygen</p>
+<p>Una vez abierta la tool PuTTygen, pulsaremos en LOAD</p>
+<p>Nos abrirá el explorador de archivos y marcaremos todos los archivos, ya
+que PuTTY solo mostrara las claves .ppk</p>
+<p>Seleccionaremos nuestra clave .pem</p>
+<p>Por ultimo daremos a Save Private Key, nos preguntara si la queremos
+guardar sin contraseña y pulsaremos YES.</p>
+<p>Pondremos el mismo nombre que la clave .pem, PuTTY pondrá la extensión
+.ppk</p>
+<p>Ya estaría la clave creada en formato .ppk para poder conectarnos a AWS
+a través de PuTTy</p><p><a href="/convertir-claves-pem-a-ppk-putty-aws.html#disqus_thread">comments</a></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

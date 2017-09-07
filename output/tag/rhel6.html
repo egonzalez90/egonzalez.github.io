@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - rhel6</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="/category/linux.html">Linux</a></li>
+                    <li><a href="/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="/category/misc.html">misc</a></li>
+                    <li><a href="/category/openstack.html">OpenStack</a></li>
+                    <li><a href="/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="/category/various.html">Various</a></li>
+                    <li><a href="/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/error-configuracion-red-en-rhel-6-y-vmware-esxi-5-5.html">Error configuración red en RHEL 6 y VMware ESXi 5.5</a></h1>
+<footer class="post-info">
+        <span>Thu 07 August 2014</span>
+<span>| tags: <a href="/tag/55.html">5.5</a><a href="/tag/70-persistent-netrules.html">70-persistent-net.rules</a><a href="/tag/clon.html">clon</a><a href="/tag/clondado.html">clondado</a><a href="/tag/daemon.html">daemon</a><a href="/tag/esxi.html">esxi</a><a href="/tag/eth0.html">eth0</a><a href="/tag/ifcfg-eth.html">ifcfg-eth</a><a href="/tag/linux.html">linux</a><a href="/tag/network.html">network</a><a href="/tag/network-manager.html">network manager</a><a href="/tag/nic.html">nic</a><a href="/tag/nm_controlled.html">nm_controlled</a><a href="/tag/red-hat.html">red hat</a><a href="/tag/rhel6.html">rhel6</a><a href="/tag/sysadmin.html">sysadmin</a><a href="/tag/virtualizacion.html">virtualizacion</a><a href="/tag/vmware.html">vmware</a><a href="/tag/vmxnet3.html">vmxnet3</a></span>
+</footer><!-- /.post-info --><p>Ultimamente, desde que hemos empezado a trabajar mas con RHEL 6, nos
+dimos cuenta que tras el clonado de las VM, las interfaces de red no se
+configuraban bien.</p>
+<p>Primero vimos que las MAC de la eth, no se asignaban correctamente, y
+despues comprobamos que una vez configuradas al hacer reboot o reinicio
+de la red, estas se configuraban como les daba la gana y perdias la
+configuracion e internet.</p>
+<p>Pues bien, tras un proceso de investigacion llege a la solucion( o al
+menos en nuestro sistema), los pasos son los siguientes:</p>
+<p>-Quitar las NIC de la antigua configuracion</p>
+<p>-Añadir las NIC en vmxnet3 en el vCenter igual que estaban configuradas
+anteriormente</p>
+<p>-Borrar el archivo /etc/udev/rules.d/70-persistent-net.rules</p>
+<p>-Configurar los archivos /etc/sysconfig/network-scripts/ifcfg-eth*
+añadiendo la linea entre su configuracion</p>
+<p><strong>NM_CONTROLLED=no</strong></p>
+<p>-Parar el servicio NetworkManager y deshabilitarlo del arranque</p>
+<p><strong>service NetworkManager stop</strong></p>
+<p><strong>chkconfig NetworkManager off</strong></p>
+<p>-Habilitar el servicio network en arranque(puede que ya lo esté)</p>
+<p><strong>chkconfig network on</strong></p>
+<p>-Instalar las vmtools</p>
+<p>-Reiniciar la maquina y comprobar que no cambia la configuración entre
+el inicio del sistema y tras service network restart</p>
+<p>Bien, el problema que había, es que por algún error, el network manager
+se hacia con el control de la red y daba errores con el demonio network,
+lo que hacemos para solucionarlo es, borrar el archivo de la
+configuración de las tarjetas,configurar las eth deshabilitando el
+control por el Network manager y después deshabilitar Network Manager
+del sistema.</p>
+<p>De este modo nos funciona sin ningun problema la red.</p>
+<p>Espero haber ayudado, un saludo</p><p><a href="/error-configuracion-red-en-rhel-6-y-vmware-esxi-5-5.html#disqus_thread">comments</a></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
