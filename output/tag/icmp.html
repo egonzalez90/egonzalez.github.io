@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - icmp</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="/category/linux.html">Linux</a></li>
+                    <li><a href="/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="/category/misc.html">misc</a></li>
+                    <li><a href="/category/openstack.html">OpenStack</a></li>
+                    <li><a href="/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="/category/various.html">Various</a></li>
+                    <li><a href="/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/primera-instancia.html">Primera instancia</a></h1>
+<footer class="post-info">
+        <span>Mon 23 February 2015</span>
+<span>| tags: <a href="/tag/crear.html">crear</a><a href="/tag/habilitar.html">habilitar</a><a href="/tag/icehouse.html">icehouse</a><a href="/tag/icmp.html">icmp</a><a href="/tag/instancias.html">instancias</a><a href="/tag/openstack.html">openstack</a><a href="/tag/ping.html">ping</a><a href="/tag/primera.html">primera</a><a href="/tag/security-group.html">security group</a><a href="/tag/ssh.html">ssh</a><a href="/tag/ssh-keygen.html">ssh-keygen</a><a href="/tag/vnc.html">vnc</a></span>
+</footer><!-- /.post-info --><p>Primero creamos la clave.</p>
+<blockquote>
+<p># ssh-keygen</p>
+</blockquote>
+<p>Añadimos la clave creada a openstack.</p>
+<blockquote>
+<p># nova keypair-add --pub-key \~/.ssh/id_rsa.pub [nombre]</p>
+</blockquote>
+<p>Comprobamos que está asociada en nuestro entorno.</p>
+<blockquote>
+<p># nova keypair-list</p>
+</blockquote>
+<p>Para crear instancias necesitaremos los siguientes valores:</p>
+<ul>
+<li>Flavors (# nova flavor-list)</li>
+<li>Imagenes (# nova image-list)</li>
+<li>Networks (# nova net-list)</li>
+<li>securityGroups (# nova secgroup-list)</li>
+</ul>
+<p>Una vez tenemos esos valores necesarios procederemos a crear una
+instancia.</p>
+<blockquote>
+<p># nova boot --flavor [flavor] --image [image_ID] --nic
+net-id=[net_ID] --security-group [SecGroup] --key-name [keyname]
+[NombreInstancia]</p>
+</blockquote>
+<p>Ejemplo:</p>
+<blockquote>
+<p>nova boot --flavor m1.tiny --image cirros-0.3.2-x86_64 --nic
+net-id=[NET_ID] --security-group default --key-name demo-key
+Instancia1</p>
+</blockquote>
+<p>Comprobremos el estado de la instancia.</p>
+<blockquote>
+<p># nova list</p>
+</blockquote>
+<p>Crearemos una sesion por VNC.</p>
+<blockquote>
+<p># nova get-vnc-console [Instancia] novnc</p>
+</blockquote>
+<p>Habilitamos Ping y SSH al Security Group "Default".</p>
+<blockquote>
+<p># nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0</p>
+<p># nova secgroup-add-rule default tcp 22 22 0.0.0.0/0</p>
+</blockquote>
+<p>Comprobamos las conexiones por ping y por SSH.</p>
+<blockquote>
+<p># ssh cirros@IP</p>
+<p>*Password por defecto cubswin:)</p>
+</blockquote><p><a href="/primera-instancia.html#disqus_thread">comments</a></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - OpenStack</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="/category/linux.html">Linux</a></li>
+                    <li><a href="/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="/category/misc.html">misc</a></li>
+                    <li class="active"><a href="/category/openstack.html">OpenStack</a></li>
+                    <li><a href="/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="/category/various.html">Various</a></li>
+                    <li><a href="/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+                <section id="content" class="body">
+                    <ol id="posts-list" class="hfeed" start="2">
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/keystone-api-endpoint.html" rel="bookmark"
+                           title="Permalink to Keystone API endpoint">Keystone API endpoint</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 23 December 2014</span>
+<span>| tags: <a href="/tag/api.html">api</a><a href="/tag/cloud.html">cloud</a><a href="/tag/endpoint.html">endpoint</a><a href="/tag/identity-service.html">identity service</a><a href="/tag/keystone.html">keystone</a><a href="/tag/openstack.html">openstack</a></span>
+</footer><!-- /.post-info -->                <p>Una vez configurado Keystone, creados sus usuarios y el servicio,
+deberemos de decirle a Identity Service donde debe ir a "buscar" el
+servicio. Para ello configuramos los Endpoints, que no son ni mas ni
+menos que las direcciones donde están los servicios.Al tener únicamente
+a Identity Service configurado solo …</p>
+                <a class="readmore" href="/keystone-api-endpoint.html">read more</a>
+<p><a href="/keystone-api-endpoint.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/usuarios-tenants-y-roles.html" rel="bookmark"
+                           title="Permalink to Usuarios, Tenants y Roles">Usuarios, Tenants y Roles</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 28 November 2014</span>
+<span>| tags: <a href="/tag/add.html">add</a><a href="/tag/admin.html">admin</a><a href="/tag/create.html">create</a><a href="/tag/demo.html">demo</a><a href="/tag/keystone.html">keystone</a><a href="/tag/openstack.html">openstack</a><a href="/tag/role.html">role</a><a href="/tag/service.html">service</a><a href="/tag/tenant.html">tenant</a><a href="/tag/user.html">user</a></span>
+</footer><!-- /.post-info -->                <p>Una vez tenemos instalado el servicio de Keystone, deberemos crear el
+usuario de administración, su rol y su tenant. Para ello seguiremos los
+siguientes pasos:</p>
+<p>Como aun no tenemos el usuario de administración, utilizaremos
+ADMIN_TOKEN para poder utilizar comandos de keystone. Introduciremos
+estos comandos para establecer ADMIN_TOKEN y el ENDPOINT …</p>
+                <a class="readmore" href="/usuarios-tenants-y-roles.html">read more</a>
+<p><a href="/usuarios-tenants-y-roles.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/816.html" rel="bookmark"
+                           title="Permalink to Instalación Identity Service (Keystone)">Instalación Identity Service (Keystone)</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 21 November 2014</span>
+<span>| tags: <a href="/tag/cloud.html">cloud</a><a href="/tag/configuracion.html">configuracion</a><a href="/tag/guia.html">guia</a><a href="/tag/identity.html">identity</a><a href="/tag/instalacion.html">instalacion</a><a href="/tag/keystone.html">keystone</a><a href="/tag/openstack.html">openstack</a></span>
+</footer><!-- /.post-info -->                <p>Primero instalaremos los paquetes necesarios de Openstack Identity
+Service</p>
+<blockquote>
+<p>yum install openstack-keystone python-keystoneclient</p>
+</blockquote>
+<p>A Continuación configuraremos keystone para usar la base de datos MySQL
+que habiamos creado</p>
+<blockquote>
+<p>openstack-config --set /etc/keystone/keystone.conf database connection
+mysql://keystone:PASSWORD@controller/keystone</p>
+</blockquote>
+<p>Crearemos la base de datos para keystone y el usuario …</p>
+                <a class="readmore" href="/816.html">read more</a>
+<p><a href="/816.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+        <a href="/category/openstack9.html">&laquo;</a>
+    Page 10 / 16
+        <a href="/category/openstack11.html">&raquo;</a>
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

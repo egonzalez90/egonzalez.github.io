@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - shellshock</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="/category/linux.html">Linux</a></li>
+                    <li><a href="/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="/category/misc.html">misc</a></li>
+                    <li><a href="/category/openstack.html">OpenStack</a></li>
+                    <li><a href="/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="/category/various.html">Various</a></li>
+                    <li><a href="/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/fix-bash-shellshock-en-diferentes-so-debian-rhel-y-solaris-shellshock.html">Fix Bash (ShellShock) en diferentes SO: Debian, RHEL y Solaris</a></h1>
+<footer class="post-info">
+        <span>Wed 01 October 2014</span>
+<span>| tags: <a href="/tag/actualizar.html">actualizar</a><a href="/tag/bash.html">bash</a><a href="/tag/bug.html">bug</a><a href="/tag/centos.html">centos</a><a href="/tag/debian.html">Debian</a><a href="/tag/fix.html">fix</a><a href="/tag/oracle.html">oracle</a><a href="/tag/red-hat.html">red hat</a><a href="/tag/rhel.html">rhel</a><a href="/tag/shellshock.html">shellshock</a><a href="/tag/solaris.html">solaris</a></span>
+</footer><!-- /.post-info --><p>Veremos la forma de instalar los parches de Bash en diferentes sistemas
+Linux<!--more--></p>
+<h1>Debian 6</h1>
+<p>Primero deberemos añadir el repositorio LTS. Lo haremos añadiendo esta
+línea a el archivo siguiente archivo</p>
+<blockquote>
+<p>vi /etc/apt/sources.list/</p>
+<p>deb http://ftp.us.debian.org/debian squeeze-lts main non-free contrib</p>
+</blockquote>
+<p>A continuación importaremos la clave del servidor de Debian</p>
+<blockquote>
+<p>gpg --keyserver pgpkeys.mit.edu --recv-key 8B48AD6246925553</p>
+</blockquote>
+<p>La exportaremos y añadiremos para que al actualizar la reconozca, es
+posible que estos pasos no sean necesarios, pero normalmente suele dar
+el error de la clave</p>
+<blockquote>
+<p>gpg -a --export 8B48AD6246925553 | apt-key add –</p>
+</blockquote>
+<p>A partir de aquí será lo igual que con Debian 7</p>
+<h1>Debian 7</h1>
+<p>Actualizaremos la lista de repositorios</p>
+<blockquote>
+<p>apt-get update</p>
+</blockquote>
+<p>Lo siguiente es actualizar solo el paquete bash</p>
+<blockquote>
+<p>apt-get install --only-upgrade bash</p>
+</blockquote>
+<h1>RHEL-CentOS 5, 6 y 7</h1>
+<p>Directamente actualizando el paquete bash</p>
+<blockquote>
+<p>yum update bash</p>
+</blockquote>
+<p>O instalándolo desde el paquete .rpm disponible en la página de RHEL, o
+en los repositorios de CentOS, Scientific Linux, etc</p>
+<blockquote>
+<p>rpm –Uvh paquetebash.rpm</p>
+</blockquote>
+<p>Puedes comprobar que esta la ultima versión instalada viendo la fecha y
+la versión del paquete mediante</p>
+<blockquote>
+<p>rpm –qi bash</p>
+</blockquote>
+<h1>Oracle Linux 6</h1>
+<p>En Oracle Linux primero deberemos añadir los repositorios de paquetes
+públicos, para ello iremos a la siguiente ruta.</p>
+<blockquote>
+<p>cd /etc/yum.repos.d</p>
+</blockquote>
+<p>A continuación descargaremos el repositorio público dentro de la misma
+carpeta:</p>
+<blockquote>
+<p>wget http://public-yum.oracle.com/public-yum-ol6.repo</p>
+</blockquote>
+<p>Por ultimo actualizaremos bash a su última versión disponible</p>
+<blockquote>
+<p>yum update bash</p>
+</blockquote><p><a href="/fix-bash-shellshock-en-diferentes-so-debian-rhel-y-solaris-shellshock.html#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/shellshock-cve-2014-6271-cve-2014-7169-rhel.html" rel="bookmark"
+                           title="Permalink to ShellShock CVE-2014-6271, CVE-2014-7169 RHEL">ShellShock CVE-2014-6271, CVE-2014-7169 RHEL</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 26 September 2014</span>
+<span>| tags: <a href="/tag/bash.html">bash</a><a href="/tag/cve-2014-6271.html">CVE-2014-6271</a><a href="/tag/cve-2014-7169.html">CVE-2014-7169</a><a href="/tag/fix.html">fix</a><a href="/tag/parche.html">parche</a><a href="/tag/red-hat.html">red hat</a><a href="/tag/rhel.html">rhel</a><a href="/tag/seguridad.html">Seguridad</a><a href="/tag/shellshock.html">shellshock</a><a href="/tag/vulnerable.html">vulnerable</a><a href="/tag/yum-update.html">yum update</a></span>
+</footer><!-- /.post-info -->                <p>Para comprobar que el sistema es vulnerable a <span
+style="font-family: 'Liberation Sans', 'Trebuchet MS', 'Bitstream Vera Sans', helvetica, verdana, arial, sans-serif; line-height: 18.2000007629395px;">CVE-2014-6271</span></p>
+<p>``` {style="border-width: 1px 1px 1px 2px; border-style: solid; border-color: #eeeeee #eeeeee #eeeeee #cccccc; margin: 10px 20px; padding: 10px; vertical-align: baseline; font-family: 'Liberation Sans', 'Luxi Sans', 'Trebuchet MS', 'Bitstream Vera Sans', helvetica, verdana, arial, sans-serif; white-space: pre; overflow-x: auto; width: auto; word-wrap …</p>
+                <a class="readmore" href="/shellshock-cve-2014-6271-cve-2014-7169-rhel.html">read more</a>
+<p><a href="/shellshock-cve-2014-6271-cve-2014-7169-rhel.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
