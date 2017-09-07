@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <meta name="description" content="OpenStack things : OpenStack, Docker, Ansible, Ceph, Linux">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/style.css?v=9a6333a51cf04996f04338046deefb14dd69cda4">
+
+<!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Alineamiento MBR maquinas virtuales | OpenStack things</title>
+<meta property="og:title" content="Alineamiento MBR maquinas virtuales">
+<meta name="author" content="Editor">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="Antes de la llegada de el sistema de ficheros EXT4, cuando creabas maquinas virtuales, estas estaban desalineadas el mbr del vmfs y de el almacenamiento,  lo que generaba menor rendimiento.">
+<meta property="og:description" content="Antes de la llegada de el sistema de ficheros EXT4, cuando creabas maquinas virtuales, estas estaban desalineadas el mbr del vmfs y de el almacenamiento,  lo que generaba menor rendimiento.">
+<link rel="canonical" href="http://217.182.136.201:5000/alineamiento-mbr-maquinas-virtuales/">
+<meta property="og:url" content="http://217.182.136.201:5000/alineamiento-mbr-maquinas-virtuales/">
+<meta property="og:site_name" content="OpenStack things">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2014-09-03T15:21:58+00:00">
+<script type="application/ld+json">
+{"name":null,"description":"Antes de la llegada de el sistema de ficheros EXT4, cuando creabas maquinas virtuales, estas estaban desalineadas el mbr del vmfs y de el almacenamiento,  lo que generaba menor rendimiento.","author":{"@type":"Person","name":"Editor"},"@type":"BlogPosting","url":"http://217.182.136.201:5000/alineamiento-mbr-maquinas-virtuales/","publisher":null,"image":null,"headline":"Alineamiento MBR maquinas virtuales","dateModified":"2014-09-03T15:21:58+00:00","datePublished":"2014-09-03T15:21:58+00:00","sameAs":null,"mainEntityOfPage":{"@type":"WebPage","@id":"http://217.182.136.201:5000/alineamiento-mbr-maquinas-virtuales/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="http://github.com/egonzalez90/egonzalez90.github.io">View on GitHub</a>
+
+          <h1 id="project_title">OpenStack things</h1>
+          <h2 id="project_tagline">OpenStack, Docker, Ansible, Ceph, Linux</h2>
+
+          
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>Antes de la llegada de el sistema de ficheros EXT4, cuando creabas maquinas virtuales, estas estaban desalineadas el mbr del vmfs y de el almacenamiento,  lo que generaba menor rendimiento.<!--more--></p>
+
+<p>Para ello dedico esta entrada, con la que mostrare como alinear el mbr.</p>
+
+<p>Lo primero que necesitaremos es el paquete con las tools mbrscan y mbralign, este paquete le copiaremos a el directorio /opt/ontap/ de un host ESXi que tenga acceso al almacenamiento donde tenemos la maquina guardada.</p>
+
+<p>Una vez copiado el paquete a dicho directorio pasaremos a escanear y a realinear el mbr de la maquina, para ello necesitamos que este apagada.</p>
+
+<p>Una vez apagada iremos al directorio /opt/ontap/ y ejecutaremos el siguiente comando con el que analizaremos el disco de la maquina para ver si necesita ser alineado.</p>
+<blockquote>./mbrscan /vmfs/volumes/ALMACENAMIENTO/maquinavirtual/maquinavirtual-flat.vmdk</blockquote>
+<p>Esto nos mostrara un mensaje en el que pondra:</p>
+<blockquote>Aligned yes o Aligned no</blockquote>
+<p>En el caso de que pusiera align no, deberemos realinear el mbr de la maquina, lo haremos mediante este comando:</p>
+<blockquote>./mbralign /vmfs/volumes/ALMACENAMIENTO/maquinavirtual/maquinavirtual-flat.vmdk</blockquote>
+<p>Esto nos creara un archivo .bak del disco que vamos a alinear por si fallara este proceso poder recuperarlo, este proceso tardara bastante(dependiendo del tamaño del disco)</p>
+
+<p>Una vez acabado ese proceso de alineamiento, volveremos a utilizar el comando mbrscan para comprobar que este bien hecho.</p>
+
+<p>Por ultimo, el alineado del mbr se carga totalmente el GRUB de la maquina, por lo que deberemos recuperarlo.</p>
+
+<p>En esta entrada tienes como hacerlo: <a title="Recuperar GRUB RHEL y CentOS" href="http://egonzalez.org/recuperar-grub-rhel-y-centos/%20" target="_blank"><span id="sample-permalink" style="color: #666666;" tabindex="-1">http://egonzalez.org/<span id="editable-post-name" title="Enlace permanente temporal. Haz clic para editar esta parte.">recuperar-grub-rhel-y-centos</span>/</span><span style="color: #666666;"> </span></a></p>
+
+<p>Una vez recuperado el GRUB y comprobado que la maquina funciona correctamente, borraremos el archivo .bak que se había creado.</p>
+
+<p>Espero poder ayudar, un saludo</p>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        
+        <p class="copyright">OpenStack things maintained by <a href="http://github.com/egonzalez90">egonzalez90</a></p>
+        
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+  </body>
+</html>

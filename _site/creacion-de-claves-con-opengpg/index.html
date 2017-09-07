@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <meta name="description" content="OpenStack things : OpenStack, Docker, Ansible, Ceph, Linux">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/style.css?v=9a6333a51cf04996f04338046deefb14dd69cda4">
+
+<!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Creación de claves con OpenPGP | OpenStack things</title>
+<meta property="og:title" content="Creación de claves con OpenPGP">
+<meta name="author" content="Editor">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="En esta entrada mostrare el proceso para la creación de claves simétricas y asimétricas con openpgp en Linux">
+<meta property="og:description" content="En esta entrada mostrare el proceso para la creación de claves simétricas y asimétricas con openpgp en Linux">
+<link rel="canonical" href="http://217.182.136.201:5000/creacion-de-claves-con-opengpg/">
+<meta property="og:url" content="http://217.182.136.201:5000/creacion-de-claves-con-opengpg/">
+<meta property="og:site_name" content="OpenStack things">
+<meta property="og:image" content="http://217.182.136.201:5000/wp-content/uploads/2014/03/131.png">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2014-03-30T15:21:07+00:00">
+<script type="application/ld+json">
+{"name":null,"description":"En esta entrada mostrare el proceso para la creación de claves simétricas y asimétricas con openpgp en Linux","author":{"@type":"Person","name":"Editor"},"@type":"BlogPosting","url":"http://217.182.136.201:5000/creacion-de-claves-con-opengpg/","publisher":null,"image":"http://217.182.136.201:5000/wp-content/uploads/2014/03/131.png","headline":"Creación de claves con OpenPGP","dateModified":"2014-03-30T15:21:07+00:00","datePublished":"2014-03-30T15:21:07+00:00","sameAs":null,"mainEntityOfPage":{"@type":"WebPage","@id":"http://217.182.136.201:5000/creacion-de-claves-con-opengpg/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="http://github.com/egonzalez90/egonzalez90.github.io">View on GitHub</a>
+
+          <h1 id="project_title">OpenStack things</h1>
+          <h2 id="project_tagline">OpenStack, Docker, Ansible, Ceph, Linux</h2>
+
+          
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p><strong>En esta entrada mostrare el proceso para la creación de claves simétricas y asimétricas con openpgp en Linux</strong></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/1.png"><!--more--></a></p>
+<p style="text-align: center;"><span style="color: #ff0000;"><em><strong>Clave Simétrica </strong></em></span></p>
+<p><b>En Linux por defecto te viene instalado openpgp.</b></p>
+
+<p> </p>
+
+<p><b>Para crear una clave simétrica, deberemos escribir gpg con el modificador –c y el nombre del archivo creado que se quiera encriptar</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/1.png"><img class="aligncenter size-full wp-image-394" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/1.png" alt="1" width="477" height="24"></a></p>
+
+<p> </p>
+
+<p><b>Esto nos solicitara la clave que queramos asignarla dos veces, la rellenamos y ya tenemos el archivo encriptado de forma simétrica.</b></p>
+
+<p><b>Para desencriptar usaremos el comando gpg con el modificado –d y el archivo que queramos desencriptar, que tiene que acabar en .gpg</b></p>
+
+<p><b>Esto nos solicitara la clave que le habíamos puesto, y a continuación nos creara el archivo desencriptado</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/2.png"><img class="aligncenter size-full wp-image-395" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/2.png" alt="2" width="523" height="80"></a></p>
+<p style="text-align: center;"><strong><span style="color: #ff0000;">Clave asimétrica </span></strong></p>
+<p><strong>Para crear la clave asimétrica, pondremos el comando gpg –gen-key</strong></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/3.png"><img class="aligncenter size-full wp-image-396" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/3.png" alt="3" width="403" height="21"></a></p>
+
+<p><b>Esto nos solicitara que le indiquemos el algoritmo de cifrado que deseemos utilizar, nosotros usaremos la opción 1 default RSA</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/4.png"><img class="aligncenter size-full wp-image-397" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/4.png" alt="4" width="372" height="111"></a></p>
+
+<p><b>Ahora nos pide que indiquemos la longitud de bits de las claves RSA, nosotros pondremos un término medio y el que nos aconseja, esta longitud es 2048</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/5.png"><img class="aligncenter size-full wp-image-398" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/5.png" alt="5" width="414" height="49"></a></p>
+
+<p><b>Ahora indicaremos el tiempo que queremos que tenga de vida la clave, nosotros usaremos 1y, para indicar 1 año</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/6.png"><img class="aligncenter size-full wp-image-399" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/6.png" alt="6" width="402" height="132"></a></p>
+
+<p><b>Nos indicara el día y hora de la expiración de la clave y preguntara si es correcto, damos y avanzamos</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/7.png"><img class="aligncenter size-full wp-image-400" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/7.png" alt="7" width="392" height="37"></a></p>
+
+<p><b>Ahora nos preguntara el nombre real del que crea la clave, yo pongo el nombre de usuario</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/8.png"><img class="aligncenter size-full wp-image-401" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/8.png" alt="8" width="626" height="98"></a></p>
+
+<p><b>Seguidamente, nos preguntara el email,  le ponemos, y avanzamos a lo siguiente</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/9.png"><img class="aligncenter size-full wp-image-402" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/9.png" alt="9" width="322" height="23"></a></p>
+
+<p><b>Después nos dirá si todo es correcto y nos mostrara el nombre e email del usuario, damos O y pasamos al siguiente paso</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/10.png"><img class="aligncenter size-full wp-image-403" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/10.png" alt="10" width="469" height="73"></a></p>
+
+<p><b>Lo siguiente sería crear la clave, para ello la indicamos la clave que queramos usar, la repetimos dos veces</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/12.png"><img class="aligncenter size-full wp-image-404" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/12.png" alt="12" width="427" height="30"></a></p>
+
+<p><b>Ahora generara el proceso de creación de la clave, esto nos puede solicitar que utilicemos recursos del sistema, abrimos ventanas, navegadores, etc para que complete la creación de la clave asimétrica.</b></p>
+
+<p><b>Después nos dará un mensaje con la información del proceso, deberías ser que se ha creado correctamente todo.</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/131.png"><img class="aligncenter size-full wp-image-409" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/131.png" alt="13" width="610" height="241"></a></p>
+
+<p><b>Ahora iremos a comprobar que se han creado las claves correctamente, para ello utilizaremos el comando gpg –k, que nos mostrara las claves que tenemos creadas.</b></p>
+
+<p><b>Aquí vemos la clave pública y la privada, y en el medio de ambas, el nombre de usuario de la clave.</b></p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/141.png"><img class="aligncenter size-full wp-image-410" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/141.png" alt="14" width="488" height="140"></a></p>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        
+        <p class="copyright">OpenStack things maintained by <a href="http://github.com/egonzalez90">egonzalez90</a></p>
+        
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+  </body>
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = 'https://egonzalez-1.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+</html>

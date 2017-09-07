@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <meta name="description" content="OpenStack things : OpenStack, Docker, Ansible, Ceph, Linux">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/style.css?v=9a6333a51cf04996f04338046deefb14dd69cda4">
+
+<!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Migrate from keystone v2.0 to keystone v3 OpenStack Liberty | OpenStack things</title>
+<meta property="og:title" content="Migrate from keystone v2.0 to keystone v3 OpenStack Liberty">
+<meta name="author" content="Editor">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="Migrate from keystone v2.0 to v3 isn’t as easy like just changing the endpoints at the database, every service must be configured to authenticate against keystone v3. I’ve been working on that the past few days looking for a method, with the purpose of facilitate operators life’s who need this kind of migration. I have to thank Adam Young work, i followed his blog to make a first configuration idea, after that, i configured all core services to make use of keystone v3. If you want to check Adam’s blog, follow this link: http://adam.younglogic.com/2015/05/rdo-v3-only/ I used OpenStack Liberty installed with RDO packstack over CentOS 7 servers. The example IP used is 192.168.200.168, use your own according your needs. Password used for all services is PASSWD1234, use your own password, you can locate your passwords at the packstack answer file. Horizon First we configure Horizon with keystone v3 as below: vi /etc/openstack-dashboard/local_settings OPENSTACK_API_VERSIONS = { &quot;identity&quot;: 3 } OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'Default' keystone Check your current identity endpoints mysql --user keystone_admin --password=PASSWD1234 keystone -e &quot;select interface, url from endpoint where service_id = (select id from service where service.type = 'identity');&quot; Change your public, admin and internal endpoints with v3 at the end, instead of v2.0 mysql --user keystone_admin --password=PASSWD1234 keystone -e &quot;update endpoint set url = 'http://192.168.200.178:5000/v3' where interface ='internal' and service_id = (select id from service where service.type = 'identity');&quot; mysql --user keystone_admin --password=PASSWD1234 keystone -e &quot;update endpoint set url = 'http://192.168.200.178:5000/v3' where interface ='public' and service_id = (select id from service where service.type = 'identity');&quot; mysql --user keystone_admin --password=PASSWD1234 keystone -e &quot;update endpoint set url = 'http://192.168.200.178:35357/v3' where interface ='admin' and service_id = (select id from service where service.type = 'identity');&quot; Ensure the endpoints are properly created mysql --user keystone_admin --password=KEYSTONE_DB_PW keystone -e &quot;select interface, url from endpoint where service_id = (select id from service where service.type = 'identity');&quot; Create a source file or edit keystonerc_admin with the following data vi v3_keystone unset OS_SERVICE_TOKEN export OS_USERNAME=admin export OS_PASSWORD=PASSWD1234 export OS_AUTH_URL=http://192.168.200.178:5000/v3 export OS_PROJECT_NAME=admin export OS_PROJECT_DOMAIN_NAME=Default export OS_USER_DOMAIN_NAME=Default export OS_REGION_NAME=RegionOne export PS1='[\u@\h \W(keystone_admin)]\$ ' export OS_IDENTITY_API_VERSION=3 Comment both pipelines, in public_api and admin_api vi /usr/share/keystone/keystone-dist-paste.ini [pipeline:public_api] # The last item in this pipeline must be public_service or an equivalent # application. It cannot be a filter. #pipeline = sizelimit url_normalize request_id build_auth_context token_auth admin_token_auth json_body ec2_extension user_crud_extension public_service [pipeline:admin_api] # The last item in this pipeline must be admin_service or an equivalent # application. It cannot be a filter. #pipeline = sizelimit url_normalize request_id build_auth_context token_auth admin_token_auth json_body ec2_extension s3_extension crud_extension admin_service Comment v2.0 entries in composite:main and admin sections. [composite:main] use = egg:Paste#urlmap #/v2.0 = public_api /v3 = api_v3 / = public_version_api [composite:admin] use = egg:Paste#urlmap #/v2.0 = admin_api /v3 = api_v3 / = admin_version_api Restart httpd to apply changes systemctl restart httpd Check whether keystone and horizon are properly working The command below should prompt an user list, if not, check configuration in previous steps openstack user list Glance Edit the following files, with the content below: vi /etc/glance/glance-api.conf vi /etc/glance/glance-registry.conf vi /etc/glance/glance-cache.conf [keystone_authtoken] auth_plugin = password auth_url = http://192.168.200.178:35357 username = glance password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Comment the following lines: #auth_host=127.0.0.1 #auth_port=35357 #auth_protocol=http #identity_uri=http://192.168.200.178:35357 #admin_user=glance #admin_password=PASSWD1234 #admin_tenant_name=services Those lines, should be commented in all the other OpenStack core services at keystone_authtoken section Edit the files below and comment the lines inside keystone_authtoken section. vi /usr/share/glance/glance-api-dist.conf vi /usr/share/glance/glance-registry-dist.conf [keystone_authtoken] #admin_tenant_name = %SERVICE_TENANT_NAME% #admin_user = %SERVICE_USER% #admin_password = %SERVICE_PASSWORD% #auth_host = 127.0.0.1 #auth_port = 35357 #auth_protocol = http Restart glance services openstack-service restart glance Ensure glance service is working openstack image list Nova Edit the file below and comment the lines inside keystone_authtoken vi /usr/share/nova/nova-dist.conf [keystone_authtoken] #auth_host = 127.0.0.1 #auth_port = 35357 #auth_protocol = http Edit nova.conf and add the auth content inside keystone_authtoken, don’t forget to comment the lines related to the last auth method, which were commented in glance section. vi /etc/nova/nova.conf [keystone_authtoken] auth_plugin = password auth_url = http://192.168.200.178:35357 username = nova password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Configure nova authentication against neutron [neutron] auth_plugin = password auth_url = http://192.168.200.178:35357 username = neutron password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Restart nova services to apply changes openstack-service restart nova Check if nova works openstack hypervisor list Neutron Comment or remove the following entries at api-paste.ini and add the new version auth lines vi /etc/neutron/api-paste.ini [filter:authtoken] #identity_uri=http://192.168.200.178:35357 #admin_user=neutron #admin_password=PASSWD1234 #auth_uri=http://192.168.200.178:5000/v2.0 #admin_tenant_name=services auth_plugin = password auth_url = http://192.168.200.178:35357 username = neutron password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Configure v3 authentication for metadata service, remember comment the old auth lines vi /etc/neutron/metadata_agent.ini [DEFAULT] auth_plugin = password auth_url = http://192.168.200.178:35357 username = neutron password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Configure neutron server with v3 auth vi /etc/neutron/neutron.conf nova_admin_auth_url = http://192.168.200.178:5000 # nova_admin_tenant_id =1fb93c84c6474c5ea92c0ed5f7d4a6a7 nova_admin_tenant_name = services [keystone_authtoken] auth_plugin = password auth_url = http://192.168.200.178:35357 username = neutron password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 #auth_uri = http://192.168.200.178:5000/v2.0 #identity_uri = http://192.168.200.178:35357 #admin_tenant_name = services #admin_user = neutron #admin_password = PASSWD1234 Configure neutron auth against nova services [nova] auth_plugin = password auth_url = http://192.168.200.178:35357 username = nova password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Restart neutron services to apply changes openstack-service restart neutron Test correct neutron funtionality openstack network list Cinder Edit api-paste.ini with the following content vi /etc/cinder/api-paste.ini [filter:authtoken] paste.filter_factory = keystonemiddleware.auth_token:filter_factory auth_plugin = password auth_url = http://192.168.200.178:35357 username = cinder password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 #admin_tenant_name=services #auth_uri=http://192.168.200.178:5000/v2.0 #admin_user=cinder #identity_uri=http://192.168.200.178:35357 #admin_password=PASSWD1234 Restart cinder services to apply changes openstack-service restart cinder Ensure cinder is properly running openstack volume create --size 1 testvolume openstack volume list Now, you can check if nova is working fine, create an instance and ensure it is in ACTIVE state. openstack server create --flavor m1.tiny --image cirros --nic net-id=a1aa6336-9ae2-4ffb-99f5-1b6d1130989c testinstance openstack server list If any error occurs, review configuration files Swift Configure proxy server auth agains keystone v3 vi /etc/swift/proxy-server.conf [filter:authtoken] log_name = swift signing_dir = /var/cache/swift paste.filter_factory = keystonemiddleware.auth_token:filter_factory auth_plugin = password auth_url = http://192.168.200.178:35357 username = swift password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 #auth_uri = http://192.168.200.178:5000/v2.0 #identity_uri = http://192.168.200.178:35357 #admin_tenant_name = services #admin_user = swift #admin_password = PASSWD1234 delay_auth_decision = 1 cache = swift.cache include_service_catalog = False Restart swift services to apply changes openstack-service restart swift Swift commands must be issued with python-openstackclient instead of swiftclient If done with swiftclient a -V 3 option must be used in order to avoid issues Check if swift works fine openstack container create testcontainer Ceilometer Configure ceilometer service in order to authenticate agains keystone v3 [keystone_authtoken] auth_plugin = password auth_url = http://192.168.200.178:35357 username = ceilometer password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 [service_credentials] os_auth_url = http://controller:5000/v3 os_username = ceilometer os_tenant_name = services os_password = PASSWD1234 os_endpoint_type = internalURL os_region_name = RegionOne Restart ceilometer services openstack-service restart ceilometer Check ceilometer funtionality ceilometer statistics -m memory Heat Configure Heat authentication, since trusts are not stable use password auth method vi /etc/heat/heat.conf # Allowed values: password, trusts #deferred_auth_method = trusts deferred_auth_method = password Configure auth_uri and keystone_authtoken section # From heat.common.config # # Unversioned keystone url in format like http://0.0.0.0:5000. (string value) #auth_uri = auth_uri = http://192.168.200.178:5000 [keystone_authtoken] auth_plugin = password auth_url = http://192.168.200.178:35357 username = heat password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 #admin_user=heat #admin_password=PASSWD1234 #admin_tenant_name=services #identity_uri=http://192.168.200.178:35357 #auth_uri=http://192.168.200.178:5000/v2.0 Comment or remove heat-dist auth entries in order to avoid conflicts with your config files vi /usr/share/heat/heat-dist.conf [keystone_authtoken] #auth_host = 127.0.0.1 #auth_port = 35357 #auth_protocol = http #auth_uri = http://127.0.0.1:5000/v2.0 #signing_dir = /tmp/keystone-signing-heat Restart heat services to apply changes openstack-service restart heat Ensure heat authentication is properly configured with a simple heat template heat stack-create --template-file sample.yaml teststack Most issues occurs in the authentication between nova and neutron services, if instances does not launch as expected, review [nova] and [neutron] sections. Best regards, Eduardo Gonzalez">
+<meta property="og:description" content="Migrate from keystone v2.0 to v3 isn’t as easy like just changing the endpoints at the database, every service must be configured to authenticate against keystone v3. I’ve been working on that the past few days looking for a method, with the purpose of facilitate operators life’s who need this kind of migration. I have to thank Adam Young work, i followed his blog to make a first configuration idea, after that, i configured all core services to make use of keystone v3. If you want to check Adam’s blog, follow this link: http://adam.younglogic.com/2015/05/rdo-v3-only/ I used OpenStack Liberty installed with RDO packstack over CentOS 7 servers. The example IP used is 192.168.200.168, use your own according your needs. Password used for all services is PASSWD1234, use your own password, you can locate your passwords at the packstack answer file. Horizon First we configure Horizon with keystone v3 as below: vi /etc/openstack-dashboard/local_settings OPENSTACK_API_VERSIONS = { &quot;identity&quot;: 3 } OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'Default' keystone Check your current identity endpoints mysql --user keystone_admin --password=PASSWD1234 keystone -e &quot;select interface, url from endpoint where service_id = (select id from service where service.type = 'identity');&quot; Change your public, admin and internal endpoints with v3 at the end, instead of v2.0 mysql --user keystone_admin --password=PASSWD1234 keystone -e &quot;update endpoint set url = 'http://192.168.200.178:5000/v3' where interface ='internal' and service_id = (select id from service where service.type = 'identity');&quot; mysql --user keystone_admin --password=PASSWD1234 keystone -e &quot;update endpoint set url = 'http://192.168.200.178:5000/v3' where interface ='public' and service_id = (select id from service where service.type = 'identity');&quot; mysql --user keystone_admin --password=PASSWD1234 keystone -e &quot;update endpoint set url = 'http://192.168.200.178:35357/v3' where interface ='admin' and service_id = (select id from service where service.type = 'identity');&quot; Ensure the endpoints are properly created mysql --user keystone_admin --password=KEYSTONE_DB_PW keystone -e &quot;select interface, url from endpoint where service_id = (select id from service where service.type = 'identity');&quot; Create a source file or edit keystonerc_admin with the following data vi v3_keystone unset OS_SERVICE_TOKEN export OS_USERNAME=admin export OS_PASSWORD=PASSWD1234 export OS_AUTH_URL=http://192.168.200.178:5000/v3 export OS_PROJECT_NAME=admin export OS_PROJECT_DOMAIN_NAME=Default export OS_USER_DOMAIN_NAME=Default export OS_REGION_NAME=RegionOne export PS1='[\u@\h \W(keystone_admin)]\$ ' export OS_IDENTITY_API_VERSION=3 Comment both pipelines, in public_api and admin_api vi /usr/share/keystone/keystone-dist-paste.ini [pipeline:public_api] # The last item in this pipeline must be public_service or an equivalent # application. It cannot be a filter. #pipeline = sizelimit url_normalize request_id build_auth_context token_auth admin_token_auth json_body ec2_extension user_crud_extension public_service [pipeline:admin_api] # The last item in this pipeline must be admin_service or an equivalent # application. It cannot be a filter. #pipeline = sizelimit url_normalize request_id build_auth_context token_auth admin_token_auth json_body ec2_extension s3_extension crud_extension admin_service Comment v2.0 entries in composite:main and admin sections. [composite:main] use = egg:Paste#urlmap #/v2.0 = public_api /v3 = api_v3 / = public_version_api [composite:admin] use = egg:Paste#urlmap #/v2.0 = admin_api /v3 = api_v3 / = admin_version_api Restart httpd to apply changes systemctl restart httpd Check whether keystone and horizon are properly working The command below should prompt an user list, if not, check configuration in previous steps openstack user list Glance Edit the following files, with the content below: vi /etc/glance/glance-api.conf vi /etc/glance/glance-registry.conf vi /etc/glance/glance-cache.conf [keystone_authtoken] auth_plugin = password auth_url = http://192.168.200.178:35357 username = glance password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Comment the following lines: #auth_host=127.0.0.1 #auth_port=35357 #auth_protocol=http #identity_uri=http://192.168.200.178:35357 #admin_user=glance #admin_password=PASSWD1234 #admin_tenant_name=services Those lines, should be commented in all the other OpenStack core services at keystone_authtoken section Edit the files below and comment the lines inside keystone_authtoken section. vi /usr/share/glance/glance-api-dist.conf vi /usr/share/glance/glance-registry-dist.conf [keystone_authtoken] #admin_tenant_name = %SERVICE_TENANT_NAME% #admin_user = %SERVICE_USER% #admin_password = %SERVICE_PASSWORD% #auth_host = 127.0.0.1 #auth_port = 35357 #auth_protocol = http Restart glance services openstack-service restart glance Ensure glance service is working openstack image list Nova Edit the file below and comment the lines inside keystone_authtoken vi /usr/share/nova/nova-dist.conf [keystone_authtoken] #auth_host = 127.0.0.1 #auth_port = 35357 #auth_protocol = http Edit nova.conf and add the auth content inside keystone_authtoken, don’t forget to comment the lines related to the last auth method, which were commented in glance section. vi /etc/nova/nova.conf [keystone_authtoken] auth_plugin = password auth_url = http://192.168.200.178:35357 username = nova password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Configure nova authentication against neutron [neutron] auth_plugin = password auth_url = http://192.168.200.178:35357 username = neutron password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Restart nova services to apply changes openstack-service restart nova Check if nova works openstack hypervisor list Neutron Comment or remove the following entries at api-paste.ini and add the new version auth lines vi /etc/neutron/api-paste.ini [filter:authtoken] #identity_uri=http://192.168.200.178:35357 #admin_user=neutron #admin_password=PASSWD1234 #auth_uri=http://192.168.200.178:5000/v2.0 #admin_tenant_name=services auth_plugin = password auth_url = http://192.168.200.178:35357 username = neutron password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Configure v3 authentication for metadata service, remember comment the old auth lines vi /etc/neutron/metadata_agent.ini [DEFAULT] auth_plugin = password auth_url = http://192.168.200.178:35357 username = neutron password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Configure neutron server with v3 auth vi /etc/neutron/neutron.conf nova_admin_auth_url = http://192.168.200.178:5000 # nova_admin_tenant_id =1fb93c84c6474c5ea92c0ed5f7d4a6a7 nova_admin_tenant_name = services [keystone_authtoken] auth_plugin = password auth_url = http://192.168.200.178:35357 username = neutron password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 #auth_uri = http://192.168.200.178:5000/v2.0 #identity_uri = http://192.168.200.178:35357 #admin_tenant_name = services #admin_user = neutron #admin_password = PASSWD1234 Configure neutron auth against nova services [nova] auth_plugin = password auth_url = http://192.168.200.178:35357 username = nova password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Restart neutron services to apply changes openstack-service restart neutron Test correct neutron funtionality openstack network list Cinder Edit api-paste.ini with the following content vi /etc/cinder/api-paste.ini [filter:authtoken] paste.filter_factory = keystonemiddleware.auth_token:filter_factory auth_plugin = password auth_url = http://192.168.200.178:35357 username = cinder password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 #admin_tenant_name=services #auth_uri=http://192.168.200.178:5000/v2.0 #admin_user=cinder #identity_uri=http://192.168.200.178:35357 #admin_password=PASSWD1234 Restart cinder services to apply changes openstack-service restart cinder Ensure cinder is properly running openstack volume create --size 1 testvolume openstack volume list Now, you can check if nova is working fine, create an instance and ensure it is in ACTIVE state. openstack server create --flavor m1.tiny --image cirros --nic net-id=a1aa6336-9ae2-4ffb-99f5-1b6d1130989c testinstance openstack server list If any error occurs, review configuration files Swift Configure proxy server auth agains keystone v3 vi /etc/swift/proxy-server.conf [filter:authtoken] log_name = swift signing_dir = /var/cache/swift paste.filter_factory = keystonemiddleware.auth_token:filter_factory auth_plugin = password auth_url = http://192.168.200.178:35357 username = swift password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 #auth_uri = http://192.168.200.178:5000/v2.0 #identity_uri = http://192.168.200.178:35357 #admin_tenant_name = services #admin_user = swift #admin_password = PASSWD1234 delay_auth_decision = 1 cache = swift.cache include_service_catalog = False Restart swift services to apply changes openstack-service restart swift Swift commands must be issued with python-openstackclient instead of swiftclient If done with swiftclient a -V 3 option must be used in order to avoid issues Check if swift works fine openstack container create testcontainer Ceilometer Configure ceilometer service in order to authenticate agains keystone v3 [keystone_authtoken] auth_plugin = password auth_url = http://192.168.200.178:35357 username = ceilometer password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 [service_credentials] os_auth_url = http://controller:5000/v3 os_username = ceilometer os_tenant_name = services os_password = PASSWD1234 os_endpoint_type = internalURL os_region_name = RegionOne Restart ceilometer services openstack-service restart ceilometer Check ceilometer funtionality ceilometer statistics -m memory Heat Configure Heat authentication, since trusts are not stable use password auth method vi /etc/heat/heat.conf # Allowed values: password, trusts #deferred_auth_method = trusts deferred_auth_method = password Configure auth_uri and keystone_authtoken section # From heat.common.config # # Unversioned keystone url in format like http://0.0.0.0:5000. (string value) #auth_uri = auth_uri = http://192.168.200.178:5000 [keystone_authtoken] auth_plugin = password auth_url = http://192.168.200.178:35357 username = heat password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 #admin_user=heat #admin_password=PASSWD1234 #admin_tenant_name=services #identity_uri=http://192.168.200.178:35357 #auth_uri=http://192.168.200.178:5000/v2.0 Comment or remove heat-dist auth entries in order to avoid conflicts with your config files vi /usr/share/heat/heat-dist.conf [keystone_authtoken] #auth_host = 127.0.0.1 #auth_port = 35357 #auth_protocol = http #auth_uri = http://127.0.0.1:5000/v2.0 #signing_dir = /tmp/keystone-signing-heat Restart heat services to apply changes openstack-service restart heat Ensure heat authentication is properly configured with a simple heat template heat stack-create --template-file sample.yaml teststack Most issues occurs in the authentication between nova and neutron services, if instances does not launch as expected, review [nova] and [neutron] sections. Best regards, Eduardo Gonzalez">
+<link rel="canonical" href="http://217.182.136.201:5000/migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty/">
+<meta property="og:url" content="http://217.182.136.201:5000/migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty/">
+<meta property="og:site_name" content="OpenStack things">
+<meta property="og:image" content="http://217.182.136.201:5000/wp-content/uploads/2015/09/learn-about-openstack-badge.png">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-02-02T19:43:46+00:00">
+<script type="application/ld+json">
+{"name":null,"description":"Migrate from keystone v2.0 to v3 isn’t as easy like just changing the endpoints at the database, every service must be configured to authenticate against keystone v3. I’ve been working on that the past few days looking for a method, with the purpose of facilitate operators life’s who need this kind of migration. I have to thank Adam Young work, i followed his blog to make a first configuration idea, after that, i configured all core services to make use of keystone v3. If you want to check Adam’s blog, follow this link: http://adam.younglogic.com/2015/05/rdo-v3-only/ I used OpenStack Liberty installed with RDO packstack over CentOS 7 servers. The example IP used is 192.168.200.168, use your own according your needs. Password used for all services is PASSWD1234, use your own password, you can locate your passwords at the packstack answer file. Horizon First we configure Horizon with keystone v3 as below: vi /etc/openstack-dashboard/local_settings OPENSTACK_API_VERSIONS = { &quot;identity&quot;: 3 } OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = &#39;Default&#39; keystone Check your current identity endpoints mysql --user keystone_admin --password=PASSWD1234 keystone -e &quot;select interface, url from endpoint where service_id = (select id from service where service.type = &#39;identity&#39;);&quot; Change your public, admin and internal endpoints with v3 at the end, instead of v2.0 mysql --user keystone_admin --password=PASSWD1234 keystone -e &quot;update endpoint set url = &#39;http://192.168.200.178:5000/v3&#39; where interface =&#39;internal&#39; and service_id = (select id from service where service.type = &#39;identity&#39;);&quot; mysql --user keystone_admin --password=PASSWD1234 keystone -e &quot;update endpoint set url = &#39;http://192.168.200.178:5000/v3&#39; where interface =&#39;public&#39; and service_id = (select id from service where service.type = &#39;identity&#39;);&quot; mysql --user keystone_admin --password=PASSWD1234 keystone -e &quot;update endpoint set url = &#39;http://192.168.200.178:35357/v3&#39; where interface =&#39;admin&#39; and service_id = (select id from service where service.type = &#39;identity&#39;);&quot; Ensure the endpoints are properly created mysql --user keystone_admin --password=KEYSTONE_DB_PW keystone -e &quot;select interface, url from endpoint where service_id = (select id from service where service.type = &#39;identity&#39;);&quot; Create a source file or edit keystonerc_admin with the following data vi v3_keystone unset OS_SERVICE_TOKEN export OS_USERNAME=admin export OS_PASSWORD=PASSWD1234 export OS_AUTH_URL=http://192.168.200.178:5000/v3 export OS_PROJECT_NAME=admin export OS_PROJECT_DOMAIN_NAME=Default export OS_USER_DOMAIN_NAME=Default export OS_REGION_NAME=RegionOne export PS1=&#39;[\\u@\\h \\W(keystone_admin)]\\$ &#39; export OS_IDENTITY_API_VERSION=3 Comment both pipelines, in public_api and admin_api vi /usr/share/keystone/keystone-dist-paste.ini [pipeline:public_api] # The last item in this pipeline must be public_service or an equivalent # application. It cannot be a filter. #pipeline = sizelimit url_normalize request_id build_auth_context token_auth admin_token_auth json_body ec2_extension user_crud_extension public_service [pipeline:admin_api] # The last item in this pipeline must be admin_service or an equivalent # application. It cannot be a filter. #pipeline = sizelimit url_normalize request_id build_auth_context token_auth admin_token_auth json_body ec2_extension s3_extension crud_extension admin_service Comment v2.0 entries in composite:main and admin sections. [composite:main] use = egg:Paste#urlmap #/v2.0 = public_api /v3 = api_v3 / = public_version_api [composite:admin] use = egg:Paste#urlmap #/v2.0 = admin_api /v3 = api_v3 / = admin_version_api Restart httpd to apply changes systemctl restart httpd Check whether keystone and horizon are properly working The command below should prompt an user list, if not, check configuration in previous steps openstack user list Glance Edit the following files, with the content below: vi /etc/glance/glance-api.conf vi /etc/glance/glance-registry.conf vi /etc/glance/glance-cache.conf [keystone_authtoken] auth_plugin = password auth_url = http://192.168.200.178:35357 username = glance password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Comment the following lines: #auth_host=127.0.0.1 #auth_port=35357 #auth_protocol=http #identity_uri=http://192.168.200.178:35357 #admin_user=glance #admin_password=PASSWD1234 #admin_tenant_name=services Those lines, should be commented in all the other OpenStack core services at keystone_authtoken section Edit the files below and comment the lines inside keystone_authtoken section. vi /usr/share/glance/glance-api-dist.conf vi /usr/share/glance/glance-registry-dist.conf [keystone_authtoken] #admin_tenant_name = %SERVICE_TENANT_NAME% #admin_user = %SERVICE_USER% #admin_password = %SERVICE_PASSWORD% #auth_host = 127.0.0.1 #auth_port = 35357 #auth_protocol = http Restart glance services openstack-service restart glance Ensure glance service is working openstack image list Nova Edit the file below and comment the lines inside keystone_authtoken vi /usr/share/nova/nova-dist.conf [keystone_authtoken] #auth_host = 127.0.0.1 #auth_port = 35357 #auth_protocol = http Edit nova.conf and add the auth content inside keystone_authtoken, don’t forget to comment the lines related to the last auth method, which were commented in glance section. vi /etc/nova/nova.conf [keystone_authtoken] auth_plugin = password auth_url = http://192.168.200.178:35357 username = nova password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Configure nova authentication against neutron [neutron] auth_plugin = password auth_url = http://192.168.200.178:35357 username = neutron password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Restart nova services to apply changes openstack-service restart nova Check if nova works openstack hypervisor list Neutron Comment or remove the following entries at api-paste.ini and add the new version auth lines vi /etc/neutron/api-paste.ini [filter:authtoken] #identity_uri=http://192.168.200.178:35357 #admin_user=neutron #admin_password=PASSWD1234 #auth_uri=http://192.168.200.178:5000/v2.0 #admin_tenant_name=services auth_plugin = password auth_url = http://192.168.200.178:35357 username = neutron password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Configure v3 authentication for metadata service, remember comment the old auth lines vi /etc/neutron/metadata_agent.ini [DEFAULT] auth_plugin = password auth_url = http://192.168.200.178:35357 username = neutron password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Configure neutron server with v3 auth vi /etc/neutron/neutron.conf nova_admin_auth_url = http://192.168.200.178:5000 # nova_admin_tenant_id =1fb93c84c6474c5ea92c0ed5f7d4a6a7 nova_admin_tenant_name = services [keystone_authtoken] auth_plugin = password auth_url = http://192.168.200.178:35357 username = neutron password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 #auth_uri = http://192.168.200.178:5000/v2.0 #identity_uri = http://192.168.200.178:35357 #admin_tenant_name = services #admin_user = neutron #admin_password = PASSWD1234 Configure neutron auth against nova services [nova] auth_plugin = password auth_url = http://192.168.200.178:35357 username = nova password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 Restart neutron services to apply changes openstack-service restart neutron Test correct neutron funtionality openstack network list Cinder Edit api-paste.ini with the following content vi /etc/cinder/api-paste.ini [filter:authtoken] paste.filter_factory = keystonemiddleware.auth_token:filter_factory auth_plugin = password auth_url = http://192.168.200.178:35357 username = cinder password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 #admin_tenant_name=services #auth_uri=http://192.168.200.178:5000/v2.0 #admin_user=cinder #identity_uri=http://192.168.200.178:35357 #admin_password=PASSWD1234 Restart cinder services to apply changes openstack-service restart cinder Ensure cinder is properly running openstack volume create --size 1 testvolume openstack volume list Now, you can check if nova is working fine, create an instance and ensure it is in ACTIVE state. openstack server create --flavor m1.tiny --image cirros --nic net-id=a1aa6336-9ae2-4ffb-99f5-1b6d1130989c testinstance openstack server list If any error occurs, review configuration files Swift Configure proxy server auth agains keystone v3 vi /etc/swift/proxy-server.conf [filter:authtoken] log_name = swift signing_dir = /var/cache/swift paste.filter_factory = keystonemiddleware.auth_token:filter_factory auth_plugin = password auth_url = http://192.168.200.178:35357 username = swift password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 #auth_uri = http://192.168.200.178:5000/v2.0 #identity_uri = http://192.168.200.178:35357 #admin_tenant_name = services #admin_user = swift #admin_password = PASSWD1234 delay_auth_decision = 1 cache = swift.cache include_service_catalog = False Restart swift services to apply changes openstack-service restart swift Swift commands must be issued with python-openstackclient instead of swiftclient If done with swiftclient a -V 3 option must be used in order to avoid issues Check if swift works fine openstack container create testcontainer Ceilometer Configure ceilometer service in order to authenticate agains keystone v3 [keystone_authtoken] auth_plugin = password auth_url = http://192.168.200.178:35357 username = ceilometer password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 [service_credentials] os_auth_url = http://controller:5000/v3 os_username = ceilometer os_tenant_name = services os_password = PASSWD1234 os_endpoint_type = internalURL os_region_name = RegionOne Restart ceilometer services openstack-service restart ceilometer Check ceilometer funtionality ceilometer statistics -m memory Heat Configure Heat authentication, since trusts are not stable use password auth method vi /etc/heat/heat.conf # Allowed values: password, trusts #deferred_auth_method = trusts deferred_auth_method = password Configure auth_uri and keystone_authtoken section # From heat.common.config # # Unversioned keystone url in format like http://0.0.0.0:5000. (string value) #auth_uri = auth_uri = http://192.168.200.178:5000 [keystone_authtoken] auth_plugin = password auth_url = http://192.168.200.178:35357 username = heat password = PASSWD1234 project_name = services user_domain_name = Default project_domain_name = Default auth_uri=http://192.168.200.178:5000 #admin_user=heat #admin_password=PASSWD1234 #admin_tenant_name=services #identity_uri=http://192.168.200.178:35357 #auth_uri=http://192.168.200.178:5000/v2.0 Comment or remove heat-dist auth entries in order to avoid conflicts with your config files vi /usr/share/heat/heat-dist.conf [keystone_authtoken] #auth_host = 127.0.0.1 #auth_port = 35357 #auth_protocol = http #auth_uri = http://127.0.0.1:5000/v2.0 #signing_dir = /tmp/keystone-signing-heat Restart heat services to apply changes openstack-service restart heat Ensure heat authentication is properly configured with a simple heat template heat stack-create --template-file sample.yaml teststack Most issues occurs in the authentication between nova and neutron services, if instances does not launch as expected, review [nova] and [neutron] sections. Best regards, Eduardo Gonzalez","author":{"@type":"Person","name":"Editor"},"@type":"BlogPosting","url":"http://217.182.136.201:5000/migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty/","publisher":null,"image":"http://217.182.136.201:5000/wp-content/uploads/2015/09/learn-about-openstack-badge.png","headline":"Migrate from keystone v2.0 to keystone v3 OpenStack Liberty","dateModified":"2016-02-02T19:43:46+00:00","datePublished":"2016-02-02T19:43:46+00:00","sameAs":null,"mainEntityOfPage":{"@type":"WebPage","@id":"http://217.182.136.201:5000/migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="http://github.com/egonzalez90/egonzalez90.github.io">View on GitHub</a>
+
+          <h1 id="project_title">OpenStack things</h1>
+          <h2 id="project_tagline">OpenStack, Docker, Ansible, Ceph, Linux</h2>
+
+          
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>Migrate from keystone v2.0 to v3 isn’t as easy like just changing the endpoints at the database, every service must be configured to authenticate against keystone v3.</p>
+
+<p>I’ve been working on that the past few days looking for a method, with the purpose of facilitate operators life’s who need this kind of migration.
+I have to thank Adam Young work, i followed his blog to make a first configuration idea, after that, i configured all core services to make use of keystone v3.
+If you want to check Adam’s blog, follow this link: <a href="http://adam.younglogic.com/2015/05/rdo-v3-only/" target="_blank">http://adam.younglogic.com/2015/05/rdo-v3-only/</a></p>
+
+<p>I used OpenStack Liberty installed with RDO packstack over CentOS 7 servers.
+The example IP used is <code>192.168.200.168</code>, use your own according your needs.
+Password used for all services is <code>PASSWD1234</code>, use your own password, you can locate your passwords at the packstack answer file.</p>
+
+<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>Horizon</strong></ins></p>
+
+<p>First we configure Horizon with keystone v3 as below:</p>
+<pre>
+vi /etc/openstack-dashboard/local_settings
+
+OPENSTACK_API_VERSIONS = {
+    "identity": 3
+}
+
+OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True
+OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'Default'
+</pre>
+
+<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>keystone</strong></ins></p>
+
+<p>Check your current identity endpoints</p>
+<pre>
+mysql  --user keystone_admin --password=PASSWD1234  keystone -e "select interface, url from endpoint where service_id =  (select id from service where service.type = 'identity');"
+</pre>
+<p>Change your public, admin and internal endpoints with v3 at the end, instead of v2.0</p>
+<pre>
+mysql  --user keystone_admin --password=PASSWD1234   keystone -e "update endpoint set   url  = 'http://192.168.200.178:5000/v3' where  interface ='internal' and  service_id =  (select id from service where service.type = 'identity');"
+
+mysql  --user keystone_admin --password=PASSWD1234   keystone -e "update endpoint set   url  = 'http://192.168.200.178:5000/v3' where  interface ='public' and  service_id =  (select id from service where service.type = 'identity');"
+
+mysql  --user keystone_admin --password=PASSWD1234   keystone -e "update endpoint set   url  = 'http://192.168.200.178:35357/v3' where  interface ='admin' and  service_id =  (select id from service where service.type = 'identity');"
+</pre>
+<p>Ensure the endpoints are properly created</p>
+<pre>
+mysql  --user keystone_admin --password=KEYSTONE_DB_PW   keystone -e "select interface, url from endpoint where service_id =  (select id from service where service.type = 'identity');"
+</pre>
+<p>Create a source file or edit keystonerc_admin with the following data</p>
+<pre>
+vi v3_keystone
+
+unset OS_SERVICE_TOKEN
+export OS_USERNAME=admin
+export OS_PASSWORD=PASSWD1234
+export OS_AUTH_URL=http://192.168.200.178:5000/v3
+export OS_PROJECT_NAME=admin
+export OS_PROJECT_DOMAIN_NAME=Default
+export OS_USER_DOMAIN_NAME=Default
+export OS_REGION_NAME=RegionOne
+export PS1='[\u@\h \W(keystone_admin)]\$ '
+export OS_IDENTITY_API_VERSION=3
+</pre>
+<p>Comment both pipelines, in public_api and admin_api</p>
+<pre>
+vi /usr/share/keystone/keystone-dist-paste.ini
+
+[pipeline:public_api]
+# The last item in this pipeline must be public_service or an equivalent
+# application. It cannot be a filter.
+#pipeline = sizelimit url_normalize request_id build_auth_context token_auth admin_token_auth json_body ec2_extension user_crud_extension public_service
+
+[pipeline:admin_api]
+# The last item in this pipeline must be admin_service or an equivalent
+# application. It cannot be a filter.
+#pipeline = sizelimit url_normalize request_id build_auth_context token_auth admin_token_auth json_body ec2_extension s3_extension crud_extension admin_service
+</pre>
+<p>Comment v2.0 entries in composite:main and admin sections.</p>
+<pre>
+[composite:main]
+use = egg:Paste#urlmap
+#/v2.0 = public_api
+/v3 = api_v3
+/ = public_version_api
+
+[composite:admin]
+use = egg:Paste#urlmap
+#/v2.0 = admin_api
+/v3 = api_v3
+/ = admin_version_api
+</pre>
+<p>Restart httpd to apply changes</p>
+<pre>
+systemctl restart httpd
+</pre>
+<p>Check whether keystone and horizon are properly working
+The command below should prompt an user list, if not, check configuration in previous steps</p>
+<pre>
+openstack user list
+</pre>
+
+<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>Glance</strong></ins></p>
+
+<p>Edit the following files, with the content below:</p>
+<pre>
+vi /etc/glance/glance-api.conf 
+vi /etc/glance/glance-registry.conf 
+vi /etc/glance/glance-cache.conf 
+
+[keystone_authtoken]
+
+auth_plugin = password
+auth_url = http://192.168.200.178:35357
+username = glance
+password = PASSWD1234
+project_name = services
+user_domain_name = Default
+project_domain_name = Default
+auth_uri=http://192.168.200.178:5000
+</pre>
+<p>Comment the following lines:</p>
+<pre>
+#auth_host=127.0.0.1
+#auth_port=35357
+#auth_protocol=http
+#identity_uri=http://192.168.200.178:35357
+#admin_user=glance
+#admin_password=PASSWD1234
+#admin_tenant_name=services
+</pre>
+<p>Those lines, should be commented in all the other OpenStack core services at keystone_authtoken section</p>
+
+<p>Edit the files below and comment the lines inside keystone_authtoken section.</p>
+<pre>
+vi /usr/share/glance/glance-api-dist.conf 
+vi /usr/share/glance/glance-registry-dist.conf 
+
+[keystone_authtoken]
+#admin_tenant_name = %SERVICE_TENANT_NAME%
+#admin_user = %SERVICE_USER%
+#admin_password = %SERVICE_PASSWORD%
+#auth_host = 127.0.0.1
+#auth_port = 35357
+#auth_protocol = http
+</pre>
+<p>Restart glance services</p>
+<pre>
+openstack-service restart glance
+</pre>
+<p>Ensure glance service is working</p>
+<pre>
+openstack image list
+</pre>
+
+<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>Nova</strong></ins></p>
+
+<p>Edit the file below and comment the lines inside keystone_authtoken</p>
+<pre>
+vi /usr/share/nova/nova-dist.conf
+
+[keystone_authtoken]
+#auth_host = 127.0.0.1
+#auth_port = 35357
+#auth_protocol = http
+</pre>
+<p>Edit nova.conf and add the auth content inside keystone_authtoken, don’t forget to comment the lines related to the last auth method, which were commented in glance section.</p>
+<pre>
+vi /etc/nova/nova.conf
+
+[keystone_authtoken]
+
+auth_plugin = password
+auth_url = http://192.168.200.178:35357
+username = nova
+password = PASSWD1234
+project_name = services
+user_domain_name = Default
+project_domain_name = Default
+auth_uri=http://192.168.200.178:5000
+</pre>
+<p>Configure nova authentication against neutron</p>
+<pre>
+[neutron]
+          
+auth_plugin = password
+auth_url = http://192.168.200.178:35357
+username = neutron
+password = PASSWD1234
+project_name = services
+user_domain_name = Default
+project_domain_name = Default
+auth_uri=http://192.168.200.178:5000
+</pre>
+<p>Restart nova services to apply changes</p>
+<pre>
+openstack-service restart nova
+</pre>
+<p>Check if nova works</p>
+<pre>
+openstack hypervisor list
+</pre>
+
+<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>Neutron</strong></ins></p>
+
+<p>Comment or remove the following entries at api-paste.ini and add the new version auth lines</p>
+<pre>
+vi /etc/neutron/api-paste.ini 
+
+[filter:authtoken]
+#identity_uri=http://192.168.200.178:35357
+#admin_user=neutron
+#admin_password=PASSWD1234
+#auth_uri=http://192.168.200.178:5000/v2.0
+#admin_tenant_name=services
+
+auth_plugin = password
+auth_url = http://192.168.200.178:35357
+username = neutron
+password = PASSWD1234
+project_name = services
+user_domain_name = Default
+project_domain_name = Default
+auth_uri=http://192.168.200.178:5000
+</pre>
+<p>Configure v3 authentication for metadata service, remember comment the old auth lines</p>
+<pre>
+vi /etc/neutron/metadata_agent.ini
+
+[DEFAULT]
+
+auth_plugin = password
+auth_url = http://192.168.200.178:35357
+username = neutron
+password = PASSWD1234
+project_name = services
+user_domain_name = Default
+project_domain_name = Default
+auth_uri=http://192.168.200.178:5000
+</pre>
+<p>Configure neutron server with v3 auth</p>
+<pre>
+vi /etc/neutron/neutron.conf
+
+nova_admin_auth_url = http://192.168.200.178:5000
+# nova_admin_tenant_id =1fb93c84c6474c5ea92c0ed5f7d4a6a7
+nova_admin_tenant_name = services
+
+
+[keystone_authtoken]
+
+auth_plugin = password
+auth_url = http://192.168.200.178:35357
+username = neutron
+password = PASSWD1234
+project_name = services
+user_domain_name = Default
+project_domain_name = Default
+auth_uri=http://192.168.200.178:5000
+
+#auth_uri = http://192.168.200.178:5000/v2.0
+#identity_uri = http://192.168.200.178:35357
+#admin_tenant_name = services
+#admin_user = neutron
+#admin_password = PASSWD1234
+</pre>
+<p>Configure neutron auth against nova services</p>
+<pre>
+[nova]
+
+auth_plugin = password
+auth_url = http://192.168.200.178:35357
+username = nova
+password = PASSWD1234
+project_name = services
+user_domain_name = Default
+project_domain_name = Default
+auth_uri=http://192.168.200.178:5000
+</pre>
+<p>Restart neutron services to apply changes</p>
+<pre>
+openstack-service restart neutron
+</pre>
+<p>Test correct neutron funtionality</p>
+<pre>
+openstack network list
+</pre>
+
+<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>Cinder</strong></ins></p>
+
+<p>Edit api-paste.ini with the following content</p>
+<pre>
+vi /etc/cinder/api-paste.ini 
+
+[filter:authtoken]
+paste.filter_factory = keystonemiddleware.auth_token:filter_factory
+auth_plugin = password
+auth_url = http://192.168.200.178:35357
+username = cinder
+password = PASSWD1234
+project_name = services
+user_domain_name = Default
+project_domain_name = Default
+auth_uri=http://192.168.200.178:5000
+#admin_tenant_name=services
+#auth_uri=http://192.168.200.178:5000/v2.0
+#admin_user=cinder
+#identity_uri=http://192.168.200.178:35357
+#admin_password=PASSWD1234
+</pre>
+<p>Restart cinder services to apply changes</p>
+<pre>
+openstack-service restart cinder
+</pre>
+<p>Ensure cinder is properly running</p>
+<pre>
+openstack volume create --size 1 testvolume
+openstack volume list
+</pre>
+<p>Now, you can check if nova is working fine, create an instance and ensure it is in ACTIVE state.</p>
+<pre>
+openstack server create --flavor m1.tiny --image cirros --nic net-id=a1aa6336-9ae2-4ffb-99f5-1b6d1130989c testinstance
+openstack server list
+</pre>
+<p>If any error occurs, review configuration files</p>
+
+<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>Swift</strong></ins></p>
+
+<p>Configure proxy server auth agains keystone v3</p>
+<pre>
+vi /etc/swift/proxy-server.conf
+
+[filter:authtoken]
+log_name = swift
+signing_dir = /var/cache/swift
+paste.filter_factory = keystonemiddleware.auth_token:filter_factory
+auth_plugin = password
+auth_url = http://192.168.200.178:35357
+username = swift
+password = PASSWD1234
+project_name = services
+user_domain_name = Default
+project_domain_name = Default
+auth_uri=http://192.168.200.178:5000
+
+#auth_uri = http://192.168.200.178:5000/v2.0
+#identity_uri = http://192.168.200.178:35357
+#admin_tenant_name = services
+#admin_user = swift
+#admin_password = PASSWD1234
+delay_auth_decision = 1
+cache = swift.cache
+include_service_catalog = False
+</pre>
+<p>Restart swift services to apply changes</p>
+<pre>
+openstack-service restart swift
+</pre>
+<p>Swift commands must be issued with python-openstackclient instead of swiftclient
+If done with swiftclient a -V 3 option must be used in order to avoid issues</p>
+
+<p>Check if swift works fine</p>
+<pre>
+openstack container create testcontainer
+</pre>
+
+<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>Ceilometer</strong></ins></p>
+
+<p>Configure ceilometer service in order to authenticate agains keystone v3</p>
+<pre>
+[keystone_authtoken]
+
+auth_plugin = password
+auth_url = http://192.168.200.178:35357
+username = ceilometer
+password = PASSWD1234
+project_name = services
+user_domain_name = Default
+project_domain_name = Default
+auth_uri=http://192.168.200.178:5000
+
+[service_credentials]
+
+os_auth_url = http://controller:5000/v3
+os_username = ceilometer
+os_tenant_name = services
+os_password = PASSWD1234
+os_endpoint_type = internalURL
+os_region_name = RegionOne
+</pre>
+<p>Restart ceilometer services</p>
+<pre>
+openstack-service restart ceilometer
+</pre>
+<p>Check ceilometer funtionality</p>
+<pre>
+ceilometer statistics -m memory
+</pre>
+<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>Heat</strong></ins></p>
+
+<p>Configure Heat authentication, since trusts are not stable use password auth method</p>
+<pre>
+vi /etc/heat/heat.conf
+
+# Allowed values: password, trusts
+#deferred_auth_method = trusts
+deferred_auth_method = password
+</pre>
+<p>Configure auth_uri and keystone_authtoken section</p>
+<pre>
+# From heat.common.config
+#
+# Unversioned keystone url in format like http://0.0.0.0:5000. (string value)
+#auth_uri =
+auth_uri = http://192.168.200.178:5000
+
+[keystone_authtoken]
+
+auth_plugin = password
+auth_url = http://192.168.200.178:35357
+username = heat
+password = PASSWD1234
+project_name = services
+user_domain_name = Default
+project_domain_name = Default
+auth_uri=http://192.168.200.178:5000
+
+#admin_user=heat
+#admin_password=PASSWD1234
+#admin_tenant_name=services
+#identity_uri=http://192.168.200.178:35357
+#auth_uri=http://192.168.200.178:5000/v2.0
+</pre>
+<p>Comment or remove heat-dist auth entries in order to avoid conflicts with your config files</p>
+<pre>
+vi /usr/share/heat/heat-dist.conf 
+
+[keystone_authtoken]
+#auth_host = 127.0.0.1
+#auth_port = 35357
+#auth_protocol = http
+#auth_uri = http://127.0.0.1:5000/v2.0
+#signing_dir = /tmp/keystone-signing-heat
+</pre>
+<p>Restart heat services to apply changes</p>
+<pre>
+openstack-service restart heat
+</pre>
+<p>Ensure heat authentication is properly configured with a simple heat template</p>
+<pre>
+heat stack-create --template-file sample.yaml teststack
+</pre>
+<p>Most issues occurs in the authentication between nova and neutron services, if instances does not launch as expected, review [nova] and [neutron] sections.</p>
+
+<p>Best regards, Eduardo Gonzalez</p>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        
+        <p class="copyright">OpenStack things maintained by <a href="http://github.com/egonzalez90">egonzalez90</a></p>
+        
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+  </body>
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = 'https://egonzalez-1.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <meta name="description" content="OpenStack things : OpenStack, Docker, Ansible, Ceph, Linux">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/style.css?v=9a6333a51cf04996f04338046deefb14dd69cda4">
+
+<!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Crear Plantilla AMI en AWS | OpenStack things</title>
+<meta property="og:title" content="Crear Plantilla AMI en AWS">
+<meta name="author" content="Editor">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="El primer paso es estar logeado en AWS, y en la pestaña Instances de EC2.">
+<meta property="og:description" content="El primer paso es estar logeado en AWS, y en la pestaña Instances de EC2.">
+<link rel="canonical" href="http://217.182.136.201:5000/crear-plantilla-ami-en-aws/">
+<meta property="og:url" content="http://217.182.136.201:5000/crear-plantilla-ami-en-aws/">
+<meta property="og:site_name" content="OpenStack things">
+<meta property="og:image" content="http://217.182.136.201:5000/wp-content/uploads/2014/09/supporter_1401479988.png">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2014-09-22T09:14:24+00:00">
+<script type="application/ld+json">
+{"name":null,"description":"El primer paso es estar logeado en AWS, y en la pestaña Instances de EC2.","author":{"@type":"Person","name":"Editor"},"@type":"BlogPosting","url":"http://217.182.136.201:5000/crear-plantilla-ami-en-aws/","publisher":null,"image":"http://217.182.136.201:5000/wp-content/uploads/2014/09/supporter_1401479988.png","headline":"Crear Plantilla AMI en AWS","dateModified":"2014-09-22T09:14:24+00:00","datePublished":"2014-09-22T09:14:24+00:00","sameAs":null,"mainEntityOfPage":{"@type":"WebPage","@id":"http://217.182.136.201:5000/crear-plantilla-ami-en-aws/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="http://github.com/egonzalez90/egonzalez90.github.io">View on GitHub</a>
+
+          <h1 id="project_title">OpenStack things</h1>
+          <h2 id="project_tagline">OpenStack, Docker, Ansible, Ceph, Linux</h2>
+
+          
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>El primer paso es estar logeado en AWS, y en la pestaña Instances de EC2.<!--more--></p>
+
+<p>Una vez aquí pulsaremos con el botón derecho sobre la instancia que queremos convertir en plantilla AMI.</p>
+
+<p>Aquí pulsaremos sobre Create Image<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/Captura.png"><img class="aligncenter size-full wp-image-675" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/Captura.png" alt="Captura" width="884" height="414">
+</a></p>
+
+<p>Lo siguiente sera ponerle un nombre a la plantilla y una descripcion, para finalizar le daremos a Create Image</p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/Captura2.png"><img class="aligncenter size-full wp-image-676" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/Captura2.png" alt="Captura2" width="1005" height="535"></a></p>
+
+<p>A continuación nos mostrara un mensage que indica que esta en proceso de creacion, pulsaremos sobre View Pending Image <em>**</em> para ver el estado de la peticion</p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/Captura3.png"><img class="aligncenter size-full wp-image-677" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/Captura3.png" alt="Captura3" width="965" height="141"> </a>En esta ventana veremos el estado de la peticion, una vez acabada la creacion de la plantilla aparecera en verde Available, estos sencillos pasos nos permitiran tener imagenes personalizadas para ejecutar tantas instancias como queramos sobre esa plantilla</p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/Captura4.png"><img class="aligncenter size-full wp-image-678" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/Captura4.png" alt="Captura4" width="1057" height="210"></a> Para ejecutar la imagen como una instancia, solo tienes que pulsar sobre Launch y crear la instancia como cualquier otra.</p>
+
+<p>Si quieres saber como se crea una instancia puedes hacerlo siguiendo esta entrada del blog: <a title="Crear instancia Amazon Web Services (AWS)" href="http://egonzalez.org/?p=635" target="_blank">http://egonzalez.org/?p=635</a></p>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        
+        <p class="copyright">OpenStack things maintained by <a href="http://github.com/egonzalez90">egonzalez90</a></p>
+        
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+  </body>
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = 'https://egonzalez-1.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+</html>

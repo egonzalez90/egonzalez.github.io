@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <meta name="description" content="OpenStack things : OpenStack, Docker, Ansible, Ceph, Linux">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/style.css?v=9a6333a51cf04996f04338046deefb14dd69cda4">
+
+<!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Montar volumen AWS en RHEL | OpenStack things</title>
+<meta property="og:title" content="Montar volumen AWS en RHEL">
+<meta name="author" content="Editor">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="Para poder realizar estos pasos es necesario que se haya creado un volumen previamente en EC2 de AWS, nos conectaremos a la maquina por SSH y seguiremos los siguientes pasos">
+<meta property="og:description" content="Para poder realizar estos pasos es necesario que se haya creado un volumen previamente en EC2 de AWS, nos conectaremos a la maquina por SSH y seguiremos los siguientes pasos">
+<link rel="canonical" href="http://217.182.136.201:5000/montar-volumen-aws-en-rhel/">
+<meta property="og:url" content="http://217.182.136.201:5000/montar-volumen-aws-en-rhel/">
+<meta property="og:site_name" content="OpenStack things">
+<meta property="og:image" content="http://217.182.136.201:5000/wp-content/uploads/2014/09/supporter_1401479988.png">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2014-09-17T17:05:47+00:00">
+<script type="application/ld+json">
+{"name":null,"description":"Para poder realizar estos pasos es necesario que se haya creado un volumen previamente en EC2 de AWS, nos conectaremos a la maquina por SSH y seguiremos los siguientes pasos","author":{"@type":"Person","name":"Editor"},"@type":"BlogPosting","url":"http://217.182.136.201:5000/montar-volumen-aws-en-rhel/","publisher":null,"image":"http://217.182.136.201:5000/wp-content/uploads/2014/09/supporter_1401479988.png","headline":"Montar volumen AWS en RHEL","dateModified":"2014-09-17T17:05:47+00:00","datePublished":"2014-09-17T17:05:47+00:00","sameAs":null,"mainEntityOfPage":{"@type":"WebPage","@id":"http://217.182.136.201:5000/montar-volumen-aws-en-rhel/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="http://github.com/egonzalez90/egonzalez90.github.io">View on GitHub</a>
+
+          <h1 id="project_title">OpenStack things</h1>
+          <h2 id="project_tagline">OpenStack, Docker, Ansible, Ceph, Linux</h2>
+
+          
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>Para poder realizar estos pasos es necesario que se haya creado un volumen previamente en EC2 de AWS, nos conectaremos a la maquina por SSH y seguiremos los siguientes pasos<!--more--></p>
+
+<p>Primero comprobaremos que el volumen que habíamos creado en EC2 le ve el SO, utilizaremos este comando</p>
+<blockquote>
+<span class="command" style="color: #000000;">lsblk</span><span style="color: #000000;"> </span>
+</blockquote>
+<p>Lo normal es que el primer  volumen que añadas se llame xvdf alojado en /dev/</p>
+
+<p>Ahora lo formatearemos en EXT4</p>
+<blockquote>sudo mkfs -t ext4 /dev/xvdf</blockquote>
+<p>A continuación crearemos la carpeta en donde montaremos el volumen y después lo montaremos en dicha carpeta</p>
+<blockquote>sudo mkdir /mnt/volumen
+
+sudo mount /dev/xvdf /mnt/volumen</blockquote>
+<p>Ahora con el comando df -h comprobaremos que el SO ya lo ve montado</p>
+<pre></pre>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        
+        <p class="copyright">OpenStack things maintained by <a href="http://github.com/egonzalez90">egonzalez90</a></p>
+        
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+  </body>
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = 'https://egonzalez-1.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+</html>

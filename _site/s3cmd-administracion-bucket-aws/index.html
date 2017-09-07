@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <meta name="description" content="OpenStack things : OpenStack, Docker, Ansible, Ceph, Linux">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/style.css?v=9a6333a51cf04996f04338046deefb14dd69cda4">
+
+<!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>s3cmd, administración bucket AWS | OpenStack things</title>
+<meta property="og:title" content="s3cmd, administración bucket AWS">
+<meta name="author" content="Editor">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="Buenos días, en esta entrada mostrare el proceso para instalar s3cmd con el que podremos administrar nuestros contenedores de AWS.">
+<meta property="og:description" content="Buenos días, en esta entrada mostrare el proceso para instalar s3cmd con el que podremos administrar nuestros contenedores de AWS.">
+<link rel="canonical" href="http://217.182.136.201:5000/s3cmd-administracion-bucket-aws/">
+<meta property="og:url" content="http://217.182.136.201:5000/s3cmd-administracion-bucket-aws/">
+<meta property="og:site_name" content="OpenStack things">
+<meta property="og:image" content="http://217.182.136.201:5000/wp-content/uploads/2014/09/supporter_1401479988.png">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2014-09-29T18:42:28+00:00">
+<script type="application/ld+json">
+{"name":null,"description":"Buenos días, en esta entrada mostrare el proceso para instalar s3cmd con el que podremos administrar nuestros contenedores de AWS.","author":{"@type":"Person","name":"Editor"},"@type":"BlogPosting","url":"http://217.182.136.201:5000/s3cmd-administracion-bucket-aws/","publisher":null,"image":"http://217.182.136.201:5000/wp-content/uploads/2014/09/supporter_1401479988.png","headline":"s3cmd, administración bucket AWS","dateModified":"2014-09-29T18:42:28+00:00","datePublished":"2014-09-29T18:42:28+00:00","sameAs":null,"mainEntityOfPage":{"@type":"WebPage","@id":"http://217.182.136.201:5000/s3cmd-administracion-bucket-aws/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="http://github.com/egonzalez90/egonzalez90.github.io">View on GitHub</a>
+
+          <h1 id="project_title">OpenStack things</h1>
+          <h2 id="project_tagline">OpenStack, Docker, Ansible, Ceph, Linux</h2>
+
+          
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>Buenos días, en esta entrada mostrare el proceso para instalar s3cmd con el que podremos administrar nuestros contenedores de AWS.<!--more--></p>
+
+<p>Para ello primero deberemos localizar el repositorio para la versión de nuestro RHEL, lo podéis hacer en este enlace: <a title="Repositorios s3tools" href="http://s3tools.org/repositories" target="_blank">http://s3tools.org/repositories</a></p>
+
+<p>En mi caso uso la versión 6.5 de RHEL, por lo que usare el repositorio de la versión 6, descargaremos el archivo .repo acorde con nuestra versión, cambiando el enlace por el proporcionado por la pagina anterior si fuera otra versión fuera de la 6</p>
+<blockquote>wget http://s3tools.org/repo/RHEL_6/s3tools.repo</blockquote>
+<p>A continuación moveremos el archivo .repo a la localización de los repositorios en el SO, este paso se puede saltar si el comando wget se lanza desde el mismo directorio /etc/yum.repos.d/</p>
+<blockquote>mv s3tools.repo /etc/yum.repos.d/</blockquote>
+<p>Ahora actualizaremos la lista de repositorios para que el SO la reconozca</p>
+<blockquote>sudo yum repolist</blockquote>
+<p>Después instalaremos s3cmd mediante el siguiente comando</p>
+<blockquote>sudo yum install s3cmd</blockquote>
+<p>Para acabar, procederemos a configurar s3cmd para que pueda acceder a nuestros contenedores en AWS</p>
+<blockquote>s3cmd --configure</blockquote>
+<p> </p>
+<blockquote>
+<pre>Enter new values or accept defaults in <span id="IL_AD1" class="IL_AD">brackets</span> with Enter.
+Refer to user manual for detailed description of all options.
+
+Access key and Secret key are your identifiers for Amazon S3
+Access Key: xxxxxxxxxxxxxxxxxxxxxx
+Secret Key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+Encryption password is used to protect your files from reading
+by unauthorized persons while in transfer to S3
+Encryption password: xxxxxxxxxx
+Path to GPG program [/usr/bin/gpg]:
+
+When using secure HTTPS protocol all communication with Amazon S3
+servers is protected from 3rd party eavesdropping. This method is
+slower than plain HTTP and can't be used if you're behind a proxy
+Use HTTPS protocol [No]: Yes
+
+New settings:
+  Access Key: xxxxxxxxxxxxxxxxxxxxxx
+  Secret Key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  Encryption password: xxxxxxxxxx
+  Path to GPG program: /usr/bin/gpg
+  Use HTTPS protocol: True
+  HTTP Proxy server name:
+  HTTP Proxy server port: 0
+
+Test access with supplied credentials? [Y/n] Y
+Please wait, attempting to list all buckets...
+Success. Your access key and secret key worked fine :-)
+
+Now verifying that encryption works...
+Success. Encryption and decryption worked fine :-)
+
+Save settings? [y/N] y
+Configuration saved to '/root/.s3cfg'</pre>
+</blockquote>
+<p>Access Key la puedes encontrar en: Security Credentials/ Users/ Access Credentials</p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/access.png"><img class="aligncenter size-full wp-image-708" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/access.png" alt="access" width="1000" height="387"></a></p>
+
+<p>Secret Key solo se puede descargar una única vez, al crear las claves de acceso, si fuera necesario, deberías de crear unas nuevas para poder obtener Secret Key para esa clave.</p>
+
+<p>Seguramente que te de un error si lanzas el comando ahora, para que no te de el error Access Denied, tienes que agregar una política de usuario con permisos</p>
+
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/userpolicy.png"><img class="aligncenter size-full wp-image-709" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/userpolicy.png" alt="userpolicy" width="1020" height="298"></a></p>
+
+<p>Por ultimo probaremos que tenemos acceso a los bucket</p>
+<blockquote>s3cmd ls</blockquote>
+<p>Esto nos debería de mostrar los contenedores a los que tenemos permisos dentro de AWS</p>
+
+<p>Ahora solo te queda investigar las diferentes posibilidades que te da s3cmd</p>
+
+<p>Un saludo</p>
+
+<p> </p>
+
+<p> </p>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        
+        <p class="copyright">OpenStack things maintained by <a href="http://github.com/egonzalez90">egonzalez90</a></p>
+        
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+  </body>
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = 'https://egonzalez-1.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+</html>

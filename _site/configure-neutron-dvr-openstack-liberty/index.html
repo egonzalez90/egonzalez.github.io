@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <meta name="description" content="OpenStack things : OpenStack, Docker, Ansible, Ceph, Linux">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/style.css?v=9a6333a51cf04996f04338046deefb14dd69cda4">
+
+<!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Configure Neutron DVR OpenStack Liberty | OpenStack things</title>
+<meta property="og:title" content="Configure Neutron DVR OpenStack Liberty">
+<meta name="author" content="Editor">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="Distributed Virtual Routers aka DVR were created to avoid single point of failure on neutron nodes. When using standard routers, all the traffic is passing out through Neutron servers. Inside network servers, router namespaces are created routing all traffic and NAT forwarding between instances and public networks. When a network node falls down, instance traffic will no longer be available until a new namespace is created and executed in another network node. Distributed routers is a way to avoid the SPOF neutron nodes were. When using DVR, router namespaces, are directly created inside compute nodes where all instance and l3 traffic are routed. If you want to know more about DVR check this awesome links: http://blog.gampel.net/2014/12/openstack-neutron-distributed-virtual.html http://blog.gampel.net/2014/12/openstack-dvr2-floating-ips.html http://blog.gampel.net/2015/01/openstack-DVR-SNAT.html A previous OpenStack Liberty installation is required, mine was done with RDO packstack. Configure all Neutron Servers Edit ml2 configuration file with the following: # vi /etc/neutron/plugins/ml2/ml2_conf.ini mechanism_drivers = openvswitch,l2population type_drivers = flat,vlan,vxlan tenant_network_types = vxlan vni_ranges = 10:100 vxlan_group = 224.1.1.1 enable_security_group = True Edit neutron configuration file, enable DVR and uncomment dvr_base_mac option # vi /etc/neutron/neutron.conf router_distributed = True dvr_base_mac = fa:16:3f:00:00:00 Configure l3 agent to use dvr_snat # vi /etc/neutron/l3_agent.ini agent_mode = dvr_snat Restart neutron server systemctl restart neutron-server Configure all Compute Nodes Install ml2 package yum install openstack-neutron-ml2 Edit openvswitch agent file as below: # vi /etc/neutron/plugins/ml2/openvswitch_agent.ini l2_population = True arp_responder = True enable_distributed_routing = True Enable DVR and select an interface driver to be used by l3 agent # vi /etc/neutron/l3_agent.ini interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver agent_mode = dvr Edit ml2 configuration file as below: # vi /etc/neutron/plugins/ml2/ml2_conf.ini type_drivers = flat,vlan,vxlan tenant_network_types = vxlan mechanism_drivers = openvswitch,l2population vni_ranges = 10:100 vxlan_group = 224.1.1.1 enable_security_group = True Start and enable metadata agent in compute nodes systemctl start neutron-l3-agent neutron-metadata-agent systemctl enable neutron-l3-agent neutron-metadata-agent Create an external bridge with an external IP associated on it # vi /etc/sysconfig/network-scripts/ifcfg-br-ex DEVICE=br-ex DEVICETYPE=ovs TYPE=OVSBridge BOOTPROTO=static IPADDR=192.168.100.4 NETMASK=255.255.255.0 GATEWAY=192.168.100.1 ONBOOT=yes Modify an unused interface connected with the same network as the IP configured with br-ex, edit the interface to be used as OVS port by br-ex # vi /etc/sysconfig/network-scripts/ifcfg-eth1 DEVICE=eth1 TYPE=OVSPort DEVICETYPE=ovs OVS_BRIDGE=br-ex ONBOOT=yes Restart network service to apply changes on the interfaces and openvswith-agent systemctl restart network systemctl restart neutron-openvswitch-agent Create an external network and a subnet on it neutron net-create external_network --provider:network_type flat --provider:physical_network extnet --router:external --shared neutron subnet-create --name public_subnet --enable_dhcp=False --allocation-pool=start=192.168.100.100,end=192.168.100.150 --gateway=192.168.100.1 external_network 192.168.100.0/24 Create a router and associate external network as router gateway neutron router-create router1 neutron router-gateway-set router1 external_network Create an internal network, a subnet and associate an interface to the router neutron net-create private_network neutron subnet-create --name private_subnet private_network 10.0.1.0/24 neutron router-interface-add router1 private_subnet Boot 2 instances nova boot --flavor m1.tiny --image cirros --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df test1 nova boot --flavor m1.tiny --image cirros --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df test2 Create 2 floating ips and associate it to instances neutron floatingip-create external_network neutron floatingip-create external_network nova floating-ip-associate test1 192.168.100.101 nova floating-ip-associate test2 192.168.100.102 Test if all works as expected pinging floating ips # ping 192.168.100.101 # ping 192.168.100.102 As you can see, in network nodes, a snat namespace is created # sudo ip netns qdhcp-154da7a8-fa49-415e-9d35-c840b144a8df snat-77fef58a-6d0c-4e96-b4b6-5d8e81ebead3 In compute nodes, a fip namespace per instance with floating ip associated running on the compute node are created and a qrouter namespace are created. # sudo ip netns fip-4dfdabb0-d2d6-4d4a-8c00-84df834eec8b qrouter-77fef58a-6d0c-4e96-b4b6-5d8e81ebead3 Best regards, Eduardo Gonzalez">
+<meta property="og:description" content="Distributed Virtual Routers aka DVR were created to avoid single point of failure on neutron nodes. When using standard routers, all the traffic is passing out through Neutron servers. Inside network servers, router namespaces are created routing all traffic and NAT forwarding between instances and public networks. When a network node falls down, instance traffic will no longer be available until a new namespace is created and executed in another network node. Distributed routers is a way to avoid the SPOF neutron nodes were. When using DVR, router namespaces, are directly created inside compute nodes where all instance and l3 traffic are routed. If you want to know more about DVR check this awesome links: http://blog.gampel.net/2014/12/openstack-neutron-distributed-virtual.html http://blog.gampel.net/2014/12/openstack-dvr2-floating-ips.html http://blog.gampel.net/2015/01/openstack-DVR-SNAT.html A previous OpenStack Liberty installation is required, mine was done with RDO packstack. Configure all Neutron Servers Edit ml2 configuration file with the following: # vi /etc/neutron/plugins/ml2/ml2_conf.ini mechanism_drivers = openvswitch,l2population type_drivers = flat,vlan,vxlan tenant_network_types = vxlan vni_ranges = 10:100 vxlan_group = 224.1.1.1 enable_security_group = True Edit neutron configuration file, enable DVR and uncomment dvr_base_mac option # vi /etc/neutron/neutron.conf router_distributed = True dvr_base_mac = fa:16:3f:00:00:00 Configure l3 agent to use dvr_snat # vi /etc/neutron/l3_agent.ini agent_mode = dvr_snat Restart neutron server systemctl restart neutron-server Configure all Compute Nodes Install ml2 package yum install openstack-neutron-ml2 Edit openvswitch agent file as below: # vi /etc/neutron/plugins/ml2/openvswitch_agent.ini l2_population = True arp_responder = True enable_distributed_routing = True Enable DVR and select an interface driver to be used by l3 agent # vi /etc/neutron/l3_agent.ini interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver agent_mode = dvr Edit ml2 configuration file as below: # vi /etc/neutron/plugins/ml2/ml2_conf.ini type_drivers = flat,vlan,vxlan tenant_network_types = vxlan mechanism_drivers = openvswitch,l2population vni_ranges = 10:100 vxlan_group = 224.1.1.1 enable_security_group = True Start and enable metadata agent in compute nodes systemctl start neutron-l3-agent neutron-metadata-agent systemctl enable neutron-l3-agent neutron-metadata-agent Create an external bridge with an external IP associated on it # vi /etc/sysconfig/network-scripts/ifcfg-br-ex DEVICE=br-ex DEVICETYPE=ovs TYPE=OVSBridge BOOTPROTO=static IPADDR=192.168.100.4 NETMASK=255.255.255.0 GATEWAY=192.168.100.1 ONBOOT=yes Modify an unused interface connected with the same network as the IP configured with br-ex, edit the interface to be used as OVS port by br-ex # vi /etc/sysconfig/network-scripts/ifcfg-eth1 DEVICE=eth1 TYPE=OVSPort DEVICETYPE=ovs OVS_BRIDGE=br-ex ONBOOT=yes Restart network service to apply changes on the interfaces and openvswith-agent systemctl restart network systemctl restart neutron-openvswitch-agent Create an external network and a subnet on it neutron net-create external_network --provider:network_type flat --provider:physical_network extnet --router:external --shared neutron subnet-create --name public_subnet --enable_dhcp=False --allocation-pool=start=192.168.100.100,end=192.168.100.150 --gateway=192.168.100.1 external_network 192.168.100.0/24 Create a router and associate external network as router gateway neutron router-create router1 neutron router-gateway-set router1 external_network Create an internal network, a subnet and associate an interface to the router neutron net-create private_network neutron subnet-create --name private_subnet private_network 10.0.1.0/24 neutron router-interface-add router1 private_subnet Boot 2 instances nova boot --flavor m1.tiny --image cirros --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df test1 nova boot --flavor m1.tiny --image cirros --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df test2 Create 2 floating ips and associate it to instances neutron floatingip-create external_network neutron floatingip-create external_network nova floating-ip-associate test1 192.168.100.101 nova floating-ip-associate test2 192.168.100.102 Test if all works as expected pinging floating ips # ping 192.168.100.101 # ping 192.168.100.102 As you can see, in network nodes, a snat namespace is created # sudo ip netns qdhcp-154da7a8-fa49-415e-9d35-c840b144a8df snat-77fef58a-6d0c-4e96-b4b6-5d8e81ebead3 In compute nodes, a fip namespace per instance with floating ip associated running on the compute node are created and a qrouter namespace are created. # sudo ip netns fip-4dfdabb0-d2d6-4d4a-8c00-84df834eec8b qrouter-77fef58a-6d0c-4e96-b4b6-5d8e81ebead3 Best regards, Eduardo Gonzalez">
+<link rel="canonical" href="http://217.182.136.201:5000/configure-neutron-dvr-openstack-liberty/">
+<meta property="og:url" content="http://217.182.136.201:5000/configure-neutron-dvr-openstack-liberty/">
+<meta property="og:site_name" content="OpenStack things">
+<meta property="og:image" content="http://217.182.136.201:5000/wp-content/uploads/2015/09/learn-about-openstack-badge.png">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-01-27T20:13:38+00:00">
+<script type="application/ld+json">
+{"name":null,"description":"Distributed Virtual Routers aka DVR were created to avoid single point of failure on neutron nodes. When using standard routers, all the traffic is passing out through Neutron servers. Inside network servers, router namespaces are created routing all traffic and NAT forwarding between instances and public networks. When a network node falls down, instance traffic will no longer be available until a new namespace is created and executed in another network node. Distributed routers is a way to avoid the SPOF neutron nodes were. When using DVR, router namespaces, are directly created inside compute nodes where all instance and l3 traffic are routed. If you want to know more about DVR check this awesome links: http://blog.gampel.net/2014/12/openstack-neutron-distributed-virtual.html http://blog.gampel.net/2014/12/openstack-dvr2-floating-ips.html http://blog.gampel.net/2015/01/openstack-DVR-SNAT.html A previous OpenStack Liberty installation is required, mine was done with RDO packstack. Configure all Neutron Servers Edit ml2 configuration file with the following: # vi /etc/neutron/plugins/ml2/ml2_conf.ini mechanism_drivers = openvswitch,l2population type_drivers = flat,vlan,vxlan tenant_network_types = vxlan vni_ranges = 10:100 vxlan_group = 224.1.1.1 enable_security_group = True Edit neutron configuration file, enable DVR and uncomment dvr_base_mac option # vi /etc/neutron/neutron.conf router_distributed = True dvr_base_mac = fa:16:3f:00:00:00 Configure l3 agent to use dvr_snat # vi /etc/neutron/l3_agent.ini agent_mode = dvr_snat Restart neutron server systemctl restart neutron-server Configure all Compute Nodes Install ml2 package yum install openstack-neutron-ml2 Edit openvswitch agent file as below: # vi /etc/neutron/plugins/ml2/openvswitch_agent.ini l2_population = True arp_responder = True enable_distributed_routing = True Enable DVR and select an interface driver to be used by l3 agent # vi /etc/neutron/l3_agent.ini interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver agent_mode = dvr Edit ml2 configuration file as below: # vi /etc/neutron/plugins/ml2/ml2_conf.ini type_drivers = flat,vlan,vxlan tenant_network_types = vxlan mechanism_drivers = openvswitch,l2population vni_ranges = 10:100 vxlan_group = 224.1.1.1 enable_security_group = True Start and enable metadata agent in compute nodes systemctl start neutron-l3-agent neutron-metadata-agent systemctl enable neutron-l3-agent neutron-metadata-agent Create an external bridge with an external IP associated on it # vi /etc/sysconfig/network-scripts/ifcfg-br-ex DEVICE=br-ex DEVICETYPE=ovs TYPE=OVSBridge BOOTPROTO=static IPADDR=192.168.100.4 NETMASK=255.255.255.0 GATEWAY=192.168.100.1 ONBOOT=yes Modify an unused interface connected with the same network as the IP configured with br-ex, edit the interface to be used as OVS port by br-ex # vi /etc/sysconfig/network-scripts/ifcfg-eth1 DEVICE=eth1 TYPE=OVSPort DEVICETYPE=ovs OVS_BRIDGE=br-ex ONBOOT=yes Restart network service to apply changes on the interfaces and openvswith-agent systemctl restart network systemctl restart neutron-openvswitch-agent Create an external network and a subnet on it neutron net-create external_network --provider:network_type flat --provider:physical_network extnet --router:external --shared neutron subnet-create --name public_subnet --enable_dhcp=False --allocation-pool=start=192.168.100.100,end=192.168.100.150 --gateway=192.168.100.1 external_network 192.168.100.0/24 Create a router and associate external network as router gateway neutron router-create router1 neutron router-gateway-set router1 external_network Create an internal network, a subnet and associate an interface to the router neutron net-create private_network neutron subnet-create --name private_subnet private_network 10.0.1.0/24 neutron router-interface-add router1 private_subnet Boot 2 instances nova boot --flavor m1.tiny --image cirros --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df test1 nova boot --flavor m1.tiny --image cirros --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df test2 Create 2 floating ips and associate it to instances neutron floatingip-create external_network neutron floatingip-create external_network nova floating-ip-associate test1 192.168.100.101 nova floating-ip-associate test2 192.168.100.102 Test if all works as expected pinging floating ips # ping 192.168.100.101 # ping 192.168.100.102 As you can see, in network nodes, a snat namespace is created # sudo ip netns qdhcp-154da7a8-fa49-415e-9d35-c840b144a8df snat-77fef58a-6d0c-4e96-b4b6-5d8e81ebead3 In compute nodes, a fip namespace per instance with floating ip associated running on the compute node are created and a qrouter namespace are created. # sudo ip netns fip-4dfdabb0-d2d6-4d4a-8c00-84df834eec8b qrouter-77fef58a-6d0c-4e96-b4b6-5d8e81ebead3 Best regards, Eduardo Gonzalez","author":{"@type":"Person","name":"Editor"},"@type":"BlogPosting","url":"http://217.182.136.201:5000/configure-neutron-dvr-openstack-liberty/","publisher":null,"image":"http://217.182.136.201:5000/wp-content/uploads/2015/09/learn-about-openstack-badge.png","headline":"Configure Neutron DVR OpenStack Liberty","dateModified":"2016-01-27T20:13:38+00:00","datePublished":"2016-01-27T20:13:38+00:00","sameAs":null,"mainEntityOfPage":{"@type":"WebPage","@id":"http://217.182.136.201:5000/configure-neutron-dvr-openstack-liberty/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="http://github.com/egonzalez90/egonzalez90.github.io">View on GitHub</a>
+
+          <h1 id="project_title">OpenStack things</h1>
+          <h2 id="project_tagline">OpenStack, Docker, Ansible, Ceph, Linux</h2>
+
+          
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>Distributed Virtual Routers aka DVR were created to avoid single point of failure on neutron nodes.
+When using standard routers, all the traffic is passing out through Neutron servers. Inside network servers, router namespaces are created routing all traffic and NAT forwarding between instances and public networks. When a network node falls down, instance traffic will no longer be available until a new namespace is created and executed in another network node.
+Distributed routers is a way to avoid the SPOF neutron nodes were. When using DVR, router namespaces, are directly created inside compute nodes where all instance and l3 traffic are routed.</p>
+
+<p>If you want to know more about DVR check this awesome links:
+<a href="http://blog.gampel.net/2014/12/openstack-neutron-distributed-virtual.html" target="_blank">http://blog.gampel.net/2014/12/openstack-neutron-distributed-virtual.html</a>
+<a href="http://blog.gampel.net/2014/12/openstack-dvr2-floating-ips.html" target="_blank">http://blog.gampel.net/2014/12/openstack-dvr2-floating-ips.html</a>
+<a href="http://blog.gampel.net/2015/01/openstack-DVR-SNAT.html" target="_blank">http://blog.gampel.net/2015/01/openstack-DVR-SNAT.html</a></p>
+
+<p>A previous OpenStack Liberty installation is required, mine was done with RDO packstack.</p>
+
+<p><strong><ins datetime="2016-01-27T18:47:58+00:00">Configure all Neutron Servers</ins></strong></p>
+
+<p>Edit ml2 configuration file with the following:</p>
+
+<pre>
+# vi /etc/neutron/plugins/ml2/ml2_conf.ini
+
+mechanism_drivers = openvswitch,l2population
+type_drivers = flat,vlan,vxlan
+tenant_network_types = vxlan
+vni_ranges = 10:100
+vxlan_group = 224.1.1.1
+enable_security_group = True
+</pre>
+<p>Edit neutron configuration file, enable DVR and uncomment dvr_base_mac option</p>
+<pre>
+# vi /etc/neutron/neutron.conf
+
+router_distributed = True
+dvr_base_mac = fa:16:3f:00:00:00
+</pre>
+<p>Configure l3 agent to use dvr_snat</p>
+<pre>
+# vi /etc/neutron/l3_agent.ini
+
+agent_mode = dvr_snat
+</pre>
+<p>Restart neutron server</p>
+<pre>
+systemctl restart neutron-server
+</pre>
+<p><strong><ins datetime="2016-01-27T18:47:58+00:00">Configure all Compute Nodes</ins></strong></p>
+
+<p>Install ml2 package</p>
+<pre>
+yum install openstack-neutron-ml2
+</pre>
+<p>Edit openvswitch agent file as below:</p>
+<pre>
+# vi /etc/neutron/plugins/ml2/openvswitch_agent.ini 
+
+l2_population = True
+arp_responder = True
+enable_distributed_routing = True
+</pre>
+<p>Enable DVR and select an interface driver to be used by l3 agent</p>
+<pre>
+# vi /etc/neutron/l3_agent.ini
+
+interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+agent_mode = dvr
+</pre>
+<p>Edit ml2 configuration file as below:</p>
+<pre>
+# vi /etc/neutron/plugins/ml2/ml2_conf.ini
+
+type_drivers = flat,vlan,vxlan
+tenant_network_types = vxlan
+mechanism_drivers = openvswitch,l2population
+vni_ranges = 10:100
+vxlan_group = 224.1.1.1
+enable_security_group = True
+</pre>
+<p>Start and enable metadata agent in compute nodes</p>
+<pre>
+systemctl start neutron-l3-agent neutron-metadata-agent
+systemctl enable neutron-l3-agent neutron-metadata-agent
+</pre>
+<p>Create an external bridge with an external IP associated on it</p>
+<pre>
+# vi /etc/sysconfig/network-scripts/ifcfg-br-ex
+
+DEVICE=br-ex
+DEVICETYPE=ovs
+TYPE=OVSBridge
+BOOTPROTO=static
+IPADDR=192.168.100.4                                                          
+NETMASK=255.255.255.0
+GATEWAY=192.168.100.1
+ONBOOT=yes
+</pre>
+<p>Modify an unused interface connected with the same network as the IP configured with br-ex, edit the interface to be used as OVS port by br-ex</p>
+<pre>
+# vi /etc/sysconfig/network-scripts/ifcfg-eth1
+DEVICE=eth1
+TYPE=OVSPort
+DEVICETYPE=ovs
+OVS_BRIDGE=br-ex
+ONBOOT=yes
+</pre>
+<p>Restart network service to apply changes on the interfaces and openvswith-agent</p>
+<pre>
+systemctl restart network
+systemctl restart neutron-openvswitch-agent
+</pre>
+<p>Create an external network and a subnet on it</p>
+<pre>
+neutron net-create external_network --provider:network_type flat --provider:physical_network extnet  --router:external --shared
+neutron subnet-create --name public_subnet --enable_dhcp=False --allocation-pool=start=192.168.100.100,end=192.168.100.150 --gateway=192.168.100.1 external_network 192.168.100.0/24
+</pre>
+<p>Create a router and associate external network as router gateway</p>
+<pre>
+neutron router-create router1
+neutron router-gateway-set router1 external_network
+</pre>
+<p>Create an internal network, a subnet and associate an interface to the router</p>
+<pre>
+neutron net-create private_network
+neutron subnet-create --name private_subnet private_network 10.0.1.0/24
+neutron router-interface-add router1 private_subnet
+</pre>
+<p>Boot 2 instances</p>
+<pre>
+nova boot --flavor m1.tiny --image cirros --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df test1
+nova boot --flavor m1.tiny --image cirros --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df test2
+</pre>
+<p>Create 2 floating ips and associate it to instances</p>
+<pre>
+neutron floatingip-create external_network
+neutron floatingip-create external_network
+nova floating-ip-associate test1 192.168.100.101
+nova floating-ip-associate test2 192.168.100.102
+</pre>
+<p>Test if all works as expected pinging floating ips</p>
+<pre>
+# ping 192.168.100.101
+# ping 192.168.100.102
+</pre>
+<p>As you can see, in network nodes, a snat namespace is created</p>
+<pre>
+# sudo ip netns
+qdhcp-154da7a8-fa49-415e-9d35-c840b144a8df
+snat-77fef58a-6d0c-4e96-b4b6-5d8e81ebead3
+</pre>
+<p>In compute nodes, a fip namespace per instance with floating ip associated running on the compute node are created and a qrouter namespace are created.</p>
+<pre>
+# sudo ip netns
+fip-4dfdabb0-d2d6-4d4a-8c00-84df834eec8b
+qrouter-77fef58a-6d0c-4e96-b4b6-5d8e81ebead3
+</pre>
+
+<p>Best regards, Eduardo Gonzalez</p>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        
+        <p class="copyright">OpenStack things maintained by <a href="http://github.com/egonzalez90">egonzalez90</a></p>
+        
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+  </body>
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = 'https://egonzalez-1.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <meta name="description" content="OpenStack things : OpenStack, Docker, Ansible, Ceph, Linux">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/style.css?v=9a6333a51cf04996f04338046deefb14dd69cda4">
+
+<!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Análisis Forense Servidor Atacado | OpenStack things</title>
+<meta property="og:title" content="Análisis Forense Servidor Atacado">
+<meta name="author" content="Editor">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="Esta guía te proporcionara las bases para investigar servidores que su seguridad ha sido comprometida.">
+<meta property="og:description" content="Esta guía te proporcionara las bases para investigar servidores que su seguridad ha sido comprometida.">
+<link rel="canonical" href="http://217.182.136.201:5000/analisis-forense-servidor-atacado/">
+<meta property="og:url" content="http://217.182.136.201:5000/analisis-forense-servidor-atacado/">
+<meta property="og:site_name" content="OpenStack things">
+<meta property="og:image" content="http://217.182.136.201:5000/wp-content/uploads/2014/05/original-672x372.jpg">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2014-10-15T16:42:06+00:00">
+<script type="application/ld+json">
+{"name":null,"description":"Esta guía te proporcionara las bases para investigar servidores que su seguridad ha sido comprometida.","author":{"@type":"Person","name":"Editor"},"@type":"BlogPosting","url":"http://217.182.136.201:5000/analisis-forense-servidor-atacado/","publisher":null,"image":"http://217.182.136.201:5000/wp-content/uploads/2014/05/original-672x372.jpg","headline":"Análisis Forense Servidor Atacado","dateModified":"2014-10-15T16:42:06+00:00","datePublished":"2014-10-15T16:42:06+00:00","sameAs":null,"mainEntityOfPage":{"@type":"WebPage","@id":"http://217.182.136.201:5000/analisis-forense-servidor-atacado/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="http://github.com/egonzalez90/egonzalez90.github.io">View on GitHub</a>
+
+          <h1 id="project_title">OpenStack things</h1>
+          <h2 id="project_tagline">OpenStack, Docker, Ansible, Ceph, Linux</h2>
+
+          
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>Esta guía te proporcionara las bases para investigar servidores que su seguridad ha sido comprometida.</p>
+
+<p>Veremos  los diferentes modos para determinar:</p>
+<ul>
+	<li>Punto de entrada</li>
+	<li>Origen del ataque</li>
+	<li>Archivos comprometidos</li>
+	<li>Nivel de acceso obtenido por el atacante</li>
+	<li>Investigación de pruebas y rastros dejados por los atacantes</li>
+</ul>
+<!--more-->
+
+<p>Son muchos los puntos de entradas que un servidor Linux/Unix puede tener, pero es importante que método se ha usado para determinar el daño que ha podido hacer en a máquina y/o otros servidores conectados entre sí.</p>
+
+<p>La mejor forma de arreglar un servidor comprometido es re instalar el sistema operativo y restaurar los datos importantes desde una copia de seguridad, pero es importante investigar el servidor afectado para conocer el punto de entrada y así poder parchearlo en la reinstalación del SO.</p>
+<h1>Documentación</h1>
+<p>Cuando te enteras que un sistema bajo tu control puede haber sido comprometido, debes de intentar obtener la mayor información posible del denunciante. Entre ellas:</p>
+<ul>
+	<li>Cuando se encontró el problema inicial</li>
+	<li>La hora estimada del ataque</li>
+	<li>Se ha modificado el servidor desde el ataque</li>
+	<li>Alguna cosa más que el denunciante considere importante</li>
+</ul>
+<p>NOTA: Si estás pensando en involucrar a las fuerzas de la ley, realizar denuncias, es muy importante que no se realice ninguna acción en el servidor. Este debe quedar en su estado actual a un equipo de informática forense para la búsqueda de pruebas.</p>
+
+<p>Si vas a proceder a la investigación, documenta toda lo que encuentres en el servidor.</p>
+<h1>Herramientas usadas en la investigación</h1>
+<p>En un escenario ideal para un atacante, todos los archivos de log se habrán borrado dejando su rastro limpio. Por suerte estos casos no se suelen dar, y aunque los ataques estén automatizados, siempre hay alguna pista desde la que encontrar información sobre cómo se ha realizado el ataque, si es ataque web básico o un ataque que compromete el acceso root.</p>
+
+<p>Aquí tienes algunas herramientas con las que podrás investigar posibles rastros para analizar el sistema.</p>
+<h2>last</h2>
+<p>Esta herramienta listara las últimas sesiones de usuario, con este comando podrás ver horas de sesión, IP, nombre de usuario, etc.</p>
+
+<p>Un numero exagerado de direcciones IP en los archivos de log /var/log/messages o /var/log/secure puede indicar que el atacante realizo un ataque por fuerza bruta, eso reflejara en el comando last la hora de cuando consiguió dicho acceso al servidor</p>
+<h2>ls -lart</h2>
+<p>Este comando nos mostrara una lista de archivos y directorios ordenados por fecha según la última modificación. Esto nos permitirá saber que ha sido modificado o añadido comprobándolo con las fechas del ataque.</p>
+<h2>netstat -na</h2>
+<p>Eso nos listara las conexiones a la escucha existentes. Nos podrá revelar posibles backdoors o servicios que no deberían estar en escucha, los cuales pueden ser causa de alguno de los ficheros</p>
+<h2>alias</h2>
+<p>Este comando nos mostrara los alias de comandos, es posible que un atacante cree alias para que al ejecutar determinado comando se ejecute otro.</p>
+<h2>ps -wauxef</h2>
+<p>Este comando nos es muy útil a la hora de detectar procesos erróneos en escucha, además también nos listara otros procesos como los del usuario www. lsof | grep &lt;pid&gt; puede ser usado para encontrar que archivos está utilizando determinado proceso. Igualmente con cat /proc/&lt;pid&gt;/cmdline puedes saber dónde está el archivo que controla el proceso.</p>
+<h2>bash_history</h2>
+<p>Mediante este comando obtendremos el historial de los comandos ejecutados desde los diferentes usuarios. El archivo se encuentra en la carpeta / root y el /home/ de cada usuario. Es oculto</p>
+<h2>top</h2>
+<p>A veces un proceso malicioso causa extremo uso de CPU causando problemas en el entorno, suele estar situado en el principio de la lista. Todo proceso que este causando un consumo excesivo de CPU debe ser considerado sospechoso</p>
+<h2>strace -p</h2>
+<p>Este comando se ejecutara sobre procesos sospechosos, el cual nos dará mucha información sobre que está realizando.</p>
+
+<p>En algunos casos, este comando no nos proporcionara ninguna información real, debido a que se pueden haber modificado los binarios para que la salida del comando no muestre lo que debería, complicando la investigación del ataque. Para ello investigaremos que dichos binarios no están trojanizados:</p>
+<h2>rpm -Va</h2>
+<p>Este comando comprobara la información de los paquetes instalados con los metadatos de la base de datos rpm. Entre otras cosas, compara el tamaño, suma de verificación MD5, permisos, tipo, propietario y grupo. Cualquier modificación del paquete original será mostrada.</p>
+
+<p>Cuando se ejecuta este comando, es importante si alguno de los paquetes marcados como modificados esta en alguno de los siguientes directorios, de ser así, puede significar que se está usando una versión trojanizada del binario, por lo que no se puede fiar de la salida del comando.</p>
+<h4>/bin</h4>
+<h4>/sbin</h4>
+<h4>/usr/bin</h4>
+<h4>/usr/sbin</h4>
+<p> </p>
+<h2>rpm -qa</h2>
+<p>Este comando te mostrara cuales son los últimos paquetes instalado en orden cronológico. En cualquier caso, si el acceso root ha sido comprometido, la base de datos rpm puede haber sido modificada y no ser fiable</p>
+<h2>lsattr</h2>
+<p>En el caso de que el atacante haya conseguido acceso root y trojanizar determinados binarios, puede que haya establecido dicho binario como inmutable, por lo que no podrás reinstalar una versión limpia del binario. Los directorios más comunes son:</p>
+<h4>/bin</h4>
+<h4>/sbin</h4>
+<h4>/usr/bin</h4>
+<h4>/usr/sbin</h4>
+<p>También deberías de buscar por otros directorios como /etc, /root, /tmp, etc.</p>
+
+<p>Un ejemplo del binario de ps establecido como inmutable es este:</p>
+<h4>-------i----- /bin/ps</h4>
+<p> </p>
+<h2>find / mtime 5</h2>
+<p>Con este comando buscaras archivos que han sido modificados en los últimos 5 días, puedes cambiar el digito numérico si sabes las fechas exactas, así afinaras más las búsqueda y evitaras ver archivos modificados que no tengan interés en la investigación.</p>
+<h1>Directorios comunes donde se encuentran los exploits</h1>
+<p>Comprueba los directorios que Apache comúnmente puede escribir sus archivos temporales</p>
+<h4>ls -al /tmp</h4>
+<h4>ls -al /var/tmp</h4>
+<h4>ls -al /dev/shm</h4>
+<p>Si tienes algun fichero con todos los permisos 777, sospecha de el.</p>
+
+<p>Comprueba que los ficheros ocultos no tengan permisos de ejecución.</p>
+<h1>Encontrando el punto de acceso</h1>
+<p>Si has encontrado algo con la información anterior, quiere decir que ya sabes más o menos cuando el ataque se ha realizado, de qué forma y contra que. Ahora ya podrás investigar sobre los logs de acceso a la página web por la fecha por la que se produjo el ataque. También debes mirar en los archivos /var/log/* en los cuales encontraras información de accesos, del sistema, etc.</p>
+
+<p>Si tienes alguna aplicación afectada que también guarde logs, puedes investigar sobre ellos para buscar más información sobre el atacante.</p>
+
+<p>Debido a un ataque en uno de los servidores que administro tuve que lidiar con este tipo de investigación forense. Encontré poca información al respecto, hasta que encontré la siguiente web, que definitivamente me ayudo realmente.</p>
+
+<p>https://community.rackspace.com/general/f/34/t/75</p>
+
+<p>Estoy realmente agradecido al creador de esa información, por eso me decidí a traducirla (no literalmente) para que los que sufran de ese mismo problema y no sepan ingles puedan descubrir que les han hecho en su servidor.</p>
+
+<p>En la misma web, tienen un ejemplo práctico de como el encontró su webshell en phpmyadmin, os recomiendo que la lean.</p>
+
+<p>Infinitamente agradecido.</p>
+
+<p>Un saludo</p>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        
+        <p class="copyright">OpenStack things maintained by <a href="http://github.com/egonzalez90">egonzalez90</a></p>
+        
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+  </body>
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = 'https://egonzalez-1.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+</html>
