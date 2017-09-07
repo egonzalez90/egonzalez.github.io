@@ -3,7 +3,7 @@ id: 600
 title: Alineamiento MBR maquinas virtuales
 date: 2014-09-03T15:21:58+00:00
 author: Editor
-layout: default
+layout: post
 guid: http://egonzalez.org/?p=600
 permalink: /alineamiento-mbr-maquinas-virtuales/
 kopa_resolution_total_view:

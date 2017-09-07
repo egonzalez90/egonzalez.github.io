@@ -157,7 +157,7 @@ ded4a8b7eb1ee61fecc8ddc2eb1b092917a361bc36f7f752b32d76e79501d70a
 Now you have the container running, check if all the ports are properly exposed
 
 ```
-  [egonzalez@localhost ~]$ docker ps --latest --format 'table {{ID}}\t{{Image}}\t{{Ports}}'
+  [egonzalez@localhost ~]$ docker ps --latest --format 'table {{.ID}}\t{{.Image}}\t{{.Ports}}'
   CONTAINER ID        IMAGE                   PORTS
   ded4a8b7eb1e        egonzalez90/spacewalk   68-69/tcp, 80/tcp, 443/tcp, 5222/tcp
 ```

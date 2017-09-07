@@ -1,77 +1,3 @@
-<!DOCTYPE html>
-<html lang="en-US">
-
-  <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width,maximum-scale=2">
-    <meta name="description" content="OpenStack things : OpenStack, Docker, Ansible, Ceph, Linux">
-
-    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/style.css?v=9a6333a51cf04996f04338046deefb14dd69cda4">
-
-<!-- Begin Jekyll SEO tag v2.3.0 -->
-<title>PermitRootLogin ssh RHEL (Access Denied) | OpenStack things</title>
-<meta property="og:title" content="PermitRootLogin ssh RHEL (Access Denied)">
-<meta name="author" content="Editor">
-<meta property="og:locale" content="en_US">
-<meta name="description" content="En algunos sistemas, el acceso por ssh al usuario root esta deshabilitado por defecto, cuando intentemos logearnos nos mostrara el error Access Denied, para habilitarlo deberemos modificar este archivo /etc/ssh/sshd/sshd_config Aquí buscaremos una linea en la que aparezca: PermitRootLogin no Lo cambiaremos por: PermitRootLogin yes Guardaremos y reiniciamos el servicio sshd service sshd restart Ya podriamos acceder con el usuario root por ssh">
-<meta property="og:description" content="En algunos sistemas, el acceso por ssh al usuario root esta deshabilitado por defecto, cuando intentemos logearnos nos mostrara el error Access Denied, para habilitarlo deberemos modificar este archivo /etc/ssh/sshd/sshd_config Aquí buscaremos una linea en la que aparezca: PermitRootLogin no Lo cambiaremos por: PermitRootLogin yes Guardaremos y reiniciamos el servicio sshd service sshd restart Ya podriamos acceder con el usuario root por ssh">
-<link rel="canonical" href="http://217.182.136.201:5000/permitrootlogin-ssh-rhel-access-denied/">
-<meta property="og:url" content="http://217.182.136.201:5000/permitrootlogin-ssh-rhel-access-denied/">
-<meta property="og:site_name" content="OpenStack things">
-<meta property="og:image" content="http://217.182.136.201:5000/wp-content/uploads/2014/08/IMG_811278467062542.jpeg">
-<meta property="og:type" content="article">
-<meta property="article:published_time" content="2014-08-25T11:55:37+00:00">
-<script type="application/ld+json">
-{"name":null,"description":"En algunos sistemas, el acceso por ssh al usuario root esta deshabilitado por defecto, cuando intentemos logearnos nos mostrara el error Access Denied, para habilitarlo deberemos modificar este archivo /etc/ssh/sshd/sshd_config Aquí buscaremos una linea en la que aparezca: PermitRootLogin no Lo cambiaremos por: PermitRootLogin yes Guardaremos y reiniciamos el servicio sshd service sshd restart Ya podriamos acceder con el usuario root por ssh","author":{"@type":"Person","name":"Editor"},"@type":"BlogPosting","url":"http://217.182.136.201:5000/permitrootlogin-ssh-rhel-access-denied/","publisher":null,"image":"http://217.182.136.201:5000/wp-content/uploads/2014/08/IMG_811278467062542.jpeg","headline":"PermitRootLogin ssh RHEL (Access Denied)","dateModified":"2014-08-25T11:55:37+00:00","datePublished":"2014-08-25T11:55:37+00:00","sameAs":null,"mainEntityOfPage":{"@type":"WebPage","@id":"http://217.182.136.201:5000/permitrootlogin-ssh-rhel-access-denied/"},"@context":"http://schema.org"}</script>
-<!-- End Jekyll SEO tag -->
-
-  </head>
-
-  <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="http://github.com/egonzalez90/egonzalez90.github.io">View on GitHub</a>
-
-          <h1 id="project_title">OpenStack things</h1>
-          <h2 id="project_tagline">OpenStack, Docker, Ansible, Ceph, Linux</h2>
-
-          
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <p>En algunos sistemas, el acceso por ssh al usuario root esta deshabilitado por defecto, cuando intentemos logearnos nos mostrara el error Access Denied, para habilitarlo deberemos modificar este archivo</p>
-<blockquote>/etc/ssh/sshd/sshd_config</blockquote>
-<p>Aquí buscaremos una linea en la que aparezca:</p>
-<blockquote>PermitRootLogin no</blockquote>
-<p>Lo cambiaremos por:</p>
-<blockquote>PermitRootLogin yes</blockquote>
-<p>Guardaremos y reiniciamos el servicio sshd</p>
-<blockquote>service sshd restart</blockquote>
-<p>Ya podriamos acceder con el usuario root por ssh</p>
-
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        
-        <p class="copyright">OpenStack things maintained by <a href="http://github.com/egonzalez90">egonzalez90</a></p>
-        
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    
-  </body>
-
 <div id="disqus_thread"></div>
 <script>
     /**
@@ -93,6 +19,4 @@
         (d.head || d.body).appendChild(s);
     })();
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
-</noscript>
-</html>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
