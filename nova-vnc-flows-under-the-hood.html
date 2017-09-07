@@ -2,45 +2,48 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Nova VNC flows under the hood</title>
-        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
-        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OpenStack Stuff | Nova VNC flows under the hood</title>
+    <link rel="shortcut icon" type="image/png" href="https://egonzalez90.github.io/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="https://egonzalez90.github.io/favicon.ico">
+    <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Full Atom Feed" />
+    <link href="https://egonzalez90.github.io/feeds/openstack.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Categories Atom Feed" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/screen.css" type="text/css" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/print.css" type="text/css" media="print" />
+    <meta name="generator" content="Pelican" />
+    <meta name="description" content="" />
+    <meta name="author" content="Eduardo Gonzalez" />
 
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+    <meta name="keywords" content="auth,console,consoleauth,flow,flows,how,internal,liberty,nova,novnc,novncproxy,openstack,traffic,vnc,works" />
 </head>
-
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
-                <nav><ul>
-                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
-                    <li class="active"><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
-                </ul>
-                </nav>
-        </header><!-- /#banner -->
-<section id="content" class="body">
-  <article>
+<body>
     <header>
-      <h1 class="entry-title">
-        <a href="https://egonzalez90.github.io/nova-vnc-flows-under-the-hood.html" rel="bookmark"
-           title="Permalink to Nova VNC flows under the hood">Nova VNC flows under the hood</a></h1>
+        <nav>
+            <ul>
+                <li><a href="https://egonzalez90.github.io/">Home</a></li>
+                <li><a href="https://docs.openstack.org">OpenStack</a></li>
+                <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                <li><a href="https://github.com/egonzalez90">Github</a></li>
+                <li><a href="https://egonzalez90.github.io/archives">Archives</a></li>
+            </ul>
+        </nav>
+        <div class="header_box">
+            <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff</a></h1>
+        </div>
     </header>
+    <div id="wrapper">
+        <div id="content">            <h4 class="date">Mar 02, 2016</h4>
 
-    <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 02 March 2016</span>
-<span>| tags: <a href="https://egonzalez90.github.io/tag/auth.html">auth</a><a href="https://egonzalez90.github.io/tag/console.html">console</a><a href="https://egonzalez90.github.io/tag/consoleauth.html">consoleauth</a><a href="https://egonzalez90.github.io/tag/flow.html">flow</a><a href="https://egonzalez90.github.io/tag/flows.html">flows</a><a href="https://egonzalez90.github.io/tag/how.html">how</a><a href="https://egonzalez90.github.io/tag/internal.html">internal</a><a href="https://egonzalez90.github.io/tag/liberty.html">liberty</a><a href="https://egonzalez90.github.io/tag/nova.html">nova</a><a href="https://egonzalez90.github.io/tag/novnc.html">novnc</a><a href="https://egonzalez90.github.io/tag/novncproxy.html">novncproxy</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/traffic.html">traffic</a><a href="https://egonzalez90.github.io/tag/vnc.html">vnc</a><a href="https://egonzalez90.github.io/tag/works.html">works</a></span>
-</footer><!-- /.post-info -->      <p>Most OpenStack deployments has a VNC console implemented with
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://egonzalez90.github.io/nova-vnc-flows-under-the-hood.html" rel="bookmark" title="Permanent Link to &quot;Nova VNC flows under the hood&quot;">Nova VNC flows under the hood</a>
+                </h2>
+
+                
+                
+
+                <p>Most OpenStack deployments has a VNC console implemented with
 nova-novncproxy. This service gives the final user the ability to log
 into their instances in a web based method through a browser.</p>
 <p>At this post i'm going to show how a vnc console request works under the
@@ -218,48 +221,50 @@ we can see a message like the following.</p>
 <p>handler exception: The token '3dfcd011-28f1-4cf3-8f5c-8cd18de4560e' is invalid or has expired</p>
 <p>Regards.<br>
 Eduardo Gonzalez</p>
-    </div><!-- /.entry-content -->
-    <div class="comments">
-      <h2>Comments !</h2>
-      <div id="disqus_thread"></div>
-      <script type="text/javascript">
-        var disqus_identifier = "nova-vnc-flows-under-the-hood.html";
-        var disqus_url = "https://egonzalez90.github.io/nova-vnc-flows-under-the-hood.html";
-        (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//egonzalez-1.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-      </script>
-    </div>
+                <div class="clear"></div>
 
-  </article>
-</section>
-        <section id="extras" class="body">
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
-
-                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
-                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
-                            <li><a href="https://github.com/egonzalez90">Github</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
-
-        <footer id="contentinfo" class="body">
-                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
-        </footer><!-- /#contentinfo -->
-
+                <div class="info">
+                    <a href="https://egonzalez90.github.io/nova-vnc-flows-under-the-hood.html">posted at 22:26</a>
+                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/auth.html" class="tags">auth</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/console.html" class="tags">console</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/consoleauth.html" class="tags">consoleauth</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/flow.html" class="tags">flow</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/flows.html" class="tags">flows</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/how.html" class="tags">how</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/internal.html" class="tags">internal</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/liberty.html" class="tags">liberty</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/nova.html" class="tags">nova</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/novnc.html" class="tags">novnc</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/novncproxy.html" class="tags">novncproxy</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/traffic.html" class="tags">traffic</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/vnc.html" class="tags">vnc</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/works.html" class="tags">works</a>
+                </div>
+<div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'egonzalez-1';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
 </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+            </article>
+            <div class="clear"></div>
+            <footer>
+                <p>
+                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
+                &middot;
+                Powered by <a href="http://getpelican.com">Pelican</a>
+                &middot;
+                <a href="https://egonzalez90.github.io/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
+            </footer>
+        </div>
+        <div class="clear"></div>
+    </div>
 </body>
 </html>

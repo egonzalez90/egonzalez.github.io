@@ -1,128 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <meta charset="utf-8" />
-        <title>OpenStack Stuff - Linux</title>
-        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
-        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
-
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OpenStack Stuff | articles in the "Linux" category | Page 5</title>
+    <link rel="shortcut icon" type="image/png" href="https://egonzalez90.github.io/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="https://egonzalez90.github.io/favicon.ico">
+    <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Full Atom Feed" />
+    <link href="https://egonzalez90.github.io/feeds/linux.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Categories Atom Feed" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/screen.css" type="text/css" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/print.css" type="text/css" media="print" />
+    <meta name="generator" content="Pelican" />
+    <meta name="description" content="" />
+    <meta name="author" content="Eduardo Gonzalez" />
 </head>
+<body>
+    <header>
+        <nav>
+            <ul>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
-                <nav><ul>
-                    <li class="active"><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
-                </ul>
-                </nav>
-        </header><!-- /#banner -->
+                <li class="ephemeral selected"><a href="https://egonzalez90.github.io/category/linux5.html">Linux</a></li>
+                <li><a href="https://egonzalez90.github.io/">Home</a></li>
+                <li><a href="https://docs.openstack.org">OpenStack</a></li>
+                <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                <li><a href="https://github.com/egonzalez90">Github</a></li>
+                <li><a href="https://egonzalez90.github.io/archives">Archives</a></li>
+            </ul>
+        </nav>
+        <div class="header_box">
+            <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff</a></h1>
+        </div>
+    </header>
+    <div id="wrapper">
+        <div id="content">            <h4 class="date">Feb 14, 2014</h4>
 
-                <section id="content" class="body">
-                    <ol id="posts-list" class="hfeed" start="2">
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://egonzalez90.github.io/crear-raid-1-en-linux.html" rel="bookmark"
-                           title="Permalink to Crear Raid 1 en Linux">Crear Raid 1 en Linux</a></h1>
-                </header>
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://egonzalez90.github.io/crear-raid-1-en-linux.html" rel="bookmark" title="Permanent Link to &quot;Crear Raid 1 en Linux&quot;">Crear Raid 1 en Linux</a>
+                </h2>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Fri 14 February 2014</span>
-<span>| tags: <a href="https://egonzalez90.github.io/tag/configuracion.html">configuracion</a><a href="https://egonzalez90.github.io/tag/debian.html">Debian</a><a href="https://egonzalez90.github.io/tag/disco-duro.html">disco duro</a><a href="https://egonzalez90.github.io/tag/linux.html">linux</a><a href="https://egonzalez90.github.io/tag/mdadm.html">mdadm</a><a href="https://egonzalez90.github.io/tag/raid.html">raid</a></span>
-</footer><!-- /.post-info -->                <p><strong>En esta entrada, voy a mostrar como se crea un raid de nivel 1 bajo
+                
+                
+
+                <p><strong>En esta entrada, voy a mostrar como se crea un raid de nivel 1 bajo
 Linux, también simulare como cambiar un disco en caso de que uno
 falle.<!--more--></strong></p>
 <p><strong>Empecemos:</strong></p>
 <p><strong>Cuando iniciamos la consola de Linux, comprobaremos que discos duros
 tenemos disponibles, en esta pantalla vemos que están sda, sdb</strong></p>
 <p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/1.jpg"><img alt="1" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/1.jpg"></a></p>
-<p><strong>En …</strong></p>
-                <a class="readmore" href="https://egonzalez90.github.io/crear-raid-1-en-linux.html">read more</a>
-<p><a href="https://egonzalez90.github.io/crear-raid-1-en-linux.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
+<p><strong>En esta otra esta sdc, vemos que tanto sdb como sdc están sin formato
+alguno</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/2.jpg"><img alt="2" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/2.jpg"></a></p>
+<p><strong>Ahora instalaremos el paquete mdadm, que será el que nos permita
+configurar un raid en el sistema </strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/3.jpg"><img alt="3" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/3.jpg"></a></p>
+<p><strong>Ahora crearemos un nuevo dispositivo llamado md0, con un raid de nivel
+1, añadiendo los dispositivos sdb y sdc a este</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/4.jpg"><img alt="4" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/4.jpg"></a></p>
+<p><strong>Ahora configuraremos este dispositivo que hemos creado previamente</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/5.jpg"><img alt="5" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/5.jpg"></a></p>
+<p><strong>Utilizaremos la opción N para crear una nueva partición</strong></p>
+<p><strong>Seleccionaremos P para hacerla primaria</strong></p>
+<p><strong>Estableceremos que la partición es la numero 1</strong></p>
+<p><strong>Pondremos el cilindro número 1 como primero, y el último de los que
+tengamos disponibles como final</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/6.jpg"><img alt="6" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/6.jpg"></a></p>
+<p><strong>Después utilizaremos la opción W para escribir los cambios al disco</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/7.jpg"><img alt="7" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/7.jpg"></a></p>
+<p><strong>Ahora crearemos el sistema de fichero mediante el comando mkfs y el
+dispositivo que habíamos creado</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/8.jpg"><img alt="8" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/8.jpg"></a></p>
+<p><strong>Ahora crearemos una carpeta de montaje de nuestro dispositivo mediante
+mkdir</strong></p>
+<p><strong>Después montaremos el dispositivo a dicha carpeta mediante el comando
+mount</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/9.jpg"><img alt="9" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/9.jpg"></a></p>
+<p><strong>Ahora crearemos un fichero de un tamaño determinado que se especifica
+en la opción bs </strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/10.jpg"><img alt="10" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/10.jpg"></a></p>
+<p><strong>Ahora comprobamos esta carpeta, y vemos que los tamaños están bien
+configurados</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/11.jpg"><img alt="11" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/11.jpg"></a></p>
+<p><strong>Ahora comprobaremos en este archivo que el raid está activo, y tiene
+los dispositivos sdb y sdc</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/12.jpg"><img alt="12" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/12.jpg"></a></p>
+<p><strong>Ahora haremos como que el disco sdb ha fallado, para poder quitarle
+del raid para remplazarle primero hay que marcarle como disco fallido
+mediante este comando</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/13.jpg"><img alt="13" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/13.jpg"></a></p>
+<p><strong>Ahora le quitaremos del raid el disco sdb</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/14.jpg"><img alt="14" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/14.jpg"></a></p>
+<p><strong>Iremos al archivo del raid y comprobamos que no está el disco sdb
+dentro de el</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/15.jpg"><img alt="15" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/15.jpg"></a></p>
+<p><strong>Ahora borraremos los datos de configuración anterior del disco sdb
+mediante el primer comando.</strong></p>
+<p><strong>Después añadimos el disco sdb al disco raid, esto si tiene datos
+tardara un tiempo en sincronizar</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/16.jpg"><img alt="16" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/16.jpg"></a></p>
+<p><strong>Ahora desactivaremos el raid mediante este comando</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/17.jpg"><img alt="17" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/17.jpg"></a></p>
+<p><strong>Si queremos volver a activarle, lo haremos mediante este otro
+comando</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/18.jpg"><img alt="18" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/02/18.jpg"></a></p>
+                <div class="clear"></div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://egonzalez90.github.io/solucion-fallo-virtualbox-en-fedora-19.html" rel="bookmark"
-                           title="Permalink to Solución fallo VirtualBox en Fedora 19">Solución fallo VirtualBox en Fedora 19</a></h1>
-                </header>
+                <div class="info">
+                    <a href="https://egonzalez90.github.io/crear-raid-1-en-linux.html">posted at 00:34</a>
+                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/linux.html" rel="tag">Linux</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/configuracion.html" class="tags">configuracion</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/debian.html" class="tags">Debian</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/disco-duro.html" class="tags">disco duro</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/linux.html" class="tags">linux</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/mdadm.html" class="tags">mdadm</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/raid.html" class="tags">raid</a>
+                </div>
+		<a href="https://egonzalez90.github.io/crear-raid-1-en-linux.html#disqus_thread">Click to read and post comments</a>
+            </article>            <h4 class="date">Nov 13, 2013</h4>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 13 November 2013</span>
-<span>| tags: <a href="https://egonzalez90.github.io/tag/error.html">error</a><a href="https://egonzalez90.github.io/tag/fedora-19.html">fedora 19</a><a href="https://egonzalez90.github.io/tag/linux.html">linux</a><a href="https://egonzalez90.github.io/tag/maquina-virtual.html">maquina virtual</a><a href="https://egonzalez90.github.io/tag/solucion.html">solucion</a><a href="https://egonzalez90.github.io/tag/virtualbox.html">Virtualbox</a><a href="https://egonzalez90.github.io/tag/virtualizacion.html">virtualizacion</a><a href="https://egonzalez90.github.io/tag/vm.html">VM</a></span>
-</footer><!-- /.post-info -->                <p>Mucha gente ha tenido problemas a la hora de abrir una maquina virtual
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://egonzalez90.github.io/solucion-fallo-virtualbox-en-fedora-19.html" rel="bookmark" title="Permanent Link to &quot;Solución fallo VirtualBox en Fedora 19&quot;">Solución fallo VirtualBox en Fedora 19</a>
+                </h2>
+
+                
+                
+
+                <p>Mucha gente ha tenido problemas a la hora de abrir una maquina virtual
 en VirtualBox con Fedora 19, suele salir un error de compilación de VBox
 que por mucho que lo recompiles no se soluciona si no sigues los pasos
 previos que voy a explicar.<br>
 <!--more--><br>
-En primer lugar deberías de …</p>
-                <a class="readmore" href="https://egonzalez90.github.io/solucion-fallo-virtualbox-en-fedora-19.html">read more</a>
-<p><a href="https://egonzalez90.github.io/solucion-fallo-virtualbox-en-fedora-19.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
+En primer lugar deberías de desinstalar VirtualBox completamente, doy
+por hecho de que si lo has instalado también sabrás desinstalarlo.<br>
+A continuación deberías de actualizar los paquetes del sistema, esto no
+es necesario, pero siempre recomendable por motivos de seguridad.Se hace
+mediante este comando:</p>
+<div class="highlight"><pre><span></span># yum -y upate
+</pre></div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://egonzalez90.github.io/configuracion-dns-linux-con-webmin.html" rel="bookmark"
-                           title="Permalink to Configuración DNS Linux con Webmin">Configuración DNS Linux con Webmin</a></h1>
-                </header>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 17 October 2013</span>
-<span>| tags: <a href="https://egonzalez90.github.io/tag/bind.html">Bind</a><a href="https://egonzalez90.github.io/tag/bind9.html">Bind9</a><a href="https://egonzalez90.github.io/tag/configuracion.html">configuracion</a><a href="https://egonzalez90.github.io/tag/debian.html">Debian</a><a href="https://egonzalez90.github.io/tag/dns.html">DNS</a><a href="https://egonzalez90.github.io/tag/linux.html">linux</a><a href="https://egonzalez90.github.io/tag/server-linux.html">Server Linux</a><a href="https://egonzalez90.github.io/tag/tutorial.html">Tutorial</a><a href="https://egonzalez90.github.io/tag/webmin.html">Webmin</a></span>
-</footer><!-- /.post-info -->                <p>En este tutorial/practica voy a explicar como configurar las DNS en un
+<p><address>
+ </p>
+<p></address>
+Después instalamos datos del kernel</p>
+<div class="highlight"><pre><span></span># yum -y install kernel-headers kernel-devel dkms gcc
+</pre></div>
+
+
+<p><address>
+ </p>
+<p></address>
+Ahora vamos a la carpeta de repositorios de fedora</p>
+<div class="highlight"><pre><span></span># cd /etc/yum.repos.d
+</pre></div>
+
+
+<p><address>
+ </p>
+<p></address>
+Ahora creamos/modificamos este archivo</p>
+<div class="highlight"><pre><span></span># vi virtualbox.repo
+</pre></div>
+
+
+<p><address>
+ </p>
+<p></address>
+Se rellena con la siguiente información:</p>
+<div class="highlight"><pre><span></span>               [virtualbox]
+name=Fedora$releasever - $basearch - VirtualBox
+baseurl=http://download.virtualbox.org/virtualbox/rpm/fedora/$releasever/$basearch
+enabled=1
+gpgcheck=1
+gpgkey=http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc
+</pre></div>
+
+
+<p>Guardamos y salimos de este archivo</p>
+<p>Ahora instalamos VirtualBox</p>
+<div class="highlight"><pre><span></span># yum -y install VirtualBox-4.2
+</pre></div>
+
+
+<p><address>
+ </p>
+<p></address>
+Ahora ejecutamos este comando para configurar VirtualBox</p>
+<div class="highlight"><pre><span></span># /etc/init.d/vboxdrv setup
+</pre></div>
+
+
+<p><address>
+ </p>
+<p></address>
+Ahora añadimos nuestro usuario al grupo que tiene permisos para usar
+VirtualBox</p>
+<div class="highlight"><pre><span></span># usermod -G vboxusers -a &quot;NombredeUsuario&quot;
+</pre></div>
+
+
+<p>Esto debería permitirnos crear maquinas virtuales y abrirlas ya</p>
+<p><address>
+ </p>
+<p></address></p>
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://egonzalez90.github.io/solucion-fallo-virtualbox-en-fedora-19.html">posted at 18:00</a>
+                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/linux.html" rel="tag">Linux</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/error.html" class="tags">error</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/fedora-19.html" class="tags">fedora 19</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/linux.html" class="tags">linux</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/maquina-virtual.html" class="tags">maquina virtual</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/solucion.html" class="tags">solucion</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/virtualbox.html" class="tags">Virtualbox</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/virtualizacion.html" class="tags">virtualizacion</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/vm.html" class="tags">VM</a>
+                </div>
+		<a href="https://egonzalez90.github.io/solucion-fallo-virtualbox-en-fedora-19.html#disqus_thread">Click to read and post comments</a>
+            </article>            <h4 class="date">Oct 17, 2013</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://egonzalez90.github.io/configuracion-dns-linux-con-webmin.html" rel="bookmark" title="Permanent Link to &quot;Configuración DNS Linux con Webmin&quot;">Configuración DNS Linux con Webmin</a>
+                </h2>
+
+                
+                
+
+                <p>En este tutorial/practica voy a explicar como configurar las DNS en un
 servidor Linux bajo la aplicacion gráfica Webmin.<br>
 Para realizar este tutorial voy a utilizar la distribución cliente de
 Debian, se puede realizar con cualquier SO Linux este ejercicio, pero
-podrían variar los pasos a seguir durante la …</p>
-                <a class="readmore" href="https://egonzalez90.github.io/configuracion-dns-linux-con-webmin.html">read more</a>
-<p><a href="https://egonzalez90.github.io/configuracion-dns-linux-con-webmin.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-            </ol><!-- /#posts-list -->
-<p class="paginator">
-        <a href="https://egonzalez90.github.io/category/linux4.html">&laquo;</a>
-    Page 5 / 7
-        <a href="https://egonzalez90.github.io/category/linux6.html">&raquo;</a>
-</p>
-            </section><!-- /#content -->
-        <section id="extras" class="body">
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+podrían variar los pasos a seguir durante la configuración del sistema.<br>
+<!--more--></p>
+<p>-Primero se instala el servidor de Linux, en mi caso uso Debian<br>
+-Durante la instalación te solicitara que servicios de servidor se
+quieren instalar, en nuestro caso seleccionamos DNS
+<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/1.png"><img alt="1" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/1.png?w=300"></a></p>
+<p>-Una vez instalado, se descarga e instala el Webmin desde la pagina
+oficial.<br>
+-Una vez instalado se entra en el navegador y se escribe la dirección
+http://localhost:10000 , esto podría variar y ser el nombre del dominio
+si se ha creado, también puede salir una rectificación del enlace, se
+selecciona ese y se pasa a la pagina de login de Webmin<br>
+-Una vez entrado con tu cuenta de usuario,se pincha sobre la pestaña
+servers y dentro de esa BIND DNS Server.<br>
+-Dentro de la pantalla de configuracion de DNS se observa que en la
+parte de abajo esta la zona donde estan las zona que tenemos creadas de
+DNS, se da a crear zona maestra y se configura de la siguiente
+forma.<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/2.png"><img alt="2" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/2.png?w=300"></a></p>
+<p>-Se vuelve a la pantalla principal dándole a module index y una vez allí
+se da a apply configuración y después a crear otra zona maestra<br>
+-Se configura de la siguiente forma
+<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/3.png"><img alt="3" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/3.png?w=300"></a></p>
+<p>-Se crea, se vuelve a module index y se aplica la configuración como
+antes.<br>
+-Se entra en la zona server y se selecciona address, una vez allí se
+configura de la siguiente forma y se da a crear
+<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/4.png"><img alt="4" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/4.png?w=300"></a></p>
+<p>-Índice de modulo y aplicar configuración<br>
+-Se accede donde antes y en vez de seleccionar address se selecciona
+name alias y se configura así  </p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/5.png"><img alt="5" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/5.png?w=300"></a></p>
+<p>-Índice de modulo, aplicar configuración<br>
+-Se accede a la zona server, y a ahí se entra en mail server, se
+configura
+<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/6.png"><img alt="6" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/6.png?w=300"></a></p>
+<p>-Ahora se configura el cliente con la Ip necesaria
+<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/7.png"><img alt="7" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/7.png?w=229"></a></p>
+<p>-Para que el servidor actúe como cliente y resuelva sus propias DNS hay
+que configurar lo siguiente:<br>
+-Entrar en configuración de red, nombre de máquina y DNS y configurar
+lo siguiente  </p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/8.png"><img alt="8" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/8.png?w=300"></a></p>
+<p>Después entrar a ruteo y gateways y configurar lo siguiente
+<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/9.png"><img alt="9" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/9.png?w=300"></a></p>
+<p>-Y por último, entrar a interfaces y configurar de esta forma
+<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/10.png"><img alt="10" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/10.png?w=300"></a></p>
+<p>-Se crea y aplica y ya estaría configurado el server<br>
+Para comprobar que funciona el servicio DNS, desde el cliente se entra
+en aplicaciones/herramientas del sistema/ herramientas de red<br>
+-Dentro de la aplicación se selecciona lookup y se comprueba de la
+siguiente forma<br>
+-De forma directa
+<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/11.png"><img alt="11" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/11.png?w=300"></a></p>
+<p>-De forma inversa
+<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/12.png"><img alt="12" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/12.png?w=300"></a></p>
+<p>-Se comprueba que el servicio DNS funciona correctamente en otros/Estado
+del sistema y servidor y quedaría seleccionado con un check verde el
+servicio
+<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/13.png"><img alt="13" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/10/13.png?w=300"></a></p>
+<p>Con esto y estaría configurado el servicio DNS localmente.<br>
+Puede fallar dependiendo de los nombres que se le asigne, suele dar
+fallo al ponerlo con mayúsculas</p>
+                <div class="clear"></div>
 
-                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
-                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
-                            <li><a href="https://github.com/egonzalez90">Github</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
+                <div class="info">
+                    <a href="https://egonzalez90.github.io/configuracion-dns-linux-con-webmin.html">posted at 15:09</a>
+                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/linux.html" rel="tag">Linux</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/bind.html" class="tags">Bind</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/bind9.html" class="tags">Bind9</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/configuracion.html" class="tags">configuracion</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/debian.html" class="tags">Debian</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/dns.html" class="tags">DNS</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/linux.html" class="tags">linux</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/server-linux.html" class="tags">Server Linux</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/tutorial.html" class="tags">Tutorial</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/webmin.html" class="tags">Webmin</a>
+                </div>
+		<a href="https://egonzalez90.github.io/configuracion-dns-linux-con-webmin.html#disqus_thread">Click to read and post comments</a>
+            </article>
 
-        <footer id="contentinfo" class="body">
-                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
-        </footer><!-- /#contentinfo -->
+                <div class="clear"></div>
+                <div class="pages">
 
-<script type="text/javascript">
-    var disqus_shortname = 'egonzalez-1';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
+                    <a href="https://egonzalez90.github.io/page/4" class="prev_page">&larr;&nbsp;Previous</a>
+                    <a href="https://egonzalez90.github.io/page/6" class="next_page">Next&nbsp;&rarr;</a>
+                    <span>Page 5 of 7</span>
+                </div>
+
+            <div class="clear"></div>
+            <footer>
+                <p>
+                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
+                &middot;
+                Powered by <a href="http://getpelican.com">Pelican</a>
+                &middot;
+                <a href="https://egonzalez90.github.io/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
+            </footer>
+        </div>
+        <div class="clear"></div>
+    </div>
 </body>
 </html>

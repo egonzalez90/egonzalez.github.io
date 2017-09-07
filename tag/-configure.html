@@ -1,41 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <meta charset="utf-8" />
-        <title>OpenStack Stuff - --configure</title>
-        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
-        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
-
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OpenStack Stuff | articles tagged "--configure"</title>
+    <link rel="shortcut icon" type="image/png" href="https://egonzalez90.github.io/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="https://egonzalez90.github.io/favicon.ico">
+    <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Full Atom Feed" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/screen.css" type="text/css" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/print.css" type="text/css" media="print" />
+    <meta name="generator" content="Pelican" />
+    <meta name="description" content="" />
+    <meta name="author" content="Eduardo Gonzalez" />
 </head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li class="ephemeral selected"><a href="https://egonzalez90.github.io/tag/-configure.html">--configure</a></li>
+                <li><a href="https://egonzalez90.github.io/">Home</a></li>
+                <li><a href="https://docs.openstack.org">OpenStack</a></li>
+                <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                <li><a href="https://github.com/egonzalez90">Github</a></li>
+                <li><a href="https://egonzalez90.github.io/archives">Archives</a></li>
+            </ul>
+        </nav>
+        <div class="header_box">
+            <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff</a></h1>
+        </div>
+    </header>
+    <div id="wrapper">
+        <div id="content">            <h4 class="date">Feb 22, 2017</h4>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
-                <nav><ul>
-                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
-                </ul>
-                </nav>
-        </header><!-- /#banner -->
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://egonzalez90.github.io/deploy-openstack-designate-with-kolla-ansible.html" rel="bookmark" title="Permanent Link to &quot;Deploy OpenStack Designate with Kolla&quot;">Deploy OpenStack Designate with Kolla</a>
+                </h2>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="https://egonzalez90.github.io/deploy-openstack-designate-with-kolla-ansible.html">Deploy OpenStack Designate with Kolla</a></h1>
-<footer class="post-info">
-        <span>Wed 22 February 2017</span>
-<span>| tags: <a href="https://egonzalez90.github.io/tag/-configure.html">--configure</a><a href="https://egonzalez90.github.io/tag/ansible.html">ansible</a><a href="https://egonzalez90.github.io/tag/deploy.html">deploy</a><a href="https://egonzalez90.github.io/tag/designate.html">designate</a><a href="https://egonzalez90.github.io/tag/dns.html">DNS</a><a href="https://egonzalez90.github.io/tag/kolla.html">kolla</a><a href="https://egonzalez90.github.io/tag/kolla-ansible.html">kolla-ansible</a><a href="https://egonzalez90.github.io/tag/ocata.html">ocata</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a></span>
-</footer><!-- /.post-info --><p>During Ocata release, OpenStack DNS-as-a-Service (Designate) support was
+                
+                
+
+                <p>During Ocata release, OpenStack DNS-as-a-Service (Designate) support was
 implemented in OpenStack kolla project.</p>
 <p>This post will guide you through a basic deployment and tests of
 designate service.</p>
@@ -319,23 +325,35 @@ validate the test.</p>
 <p>If you find any issue with designate in kolla-ansible or kolla, please
 fill a bug <a href="https://bugs.launchpad.net/kolla-ansible/+filebug">https://bugs.launchpad.net/kolla-ansible/+filebug</a></p>
 <p>Regards,<br>
-Eduardo Gonzalez</p><p><a href="https://egonzalez90.github.io/deploy-openstack-designate-with-kolla-ansible.html#disqus_thread">comments</a></p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <ol id="posts-list" class="hfeed">
+Eduardo Gonzalez</p>
+                <div class="clear"></div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://egonzalez90.github.io/opendaylight-in-a-docker-container.html" rel="bookmark"
-                           title="Permalink to OpenDaylight in a Docker container">OpenDaylight in a Docker container</a></h1>
-                </header>
+                <div class="info">
+                    <a href="https://egonzalez90.github.io/deploy-openstack-designate-with-kolla-ansible.html">posted at 15:39</a>
+                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/-configure.html" class="tags selected">--configure</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/ansible.html" class="tags">ansible</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/deploy.html" class="tags">deploy</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/designate.html" class="tags">designate</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/dns.html" class="tags">DNS</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/kolla.html" class="tags">kolla</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/kolla-ansible.html" class="tags">kolla-ansible</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/ocata.html" class="tags">ocata</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
+                </div>
+		<a href="https://egonzalez90.github.io/deploy-openstack-designate-with-kolla-ansible.html#disqus_thread">Click to read and post comments</a>
+            </article>            <h4 class="date">Jun 06, 2016</h4>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Mon 06 June 2016</span>
-<span>| tags: <a href="https://egonzalez90.github.io/tag/-configure.html">--configure</a><a href="https://egonzalez90.github.io/tag/container.html">container</a><a href="https://egonzalez90.github.io/tag/controller.html">controller</a><a href="https://egonzalez90.github.io/tag/docker.html">docker</a><a href="https://egonzalez90.github.io/tag/install.html">install</a><a href="https://egonzalez90.github.io/tag/opendaylight.html">OpenDaylight</a><a href="https://egonzalez90.github.io/tag/sdn.html">sdn</a></span>
-</footer><!-- /.post-info -->                <p>This is a quick guide to start a Docker container with OpenDaylight
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://egonzalez90.github.io/opendaylight-in-a-docker-container.html" rel="bookmark" title="Permanent Link to &quot;OpenDaylight in a Docker container&quot;">OpenDaylight in a Docker container</a>
+                </h2>
+
+                
+                
+
+                <p>This is a quick guide to start a Docker container with OpenDaylight
 running on it.</p>
 <p>Clone OpenDaylight integration repository</p>
 <div class="highlight"><pre><span></span>[egonzalez@localhost]$ git clone https://github.com/opendaylight/integration.git
@@ -347,60 +365,239 @@ running on it.</p>
 </pre></div>
 
 
-<p>Build the new image, you …</p>
-                <a class="readmore" href="https://egonzalez90.github.io/opendaylight-in-a-docker-container.html">read more</a>
-<p><a href="https://egonzalez90.github.io/opendaylight-in-a-docker-container.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
+<p>Build the new image, you can call it as your DockerHub name(in my case
+egonzalez90), so you can push it there later.<br>
+If you don't want to create a new image, you can use my image. This
+step will download and start the new container:
+<code>docker run -d egonzalez90/opendaylight</code></p>
+<div class="highlight"><pre><span></span>[egonzalez@localhost centos]$ docker build -t egonzalez90/opendaylight .
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://egonzalez90.github.io/ansible-ini_file-module-simplifying-your-devops-life.html" rel="bookmark"
-                           title="Permalink to Ansible ini_file module, simplifying your DevOps life">Ansible ini_file module, simplifying your DevOps life</a></h1>
-                </header>
+Sending build context to Docker daemon  7.68 kB
+Step 1 : FROM centos:7
+Trying to pull repository docker.io/library/centos ... 7: Pulling from library/centos
+1544084fad81: Pull complete 
+df0fc3863fbc: Pull complete 
+a3d54b467fad: Pull complete 
+a65193109361: Pull complete 
+Digest: sha256:a9237ff42b09cc6f610bab60a36df913ef326178a92f3b61631331867178f982
+Status: Downloaded newer image for docker.io/centos:7
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 24 February 2016</span>
-<span>| tags: <a href="https://egonzalez90.github.io/tag/-configure.html">--configure</a><a href="https://egonzalez90.github.io/tag/ansible.html">ansible</a><a href="https://egonzalez90.github.io/tag/config.html">config</a><a href="https://egonzalez90.github.io/tag/file.html">file</a><a href="https://egonzalez90.github.io/tag/idiot.html">idiot</a><a href="https://egonzalez90.github.io/tag/ini.html">ini</a><a href="https://egonzalez90.github.io/tag/ini_file.html">ini_file</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/style.html">style</a></span>
-</footer><!-- /.post-info -->                <p>If you don't read docs, one day you'll realize that your an idiot as i
+ ---&gt; a65193109361
+Step 2 : MAINTAINER OpenDaylight Project &lt;info@opendaylight.org&gt;
+ ---&gt; Running in d3f98f949b11
+ ---&gt; 81a1bad2e3a7
+Removing intermediate container d3f98f949b11
+Step 3 : ADD opendaylight-3-candidate.repo /etc/yum.repos.d/
+ ---&gt; 069a9c60878e
+Removing intermediate container b9afb18311f3
+Step 4 : RUN yum update -y &amp;&amp; yum install -y opendaylight
+ ---&gt; Running in 559b3970235d
+
+[[[ PACKAGE INSTALLATION STUFF ]]]
+
+Complete!
+ ---&gt; 4003e5874b03
+Removing intermediate container 559b3970235d
+Step 5 : EXPOSE 162 179 1088 1790 1830 2400 2550 2551 2552 4189 4342 5005 5666 6633 6640 6653 7800 8000 8080 8101 8181 8383 12001
+ ---&gt; Running in 7defebe8b7e2
+ ---&gt; 9668a559bdac
+Removing intermediate container 7defebe8b7e2
+Step 6 : WORKDIR /opt/opendaylight
+ ---&gt; Running in 9298a116dd14
+ ---&gt; 5bf42f56e282
+Removing intermediate container 9298a116dd14
+Step 7 : CMD ./bin/karaf server
+ ---&gt; Running in e0a218941b15
+ ---&gt; c1a0db72dbbc
+Removing intermediate container e0a218941b15
+Successfully built c1a0db72dbbc
+</pre></div>
+
+
+<p>Once the image is built or downloaded, ensure you have it locally</p>
+<div class="highlight"><pre><span></span>[egonzalez@localhost]$ docker images | grep opendaylight
+egonzalez90/opendaylight                              latest              c1a0db72dbbc        About a minute ago   740.6 MB
+</pre></div>
+
+
+<p>Start a new container in a detached mode.</p>
+<div class="highlight"><pre><span></span>[egonzalez@localhost]$ docker run -d egonzalez90/opendaylight
+ae08898ba6adc30df012513dc6eac54943d9de8c8059e73ade185757fe684c6a
+Usage of loopback devices is strongly discouraged for production use. Either use `--storage-opt dm.thinpooldev` or use `--storage-opt dm.no_warn_on_loop_devices=true` to suppress this warning.
+</pre></div>
+
+
+<p>Check if the container is running with:</p>
+<div class="highlight"><pre><span></span>[egonzalez@localhost]$ docker ps | grep opendaylight 
+ae08898ba6ad        egonzalez90/opendaylight   &quot;./bin/karaf server&quot;     14 seconds ago      Up 11 seconds       162/tcp, 179/tcp, 1088/tcp, 1790/tcp, 1830/tcp, 2400/tcp, 2550-2552/tcp, 4189/tcp, 4342/tcp, 5005/tcp, 5666/tcp, 6633/tcp, 6640/tcp, 6653/tcp, 7800/tcp, 8000/tcp, 8080/tcp, 8101/tcp, 8181/tcp, 8383/tcp, 12001/tcp   awesome_khorana
+</pre></div>
+
+
+<p>Now, check container information with docker inspect, we search for the
+IP address</p>
+<div class="highlight"><pre><span></span>[egonzalez@localhost]$ docker inspect  ae08898ba6ad | grep -i IPAddress
+        &quot;SecondaryIPAddresses&quot;: null,
+        &quot;IPAddress&quot;: &quot;172.17.0.3&quot;,
+                &quot;IPAddress&quot;: &quot;172.17.0.3&quot;,
+</pre></div>
+
+
+<p>Now you know the container IP address, to login into karaf, first we
+need to download and install karaf client tool<br>
+Go to the following URL to download the package:
+<a href="http://www.apache.org/dyn/closer.lua/karaf/4.0.5/apache-karaf-4.0.5.tar.gz">http://www.apache.org/dyn/closer.lua/karaf/4.0.5/apache-karaf-4.0.5.tar.gz</a></p>
+<p>Extract the files and move to the new directory</p>
+<div class="highlight"><pre><span></span>[egonzalez@localhost Downloads]$ tar -xzvf apache-karaf-4.0.5.tar.gz 
+[egonzalez@localhost Downloads]$ cd apache-karaf-4.0.5/
+</pre></div>
+
+
+<p>Execute the client authenticating with the container IP</p>
+<div class="highlight"><pre><span></span><span class="cp">[</span><span class="nx">egonzalez</span><span class="p">@</span><span class="nx">localhost</span> <span class="nx">apache</span><span class="na">-karaf</span><span class="o">-</span><span class="mf">4.0.5</span><span class="cp">]</span><span class="o">$</span> <span class="o">./</span><span class="nt">bin</span><span class="o">/</span><span class="nt">client</span> <span class="nt">-a</span> <span class="nt">8101</span> <span class="nt">-h</span> <span class="nt">172</span><span class="p">.</span><span class="nc">17</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">3</span> <span class="nt">-u</span> <span class="nt">karaf</span> <span class="nt">-v</span>
+<span class="nt">client</span><span class="o">:</span> <span class="nt">JAVA_HOME</span> <span class="nt">not</span> <span class="nt">set</span><span class="o">;</span> <span class="nt">results</span> <span class="nt">may</span> <span class="nt">vary</span>
+<span class="nt">13</span> <span class="cp">[</span><span class="nx">main</span><span class="cp">]</span> <span class="nt">INFO</span> <span class="nt">org</span><span class="p">.</span><span class="nc">apache</span><span class="p">.</span><span class="nc">sshd</span><span class="p">.</span><span class="nc">common</span><span class="p">.</span><span class="nc">util</span><span class="p">.</span><span class="nc">SecurityUtils</span> <span class="nt">-</span> <span class="nt">BouncyCastle</span> <span class="nt">not</span> <span class="nt">registered</span><span class="o">,</span> <span class="nt">using</span> <span class="nt">the</span> <span class="nt">default</span> <span class="nt">JCE</span> <span class="nt">provider</span>
+<span class="nt">Logging</span> <span class="nt">in</span> <span class="nt">as</span> <span class="nt">karaf</span>
+<span class="nt">194</span> <span class="cp">[</span><span class="nx">sshd</span><span class="na">-SshClient</span><span class="err">[</span><span class="mi">12</span><span class="nx">bb4df8</span><span class="cp">]</span><span class="nt">-nio2-thread-1</span><span class="o">]</span> <span class="nt">INFO</span> <span class="nt">org</span><span class="p">.</span><span class="nc">apache</span><span class="p">.</span><span class="nc">sshd</span><span class="p">.</span><span class="nc">client</span><span class="p">.</span><span class="nc">session</span><span class="p">.</span><span class="nc">ClientSessionImpl</span> <span class="nt">-</span> <span class="nt">Client</span> <span class="nt">session</span> <span class="nt">created</span>
+<span class="nt">203</span> <span class="cp">[</span><span class="nx">main</span><span class="cp">]</span> <span class="nt">INFO</span> <span class="nt">org</span><span class="p">.</span><span class="nc">apache</span><span class="p">.</span><span class="nc">sshd</span><span class="p">.</span><span class="nc">client</span><span class="p">.</span><span class="nc">session</span><span class="p">.</span><span class="nc">ClientSessionImpl</span> <span class="nt">-</span> <span class="nt">Start</span> <span class="nt">flagging</span> <span class="nt">packets</span> <span class="nt">as</span> <span class="nt">pending</span> <span class="nt">until</span> <span class="nt">key</span> <span class="nt">exchange</span> <span class="nt">is</span> <span class="nt">done</span>
+<span class="nt">204</span> <span class="cp">[</span><span class="nx">sshd</span><span class="na">-SshClient</span><span class="err">[</span><span class="mi">12</span><span class="nx">bb4df8</span><span class="cp">]</span><span class="nt">-nio2-thread-1</span><span class="o">]</span> <span class="nt">INFO</span> <span class="nt">org</span><span class="p">.</span><span class="nc">apache</span><span class="p">.</span><span class="nc">sshd</span><span class="p">.</span><span class="nc">client</span><span class="p">.</span><span class="nc">session</span><span class="p">.</span><span class="nc">ClientSessionImpl</span> <span class="nt">-</span> <span class="nt">Server</span> <span class="nt">version</span> <span class="nt">string</span><span class="o">:</span> <span class="nt">SSH-2</span><span class="p">.</span><span class="nc">0-SSHD-CORE-0</span><span class="p">.</span><span class="nc">12</span><span class="p">.</span><span class="nc">0</span>
+<span class="nt">321</span> <span class="cp">[</span><span class="nx">sshd</span><span class="na">-SshClient</span><span class="err">[</span><span class="mi">12</span><span class="nx">bb4df8</span><span class="cp">]</span><span class="nt">-nio2-thread-3</span><span class="o">]</span> <span class="nt">WARN</span> <span class="nt">org</span><span class="p">.</span><span class="nc">apache</span><span class="p">.</span><span class="nc">sshd</span><span class="p">.</span><span class="nc">client</span><span class="p">.</span><span class="nc">keyverifier</span><span class="p">.</span><span class="nc">AcceptAllServerKeyVerifier</span> <span class="nt">-</span> <span class="nt">Server</span> <span class="nt">at</span> <span class="o">/</span><span class="nt">172</span><span class="p">.</span><span class="nc">17</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">3</span><span class="p">:</span><span class="nd">8101</span> <span class="nt">presented</span> <span class="nt">unverified</span> <span class="nt">DSA</span> <span class="nt">key</span><span class="o">:</span> <span class="nt">09</span><span class="p">:</span><span class="nd">a0</span><span class="p">:</span><span class="nd">45</span><span class="p">:</span><span class="nd">95</span><span class="p">:</span><span class="nd">7a</span><span class="p">:</span><span class="nd">dd</span><span class="p">:</span><span class="nd">94</span><span class="p">:</span><span class="nd">7c</span><span class="p">:</span><span class="nd">6b</span><span class="p">:</span><span class="nd">c3</span><span class="p">:</span><span class="nd">f9</span><span class="p">:</span><span class="nd">c0</span><span class="p">:</span><span class="nd">23</span><span class="p">:</span><span class="nd">88</span><span class="p">:</span><span class="nd">1d</span><span class="p">:</span><span class="nd">b0</span>
+<span class="nt">324</span> <span class="cp">[</span><span class="nx">sshd</span><span class="na">-SshClient</span><span class="err">[</span><span class="mi">12</span><span class="nx">bb4df8</span><span class="cp">]</span><span class="nt">-nio2-thread-3</span><span class="o">]</span> <span class="nt">INFO</span> <span class="nt">org</span><span class="p">.</span><span class="nc">apache</span><span class="p">.</span><span class="nc">sshd</span><span class="p">.</span><span class="nc">client</span><span class="p">.</span><span class="nc">session</span><span class="p">.</span><span class="nc">ClientSessionImpl</span> <span class="nt">-</span> <span class="nt">Dequeing</span> <span class="nt">pending</span> <span class="nt">packets</span>
+<span class="nt">327</span> <span class="cp">[</span><span class="nx">sshd</span><span class="na">-SshClient</span><span class="err">[</span><span class="mi">12</span><span class="nx">bb4df8</span><span class="cp">]</span><span class="nt">-nio2-thread-4</span><span class="o">]</span> <span class="nt">INFO</span> <span class="nt">org</span><span class="p">.</span><span class="nc">apache</span><span class="p">.</span><span class="nc">sshd</span><span class="p">.</span><span class="nc">client</span><span class="p">.</span><span class="nc">session</span><span class="p">.</span><span class="nc">ClientUserAuthServiceNew</span> <span class="nt">-</span> <span class="nt">Received</span> <span class="nt">SSH_MSG_USERAUTH_FAILURE</span>
+<span class="nt">338</span> <span class="cp">[</span><span class="nx">sshd</span><span class="na">-SshClient</span><span class="err">[</span><span class="mi">12</span><span class="nx">bb4df8</span><span class="cp">]</span><span class="nt">-nio2-thread-5</span><span class="o">]</span> <span class="nt">INFO</span> <span class="nt">org</span><span class="p">.</span><span class="nc">apache</span><span class="p">.</span><span class="nc">sshd</span><span class="p">.</span><span class="nc">client</span><span class="p">.</span><span class="nc">session</span><span class="p">.</span><span class="nc">ClientUserAuthServiceNew</span> <span class="nt">-</span> <span class="nt">Received</span> <span class="nt">SSH_MSG_USERAUTH_FAILURE</span>
+<span class="nt">341</span> <span class="cp">[</span><span class="nx">sshd</span><span class="na">-SshClient</span><span class="err">[</span><span class="mi">12</span><span class="nx">bb4df8</span><span class="cp">]</span><span class="nt">-nio2-thread-6</span><span class="o">]</span> <span class="nt">INFO</span> <span class="nt">org</span><span class="p">.</span><span class="nc">apache</span><span class="p">.</span><span class="nc">sshd</span><span class="p">.</span><span class="nc">client</span><span class="p">.</span><span class="nc">auth</span><span class="p">.</span><span class="nc">UserAuthKeyboardInteractive</span> <span class="nt">-</span> <span class="nt">Received</span> <span class="nt">Password</span> <span class="nt">authentication</span>  <span class="nt">en-US</span>
+<span class="nt">344</span> <span class="cp">[</span><span class="nx">sshd</span><span class="na">-SshClient</span><span class="err">[</span><span class="mi">12</span><span class="nx">bb4df8</span><span class="cp">]</span><span class="nt">-nio2-thread-7</span><span class="o">]</span> <span class="nt">INFO</span> <span class="nt">org</span><span class="p">.</span><span class="nc">apache</span><span class="p">.</span><span class="nc">sshd</span><span class="p">.</span><span class="nc">client</span><span class="p">.</span><span class="nc">session</span><span class="p">.</span><span class="nc">ClientUserAuthServiceNew</span> <span class="nt">-</span> <span class="nt">Received</span> <span class="nt">SSH_MSG_USERAUTH_SUCCESS</span>
+
+    <span class="nt">________</span>                       <span class="nt">________</span>                <span class="p">.</span><span class="nc">__</span>  <span class="p">.</span><span class="nc">__</span>       <span class="p">.</span><span class="nc">__</span>     <span class="nt">__</span>       
+    <span class="err">\</span><span class="nt">_____</span>  <span class="err">\</span> <span class="nt">______</span>   <span class="nt">____</span>   <span class="nt">____</span> <span class="err">\</span><span class="nt">______</span> <span class="err">\</span> <span class="nt">_____</span>  <span class="nt">___</span><span class="p">.</span><span class="nc">__</span><span class="o">.|</span>  <span class="o">|</span> <span class="o">|</span><span class="nt">__</span><span class="o">|</span> <span class="nt">____</span> <span class="o">|</span>  <span class="o">|</span><span class="nt">___</span><span class="o">/</span>  <span class="o">|</span><span class="nt">_</span>     
+     <span class="o">/</span>   <span class="o">|</span>   <span class="err">\\</span><span class="nt">____</span> <span class="err">\</span><span class="nt">_</span><span class="o">/</span> <span class="nt">__</span> <span class="err">\</span> <span class="o">/</span>    <span class="err">\</span> <span class="o">|</span>    <span class="o">|</span>  <span class="err">\\</span><span class="nt">__</span>  <span class="err">\</span><span class="o">&lt;</span> <span class="o">|</span> <span class="o">||</span> <span class="o">|</span> <span class="o">|</span> <span class="o">|/</span> <span class="nt">___</span><span class="err">\</span><span class="o">|</span> <span class="o">|</span> <span class="err">\</span> <span class="nt">__</span><span class="err">\</span> <span class="o">/</span> <span class="o">|</span> <span class="err">\</span> <span class="o">|</span><span class="nt">_</span><span class="o">&gt;</span> <span class="o">&gt;</span>  <span class="nt">___</span><span class="o">/|</span>   <span class="o">|</span>  <span class="err">\</span><span class="o">|</span>    <span class="err">`</span>   <span class="err">\</span><span class="o">/</span> <span class="nt">__</span> <span class="err">\\</span><span class="nt">___</span>  <span class="o">||</span>  <span class="o">|</span><span class="nt">_</span><span class="o">|</span>  <span class="o">/</span> <span class="o">/</span><span class="nt">_</span><span class="o">/</span>  <span class="o">&gt;</span>   <span class="nt">Y</span>  <span class="err">\</span>  <span class="o">|</span>      
+    <span class="err">\</span><span class="nt">_______</span>  <span class="o">/</span>   <span class="nt">__</span><span class="o">/</span> <span class="err">\</span><span class="nt">___</span>  <span class="o">&gt;</span><span class="nt">___</span><span class="o">|</span>  <span class="o">/</span><span class="nt">_______</span>  <span class="o">(</span><span class="nt">____</span>  <span class="o">/</span> <span class="nt">____</span><span class="o">||</span><span class="nt">____</span><span class="o">/</span><span class="nt">__</span><span class="err">\</span><span class="nt">___</span>  <span class="o">/|</span><span class="nt">___</span><span class="o">|</span>  <span class="o">/</span><span class="nt">__</span><span class="o">|</span>      
+            <span class="err">\</span><span class="o">/|</span><span class="nt">__</span><span class="o">|</span>        <span class="err">\</span><span class="o">/</span>     <span class="err">\</span><span class="o">/</span>        <span class="err">\</span><span class="o">/</span>     <span class="err">\</span><span class="o">/</span><span class="err">\</span><span class="o">/</span>            <span class="o">/</span><span class="nt">_____</span><span class="o">/</span>      <span class="err">\</span><span class="o">/</span>
+
+
+<span class="nt">Hit</span> <span class="s1">&#39;&#39;</span> <span class="nt">for</span> <span class="nt">a</span> <span class="nt">list</span> <span class="nt">of</span> <span class="nt">available</span> <span class="nt">commands</span>
+<span class="nt">and</span> <span class="s1">&#39;</span><span class="cp">[</span><span class="nx">cmd</span><span class="cp">]</span><span class="s1"> --help&#39;</span> <span class="nt">for</span> <span class="nt">help</span> <span class="nt">on</span> <span class="nt">a</span> <span class="nt">specific</span> <span class="nt">command</span><span class="o">.</span>
+<span class="nt">Hit</span> <span class="s1">&#39;&#39;</span> <span class="nt">or</span> <span class="nt">type</span> <span class="s1">&#39;system:shutdown&#39;</span> <span class="nt">or</span> <span class="s1">&#39;logout&#39;</span> <span class="nt">to</span> <span class="nt">shutdown</span> <span class="nt">OpenDaylight</span><span class="o">.</span>
+</pre></div>
+
+
+<p>Once karaf login succeed, install a few features like DLUX</p>
+<div class="highlight"><pre><span></span>opendaylight-user@root&gt;feature:install odl-restconf odl-l2switch-switch odl-mdsal-apidocs odl-dlux-core
+</pre></div>
+
+
+<p>Now you can login at the container IP with admin as username and
+password.</p>
+<div class="highlight"><pre><span></span>http://172.17.0.3:8181/index.html
+</pre></div>
+
+
+<p><img alt="Selection_001" src="http://egonzalez.org/wp-content/uploads/2016/06/Selection_001.png"></p>
+<p>Best regards</p>
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://egonzalez90.github.io/opendaylight-in-a-docker-container.html">posted at 18:26</a>
+                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/linux-various.html" rel="tag">Linux, Various</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/-configure.html" class="tags selected">--configure</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/container.html" class="tags">container</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/controller.html" class="tags">controller</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/docker.html" class="tags">docker</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/install.html" class="tags">install</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/opendaylight.html" class="tags">OpenDaylight</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/sdn.html" class="tags">sdn</a>
+                </div>
+		<a href="https://egonzalez90.github.io/opendaylight-in-a-docker-container.html#disqus_thread">Click to read and post comments</a>
+            </article>            <h4 class="date">Feb 24, 2016</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://egonzalez90.github.io/ansible-ini_file-module-simplifying-your-devops-life.html" rel="bookmark" title="Permanent Link to &quot;Ansible ini_file module, simplifying your DevOps life&quot;">Ansible ini_file module, simplifying your DevOps life</a>
+                </h2>
+
+                
+                
+
+                <p>If you don't read docs, one day you'll realize that your an idiot as i
 am|was.</p>
 <p>A few days back, I've realized that i was using wrong all Ansible
 modules power since i started with it. What happened?</p>
-<p>Most of the time i use Ansible is related to OpenStack …</p>
-                <a class="readmore" href="https://egonzalez90.github.io/ansible-ini_file-module-simplifying-your-devops-life.html">read more</a>
-<p><a href="https://egonzalez90.github.io/ansible-ini_file-module-simplifying-your-devops-life.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-            </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 2
-        <a href="https://egonzalez90.github.io/tag/-configure2.html">&raquo;</a>
-</p>
-            </section><!-- /#content -->
-        <section id="extras" class="body">
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+<p>Most of the time i use Ansible is related to OpenStack configuration
+jobs. Almost, all OpenStack projects use INI formatted files for their
+configuration files.<br>
+When i started using Ansible, I searched on Google how to configure any
+kind of file with Ansible modules. Almost all blogs/forums that i saw,
+talked about lineinfile module. So i used these guidelines on my next
+few months, now i realize that i was using in the wrong way Ansible
+modules.</p>
+<p>Ansible have a module called ini_file, you change values inside INI
+formatted files in a easy way , you don't need to use complicated
+regular expressions to change a value in a file.</p>
+<p>Here you have ini_file module usage docs:
+<a href="http://docs.ansible.com/ansible/ini_file_module.html">http://docs.ansible.com/ansible/ini_file_module.html</a></p>
+<p>We are going to change Neutron user password in his dump config file, so
+we create a simple task on which we can see how ini_file module can be
+used.</p>
+<div class="highlight"><pre><span></span>- hosts: localhost
+  tasks:
+  - name: Change neutron user password
+    ini_file:
+      dest: ~/neutron.conf
+      section: keystone_authtoken
+      option: password
+      value: 12345
+</pre></div>
 
-                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
-                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
-                            <li><a href="https://github.com/egonzalez90">Github</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
 
-        <footer id="contentinfo" class="body">
-                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
-        </footer><!-- /#contentinfo -->
+<p>Once the task has been applied, we can see how the values are applied in
+a proper ini style.</p>
+<div class="highlight"><pre><span></span>cat neutron.conf
+[keystone_authtoken]
+password = 12345
+</pre></div>
 
-<script type="text/javascript">
-    var disqus_shortname = 'egonzalez-1';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
+
+<p>How many times you need to make a change in an INI formatted
+configuration file with Ansible and used lineinfile module?<br>
+If the answer is many times, it's OK, you are a dump like me.</p>
+<p>Regards, Eduardo Gonzalez</p>
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://egonzalez90.github.io/ansible-ini_file-module-simplifying-your-devops-life.html">posted at 20:00</a>
+                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/linux-various.html" rel="tag">Linux, Various</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/-configure.html" class="tags selected">--configure</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/ansible.html" class="tags">ansible</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/config.html" class="tags">config</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/file.html" class="tags">file</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/idiot.html" class="tags">idiot</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/ini.html" class="tags">ini</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/ini_file.html" class="tags">ini_file</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/style.html" class="tags">style</a>
+                </div>
+		<a href="https://egonzalez90.github.io/ansible-ini_file-module-simplifying-your-devops-life.html#disqus_thread">Click to read and post comments</a>
+            </article>
+
+                <div class="clear"></div>
+                <div class="pages">
+
+                    <a href="https://egonzalez90.github.io/page/2" class="next_page">Next&nbsp;&rarr;</a>
+                    <span>Page 1 of 2</span>
+                </div>
+
+            <div class="clear"></div>
+            <footer>
+                <p>
+                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
+                &middot;
+                Powered by <a href="http://getpelican.com">Pelican</a>
+                &middot;
+                <a href="https://egonzalez90.github.io/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
+            </footer>
+        </div>
+        <div class="clear"></div>
+    </div>
 </body>
 </html>

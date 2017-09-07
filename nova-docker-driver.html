@@ -2,45 +2,48 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Nova Docker driver</title>
-        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
-        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OpenStack Stuff | Nova Docker driver</title>
+    <link rel="shortcut icon" type="image/png" href="https://egonzalez90.github.io/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="https://egonzalez90.github.io/favicon.ico">
+    <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Full Atom Feed" />
+    <link href="https://egonzalez90.github.io/feeds/openstack.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Categories Atom Feed" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/screen.css" type="text/css" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/print.css" type="text/css" media="print" />
+    <meta name="generator" content="Pelican" />
+    <meta name="description" content="" />
+    <meta name="author" content="Eduardo Gonzalez" />
 
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+    <meta name="keywords" content="--configure,centos,container,docker,driver,glance,install,instance,nova,openstack,rdo" />
 </head>
-
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
-                <nav><ul>
-                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
-                    <li class="active"><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
-                </ul>
-                </nav>
-        </header><!-- /#banner -->
-<section id="content" class="body">
-  <article>
+<body>
     <header>
-      <h1 class="entry-title">
-        <a href="https://egonzalez90.github.io/nova-docker-driver.html" rel="bookmark"
-           title="Permalink to Nova Docker driver">Nova Docker driver</a></h1>
+        <nav>
+            <ul>
+                <li><a href="https://egonzalez90.github.io/">Home</a></li>
+                <li><a href="https://docs.openstack.org">OpenStack</a></li>
+                <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                <li><a href="https://github.com/egonzalez90">Github</a></li>
+                <li><a href="https://egonzalez90.github.io/archives">Archives</a></li>
+            </ul>
+        </nav>
+        <div class="header_box">
+            <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff</a></h1>
+        </div>
     </header>
+    <div id="wrapper">
+        <div id="content">            <h4 class="date">Dec 23, 2015</h4>
 
-    <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 23 December 2015</span>
-<span>| tags: <a href="https://egonzalez90.github.io/tag/-configure.html">--configure</a><a href="https://egonzalez90.github.io/tag/centos.html">centos</a><a href="https://egonzalez90.github.io/tag/container.html">container</a><a href="https://egonzalez90.github.io/tag/docker.html">docker</a><a href="https://egonzalez90.github.io/tag/driver.html">driver</a><a href="https://egonzalez90.github.io/tag/glance.html">glance</a><a href="https://egonzalez90.github.io/tag/install.html">install</a><a href="https://egonzalez90.github.io/tag/instance.html">instance</a><a href="https://egonzalez90.github.io/tag/nova.html">nova</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/rdo.html">rdo</a></span>
-</footer><!-- /.post-info -->      <p>Cloud computing has evolved too fast over the last years, currently is a
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://egonzalez90.github.io/nova-docker-driver.html" rel="bookmark" title="Permanent Link to &quot;Nova Docker driver&quot;">Nova Docker driver</a>
+                </h2>
+
+                
+                
+
+                <p>Cloud computing has evolved too fast over the last years, currently is a
 totally different thing as the 5 years ago cloud, today is a common
 thing listening words like containers, instances, microservices, queue
 messages on linkedin, twitter, etc.</p>
@@ -241,48 +244,46 @@ won't be a KVM virtual machine, now will be a docker container</p>
 
 <p>If all the steps worked fine, you can use docker as nova backend.<br>
 Regards</p>
-    </div><!-- /.entry-content -->
-    <div class="comments">
-      <h2>Comments !</h2>
-      <div id="disqus_thread"></div>
-      <script type="text/javascript">
-        var disqus_identifier = "nova-docker-driver.html";
-        var disqus_url = "https://egonzalez90.github.io/nova-docker-driver.html";
-        (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//egonzalez-1.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-      </script>
-    </div>
+                <div class="clear"></div>
 
-  </article>
-</section>
-        <section id="extras" class="body">
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
-
-                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
-                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
-                            <li><a href="https://github.com/egonzalez90">Github</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
-
-        <footer id="contentinfo" class="body">
-                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
-        </footer><!-- /#contentinfo -->
-
+                <div class="info">
+                    <a href="https://egonzalez90.github.io/nova-docker-driver.html">posted at 18:31</a>
+                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/-configure.html" class="tags">--configure</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/centos.html" class="tags">centos</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/container.html" class="tags">container</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/docker.html" class="tags">docker</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/driver.html" class="tags">driver</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/glance.html" class="tags">glance</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/install.html" class="tags">install</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/instance.html" class="tags">instance</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/nova.html" class="tags">nova</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/rdo.html" class="tags">rdo</a>
+                </div>
+<div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'egonzalez-1';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
 </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+            </article>
+            <div class="clear"></div>
+            <footer>
+                <p>
+                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
+                &middot;
+                Powered by <a href="http://getpelican.com">Pelican</a>
+                &middot;
+                <a href="https://egonzalez90.github.io/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
+            </footer>
+        </div>
+        <div class="clear"></div>
+    </div>
 </body>
 </html>

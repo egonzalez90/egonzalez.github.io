@@ -1,47 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <meta charset="utf-8" />
-        <title>OpenStack Stuff - egongu90</title>
-        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
-        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
-
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OpenStack Stuff | Articles by egongu90</title>
+    <link rel="shortcut icon" type="image/png" href="https://egonzalez90.github.io/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="https://egonzalez90.github.io/favicon.ico">
+    <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Full Atom Feed" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/screen.css" type="text/css" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/print.css" type="text/css" media="print" />
+    <meta name="generator" content="Pelican" />
+    <meta name="description" content="" />
+    <meta name="author" content="Eduardo Gonzalez" />
 </head>
+<body>
+    <header>
+        <nav>
+            <ul>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
-                <nav><ul>
-                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
-                </ul>
-                </nav>
-        </header><!-- /#banner -->
+                <li class="ephemeral selected"><a href="https://egonzalez90.github.io/author/egongu9010.html">egongu90</a></li>
+                <li><a href="https://egonzalez90.github.io/">Home</a></li>
+                <li><a href="https://docs.openstack.org">OpenStack</a></li>
+                <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                <li><a href="https://github.com/egonzalez90">Github</a></li>
+                <li><a href="https://egonzalez90.github.io/archives">Archives</a></li>
+            </ul>
+        </nav>
+        <div class="header_box">
+            <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff</a></h1>
+        </div>
+    </header>
+    <div id="wrapper">
+        <div id="content">            <h4 class="date">Feb 10, 2015</h4>
 
-                <section id="content" class="body">
-                    <ol id="posts-list" class="hfeed" start="2">
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://egonzalez90.github.io/legacy-network.html" rel="bookmark"
-                           title="Permalink to Legacy Network">Legacy Network</a></h1>
-                </header>
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://egonzalez90.github.io/legacy-network.html" rel="bookmark" title="Permanent Link to &quot;Legacy Network&quot;">Legacy Network</a>
+                </h2>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Tue 10 February 2015</span>
-<span>| tags: <a href="https://egonzalez90.github.io/tag/configurar.html">configurar</a><a href="https://egonzalez90.github.io/tag/crear.html">crear</a><a href="https://egonzalez90.github.io/tag/icehouse.html">icehouse</a><a href="https://egonzalez90.github.io/tag/legacy.html">legacy</a><a href="https://egonzalez90.github.io/tag/network.html">network</a><a href="https://egonzalez90.github.io/tag/network-create.html">network-create</a><a href="https://egonzalez90.github.io/tag/nova.html">nova</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/red.html">red</a></span>
-</footer><!-- /.post-info -->                <h4>CONTROLLER</h4>
+                
+                
+
+                <h4>CONTROLLER</h4>
 <p>En controller node configuraremos nova para el uso de legacy network.</p>
 <blockquote>
 <p># openstack-config --set /etc/nova/nova.conf DEFAULT
@@ -53,22 +54,95 @@ security_group_api nova</p>
 <blockquote>
 <p># service openstack-nova api restart</p>
 <p># service openstack-nova-scheduler restart</p>
-<p># service openstack-nova-conductor …</p></blockquote>
-                <a class="readmore" href="https://egonzalez90.github.io/legacy-network.html">read more</a>
-<p><a href="https://egonzalez90.github.io/legacy-network.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
+<p># service openstack-nova-conductor restart</p>
+</blockquote>
+<h4>COMPUTE</h4>
+<p>Instalamos los paquetes de nova-network en controller node.</p>
+<blockquote>
+<p># yum install openstack-nova-network openstack-nova-api</p>
+</blockquote>
+<p>Configuramos varias opciones en nova para el uso de legacy network.</p>
+<blockquote>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+network_api_class nova.network.api.API</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+security_group_api nova</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT network_manager
+     nova.network.manager.FlatDHCPManager</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT firewall_driver
+   nova.virt.libvirt.firewall.IptablesFirewallDriver</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT network_size
+254</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+allow_same_net_traffic False</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT multi_host True</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+send_arp_for_ha True</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+force_dhcp_release True</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+share_dhcp_address True</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+flat_network_bridge br100</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT flat_interface
+eth1</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+public_interface eth1</p>
+</blockquote>
+<p>Iniciamos los servicios y establecemos el arranque con el host.</p>
+<blockquote>
+<p># service openstack-nova-network start</p>
+<p># service openstack-nova-metadata-api start</p>
+<p># chkconfig openstack-nova-network on</p>
+<p># chkconfig openstack-nova-metadata-api on</p>
+</blockquote>
+<h4>CREAR REDES</h4>
+<p>Ahora crearemos la primera red.</p>
+<blockquote>
+<p># nova network-create [name] --bridge br100 --multi-host T
+--fixed-range-v4 [IP_RANGE/*]</p>
+</blockquote>
+<p>Ejemplo, teniendo en cuenta que mi NAT usa el rango 192.168.207.0/24:</p>
+<blockquote>
+<p># nova network-create demo-net --bridge br100 --multi-host T
+--fixed-range-v4 192.168.207.0/24</p>
+</blockquote>
+<p>Listamos la red.</p>
+<blockquote>
+<p># nova net-list</p>
+</blockquote>
+<p>Podemos borrarla de la siguiente forma:</p>
+<blockquote>
+<p># nova net-delete [nombre o ID]</p>
+</blockquote>
+                <div class="clear"></div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://egonzalez90.github.io/nova-en-compute-node.html" rel="bookmark"
-                           title="Permalink to Nova en Compute Node">Nova en Compute Node</a></h1>
-                </header>
+                <div class="info">
+                    <a href="https://egonzalez90.github.io/legacy-network.html">posted at 13:11</a>
+                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/configurar.html" class="tags">configurar</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/crear.html" class="tags">crear</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/icehouse.html" class="tags">icehouse</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/legacy.html" class="tags">legacy</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/network.html" class="tags">network</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/network-create.html" class="tags">network-create</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/nova.html" class="tags">nova</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/red.html" class="tags">red</a>
+                </div>
+		<a href="https://egonzalez90.github.io/legacy-network.html#disqus_thread">Click to read and post comments</a>
+            </article>            <h4 class="date">Feb 05, 2015</h4>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 05 February 2015</span>
-<span>| tags: <a href="https://egonzalez90.github.io/tag/compute.html">compute</a><a href="https://egonzalez90.github.io/tag/configurar.html">configurar</a><a href="https://egonzalez90.github.io/tag/node.html">node</a><a href="https://egonzalez90.github.io/tag/nova.html">nova</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/qemu.html">qemu</a></span>
-</footer><!-- /.post-info -->                <p>Primero instalaremos los paquetes necesarios de nova.</p>
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://egonzalez90.github.io/nova-en-compute-node.html" rel="bookmark" title="Permanent Link to &quot;Nova en Compute Node&quot;">Nova en Compute Node</a>
+                </h2>
+
+                
+                
+
+                <p>Primero instalaremos los paquetes necesarios de nova.</p>
 <blockquote>
 <p># yum install openstack-nova-compute</p>
 </blockquote>
@@ -79,22 +153,90 @@ keystone.</p>
 mysql://nova:PASSWD@controller/nova</p>
 <p># openstack-config --set /etc/nova/nova.conf DEFAULT auth_strategy
 keystone</p>
-<p># openstack-config --set /etc/nova …</p></blockquote>
-                <a class="readmore" href="https://egonzalez90.github.io/nova-en-compute-node.html">read more</a>
-<p><a href="https://egonzalez90.github.io/nova-en-compute-node.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+keystone_authtoken auth_uri http://controller:5000</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+keystone_authtoken auth_host controller</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+keystone_authtoken auth_port 35357</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+keystone_authtoken auth_protocol http</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+keystone_authtoken admin_user nova</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+keystone_authtoken admin_tenant_name service</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+keystone_authtoken admin_password PASSWD</p>
+</blockquote>
+<p>Configuramos el uso de QPID.</p>
+<blockquote>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT rpc_backend
+qpid</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT qpid_hostname
+controller</p>
+</blockquote>
+<p>Configuramos VNC.</p>
+<blockquote>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT my_ip
+192.168.1.31</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT vnc_enabled
+True</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+vncserver_listen 0.0.0.0</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+vncserver_proxyclient_address 192.168.1.31</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT
+novncproxy_base_url http://controller:6080/vnc_auto.html</p>
+<p>Configuramos acceso a Glance Image Service.</p>
+<p># openstack-config --set /etc/nova/nova.conf DEFAULT glance_host
+controller</p>
+</blockquote>
+<p>Comprobamos si la CPU soporta aceleración por hardware, si es 1 o mas el
+resultado si que soporta, si no, configurar libvirt para que utilice
+QEMU en vez de KVM.</p>
+<blockquote>
+<p># egrep -c '(vmx|svm)' /proc/cpuinfo</p>
+</blockquote>
+<p>**********************************************</p>
+<p>Configurar libvirt para que use QEMU</p>
+<blockquote>
+<p># openstack-config --set /etc/nova/nova.conf libvirt virt_type qemu</p>
+</blockquote>
+<p>**********************************************</p>
+<p>Iniciar servicios y ejecución en el arranque.</p>
+<blockquote>
+<p># service libvirtd start</p>
+<p># service messagebus start</p>
+<p># service openstack-nova-compute start</p>
+<p># chkconfig libvirt on</p>
+<p>#chkconfig messagebus on</p>
+<p># chkconfig openstack-nova-compute on</p>
+</blockquote>
+                <div class="clear"></div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://egonzalez90.github.io/fix-keystone-malformed-endpoint-url-500-openstack.html" rel="bookmark"
-                           title="Permalink to Fix Keystone malformed endpoint url 500 Openstack">Fix Keystone malformed endpoint url 500 Openstack</a></h1>
-                </header>
+                <div class="info">
+                    <a href="https://egonzalez90.github.io/nova-en-compute-node.html">posted at 17:37</a>
+                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/compute.html" class="tags">compute</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/configurar.html" class="tags">configurar</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/node.html" class="tags">node</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/nova.html" class="tags">nova</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/qemu.html" class="tags">qemu</a>
+                </div>
+		<a href="https://egonzalez90.github.io/nova-en-compute-node.html#disqus_thread">Click to read and post comments</a>
+            </article>            <h4 class="date">Feb 04, 2015</h4>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 04 February 2015</span>
-<span>| tags: <a href="https://egonzalez90.github.io/tag/500.html">500</a><a href="https://egonzalez90.github.io/tag/database.html">database</a><a href="https://egonzalez90.github.io/tag/delete.html">delete</a><a href="https://egonzalez90.github.io/tag/endpoint.html">endpoint</a><a href="https://egonzalez90.github.io/tag/entry.html">entry</a><a href="https://egonzalez90.github.io/tag/error.html">error</a><a href="https://egonzalez90.github.io/tag/fix.html">fix</a><a href="https://egonzalez90.github.io/tag/http.html">http</a><a href="https://egonzalez90.github.io/tag/keystone.html">keystone</a><a href="https://egonzalez90.github.io/tag/malformed.html">malformed</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a></span>
-</footer><!-- /.post-info -->                <p>How to fix error malformed endpoint url (HTTP 500) in Openstack</p>
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://egonzalez90.github.io/fix-keystone-malformed-endpoint-url-500-openstack.html" rel="bookmark" title="Permanent Link to &quot;Fix Keystone malformed endpoint url 500 Openstack&quot;">Fix Keystone malformed endpoint url 500 Openstack</a>
+                </h2>
+
+                
+                
+
+                <p>How to fix error malformed endpoint url (HTTP 500) in Openstack</p>
 <h2><span style="color: #ff0000;">DON'T DO IT IN A PRODUCTION ENVIRONMENT</span></h2>
 <p>1st - Delete the malformed endpoint in the database.</p>
 <blockquote>
@@ -103,42 +245,47 @@ keystone</p>
 <p># select * from endpoint;</p>
 <p># delete from endpoint where service_id="ENDPOINT_ID";</p>
 </blockquote>
-<p>2nd - Recreate the endpoint with the keystone endpoint-create command …</p>
-                <a class="readmore" href="https://egonzalez90.github.io/fix-keystone-malformed-endpoint-url-500-openstack.html">read more</a>
-<p><a href="https://egonzalez90.github.io/fix-keystone-malformed-endpoint-url-500-openstack.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-            </ol><!-- /#posts-list -->
-<p class="paginator">
-        <a href="https://egonzalez90.github.io/author/egongu909.html">&laquo;</a>
-    Page 10 / 32
-        <a href="https://egonzalez90.github.io/author/egongu9011.html">&raquo;</a>
-</p>
-            </section><!-- /#content -->
-        <section id="extras" class="body">
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+<p>2nd - Recreate the endpoint with the keystone endpoint-create command.</p>
+                <div class="clear"></div>
 
-                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
-                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
-                            <li><a href="https://github.com/egonzalez90">Github</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
+                <div class="info">
+                    <a href="https://egonzalez90.github.io/fix-keystone-malformed-endpoint-url-500-openstack.html">posted at 17:34</a>
+                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/500.html" class="tags">500</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/database.html" class="tags">database</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/delete.html" class="tags">delete</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/endpoint.html" class="tags">endpoint</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/entry.html" class="tags">entry</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/error.html" class="tags">error</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/fix.html" class="tags">fix</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/http.html" class="tags">http</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/keystone.html" class="tags">keystone</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/malformed.html" class="tags">malformed</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
+                </div>
+		<a href="https://egonzalez90.github.io/fix-keystone-malformed-endpoint-url-500-openstack.html#disqus_thread">Click to read and post comments</a>
+            </article>
 
-        <footer id="contentinfo" class="body">
-                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
-        </footer><!-- /#contentinfo -->
+                <div class="clear"></div>
+                <div class="pages">
 
-<script type="text/javascript">
-    var disqus_shortname = 'egonzalez-1';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
+                    <a href="https://egonzalez90.github.io/page/9" class="prev_page">&larr;&nbsp;Previous</a>
+                    <a href="https://egonzalez90.github.io/page/11" class="next_page">Next&nbsp;&rarr;</a>
+                    <span>Page 10 of 32</span>
+                </div>
+
+            <div class="clear"></div>
+            <footer>
+                <p>
+                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
+                &middot;
+                Powered by <a href="http://getpelican.com">Pelican</a>
+                &middot;
+                <a href="https://egonzalez90.github.io/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
+            </footer>
+        </div>
+        <div class="clear"></div>
+    </div>
 </body>
 </html>

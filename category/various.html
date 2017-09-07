@@ -1,41 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <meta charset="utf-8" />
-        <title>OpenStack Stuff - Various</title>
-        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
-        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
-
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OpenStack Stuff | articles in the "Various" category</title>
+    <link rel="shortcut icon" type="image/png" href="https://egonzalez90.github.io/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="https://egonzalez90.github.io/favicon.ico">
+    <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Full Atom Feed" />
+    <link href="https://egonzalez90.github.io/feeds/various.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Categories Atom Feed" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/screen.css" type="text/css" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/print.css" type="text/css" media="print" />
+    <meta name="generator" content="Pelican" />
+    <meta name="description" content="" />
+    <meta name="author" content="Eduardo Gonzalez" />
 </head>
+<body>
+    <header>
+        <nav>
+            <ul>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
-                <nav><ul>
-                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
-                    <li class="active"><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
-                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
-                </ul>
-                </nav>
-        </header><!-- /#banner -->
+                <li class="ephemeral selected"><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                <li><a href="https://egonzalez90.github.io/">Home</a></li>
+                <li><a href="https://docs.openstack.org">OpenStack</a></li>
+                <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                <li><a href="https://github.com/egonzalez90">Github</a></li>
+                <li><a href="https://egonzalez90.github.io/archives">Archives</a></li>
+            </ul>
+        </nav>
+        <div class="header_box">
+            <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff</a></h1>
+        </div>
+    </header>
+    <div id="wrapper">
+        <div id="content">            <h4 class="date">Oct 31, 2016</h4>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="https://egonzalez90.github.io/to-conditional-or-to-skip-that-is-the-ansible-question.html">To Conditional or To Skip, that is the Ansible question</a></h1>
-<footer class="post-info">
-        <span>Mon 31 October 2016</span>
-<span>| tags: <a href="https://egonzalez90.github.io/tag/analysis.html">analysis</a><a href="https://egonzalez90.github.io/tag/ansible.html">ansible</a><a href="https://egonzalez90.github.io/tag/code.html">code</a><a href="https://egonzalez90.github.io/tag/conditional.html">conditional</a><a href="https://egonzalez90.github.io/tag/logic.html">logic</a><a href="https://egonzalez90.github.io/tag/opinion.html">opinion</a><a href="https://egonzalez90.github.io/tag/skip.html">skip</a><a href="https://egonzalez90.github.io/tag/syntax.html">syntax</a><a href="https://egonzalez90.github.io/tag/true.html">True</a><a href="https://egonzalez90.github.io/tag/when.html">when</a><a href="https://egonzalez90.github.io/tag/with_first_found.html">with_first_found</a></span>
-</footer><!-- /.post-info --><p>Have you ever think about if an Ansible task should be skipped with a
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://egonzalez90.github.io/to-conditional-or-to-skip-that-is-the-ansible-question.html" rel="bookmark" title="Permanent Link to &quot;To Conditional or To Skip, that is the Ansible question&quot;">To Conditional or To Skip, that is the Ansible question</a>
+                </h2>
+
+                
+                
+
+                <p>Have you ever think about if an Ansible task should be skipped with a
 conditional or without (hidden skip)?.<br>
 Well, this post will analyse both methods.</p>
 <p>Let's use a example to create the same result and analyse the both
@@ -130,23 +138,37 @@ in to_conditional method it clearly says Skipping.</p>
 <p>Execution times are not a problem in most use cases, as is not commonly
 used this kind of tasks in CM systems, only a few tasks will need this
 type of logic.</p>
-<p>Regards, Eduardo Gonzalez</p><p><a href="https://egonzalez90.github.io/to-conditional-or-to-skip-that-is-the-ansible-question.html#disqus_thread">comments</a></p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <ol id="posts-list" class="hfeed">
+<p>Regards, Eduardo Gonzalez</p>
+                <div class="clear"></div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://egonzalez90.github.io/netstat-aplicaciones-con-conexion-a-internet.html" rel="bookmark"
-                           title="Permalink to NETSTAT aplicaciones con conexión a Internet">NETSTAT aplicaciones con conexión a Internet</a></h1>
-                </header>
+                <div class="info">
+                    <a href="https://egonzalez90.github.io/to-conditional-or-to-skip-that-is-the-ansible-question.html">posted at 20:49</a>
+                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/various.html" rel="tag">Various</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/analysis.html" class="tags">analysis</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/ansible.html" class="tags">ansible</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/code.html" class="tags">code</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/conditional.html" class="tags">conditional</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/logic.html" class="tags">logic</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/opinion.html" class="tags">opinion</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/skip.html" class="tags">skip</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/syntax.html" class="tags">syntax</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/true.html" class="tags">True</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/when.html" class="tags">when</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/with_first_found.html" class="tags">with_first_found</a>
+                </div>
+		<a href="https://egonzalez90.github.io/to-conditional-or-to-skip-that-is-the-ansible-question.html#disqus_thread">Click to read and post comments</a>
+            </article>            <h4 class="date">Sep 19, 2014</h4>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Fri 19 September 2014</span>
-<span>| tags: <a href="https://egonzalez90.github.io/tag/-bo.html">-bo</a><a href="https://egonzalez90.github.io/tag/exe.html">.exe</a><a href="https://egonzalez90.github.io/tag/10.html">10</a><a href="https://egonzalez90.github.io/tag/aplicaciones.html">aplicaciones</a><a href="https://egonzalez90.github.io/tag/conexion.html">conexion</a><a href="https://egonzalez90.github.io/tag/direccion.html">dirección</a><a href="https://egonzalez90.github.io/tag/ip.html">IP</a><a href="https://egonzalez90.github.io/tag/netstat.html">netstat</a><a href="https://egonzalez90.github.io/tag/url.html">url</a><a href="https://egonzalez90.github.io/tag/windows.html">windows</a></span>
-</footer><!-- /.post-info -->                <p>Mediante el comando netstat y alguna de sus opciones podremos analizar
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://egonzalez90.github.io/netstat-aplicaciones-con-conexion-a-internet.html" rel="bookmark" title="Permanent Link to &quot;NETSTAT aplicaciones con conexión a Internet&quot;">NETSTAT aplicaciones con conexión a Internet</a>
+                </h2>
+
+                
+                
+
+                <p>Mediante el comando netstat y alguna de sus opciones podremos analizar
 las conexiones de red, para ver las conexiones que establecen las
 aplicaciones utilizaremos estas:</p>
 <blockquote>
@@ -156,60 +178,94 @@ aplicaciones utilizaremos estas:</p>
 <blockquote>
 <p>netstat -b</p>
 </blockquote>
-                <a class="readmore" href="https://egonzalez90.github.io/netstat-aplicaciones-con-conexion-a-internet.html">read more</a>
-<p><a href="https://egonzalez90.github.io/netstat-aplicaciones-con-conexion-a-internet.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
+                <div class="clear"></div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://egonzalez90.github.io/leer-manga-en-amazon-kindle.html" rel="bookmark"
-                           title="Permalink to Leer manga en Amazon Kindle">Leer manga en Amazon Kindle</a></h1>
-                </header>
+                <div class="info">
+                    <a href="https://egonzalez90.github.io/netstat-aplicaciones-con-conexion-a-internet.html">posted at 13:47</a>
+                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/various.html" rel="tag">Various</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/-bo.html" class="tags">-bo</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/exe.html" class="tags">.exe</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/10.html" class="tags">10</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/aplicaciones.html" class="tags">aplicaciones</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/conexion.html" class="tags">conexion</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/direccion.html" class="tags">dirección</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/ip.html" class="tags">IP</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/netstat.html" class="tags">netstat</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/url.html" class="tags">url</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/windows.html" class="tags">windows</a>
+                </div>
+		<a href="https://egonzalez90.github.io/netstat-aplicaciones-con-conexion-a-internet.html#disqus_thread">Click to read and post comments</a>
+            </article>            <h4 class="date">Aug 26, 2014</h4>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Tue 26 August 2014</span>
-<span>| tags: <a href="https://egonzalez90.github.io/tag/amazon.html">amazon</a><a href="https://egonzalez90.github.io/tag/comic.html">comic</a><a href="https://egonzalez90.github.io/tag/converter.html">converter</a><a href="https://egonzalez90.github.io/tag/jpg.html">jpg</a><a href="https://egonzalez90.github.io/tag/kindle.html">kindle</a><a href="https://egonzalez90.github.io/tag/kindle-comic-converter.html">kindle comic converter</a><a href="https://egonzalez90.github.io/tag/kindlegen.html">kindlegen</a><a href="https://egonzalez90.github.io/tag/leer.html">leer</a><a href="https://egonzalez90.github.io/tag/manga.html">manga</a><a href="https://egonzalez90.github.io/tag/mobi.html">mobi</a><a href="https://egonzalez90.github.io/tag/pdf.html">pdf</a></span>
-</footer><!-- /.post-info -->                <p>Muchos de los que tenemos un kindle somos fieles lectores de manga y
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://egonzalez90.github.io/leer-manga-en-amazon-kindle.html" rel="bookmark" title="Permanent Link to &quot;Leer manga en Amazon Kindle&quot;">Leer manga en Amazon Kindle</a>
+                </h2>
+
+                
+                
+
+                <p>Muchos de los que tenemos un kindle somos fieles lectores de manga y
 comics, seguro que a ninguno nos gusta leer los pdf o las imágenes
 sueltas. Para poder crear los archivos en formato de kindle .MOBI,
 utilizaremos estos programas:</p>
 <p>Kindle Comic Converter: http://kcc.iosphe.re/</p>
-<p>Kindlegen.exe: híamos …</p>
-                <a class="readmore" href="https://egonzalez90.github.io/leer-manga-en-amazon-kindle.html">read more</a>
-<p><a href="https://egonzalez90.github.io/leer-manga-en-amazon-kindle.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-            </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 2
-        <a href="https://egonzalez90.github.io/category/various2.html">&raquo;</a>
-</p>
-            </section><!-- /#content -->
-        <section id="extras" class="body">
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+<p>Kindlegen.exe: híamos todo configurado para podre formatear imágenes,
+carpetas, zip, rar, pdf, etc a los formatos MOBI, EPUB, CBZ.</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/08/kkc.png"><img alt="kkc" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/08/kkc.png"></a></p>
+<p>Para crear nuestros archivos en uno de los 3 formatos disponibles,
+primero seleccionaremos nuestro dispositivo Kindle en el desplegable,
+después añadiremos un archivo o carpeta mediante Add file o Add
+directory.</p>
+<p>A continuación utilizaremos alguna de las opciones disponibles. Yo
+personalmente solo utilizo High/Ultra quality, las demás opciones no me
+gustan, pero eso es para gustos.</p>
+<p>Ahora ya solo deberéis probar las diferentes combinaciones de las
+opciones hasta que encontréis las que mas os gusten. Y ya solo queda
+disfrutar de los mangas o comics en vuestros kindle.</p>
+<p>PD: Si os gusta la obra de algún autor siempre es preferible comprarla y
+apoyar económicamente en la producción de dicha obra.</p>
+<p>Un saludo</p>
+                <div class="clear"></div>
 
-                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
-                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
-                            <li><a href="https://github.com/egonzalez90">Github</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
+                <div class="info">
+                    <a href="https://egonzalez90.github.io/leer-manga-en-amazon-kindle.html">posted at 17:15</a>
+                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/various.html" rel="tag">Various</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/amazon.html" class="tags">amazon</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/comic.html" class="tags">comic</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/converter.html" class="tags">converter</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/jpg.html" class="tags">jpg</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/kindle.html" class="tags">kindle</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/kindle-comic-converter.html" class="tags">kindle comic converter</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/kindlegen.html" class="tags">kindlegen</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/leer.html" class="tags">leer</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/manga.html" class="tags">manga</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/mobi.html" class="tags">mobi</a>
+                    &nbsp;<a href="https://egonzalez90.github.io/tag/pdf.html" class="tags">pdf</a>
+                </div>
+		<a href="https://egonzalez90.github.io/leer-manga-en-amazon-kindle.html#disqus_thread">Click to read and post comments</a>
+            </article>
 
-        <footer id="contentinfo" class="body">
-                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
-        </footer><!-- /#contentinfo -->
+                <div class="clear"></div>
+                <div class="pages">
 
-<script type="text/javascript">
-    var disqus_shortname = 'egonzalez-1';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
+                    <a href="https://egonzalez90.github.io/page/2" class="next_page">Next&nbsp;&rarr;</a>
+                    <span>Page 1 of 2</span>
+                </div>
+
+            <div class="clear"></div>
+            <footer>
+                <p>
+                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
+                &middot;
+                Powered by <a href="http://getpelican.com">Pelican</a>
+                &middot;
+                <a href="https://egonzalez90.github.io/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
+            </footer>
+        </div>
+        <div class="clear"></div>
+    </div>
 </body>
 </html>
