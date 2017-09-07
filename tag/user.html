@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - user</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://egonzalez90.github.io/ceph-radosgw-admin-ops-how-to-use-it.html">Ceph RadosGW Admin Ops, how to use it</a></h1>
+<footer class="post-info">
+        <span>Tue 08 September 2015</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/admin.html">admin</a><a href="https://egonzalez90.github.io/tag/admin-ops.html">admin ops</a><a href="https://egonzalez90.github.io/tag/ceph.html">ceph</a><a href="https://egonzalez90.github.io/tag/header.html">header</a><a href="https://egonzalez90.github.io/tag/ops.html">ops</a><a href="https://egonzalez90.github.io/tag/query.html">query</a><a href="https://egonzalez90.github.io/tag/radosgw.html">radosgw</a><a href="https://egonzalez90.github.io/tag/script.html">script</a><a href="https://egonzalez90.github.io/tag/sign.html">sign</a><a href="https://egonzalez90.github.io/tag/understand.html">understand</a><a href="https://egonzalez90.github.io/tag/usage.html">usage</a><a href="https://egonzalez90.github.io/tag/user.html">user</a></span>
+</footer><!-- /.post-info --><p>Using RadosGW admin ops for the first time, can be a real headache ,
+for this purpose i have made this post, where you will understand how to
+use this API.<br>
+Let's start:</p>
+<p>For issue a request through admin ops, you need to have a signature,
+this signature is make it signing a header.<br>
+The header must to be composed by the current date, the request
+type(GET/PUT/POST/DELETE) and the request itself.<br>
+This header must be signed by SSL including the admin ops secret on
+this signature.<br>
+Now , you can make a request.<br>
+Sometimes, the time is not the same as the radosgw node expect, you can
+hack on it changing the date=\$(date) value with:<br>
+If your host has two hours more than the radosgw node, substract this
+two hours under \$(( 10#\$i-2)) variable, where 2 is the two hours to
+substract.</p>
+<div class="highlight"><pre><span></span><span class="nt">date</span><span class="o">=$(</span><span class="nt">for</span> <span class="nt">i</span> <span class="nt">in</span> <span class="o">$(</span><span class="nt">date</span> <span class="s2">&quot;+%H&quot;</span><span class="o">)</span> <span class="o">;</span> <span class="nt">do</span> <span class="nt">date</span> <span class="s2">&quot;+%a, %d %b %Y $(( 10#$i-2 )):%M:%S +0000&quot;</span> <span class="o">;</span> <span class="nt">done</span><span class="o">)</span>
+</pre></div>
+
+
+<p>Examples:</p>
+<p>Create a user named egonzalez:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="nv">token</span><span class="o">=</span>U2JCD4ZG4D1XJOI5XNF4 <span class="c1">## USER_TOKEN</span>
+<span class="nv">secret</span><span class="o">=</span>+IFgr7POzLWS0i3hQnC+dd3DOAZObHoY5NYm6m3b <span class="c1">## USER_SECRET</span>
+<span class="nv">query</span><span class="o">=</span><span class="nv">$1</span>
+<span class="nv">name</span><span class="o">=</span><span class="nv">$2</span>
+<span class="nv">query3</span><span class="o">=</span><span class="s2">&quot;&amp;uid=&quot;</span>
+<span class="nv">query2</span><span class="o">=</span>admin/user
+<span class="nv">query4</span><span class="o">=</span><span class="s2">&quot;&amp;quota-type=user&quot;</span>
+<span class="nv">date</span><span class="o">=</span><span class="k">$(</span>date<span class="k">)</span>
+<span class="nv">header</span><span class="o">=</span><span class="s2">&quot;PUT\n\n\n</span><span class="si">${</span><span class="nv">date</span><span class="si">}</span><span class="s2">\n/</span><span class="si">${</span><span class="nv">query2</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="nv">sig</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> -en <span class="si">${</span><span class="nv">header</span><span class="si">}</span> <span class="p">|</span> openssl sha1 -hmac <span class="si">${</span><span class="nv">secret</span><span class="si">}</span> -binary <span class="p">|</span> base64<span class="k">)</span>
+curl -v -H <span class="s2">&quot;Date: </span><span class="si">${</span><span class="nv">date</span><span class="si">}</span><span class="s2">&quot;</span> -H <span class="s2">&quot;Authorization: AWS </span><span class="si">${</span><span class="nv">token</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">sig</span><span class="si">}</span><span class="s2">&quot;</span> -L -X PUT <span class="s2">&quot;http://10.0.2.10/</span><span class="si">${</span><span class="nv">query2</span><span class="si">}</span><span class="s2">?format=json</span><span class="si">${</span><span class="nv">query3</span><span class="si">}${</span><span class="nv">query</span><span class="si">}</span><span class="s2">&amp;display-name=</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">&quot;</span> -H <span class="s2">&quot;Host: 10.0.2.10&quot;</span>
+<span class="c1">##Change IPs with your own IPs</span>
+</pre></div>
+</td></tr></table>
+
+<p>Output:</p>
+<div class="highlight"><pre><span></span>[ceph@adminnode scripts]$ sh createUser.sh egonzalez EgonzalezDescription
+{&quot;user_id&quot;:&quot;egonzalez&quot;,&quot;display_name&quot;:&quot;EgonzalezDescription&quot;,&quot;email&quot;:&quot;&quot;,&quot;suspended&quot;:0,&quot;max_buckets&quot;:1000,&quot;subusers&quot;:[],&quot;keys&quot;:[{&quot;user&quot;:&quot;egonzalez&quot;,&quot;access_key&quot;:&quot;24FUKCWD6BL9T08DQ2JA&quot;,&quot;secret_key&quot;:&quot;mEQdhcrsqOy7q6Snvu8B5d5A2Ek9OezJH+khwYvX&quot;}],&quot;swift_keys&quot;:[],&quot;caps&quot;:[]}
+</pre></div>
+
+
+<p>See egonzalez quotas</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="nv">token</span><span class="o">=</span>U2JCD4ZG4D1XJOI5XNF4 <span class="c1">## USER_TOKEN</span>
+<span class="nv">secret</span><span class="o">=</span>+IFgr7POzLWS0i3hQnC+dd3DOAZObHoY5NYm6m3b <span class="c1">## USER_SECRET</span>
+<span class="nv">query</span><span class="o">=</span><span class="nv">$1</span>
+<span class="nv">query3</span><span class="o">=</span><span class="s2">&quot;&amp;uid=&quot;</span>
+<span class="nv">query2</span><span class="o">=</span>admin/user
+<span class="nv">query4</span><span class="o">=</span><span class="s2">&quot;&amp;quota-type=user&quot;</span>
+<span class="nv">date</span><span class="o">=</span><span class="k">$(</span>date<span class="k">)</span>
+<span class="nv">header</span><span class="o">=</span><span class="s2">&quot;GET\n\n\n</span><span class="si">${</span><span class="nv">date</span><span class="si">}</span><span class="s2">\n/</span><span class="si">${</span><span class="nv">query2</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="nv">sig</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> -en <span class="si">${</span><span class="nv">header</span><span class="si">}</span> <span class="p">|</span> openssl sha1 -hmac <span class="si">${</span><span class="nv">secret</span><span class="si">}</span> -binary <span class="p">|</span> base64<span class="k">)</span>
+curl -v -H <span class="s2">&quot;Date: </span><span class="si">${</span><span class="nv">date</span><span class="si">}</span><span class="s2">&quot;</span> -H <span class="s2">&quot;Authorization: AWS </span><span class="si">${</span><span class="nv">token</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">sig</span><span class="si">}</span><span class="s2">&quot;</span> -L -X GET <span class="s2">&quot;http://10.0.2.10/</span><span class="si">${</span><span class="nv">query2</span><span class="si">}</span><span class="s2">?quota</span><span class="si">${</span><span class="nv">query3</span><span class="si">}${</span><span class="nv">query</span><span class="si">}</span><span class="s2">&amp;quota-type=user&quot;</span> -H <span class="s2">&quot;Host: 10.0.2.10&quot;</span>
+<span class="c1">##Change IPs with your own IPs</span>
+</pre></div>
+</td></tr></table>
+
+<p>Output:</p>
+<div class="highlight"><pre><span></span>[ceph@adminnode scripts]$ sh getuserquota.sh egonzalez
+
+{&quot;enabled&quot;: true,&quot;max_size_kb&quot;:1000,&quot;max_objects&quot;:1000}Status: 200 OK
+</pre></div>
+
+
+<p>See egonzalez user information.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="nv">token</span><span class="o">=</span>U2JCD4ZG4D1XJOI5XNF4 <span class="c1">## USER_TOKEN</span>
+<span class="nv">secret</span><span class="o">=</span>+IFgr7POzLWS0i3hQnC+dd3DOAZObHoY5NYm6m3b <span class="c1">## USER_SECRET</span>
+<span class="nv">query</span><span class="o">=</span><span class="nv">$1</span>
+<span class="nv">query3</span><span class="o">=</span><span class="s2">&quot;&amp;uid=&quot;</span>
+<span class="nv">query2</span><span class="o">=</span>admin/user
+<span class="nv">date</span><span class="o">=</span><span class="k">$(</span>date<span class="k">)</span>
+<span class="nv">header</span><span class="o">=</span><span class="s2">&quot;GET\n\n\n</span><span class="si">${</span><span class="nv">date</span><span class="si">}</span><span class="s2">\n/</span><span class="si">${</span><span class="nv">query2</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="nv">sig</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> -en <span class="si">${</span><span class="nv">header</span><span class="si">}</span> <span class="p">|</span> openssl sha1 -hmac <span class="si">${</span><span class="nv">secret</span><span class="si">}</span> -binary <span class="p">|</span> base64<span class="k">)</span>
+curl -v -H <span class="s2">&quot;Date: </span><span class="si">${</span><span class="nv">date</span><span class="si">}</span><span class="s2">&quot;</span> -H <span class="s2">&quot;Authorization: AWS </span><span class="si">${</span><span class="nv">token</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">sig</span><span class="si">}</span><span class="s2">&quot;</span> -L -X GET <span class="s2">&quot;http://10.0.2.10/</span><span class="si">${</span><span class="nv">query2</span><span class="si">}</span><span class="s2">?format=json</span><span class="si">${</span><span class="nv">query3</span><span class="si">}${</span><span class="nv">query</span><span class="si">}</span><span class="s2">&quot;</span> -H <span class="s2">&quot;Host: 10.0.2.10&quot;</span>
+<span class="c1">##Change IPs with your own IPs</span>
+</pre></div>
+</td></tr></table>
+
+<p>Output:</p>
+<div class="highlight"><pre><span></span>[ceph@adminnode scripts]$ sh userInfo.sh egonzalez
+{&quot;user_id&quot;:&quot;egonzalez&quot;,&quot;display_name&quot;:&quot;EgonzalezDescription&quot;,&quot;email&quot;:&quot;&quot;,&quot;suspended&quot;:0,&quot;max_buckets&quot;:1000,&quot;subusers&quot;:[],&quot;keys&quot;:[{&quot;user&quot;:&quot;egonzalez&quot;,&quot;access_key&quot;:&quot;24FUKCWD6BL9T08DQ2JA&quot;,&quot;secret_key&quot;:&quot;mEQdhcrsqOy7q6Snvu8B5d5A2Ek9OezJH+khwYvX&quot;}],&quot;swift_keys&quot;:[],&quot;caps&quot;:[]}
+</pre></div>
+
+
+<p>When you really understand how admin ops works, is not as dificult to
+use it, just search at the official documentation and modify the desired
+values.</p>
+<p>I hope this helps:</p>
+<p>Regards, Eduardo.</p><p><a href="https://egonzalez90.github.io/ceph-radosgw-admin-ops-how-to-use-it.html#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/list-all-tenants-belonging-an-user.html" rel="bookmark"
+                           title="Permalink to List all tenants belonging an user Keystone v2">List all tenants belonging an user  Keystone v2</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 02 July 2015</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/all.html">all</a><a href="https://egonzalez90.github.io/tag/bash.html">bash</a><a href="https://egonzalez90.github.io/tag/belong.html">belong</a><a href="https://egonzalez90.github.io/tag/curl.html">curl</a><a href="https://egonzalez90.github.io/tag/get.html">GET</a><a href="https://egonzalez90.github.io/tag/how.html">how</a><a href="https://egonzalez90.github.io/tag/inside.html">inside</a><a href="https://egonzalez90.github.io/tag/keystone.html">keystone</a><a href="https://egonzalez90.github.io/tag/keystoneclient.html">keystoneclient</a><a href="https://egonzalez90.github.io/tag/keystonev2.html">keystonev2</a><a href="https://egonzalez90.github.io/tag/list.html">list</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/python.html">python</a><a href="https://egonzalez90.github.io/tag/role.html">role</a><a href="https://egonzalez90.github.io/tag/script.html">script</a><a href="https://egonzalez90.github.io/tag/tenant.html">tenant</a><a href="https://egonzalez90.github.io/tag/tenants.html">tenants</a><a href="https://egonzalez90.github.io/tag/to.html">to</a><a href="https://egonzalez90.github.io/tag/token.html">Token</a><a href="https://egonzalez90.github.io/tag/user.html">user</a><a href="https://egonzalez90.github.io/tag/users.html">users</a><a href="https://egonzalez90.github.io/tag/v2.html">v2</a></span>
+</footer><!-- /.post-info -->                <p>Here is a simple script to list all tenants belonging an user:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="nb">echo</span> -n <span class="s2">&quot;Username : &quot;</span> <span class="p">;</span> <span class="nb">read</span> usercheck
+
+<span class="k">for</span> userid in <span class="k">$(</span>keystone user-list <span class="p">|</span> grep -w <span class="nv">$usercheck</span> <span class="p">|</span> awk <span class="s1">&#39;{print$2}&#39;</span><span class="k">)</span>
+    <span class="k">do</span>
+    <span class="k">for</span> tenant in <span class="k">$(</span>keystone tenant-list …</pre></div></td></tr></table>
+                <a class="readmore" href="https://egonzalez90.github.io/list-all-tenants-belonging-an-user.html">read more</a>
+<p><a href="https://egonzalez90.github.io/list-all-tenants-belonging-an-user.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/usuarios-tenants-y-roles.html" rel="bookmark"
+                           title="Permalink to Usuarios, Tenants y Roles">Usuarios, Tenants y Roles</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 28 November 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/add.html">add</a><a href="https://egonzalez90.github.io/tag/admin.html">admin</a><a href="https://egonzalez90.github.io/tag/create.html">create</a><a href="https://egonzalez90.github.io/tag/demo.html">demo</a><a href="https://egonzalez90.github.io/tag/keystone.html">keystone</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/role.html">role</a><a href="https://egonzalez90.github.io/tag/service.html">service</a><a href="https://egonzalez90.github.io/tag/tenant.html">tenant</a><a href="https://egonzalez90.github.io/tag/user.html">user</a></span>
+</footer><!-- /.post-info -->                <p>Una vez tenemos instalado el servicio de Keystone, deberemos crear el
+usuario de administración, su rol y su tenant. Para ello seguiremos los
+siguientes pasos:</p>
+<p>Como aun no tenemos el usuario de administración, utilizaremos
+ADMIN_TOKEN para poder utilizar comandos de keystone. Introduciremos
+estos comandos para establecer ADMIN_TOKEN y el ENDPOINT …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/usuarios-tenants-y-roles.html">read more</a>
+<p><a href="https://egonzalez90.github.io/usuarios-tenants-y-roles.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 2
+        <a href="https://egonzalez90.github.io/tag/user2.html">&raquo;</a>
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

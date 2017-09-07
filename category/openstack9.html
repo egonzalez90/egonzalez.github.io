@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - OpenStack</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li class="active"><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+                <section id="content" class="body">
+                    <ol id="posts-list" class="hfeed" start="2">
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/configuracion-de-image-service-glance.html" rel="bookmark"
+                           title="Permalink to Configuración de Image Service Glance">Configuración de Image Service Glance</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 29 January 2015</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/configuracion.html">configuracion</a><a href="https://egonzalez90.github.io/tag/glance.html">glance</a><a href="https://egonzalez90.github.io/tag/glance-api.html">glance-api</a><a href="https://egonzalez90.github.io/tag/image-service.html">image service</a><a href="https://egonzalez90.github.io/tag/instalacion.html">instalacion</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a></span>
+</footer><!-- /.post-info -->                <p>Lo primero que debemos instalar son los paquetes de Glance en Controller
+Node.</p>
+<blockquote>
+<p># yum install openstack-glance python-glanceclient</p>
+</blockquote>
+<p>Después configuraremos en enlace con la base de datos en los ficheros de
+configuración de Glance:</p>
+<blockquote>
+<p># openstack-config --set /etc/glance/glance-api.conf</p>
+<p>database connection mysql://glance:PASSWD@controller/glance</p>
+<p># openstack-config --set /etc/glance …</p></blockquote>
+                <a class="readmore" href="https://egonzalez90.github.io/configuracion-de-image-service-glance.html">read more</a>
+<p><a href="https://egonzalez90.github.io/configuracion-de-image-service-glance.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/openstack-clients.html" rel="bookmark"
+                           title="Permalink to Openstack Clients">Openstack Clients</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 05 January 2015</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/clients.html">clients</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/pip.html">pip</a><a href="https://egonzalez90.github.io/tag/setuptools.html">setuptools</a></span>
+</footer><!-- /.post-info -->                <p>En esta entrada instalaremos las tools de openstack que facilitaran la
+configuración de los diferentes módulos que compondrán nuestro entorno.</p>
+<p>Primero instalaremos setuptools</p>
+<blockquote>
+<p>wget https://bootstrap.pypa.io/ez_setup.py -O | python</p>
+</blockquote>
+<p>A continuacion instalamos PIP</p>
+<blockquote>
+<p>yum install python-pip</p>
+</blockquote>
+<p>Instalaremos los clientes de los diferentes módulos que vamos a instalar …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/openstack-clients.html">read more</a>
+<p><a href="https://egonzalez90.github.io/openstack-clients.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/comprobar-keystone.html" rel="bookmark"
+                           title="Permalink to Comprobar Keystone">Comprobar Keystone</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 29 December 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/-.html">-</a><a href="https://egonzalez90.github.io/tag/comprobar.html">comprobar</a><a href="https://egonzalez90.github.io/tag/instalacion.html">instalacion</a><a href="https://egonzalez90.github.io/tag/keystone.html">keystone</a><a href="https://egonzalez90.github.io/tag/list.html">list</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/role.html">role</a><a href="https://egonzalez90.github.io/tag/usr.html">usr</a></span>
+</footer><!-- /.post-info -->                <p>En anteriores post hemos configurado Keystone(Identity Service), ahora
+deberemos de comprobar que este correctamente configurado. Para ello he
+creado esta entrada en el blog.</p>
+<p>Lo primero que haremos será quitar las variables de entorno con las que
+nos autenticábamos en el servicio, con ello nos tendremos que autenticar
+con …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/comprobar-keystone.html">read more</a>
+<p><a href="https://egonzalez90.github.io/comprobar-keystone.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+        <a href="https://egonzalez90.github.io/category/openstack8.html">&laquo;</a>
+    Page 9 / 16
+        <a href="https://egonzalez90.github.io/category/openstack10.html">&raquo;</a>
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

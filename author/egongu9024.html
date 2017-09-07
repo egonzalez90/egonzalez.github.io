@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - egongu90</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+                <section id="content" class="body">
+                    <ol id="posts-list" class="hfeed" start="2">
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/recuperar-grub-rhel-y-centos.html" rel="bookmark"
+                           title="Permalink to Recuperar GRUB RHEL y CentOS">Recuperar GRUB RHEL y CentOS</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 28 August 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/centos.html">centos</a><a href="https://egonzalez90.github.io/tag/grub.html">grub</a><a href="https://egonzalez90.github.io/tag/hd0.html">hd0</a><a href="https://egonzalez90.github.io/tag/linux.html">linux</a><a href="https://egonzalez90.github.io/tag/red-hat.html">red hat</a><a href="https://egonzalez90.github.io/tag/rescue.html">rescue</a><a href="https://egonzalez90.github.io/tag/rhel.html">rhel</a><a href="https://egonzalez90.github.io/tag/root.html">root</a><a href="https://egonzalez90.github.io/tag/setup.html">setup</a></span>
+</footer><!-- /.post-info -->                <p>Muchas veces te sueles cargar la configuración del GRUB, o simplemente
+cuando instalas Windows en otra partición. <!--more-->Para ello lo
+tendremos que recuperar de la siguiente forma:</p>
+<p>1º Insertaremos la ISO en el equipo</p>
+<p>2º Cuando salga el prompt de arranque, escribiremos</p>
+<blockquote>
+<p>linux rescue</p>
+</blockquote>
+<p>3º A continuación</p>
+<blockquote>
+<p>grub</p>
+</blockquote>
+<p>4º Ahora …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/recuperar-grub-rhel-y-centos.html">read more</a>
+<p><a href="https://egonzalez90.github.io/recuperar-grub-rhel-y-centos.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/componentes-de-openstack.html" rel="bookmark"
+                           title="Permalink to Componentes de OpenStack">Componentes de OpenStack</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Wed 27 August 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/basico.html">basico</a><a href="https://egonzalez90.github.io/tag/cinder-swift.html">cinder swift</a><a href="https://egonzalez90.github.io/tag/cloud.html">cloud</a><a href="https://egonzalez90.github.io/tag/componentes.html">componentes</a><a href="https://egonzalez90.github.io/tag/computing.html">computing</a><a href="https://egonzalez90.github.io/tag/horizon.html">horizon</a><a href="https://egonzalez90.github.io/tag/introducion.html">introducion</a><a href="https://egonzalez90.github.io/tag/keystone.html">keystone</a><a href="https://egonzalez90.github.io/tag/neutron.html">neutron</a><a href="https://egonzalez90.github.io/tag/nova.html">nova</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a></span>
+</footer><!-- /.post-info -->                <p>Desde su aparición en  2010, la comunidad de Openstack ha estado
+añadiendo nuevos componentes y funcionalidades.</p>
+<p>A día de hoy estos son los componentes oficiales de OpenStack</p>
+<p>+--------------------------+--------------------------+--------------------------+
+| <strong>Servicio</strong>             | <strong>Componente</strong>           | <strong> Descripcion</strong>         |
++--------------------------+--------------------------+--------------------------+
+| <a href="http://docs. | [Horizon](http://docs.op |                          |
+| openstack.org/admin-guid | enstack.org/admin-guide- | &lt;/p&gt;                     |
+| e-cloud/content/ch_getti | cloud/content/ch_getting | Interfaz gráfica que     |
+| ng-started-with-openstac | -started-with-openstack. | permite interactuar con  |
+| k.html)                  | html">Dashboard</a>                    | Openstack para la        |
+|                          |                          | administración básica    |
+|                          |                          | del servicio             |
+|                          |                          |                          |
+|                          |                          | <p>                      |
+|                          |                          |                          |
++--------------------------+--------------------------+--------------------------+
+| <a href="http://docs.op | [Nova](http://docs.opens |                          |
+| enstack.org/admin-guide- | tack.org/admin-guide-clo | &lt;/p&gt;                     |
+| cloud/content/ch_getting | ud/content/ch_getting-st | Encargada de la          |
+| -started-with-openstack. | arted-with-openstack.htm | computación de la nube,  |
+| html)                    | l">Compute</a>                       | gestiona y automatiza    |
+|                          |                          | los recursos. Es la      |
+|                          |                          | parte principal de       |
+|                          |                          | OpenStack …</p></p>
+                <a class="readmore" href="https://egonzalez90.github.io/componentes-de-openstack.html">read more</a>
+<p><a href="https://egonzalez90.github.io/componentes-de-openstack.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/leer-manga-en-amazon-kindle.html" rel="bookmark"
+                           title="Permalink to Leer manga en Amazon Kindle">Leer manga en Amazon Kindle</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 26 August 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/amazon.html">amazon</a><a href="https://egonzalez90.github.io/tag/comic.html">comic</a><a href="https://egonzalez90.github.io/tag/converter.html">converter</a><a href="https://egonzalez90.github.io/tag/jpg.html">jpg</a><a href="https://egonzalez90.github.io/tag/kindle.html">kindle</a><a href="https://egonzalez90.github.io/tag/kindle-comic-converter.html">kindle comic converter</a><a href="https://egonzalez90.github.io/tag/kindlegen.html">kindlegen</a><a href="https://egonzalez90.github.io/tag/leer.html">leer</a><a href="https://egonzalez90.github.io/tag/manga.html">manga</a><a href="https://egonzalez90.github.io/tag/mobi.html">mobi</a><a href="https://egonzalez90.github.io/tag/pdf.html">pdf</a></span>
+</footer><!-- /.post-info -->                <p>Muchos de los que tenemos un kindle somos fieles lectores de manga y
+comics, seguro que a ninguno nos gusta leer los pdf o las imágenes
+sueltas. Para poder crear los archivos en formato de kindle .MOBI,
+utilizaremos estos programas:</p>
+<p>Kindle Comic Converter: http://kcc.iosphe.re/</p>
+<p>Kindlegen.exe: híamos …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/leer-manga-en-amazon-kindle.html">read more</a>
+<p><a href="https://egonzalez90.github.io/leer-manga-en-amazon-kindle.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+        <a href="https://egonzalez90.github.io/author/egongu9023.html">&laquo;</a>
+    Page 24 / 32
+        <a href="https://egonzalez90.github.io/author/egongu9025.html">&raquo;</a>
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

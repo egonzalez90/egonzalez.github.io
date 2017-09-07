@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - egongu90</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+                <section id="content" class="body">
+                    <ol id="posts-list" class="hfeed" start="2">
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/netstat-aplicaciones-con-conexion-a-internet.html" rel="bookmark"
+                           title="Permalink to NETSTAT aplicaciones con conexión a Internet">NETSTAT aplicaciones con conexión a Internet</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 19 September 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/-bo.html">-bo</a><a href="https://egonzalez90.github.io/tag/exe.html">.exe</a><a href="https://egonzalez90.github.io/tag/10.html">10</a><a href="https://egonzalez90.github.io/tag/aplicaciones.html">aplicaciones</a><a href="https://egonzalez90.github.io/tag/conexion.html">conexion</a><a href="https://egonzalez90.github.io/tag/direccion.html">dirección</a><a href="https://egonzalez90.github.io/tag/ip.html">IP</a><a href="https://egonzalez90.github.io/tag/netstat.html">netstat</a><a href="https://egonzalez90.github.io/tag/url.html">url</a><a href="https://egonzalez90.github.io/tag/windows.html">windows</a></span>
+</footer><!-- /.post-info -->                <p>Mediante el comando netstat y alguna de sus opciones podremos analizar
+las conexiones de red, para ver las conexiones que establecen las
+aplicaciones utilizaremos estas:</p>
+<blockquote>
+<p>netstat -bo 10</p>
+</blockquote>
+<p>o</p>
+<blockquote>
+<p>netstat -b</p>
+</blockquote>
+                <a class="readmore" href="https://egonzalez90.github.io/netstat-aplicaciones-con-conexion-a-internet.html">read more</a>
+<p><a href="https://egonzalez90.github.io/netstat-aplicaciones-con-conexion-a-internet.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/montar-volumen-aws-en-rhel.html" rel="bookmark"
+                           title="Permalink to Montar volumen AWS en RHEL">Montar volumen AWS en RHEL</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Wed 17 September 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/amazon.html">amazon</a><a href="https://egonzalez90.github.io/tag/anadir.html">añadir</a><a href="https://egonzalez90.github.io/tag/aws.html">AWS</a><a href="https://egonzalez90.github.io/tag/cloud.html">cloud</a><a href="https://egonzalez90.github.io/tag/computing.html">computing</a><a href="https://egonzalez90.github.io/tag/formatear.html">formatear</a><a href="https://egonzalez90.github.io/tag/linux.html">linux</a><a href="https://egonzalez90.github.io/tag/montar.html">montar</a><a href="https://egonzalez90.github.io/tag/red-hat.html">red hat</a><a href="https://egonzalez90.github.io/tag/rhel.html">rhel</a><a href="https://egonzalez90.github.io/tag/services.html">services</a><a href="https://egonzalez90.github.io/tag/volumen.html">volumen</a><a href="https://egonzalez90.github.io/tag/web.html">web</a><a href="https://egonzalez90.github.io/tag/xvdf.html">xvdf</a></span>
+</footer><!-- /.post-info -->                <p>Para poder realizar estos pasos es necesario que se haya creado un
+volumen previamente en EC2 de AWS, nos conectaremos a la maquina por SSH
+y seguiremos los siguientes pasos<!--more--></p>
+<p>Primero comprobaremos que el volumen que habíamos creado en EC2 le ve el
+SO, utilizaremos este comando</p>
+<blockquote>
+<p><span class="command" style="color: #000000;">lsblk</span><span
+style="color: #000000;"> </span></p>
+</blockquote>
+<p>Lo normal …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/montar-volumen-aws-en-rhel.html">read more</a>
+<p><a href="https://egonzalez90.github.io/montar-volumen-aws-en-rhel.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/crear-instancia-amazon-web-services-aws.html" rel="bookmark"
+                           title="Permalink to Crear instancia Amazon Web Services (AWS)">Crear instancia Amazon Web Services (AWS)</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 15 September 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/amazon.html">amazon</a><a href="https://egonzalez90.github.io/tag/aws.html">AWS</a><a href="https://egonzalez90.github.io/tag/cloud.html">cloud</a><a href="https://egonzalez90.github.io/tag/computing.html">computing</a><a href="https://egonzalez90.github.io/tag/creacion.html">creacion</a><a href="https://egonzalez90.github.io/tag/crear.html">crear</a><a href="https://egonzalez90.github.io/tag/ec2.html">ec2</a><a href="https://egonzalez90.github.io/tag/instancia.html">instancia</a><a href="https://egonzalez90.github.io/tag/linux.html">linux</a><a href="https://egonzalez90.github.io/tag/pem.html">pem</a><a href="https://egonzalez90.github.io/tag/ppk.html">ppk</a><a href="https://egonzalez90.github.io/tag/primera.html">primera</a><a href="https://egonzalez90.github.io/tag/putty.html">putty</a><a href="https://egonzalez90.github.io/tag/services.html">services</a><a href="https://egonzalez90.github.io/tag/web.html">web</a></span>
+</footer><!-- /.post-info -->                <p>Buenos días, en esta entrada mostrare como crear una instancia en la
+plataforma cloud de Amazon Web Services.</p>
+<!--more-->
+
+<p>Para poder crear las instancias, deberemos tener cuenta de
+AWS y nos logearemos en la consola.</p>
+<p>Lo primero que nos encontraremos sera el dashboard principal, aqui
+podremos administrar las diferentes secciones de …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/crear-instancia-amazon-web-services-aws.html">read more</a>
+<p><a href="https://egonzalez90.github.io/crear-instancia-amazon-web-services-aws.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+        <a href="https://egonzalez90.github.io/author/egongu9019.html">&laquo;</a>
+    Page 20 / 32
+        <a href="https://egonzalez90.github.io/author/egongu9021.html">&raquo;</a>
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

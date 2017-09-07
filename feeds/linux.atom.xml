@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>OpenStack Stuff - Linux</title><link href="https://egonzalez90.github.io/" rel="alternate"></link><link href="https://egonzalez90.github.io/feeds/linux.atom.xml" rel="self"></link><id>https://egonzalez90.github.io/</id><updated>2014-10-15T16:42:00+02:00</updated><entry><title>Análisis Forense Servidor Atacado</title><link href="https://egonzalez90.github.io/analisis-forense-servidor-atacado.html" rel="alternate"></link><published>2014-10-15T16:42:00+02:00</published><updated>2014-10-15T16:42:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-10-15:/analisis-forense-servidor-atacado.html</id><summary type="html">&lt;p&gt;Esta guía te proporcionara las bases para investigar servidores que su
+seguridad ha sido comprometida.&lt;/p&gt;
+&lt;p&gt;Veremos  los diferentes modos para determinar:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Punto de entrada&lt;/li&gt;
+&lt;li&gt;Origen del ataque&lt;/li&gt;
+&lt;li&gt;Archivos comprometidos&lt;/li&gt;
+&lt;li&gt;Nivel de acceso obtenido por el atacante&lt;/li&gt;
+&lt;li&gt;Investigación de pruebas y rastros dejados por los atacantes&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!--more--&gt;
+
+&lt;p&gt;Son muchos los puntos de …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Esta guía te proporcionara las bases para investigar servidores que su
+seguridad ha sido comprometida.&lt;/p&gt;
+&lt;p&gt;Veremos  los diferentes modos para determinar:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Punto de entrada&lt;/li&gt;
+&lt;li&gt;Origen del ataque&lt;/li&gt;
+&lt;li&gt;Archivos comprometidos&lt;/li&gt;
+&lt;li&gt;Nivel de acceso obtenido por el atacante&lt;/li&gt;
+&lt;li&gt;Investigación de pruebas y rastros dejados por los atacantes&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!--more--&gt;
+
+&lt;p&gt;Son muchos los puntos de entradas que un servidor Linux/Unix puede
+tener, pero es importante que método se ha usado para determinar el daño
+que ha podido hacer en a máquina y/o otros servidores conectados entre
+sí.&lt;/p&gt;
+&lt;p&gt;La mejor forma de arreglar un servidor comprometido es re instalar el
+sistema operativo y restaurar los datos importantes desde una copia de
+seguridad, pero es importante investigar el servidor afectado para
+conocer el punto de entrada y así poder parchearlo en la reinstalación
+del SO.&lt;/p&gt;
+&lt;h1&gt;Documentación&lt;/h1&gt;
+&lt;p&gt;Cuando te enteras que un sistema bajo tu control puede haber sido
+comprometido, debes de intentar obtener la mayor información posible del
+denunciante. Entre ellas:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Cuando se encontró el problema inicial&lt;/li&gt;
+&lt;li&gt;La hora estimada del ataque&lt;/li&gt;
+&lt;li&gt;Se ha modificado el servidor desde el ataque&lt;/li&gt;
+&lt;li&gt;Alguna cosa más que el denunciante considere importante&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;NOTA: Si estás pensando en involucrar a las fuerzas de la ley, realizar
+denuncias, es muy importante que no se realice ninguna acción en el
+servidor. Este debe quedar en su estado actual a un equipo de
+informática forense para la búsqueda de pruebas.&lt;/p&gt;
+&lt;p&gt;Si vas a proceder a la investigación, documenta toda lo que encuentres
+en el servidor.&lt;/p&gt;
+&lt;h1&gt;Herramientas usadas en la investigación&lt;/h1&gt;
+&lt;p&gt;En un escenario ideal para un atacante, todos los archivos de log se
+habrán borrado dejando su rastro limpio. Por suerte estos casos no se
+suelen dar, y aunque los ataques estén automatizados, siempre hay alguna
+pista desde la que encontrar información sobre cómo se ha realizado el
+ataque, si es ataque web básico o un ataque que compromete el acceso
+root.&lt;/p&gt;
+&lt;p&gt;Aquí tienes algunas herramientas con las que podrás investigar posibles
+rastros para analizar el sistema.&lt;/p&gt;
+&lt;h2&gt;last&lt;/h2&gt;
+&lt;p&gt;Esta herramienta listara las últimas sesiones de usuario, con este
+comando podrás ver horas de sesión, IP, nombre de usuario, etc.&lt;/p&gt;
+&lt;p&gt;Un numero exagerado de direcciones IP en los archivos de log
+/var/log/messages o /var/log/secure puede indicar que el atacante
+realizo un ataque por fuerza bruta, eso reflejara en el comando last la
+hora de cuando consiguió dicho acceso al servidor&lt;/p&gt;
+&lt;h2&gt;ls -lart&lt;/h2&gt;
+&lt;p&gt;Este comando nos mostrara una lista de archivos y directorios ordenados
+por fecha según la última modificación. Esto nos permitirá saber que ha
+sido modificado o añadido comprobándolo con las fechas del ataque.&lt;/p&gt;
+&lt;h2&gt;netstat -na&lt;/h2&gt;
+&lt;p&gt;Eso nos listara las conexiones a la escucha existentes. Nos podrá
+revelar posibles backdoors o servicios que no deberían estar en escucha,
+los cuales pueden ser causa de alguno de los ficheros&lt;/p&gt;
+&lt;h2&gt;alias&lt;/h2&gt;
+&lt;p&gt;Este comando nos mostrara los alias de comandos, es posible que un
+atacante cree alias para que al ejecutar determinado comando se ejecute
+otro.&lt;/p&gt;
+&lt;h2&gt;ps -wauxef&lt;/h2&gt;
+&lt;p&gt;Este comando nos es muy útil a la hora de detectar procesos erróneos en
+escucha, además también nos listara otros procesos como los del usuario
+www. lsof | grep \&amp;lt;pid&gt; puede ser usado para encontrar que archivos
+está utilizando determinado proceso. Igualmente con cat
+/proc/\&amp;lt;pid&gt;/cmdline puedes saber dónde está el archivo que controla el
+proceso.&lt;/p&gt;
+&lt;h2&gt;bash_history&lt;/h2&gt;
+&lt;p&gt;Mediante este comando obtendremos el historial de los comandos
+ejecutados desde los diferentes usuarios. El archivo se encuentra en la
+carpeta / root y el /home/ de cada usuario. Es oculto&lt;/p&gt;
+&lt;h2&gt;top&lt;/h2&gt;
+&lt;p&gt;A veces un proceso malicioso causa extremo uso de CPU causando problemas
+en el entorno, suele estar situado en el principio de la lista. Todo
+proceso que este causando un consumo excesivo de CPU debe ser
+considerado sospechoso&lt;/p&gt;
+&lt;h2&gt;strace -p&lt;/h2&gt;
+&lt;p&gt;Este comando se ejecutara sobre procesos sospechosos, el cual nos dará
+mucha información sobre que está realizando.&lt;/p&gt;
+&lt;p&gt;En algunos casos, este comando no nos proporcionara ninguna información
+real, debido a que se pueden haber modificado los binarios para que la
+salida del comando no muestre lo que debería, complicando la
+investigación del ataque. Para ello investigaremos que dichos binarios
+no están trojanizados:&lt;/p&gt;
+&lt;h2&gt;rpm -Va&lt;/h2&gt;
+&lt;p&gt;Este comando comprobara la información de los paquetes instalados con
+los metadatos de la base de datos rpm. Entre otras cosas, compara el
+tamaño, suma de verificación MD5, permisos, tipo, propietario y grupo.
+Cualquier modificación del paquete original será mostrada.&lt;/p&gt;
+&lt;p&gt;Cuando se ejecuta este comando, es importante si alguno de los paquetes
+marcados como modificados esta en alguno de los siguientes directorios,
+de ser así, puede significar que se está usando una versión trojanizada
+del binario, por lo que no se puede fiar de la salida del comando.&lt;/p&gt;
+&lt;h4&gt;/bin&lt;/h4&gt;
+&lt;h4&gt;/sbin&lt;/h4&gt;
+&lt;h4&gt;/usr/bin&lt;/h4&gt;
+&lt;h4&gt;/usr/sbin&lt;/h4&gt;
+&lt;h2&gt;rpm -qa&lt;/h2&gt;
+&lt;p&gt;Este comando te mostrara cuales son los últimos paquetes instalado en
+orden cronológico. En cualquier caso, si el acceso root ha sido
+comprometido, la base de datos rpm puede haber sido modificada y no ser
+fiable&lt;/p&gt;
+&lt;h2&gt;lsattr&lt;/h2&gt;
+&lt;p&gt;En el caso de que el atacante haya conseguido acceso root y trojanizar
+determinados binarios, puede que haya establecido dicho binario como
+inmutable, por lo que no podrás reinstalar una versión limpia del
+binario. Los directorios más comunes son:&lt;/p&gt;
+&lt;h4&gt;/bin&lt;/h4&gt;
+&lt;h4&gt;/sbin&lt;/h4&gt;
+&lt;h4&gt;/usr/bin&lt;/h4&gt;
+&lt;h4&gt;/usr/sbin&lt;/h4&gt;
+&lt;p&gt;También deberías de buscar por otros directorios como /etc, /root, /tmp,
+etc.&lt;/p&gt;
+&lt;p&gt;Un ejemplo del binario de ps establecido como inmutable es este:&lt;/p&gt;
+&lt;h4&gt;-------i----- /bin/ps&lt;/h4&gt;
+&lt;h2&gt;find / mtime 5&lt;/h2&gt;
+&lt;p&gt;Con este comando buscaras archivos que han sido modificados en los
+últimos 5 días, puedes cambiar el digito numérico si sabes las fechas
+exactas, así afinaras más las búsqueda y evitaras ver archivos
+modificados que no tengan interés en la investigación.&lt;/p&gt;
+&lt;h1&gt;Directorios comunes donde se encuentran los exploits&lt;/h1&gt;
+&lt;p&gt;Comprueba los directorios que Apache comúnmente puede escribir sus
+archivos temporales&lt;/p&gt;
+&lt;h4&gt;ls -al /tmp&lt;/h4&gt;
+&lt;h4&gt;ls -al /var/tmp&lt;/h4&gt;
+&lt;h4&gt;ls -al /dev/shm&lt;/h4&gt;
+&lt;p&gt;Si tienes algun fichero con todos los permisos 777, sospecha de el.&lt;/p&gt;
+&lt;p&gt;Comprueba que los ficheros ocultos no tengan permisos de ejecución.&lt;/p&gt;
+&lt;h1&gt;Encontrando el punto de acceso&lt;/h1&gt;
+&lt;p&gt;Si has encontrado algo con la información anterior, quiere decir que ya
+sabes más o menos cuando el ataque se ha realizado, de qué forma y
+contra que. Ahora ya podrás investigar sobre los logs de acceso a la
+página web por la fecha por la que se produjo el ataque. También debes
+mirar en los archivos /var/log/* en los cuales encontraras información
+de accesos, del sistema, etc.&lt;/p&gt;
+&lt;p&gt;Si tienes alguna aplicación afectada que también guarde logs, puedes
+investigar sobre ellos para buscar más información sobre el atacante.&lt;/p&gt;
+&lt;p&gt;Debido a un ataque en uno de los servidores que administro tuve que
+lidiar con este tipo de investigación forense. Encontré poca información
+al respecto, hasta que encontré la siguiente web, que definitivamente me
+ayudo realmente.&lt;/p&gt;
+&lt;p&gt;https://community.rackspace.com/general/f/34/t/75&lt;/p&gt;
+&lt;p&gt;Estoy realmente agradecido al creador de esa información, por eso me
+decidí a traducirla (no literalmente) para que los que sufran de ese
+mismo problema y no sepan ingles puedan descubrir que les han hecho en
+su servidor.&lt;/p&gt;
+&lt;p&gt;En la misma web, tienen un ejemplo práctico de como el encontró su
+webshell en phpmyadmin, os recomiendo que la lean.&lt;/p&gt;
+&lt;p&gt;Infinitamente agradecido.&lt;/p&gt;
+&lt;p&gt;Un saludo&lt;/p&gt;</content><category term="analisis"></category><category term="atacado"></category><category term="ataque"></category><category term="bash_history"></category><category term="busqueda"></category><category term="ethical"></category><category term="forense"></category><category term="Hacking"></category><category term="informatica"></category><category term="last"></category><category term="linux"></category><category term="lsattr"></category><category term="mtime"></category><category term="netstat"></category><category term="ps"></category><category term="rpm -Va"></category><category term="Seguridad"></category><category term="servidor"></category><category term="strace"></category><category term="top"></category><category term="unix"></category><category term="vulnerable"></category></entry></feed>

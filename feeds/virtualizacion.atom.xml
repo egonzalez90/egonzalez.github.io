@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>OpenStack Stuff - Virtualizacion</title><link href="https://egonzalez90.github.io/" rel="alternate"></link><link href="https://egonzalez90.github.io/feeds/virtualizacion.atom.xml" rel="self"></link><id>https://egonzalez90.github.io/</id><updated>2014-12-02T14:51:00+01:00</updated><entry><title>Eliminar VM (LDOM) en SPARC</title><link href="https://egonzalez90.github.io/eliminar-vm-ldom-en-sparc.html" rel="alternate"></link><published>2014-12-02T14:51:00+01:00</published><updated>2014-12-02T14:51:00+01:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-12-02:/eliminar-vm-ldom-en-sparc.html</id><summary type="html">&lt;p&gt;Primero comprobaremos que maquinas tenemos y el estado de ellas&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ldm list&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A continuación, si la maquina que queremos borrar esta encendida la
+apagaremos&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ldm stop LDOM&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Lo siguiente será quitar la consola de la maquina&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ldm unbind LDOM&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Listaremos la configuración de la maquina y buscaremos los discos que …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Primero comprobaremos que maquinas tenemos y el estado de ellas&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ldm list&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A continuación, si la maquina que queremos borrar esta encendida la
+apagaremos&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ldm stop LDOM&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Lo siguiente será quitar la consola de la maquina&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ldm unbind LDOM&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Listaremos la configuración de la maquina y buscaremos los discos que
+tenga asignados, normalmente está al final del archivo&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ldm list-bindings LDOM&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Quitaremos el controlador del disco de la maquina&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ldm remove-vdiskserverdevice VOLUMEN@LDOM&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Eliminaremos el disco de la configuración de la maquina&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ldm remove-vdisk DISKNAME LDOM&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Eliminamos las NIC&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ldm remove-vnet NIC_NAME LDOM&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Borramos VDS&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ldm remove-vds LDOM&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Eliminamos configuración de la maquina&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ldm remove-domain LDOM&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Borramos los datos de la maquina, esto se hace eliminando la carpeta
+donde están las maquinas guardadas&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;rm -R /ruta/carpeta/LDOM/&lt;/p&gt;
+&lt;/blockquote&gt;</content><category term="eliminar"></category><category term="ldm list"></category><category term="ldm remove"></category><category term="ldom"></category><category term="list-bindings"></category><category term="oracle"></category><category term="quitar"></category><category term="remove"></category><category term="solaris"></category><category term="sparc"></category><category term="VM"></category></entry></feed>

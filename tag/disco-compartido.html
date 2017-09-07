@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - disco compartido</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://egonzalez90.github.io/desplegar-ovf-vm-shared-disk.html">Desplegar OVF VM Shared Disk</a></h1>
+<footer class="post-info">
+        <span>Tue 26 August 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/vmdk.html">.vmdk</a><a href="https://egonzalez90.github.io/tag/deploy.html">deploy</a><a href="https://egonzalez90.github.io/tag/desplegar.html">desplegar</a><a href="https://egonzalez90.github.io/tag/disco-compartido.html">disco compartido</a><a href="https://egonzalez90.github.io/tag/error.html">error</a><a href="https://egonzalez90.github.io/tag/esxi.html">esxi</a><a href="https://egonzalez90.github.io/tag/id.html">ID</a><a href="https://egonzalez90.github.io/tag/independent.html">independent</a><a href="https://egonzalez90.github.io/tag/intercambio.html">intercambio</a><a href="https://egonzalez90.github.io/tag/ovf.html">ovf</a><a href="https://egonzalez90.github.io/tag/persistent.html">persistent</a><a href="https://egonzalez90.github.io/tag/scsi.html">scsi</a><a href="https://egonzalez90.github.io/tag/shared-disk.html">shared disk</a><a href="https://egonzalez90.github.io/tag/virtual.html">virtual</a><a href="https://egonzalez90.github.io/tag/virtualizacion.html">virtualizacion</a><a href="https://egonzalez90.github.io/tag/vmware.html">vmware</a></span>
+</footer><!-- /.post-info --><p>Cuando se exporta una maquina virtual en formato OVF conVMware, en el
+entorno ESXi 5.1 es en donde lo tengo comprobado, los OVF que disponen
+de disco compartido o en diferentes controladoras SCSi se despliegan
+incorrectamente, intercambiando los discos compartidos de una
+controladora por los de otra y cambiando la numeración ejemplo. VM1.vmdk
+por VM1_01.vmdk, por lo que al iniciar la maquina esta no encontrara el
+sistema operativo y dará un Boot error.<br>
+Pues bien, para poder exportar y desplegar correctamente estas maquinas
+con disco compartido lo que debemos de hacer es lo siguiente:</p>
+<p>1º Copiar los discos compartidos a otro almacenamiento y quitar de la
+configuración de las maquinas virtuales que tengan esos discos
+compartidos.<br>
+2º Exportar en formato OVF la maquina virtual</p>
+<p>Para un correcto despliegue de las VM hay que seguir unos pasos:</p>
+<p>1º Desplegar OVF<br>
+2º Sin encender las VM, copiar los discos compartidos al Datastore
+correcto<br>
+3º Añadir el disco compartido a la configuración de de cada VM que
+comparta el disco</p>
+<p>Para las VM que no tienen disco compartido solamente se desplegara e
+iniciara, habiendo antes configurado la red o los parámetros necesarios
+para el correcto funcionamiento.<br>
+La controladoras de los discos SCSi de discos compartidos deberán de
+ponerse en virtual y los discos en independiente/persistente.<br>
+Recordar que al desplegar la VM se cambiara la MAC de las NIC, por lo
+que se perderá la configuración de red que tenia configurada
+previamente, dentro de el directorio /etc/sysconfig/network-script/ se
+creara un archivo llamado eth*.bak en donde esta la configuración de
+red antigua.</p><p><a href="https://egonzalez90.github.io/desplegar-ovf-vm-shared-disk.html#disqus_thread">comments</a></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

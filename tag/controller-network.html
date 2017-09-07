@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - controller. network</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://egonzalez90.github.io/mysql.html">MySQL</a></h1>
+<footer class="post-info">
+        <span>Sun 02 November 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/bbdd.html">bbdd</a><a href="https://egonzalez90.github.io/tag/compute.html">compute</a><a href="https://egonzalez90.github.io/tag/configuracion.html">configuracion</a><a href="https://egonzalez90.github.io/tag/controller-network.html">controller. network</a><a href="https://egonzalez90.github.io/tag/instalacion.html">instalacion</a><a href="https://egonzalez90.github.io/tag/mysql.html">mysql</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a></span>
+</footer><!-- /.post-info --><h2>MySQL en Controller node</h2>
+<p>Instalamos MySQL</p>
+<blockquote>
+<p>yum install mysql mysql-server MySQL-python</p>
+</blockquote>
+<p>Editamos el fichero de configuracion de MySQL</p>
+<blockquote>
+<p>vi /etc/my.cnf</p>
+</blockquote>
+<p>Modificamos la linea bind-address con la IP de eth0 y añadimos las
+siguientes entradas:</p>
+<blockquote>
+<p>[mysqld]</p>
+<p>bind-address=192.168.1.11</p>
+<p>default-storage-engine=innodb</p>
+<p>innodb_file_per_table</p>
+<p>collation-server=utf8_general_ci</p>
+<p>init-connect='SET NAMES utf8'</p>
+<p>character-set-server=utf8</p>
+</blockquote>
+<p>Iniciamos el servicio mysqld y lo añadimos al arranque del sistema</p>
+<blockquote>
+<p>service mysqld start</p>
+<p>chkconfig mysqld on</p>
+</blockquote>
+<p>Instalamos la base de datos nueva, establecemos contraseña de root y
+quitamos los usuarios anónimos. El primer comando puede no ser necesario
+a no ser que el segundo comando nos diera error</p>
+<blockquote>
+<p>mysql_install_db</p>
+<p>mysql_secure_installation</p>
+</blockquote>
+<h2>Nodos Network y Compute</h2>
+<p>En estos nodos solamente necesitamos instalar el paquete MySQL-python</p>
+<blockquote>
+<p>yum install MySQL-python</p>
+</blockquote>
+<p>Un saludo</p><p><a href="https://egonzalez90.github.io/mysql.html#disqus_thread">comments</a></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

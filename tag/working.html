@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - working</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://egonzalez90.github.io/working-with-affinityanti-affinity-groups-openstack.html">Working with affinity/anti-affinity groups OpenStack</a></h1>
+<footer class="post-info">
+        <span>Mon 15 February 2016</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/affinity.html">affinity</a><a href="https://egonzalez90.github.io/tag/anti-affinity.html">anti-affinity</a><a href="https://egonzalez90.github.io/tag/filter.html">filter</a><a href="https://egonzalez90.github.io/tag/groups.html">groups</a><a href="https://egonzalez90.github.io/tag/liberty.html">liberty</a><a href="https://egonzalez90.github.io/tag/nova.html">nova</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/rdo.html">rdo</a><a href="https://egonzalez90.github.io/tag/scheduler.html">scheduler</a><a href="https://egonzalez90.github.io/tag/servergroupaffinityfilter.html">ServerGroupAffinityFilter</a><a href="https://egonzalez90.github.io/tag/servergroupantiaffinityfilter.html">ServerGroupAntiAffinityFilter</a><a href="https://egonzalez90.github.io/tag/working.html">working</a></span>
+</footer><!-- /.post-info --><p>In a previous post, you learned how to segregate resources with
+<a href="http://egonzalez.org/openstack-segregation-with-availability-zones-and-host-aggregates/">Availability Zones and Host
+Aggregates</a>,
+those methods allows the end user to specify where and on which types of
+resources their instances should be running.</p>
+<p>At this post, you will learn how specify to nova where nova-scheduler
+should schedule your instances based on two policies. These policies
+define if instances should share the same hypervisor (affinity rule) or
+if not depending of user needs(anti-affinity rule).</p>
+<p>First, you need to modify nova.conf and allow nova-scheduler to filter
+based on affinity rules. Add <code>ServerGroupAntiAffinityFilter</code> and
+<code>ServerGroupAffinityFilter</code> filters to scheduler default filter option.</p>
+<div class="highlight"><pre><span></span># vi /etc/nova.conf
+
+scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,CoreFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter
+</pre></div>
+
+
+<p>Restart nova-scheduler to apply changes</p>
+<div class="highlight"><pre><span></span>systemctl restart openstack-nova-scheduler
+</pre></div>
+
+
+<p>Once nova-scheduler has been restarted, we can create a group of servers
+based on affinity policy (All instances at this group will be launched
+in the same hypervisor)</p>
+<div class="highlight"><pre><span></span>nova server-group-create instancestogethergroup affinity
++--------------------------------------+------------------------+---------------+---------+----------+
+| Id                                   | Name                   | Policies      | Members | Metadata |
++--------------------------------------+------------------------+---------------+---------+----------+
+| 27abe662-c37e-431c-9715-0d2137fc5519 | instancestogethergroup | [u&#39;affinity&#39;] | []      | {}       |
++--------------------------------------+------------------------+---------------+---------+----------+
+</pre></div>
+
+
+<p>Now create two instances, add <code>--hint group=GROUP-ID</code> option to specify
+the group where instances will be members.</p>
+<div class="highlight"><pre><span></span>nova boot --image a6d7a606-f725-480a-9b1b-7b3ae39b93d4 --flavor m1.tiny --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df --hint group=27abe662-c37e-431c-9715-0d2137fc5519 affinity1
+nova boot --image a6d7a606-f725-480a-9b1b-7b3ae39b93d4 --flavor m1.tiny --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df --hint group=27abe662-c37e-431c-9715-0d2137fc5519 affinity2
+</pre></div>
+
+
+<p>Ensure the instances are properly mapped to the group.</p>
+<div class="highlight"><pre><span></span>nova server-group-get 27abe662-c37e-431c-9715-0d2137fc5519 
++--------------------------------------+------------------------+---------------+------------------------------------------------------------------------------------+----------+
+| Id                                   | Name                   | Policies      | Members                                                                            | Metadata |
++--------------------------------------+------------------------+---------------+------------------------------------------------------------------------------------+----------+
+| 27abe662-c37e-431c-9715-0d2137fc5519 | instancestogethergroup | [u&#39;affinity&#39;] | [u&#39;b8b72a0a-c981-430e-a909-13d23d928655&#39;, u&#39;8affefff-0072-47e3-8d11-2ddf26e48b82&#39;] | {}       |
++--------------------------------------+------------------------+---------------+------------------------------------------------------------------------------------+----------+
+</pre></div>
+
+
+<p>Once instances are running, ensure they share the same hypervisor as we
+specify in the affinity policy.</p>
+<div class="highlight"><pre><span></span># nova show affinity1 | grep hypervisor_hostname
+| OS-EXT-SRV-ATTR:hypervisor_hostname  | compute2az
+# nova show affinity2 | grep hypervisor_hostname
+| OS-EXT-SRV-ATTR:hypervisor_hostname  | compute2az
+</pre></div>
+
+
+<p>Now we create an anti-affinity policy based group.</p>
+<div class="highlight"><pre><span></span>nova server-group-create farinstancesgroup anti-affinity
++--------------------------------------+-------------------+--------------------+---------+----------+
+| Id                                   | Name              | Policies           | Members | Metadata |
++--------------------------------------+-------------------+--------------------+---------+----------+
+| 988a9fd2-3a97-481e-b083-fee36b33009d | farinstancesgroup | [u&#39;anti-affinity&#39;] | []      | {}       |
++--------------------------------------+-------------------+--------------------+---------+----------+
+</pre></div>
+
+
+<p>Launch two instances and attach them to the anti-affinity group.</p>
+<div class="highlight"><pre><span></span>nova boot --image a6d7a606-f725-480a-9b1b-7b3ae39b93d4 --flavor m1.tiny --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df --hint group=988a9fd2-3a97-481e-b083-fee36b33009d anti-affinity1
+nova boot --image a6d7a606-f725-480a-9b1b-7b3ae39b93d4 --flavor m1.tiny --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df --hint group=988a9fd2-3a97-481e-b083-fee36b33009d anti-affinity2
+</pre></div>
+
+
+<p>Ensure the instances are in the anti-affinity group</p>
+<div class="highlight"><pre><span></span>nova server-group-get 988a9fd2-3a97-481e-b083-fee36b33009d 
++--------------------------------------+-------------------+--------------------+------------------------------------------------------------------------------------+----------+
+| Id                                   | Name              | Policies           | Members                                                                            | Metadata |
++--------------------------------------+-------------------+--------------------+------------------------------------------------------------------------------------+----------+
+| 988a9fd2-3a97-481e-b083-fee36b33009d | farinstancesgroup | [u&#39;anti-affinity&#39;] | [u&#39;cfb45193-9a7c-436f-ac2d-59a7a9a854ae&#39;, u&#39;25dc8671-0c9a-4774-90cf-7394380f91ef&#39;] | {}       |
++--------------------------------------+-------------------+--------------------+------------------------------------------------------------------------------------+----------+
+</pre></div>
+
+
+<p>Once instances are running, ensure they are in different hypervisors as
+we specify in the anti-affinity policy.</p>
+<div class="highlight"><pre><span></span># nova show anti-affinity1 | grep hypervisor_hostname
+| OS-EXT-SRV-ATTR:hypervisor_hostname  | compute2az
+# nova show anti-affinity2 | grep hypervisor_hostname
+| OS-EXT-SRV-ATTR:hypervisor_hostname  | compute1az
+</pre></div>
+
+
+<p>Regards, Eduardo Gonzalez</p><p><a href="https://egonzalez90.github.io/working-with-affinityanti-affinity-groups-openstack.html#disqus_thread">comments</a></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - GET</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://egonzalez90.github.io/list-all-tenants-belonging-an-user.html">List all tenants belonging an user  Keystone v2</a></h1>
+<footer class="post-info">
+        <span>Thu 02 July 2015</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/all.html">all</a><a href="https://egonzalez90.github.io/tag/bash.html">bash</a><a href="https://egonzalez90.github.io/tag/belong.html">belong</a><a href="https://egonzalez90.github.io/tag/curl.html">curl</a><a href="https://egonzalez90.github.io/tag/get.html">GET</a><a href="https://egonzalez90.github.io/tag/how.html">how</a><a href="https://egonzalez90.github.io/tag/inside.html">inside</a><a href="https://egonzalez90.github.io/tag/keystone.html">keystone</a><a href="https://egonzalez90.github.io/tag/keystoneclient.html">keystoneclient</a><a href="https://egonzalez90.github.io/tag/keystonev2.html">keystonev2</a><a href="https://egonzalez90.github.io/tag/list.html">list</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/python.html">python</a><a href="https://egonzalez90.github.io/tag/role.html">role</a><a href="https://egonzalez90.github.io/tag/script.html">script</a><a href="https://egonzalez90.github.io/tag/tenant.html">tenant</a><a href="https://egonzalez90.github.io/tag/tenants.html">tenants</a><a href="https://egonzalez90.github.io/tag/to.html">to</a><a href="https://egonzalez90.github.io/tag/token.html">Token</a><a href="https://egonzalez90.github.io/tag/user.html">user</a><a href="https://egonzalez90.github.io/tag/users.html">users</a><a href="https://egonzalez90.github.io/tag/v2.html">v2</a></span>
+</footer><!-- /.post-info --><p>Here is a simple script to list all tenants belonging an user:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="nb">echo</span> -n <span class="s2">&quot;Username : &quot;</span> <span class="p">;</span> <span class="nb">read</span> usercheck
+
+<span class="k">for</span> userid in <span class="k">$(</span>keystone user-list <span class="p">|</span> grep -w <span class="nv">$usercheck</span> <span class="p">|</span> awk <span class="s1">&#39;{print$2}&#39;</span><span class="k">)</span>
+    <span class="k">do</span>
+    <span class="k">for</span> tenant in <span class="k">$(</span>keystone tenant-list <span class="p">|</span> awk <span class="s1">&#39;NR&gt;3 &amp;&amp; /^|/ {print$2}&#39;</span><span class="k">)</span>
+    <span class="k">do</span>
+        <span class="k">for</span> tenantid in <span class="k">$(</span>keystone user-role-list --user <span class="nv">$userid</span> --tenant <span class="nv">$tenant</span> <span class="p">|</span> awk <span class="s1">&#39;NR&gt;3 &amp;&amp; /^|/ {print$8}&#39;</span><span class="k">)</span>
+        <span class="k">do</span>
+            keystone tenant-list <span class="p">|</span> grep <span class="nv">$tenantid</span> <span class="p">|</span> awk <span class="s1">&#39;{print$4}&#39;</span>
+        <span class="k">done</span>
+    <span class="k">done</span>
+<span class="k">done</span>
+</pre></div>
+</td></tr></table>
+
+<p>Also you can run all in a simple cmd line:<br>
+</p>
+<div class="highlight"><pre><span></span>echo -n &quot;user name &quot;; read usercheck; for userid in $(keystone user-list | grep $usercheck | awk &#39;{print$2}&#39;); do echo $userid | for tenant in $(keystone tenant-list | awk &#39;NR&gt;3 &amp;&amp; /^|/ {print$2}&#39;); do echo $tenant | for tenantid in $(keystone user-role-list --user $userid --tenant $tenant | awk &#39;NR&gt;3 &amp;&amp; /^|/ {print$8}&#39;); do keystone tenant-list | grep $tenantid | awk &#39;{print$4}&#39;; done ; done ; done
+</pre></div>
+
+
+<p>If you are a developer, probably you need to list all tenants in a HTTP
+request, for this purpose you can use curl to the port 5000 of keystone<br>
+</p>
+<div class="highlight"><pre><span></span>curl -i -X GET http://KEYSTONEIP:5000/v2.0/tenants -H &quot;User-Agent: python-keystoneclient&quot; -H &quot;X-Auth-Token: USERTOKEN&quot;
+</pre></div>
+
+
+<p>I have saved the user token in a OS_VARIABLE called OS_TOKEN, if you
+don't do that, you should input all the token in the HTTP request.<br>
+For example:<br>
+</p>
+<div class="highlight"><pre><span></span>curl -i -X GET http://192.168.1.11:5000/v2.0/tenants -H &quot;User-Agent: python-keystoneclient&quot; -H &quot;X-Auth-Token: $OS_TOKEN&quot;
+</pre></div><p><a href="https://egonzalez90.github.io/list-all-tenants-belonging-an-user.html#disqus_thread">comments</a></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

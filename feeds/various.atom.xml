@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>OpenStack Stuff - Various</title><link href="https://egonzalez90.github.io/" rel="alternate"></link><link href="https://egonzalez90.github.io/feeds/various.atom.xml" rel="self"></link><id>https://egonzalez90.github.io/</id><updated>2016-10-31T20:49:00+01:00</updated><entry><title>To Conditional or To Skip, that is the Ansible question</title><link href="https://egonzalez90.github.io/to-conditional-or-to-skip-that-is-the-ansible-question.html" rel="alternate"></link><published>2016-10-31T20:49:00+01:00</published><updated>2016-10-31T20:49:00+01:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2016-10-31:/to-conditional-or-to-skip-that-is-the-ansible-question.html</id><summary type="html">&lt;p&gt;Have you ever think about if an Ansible task should be skipped with a
+conditional or without (hidden skip)?.&lt;br&gt;
+Well, this post will analyse both methods.&lt;/p&gt;
+&lt;p&gt;Let's use a example to create the same result and analyse the both
+methods:&lt;/p&gt;
+&lt;p&gt;In OpenStack Kolla we found that sometimes operators need to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Have you ever think about if an Ansible task should be skipped with a
+conditional or without (hidden skip)?.&lt;br&gt;
+Well, this post will analyse both methods.&lt;/p&gt;
+&lt;p&gt;Let's use a example to create the same result and analyse the both
+methods:&lt;/p&gt;
+&lt;p&gt;In OpenStack Kolla we found that sometimes operators need to customise
+policy.json files. That's fine, but the problem is that policy.json
+files are installed with the services by default and we don't need/want
+to maintain policy.json files in our repository because for sure will
+cause bugs from outdated policy files in the future.&lt;/p&gt;
+&lt;p&gt;What's the proposed solution to this? Allow operators use their own
+policy files only when their files exists in a custom configuration
+folder. If custom files are not present, default policy.json files are
+already present as part of the software installation. ( Actually this
+change is under review )&lt;/p&gt;
+&lt;h2&gt;To Conditional method&lt;/h2&gt;
+&lt;p&gt;Code snippet:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;  - name: Check if file exists&lt;/span&gt;
+&lt;span class="x"&gt;    stat:&lt;/span&gt;
+&lt;span class="x"&gt;      path: &amp;quot;/tmp/custom_file.json&amp;quot;&lt;/span&gt;
+&lt;span class="x"&gt;    register: check_custom_file_exist&lt;/span&gt;
+
+&lt;span class="x"&gt;  - name: Copy custom policy when exist&lt;/span&gt;
+&lt;span class="x"&gt;    template:&lt;/span&gt;
+&lt;span class="x"&gt;      src: &amp;quot;/tmp/custom_file.json&amp;quot;&lt;/span&gt;
+&lt;span class="x"&gt;      dest: &amp;quot;/tmp/destination_file.json&amp;quot;&lt;/span&gt;
+&lt;span class="x"&gt;    when: &amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt; &lt;span class="nv"&gt;check_custom_file_exist.stat.exists&lt;/span&gt; &lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt;&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The first task checks if the file is present and register the stat
+result.&lt;br&gt;
+The second task, copy the file only when the registered result of the
+previous task is True. (exists == True)&lt;/p&gt;
+&lt;p&gt;Outputs the following when the file is not present:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;PLAY [localhost] ***************************************************************
+
+TASK [Check if file exists] ****************************************************
+ok: [localhost]
+
+TASK [Copy custom policy when exist] *******************************************
+skipping: [localhost]
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=1    changed=0    unreachable=0    failed=0
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We can see the copy file task is skipped with a skipping message.&lt;/p&gt;
+&lt;h2&gt;To Skip method&lt;/h2&gt;
+&lt;p&gt;Code snippet:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;  - name: Copy custom policy when exist&lt;/span&gt;
+&lt;span class="x"&gt;    template:&lt;/span&gt;
+&lt;span class="x"&gt;      src: &amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt; &lt;span class="nv"&gt;item&lt;/span&gt; &lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="x"&gt;      dest: &amp;quot;/tmp/destination_file.json&amp;quot;&lt;/span&gt;
+&lt;span class="x"&gt;    with_first_found:&lt;/span&gt;
+&lt;span class="x"&gt;    - files:&lt;/span&gt;
+&lt;span class="x"&gt;      - custom_file.json&lt;/span&gt;
+&lt;span class="x"&gt;      skip: True&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This playbook contains a single task, this task will use the first found
+file in a list of files. If no file is present will skip the task.&lt;/p&gt;
+&lt;p&gt;Output from this execution:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;PLAY [localhost] ***************************************************************
+
+TASK [Copy custom policy when exist] *******************************************
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=0    changed=0    unreachable=0    failed=0
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We can see that no task is executed when custom files are not present,
+no output from the task (hidden skip).&lt;/p&gt;
+&lt;h2&gt;Analysis and own opinion&lt;/h2&gt;
+&lt;p&gt;Both methods do the same, both copy custom files when are present and
+both skip copy task when are not present.&lt;br&gt;
+What are the differences between both methods?&lt;/p&gt;
+&lt;p&gt;To_skip method is simpler to read and unified in a single task,
+to_conditional is created within two tasks.&lt;br&gt;
+To_conditional method takes longer to be executed as it has to check
+the existence of a file and then evaluate a conditional.&lt;/p&gt;
+&lt;p&gt;You may think that to_skip method is better than to_conditional
+method, that's right in terms of code syntax and execution times.
+But...&lt;br&gt;
+As both, operator and infrastructure developer, I always use
+to_conditional method because when I'm deploying something new, I want
+to know what is executed and what not. In to_skip method you don't know
+because there is no output provided from the task(not really true) but
+in to_conditional method it clearly says Skipping.&lt;/p&gt;
+&lt;p&gt;Execution times are not a problem in most use cases, as is not commonly
+used this kind of tasks in CM systems, only a few tasks will need this
+type of logic.&lt;/p&gt;
+&lt;p&gt;Regards, Eduardo Gonzalez&lt;/p&gt;</content><category term="analysis"></category><category term="ansible"></category><category term="code"></category><category term="conditional"></category><category term="logic"></category><category term="opinion"></category><category term="skip"></category><category term="syntax"></category><category term="True"></category><category term="when"></category><category term="with_first_found"></category></entry></feed>

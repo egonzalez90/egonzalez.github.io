@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>OpenStack Stuff - Linux, Various</title><link href="https://egonzalez90.github.io/" rel="alternate"></link><link href="https://egonzalez90.github.io/feeds/linux-various.atom.xml" rel="self"></link><id>https://egonzalez90.github.io/</id><updated>2016-07-12T20:57:00+02:00</updated><entry><title>Spacewalk (Red Hat Satellite v5) in a Docker container PoC</title><link href="https://egonzalez90.github.io/spacewalk-red-hat-satellite-v5-in-a-docker-container-poc.html" rel="alternate"></link><published>2016-07-12T20:57:00+02:00</published><updated>2016-07-12T20:57:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2016-07-12:/spacewalk-red-hat-satellite-v5-in-a-docker-container-poc.html</id><summary type="html">&lt;p&gt;Spacewalk was the upstream project to provide a Linux systems management
+layer on which Red Hat Satellite was based, was based at least until RH
+Satellite version 5. Newer versions are not anymore based on Spacewalk,
+instead Satellite is a federation of several upstream open source
+projects, including Katello, Foreman …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Spacewalk was the upstream project to provide a Linux systems management
+layer on which Red Hat Satellite was based, was based at least until RH
+Satellite version 5. Newer versions are not anymore based on Spacewalk,
+instead Satellite is a federation of several upstream open source
+projects, including Katello, Foreman, Pulp, and Candlepin.&lt;/p&gt;
+&lt;p&gt;Some weeks ago, a friend asked me if I knew a Docker container image for
+Satellite.&lt;br&gt;
+I have not found any image. What I found was some Spacewalk images, but
+sadly none of them worked for me.&lt;br&gt;
+I decided to create an image for this purpose.&lt;/p&gt;
+&lt;p&gt;While developing the image, I found serious troubles to make it run with
+systemd (I'm a fan of systemd, but not inside containers yet).&lt;br&gt;
+The result was a semi functional working image. I said semi functional
+because some Spacewalk features are not working (probably an issue with
+systemd again).&lt;br&gt;
+The main problem was that spacewalk-setup script starts and uses
+systemd to configure the database and the other needed services, that's
+OK in a VM but not in a container.&lt;br&gt;
+So i needed to hack into postgres setup and start the services with the
+typical &lt;code&gt;command --config-file file.conf&lt;/code&gt; executed from supervisord as
+Docker entrypoint.&lt;br&gt;
+Currently there is an issue with &lt;code&gt;osa-dispatcher&lt;/code&gt;, on which I can't
+find a fix to make it run.&lt;/p&gt;
+&lt;p&gt;This image is primarily created just for test Spacewalk interface and be
+more comfortable with it aka testing/development purposes, or just to
+have fun hacking with Docker containers.&lt;/p&gt;
+&lt;p&gt;Now, I'm going to make a short description of what the Dockerfile makes
+and then start the container.&lt;br&gt;
+Have fun.&lt;/p&gt;
+&lt;p&gt;I used centos as image base for this PoC&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FROM centos:7
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Typical Maintainer line&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;MAINTAINER Eduardo Gonzalez Gutierrez
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Add jpackage repo which provides Java packages for Linux&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;COPY jpackage-generic.repo /etc/yum.repos.d/jpackage-generic.repo
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Install EPEL and Spacewalk repositories, after install, clean all stored
+cache to minimize image size&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;RUN yum install -y http://yum.spacewalkproject.org/2.5/RHEL/7/x86_64/spacewalk-repo-2.5-3.el7.noarch.rpm   
+       epel-release &amp;amp;&amp;amp;   
+       yum clean all
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Import Keys to allow installation from these repositories&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;rpm&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;www&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;jpackage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;jpackage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;asc&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;   
+   &lt;span class="n"&gt;rpm&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;dl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fedoraproject&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;pub&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;epel&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;RPM&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;GPG&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;KEY&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;EPEL&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;   
+   &lt;span class="n"&gt;rpm&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;yum&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;spacewalkproject&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;RPM&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;GPG&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;KEY&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;spacewalk&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;2015&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;   
+   &lt;span class="n"&gt;yum&lt;/span&gt; &lt;span class="n"&gt;clean&lt;/span&gt; &lt;span class="nb"&gt;all&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Install spacewalk and supervisord packages&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;RUN yum -y install   
+       spacewalk-setup-postgresql   
+       spacewalk-postgresql   
+       supervisor    
+       yum clean all
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Copy the example file used to sync spacewalk database in a later step&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;COPY answerfile.txt /tmp/answerfile.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Open necessary ports&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;EXPOSE 80 443 5222 68 69
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Change to postgres user&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;USER postgres
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Initialize the database&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;RUN /usr/bin/pg_ctl initdb  -D /var/lib/pgsql/data/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create spacewalk database, user, role and create pltclu language&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;RUN /usr/bin/pg_ctl start -D /var/lib/pgsql/data/  -w -t 300 &amp;amp;&amp;amp;   
+    psql -c &amp;#39;CREATE DATABASE spaceschema&amp;#39; &amp;amp;&amp;amp;   
+    psql -c &amp;quot;CREATE USER spaceuser WITH PASSWORD &amp;#39;spacepw&amp;#39;&amp;quot; &amp;amp;&amp;amp;   
+    psql -c &amp;#39;ALTER ROLE spaceuser SUPERUSER&amp;#39; &amp;amp;&amp;amp;   
+    createlang pltclu spaceschema
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Change to root user&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;USER root
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Start the database and execute spacewalk configuration script&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;RUN su -c &amp;quot;/usr/bin/pg_ctl start -D /var/lib/pgsql/data/  -w -t 300&amp;quot; postgres &amp;amp;&amp;amp;   
+   su -c &amp;quot;spacewalk-setup --answer-file=/tmp/answerfile.txt --skip-db-diskspace-check --skip-db-install&amp;quot; root ; exit 0
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Copy supervisord configuration&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ADD supervisord.conf /etc/supervisord.d/supervisord.conf
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Use supervisord command to start all services at container launch time&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ENTRYPOINT supervisord -c /etc/supervisord.d/supervisord.conf
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can check or download the source code at GitHub
+&lt;a href="https://github.com/egonzalez90/docker-spacewalk"&gt;https://github.com/egonzalez90/docker-spacewalk&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;I uploaded the image to DockerHub, which is auto-build from my GitHub
+repository, you can find it with the following command.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[egonzalez@localhost ~]$ docker search spacewalk
+INDEX       NAME                                       DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+docker.io   docker.io/ruo91/spacewalk                  Spacewalk is an open source Linux systems ...   3                    [OK]
+docker.io   docker.io/jamesnetherton/spacewalk         Spacewalk running under Docker                  1                    
+docker.io   docker.io/coffmant/spacewalk-docker        Spacewalk                                       0                    [OK]
+docker.io   docker.io/csabakollar/spacewalk            Spacewalk 2.4 in a CentOS6 container            0                    
+docker.io   docker.io/egonzalez90/spacewalk            Spacewalk docker image                          0                    [OK]
+docker.io   docker.io/jdostal/spacewalk-clients        Repository containing spacewalk-clients         0                    
+docker.io   docker.io/jhutar/spacewalk-client                                                          0                    
+docker.io   docker.io/norus/spacewalk-reposync                                                         0                    
+docker.io   docker.io/pajinek/spacewalk-client                                                         0                    [OK]
+docker.io   docker.io/perfectweb/spacewalk             spacewalk                                       0                    [OK]
+docker.io   docker.io/researchiteng/docker-spacewalk   spacewalk is the open source version of Re...   0                    [OK]
+docker.io   docker.io/varhoo/spacewalk-proxy                                                           0                    [OK]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To start the container use the following command. If you don't have the
+image locally, it will download the image from DockerHub&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[egonzalez@localhost ~]$ docker run -d --privileged=True egonzalez90/spacewalk
+Unable to find image &amp;#39;egonzalez90/spacewalk:latest&amp;#39; locally
+Trying to pull repository docker.io/egonzalez90/spacewalk ... 
+latest: Pulling from docker.io/egonzalez90/spacewalk
+a3ed95caeb02: Already exists 
+da71393503ec: Already exists 
+519093688e2c: Pull complete 
+97bbffaa9fc9: Pull complete 
+63bfb115f62d: Pull complete 
+929bbb68aff9: Pull complete 
+532bc4af8e1a: Pull complete 
+3eb667dda9ee: Pull complete 
+275894897aa4: Pull complete 
+93bcddf9cedb: Pull complete 
+266c3b70754f: Pull complete 
+Digest: sha256:a4dd98548f9dbb405fb4c6bb4a2a07b83d5f2bf730f29f71913b72876b1a61ab
+Status: Downloaded newer image for docker.io/egonzalez90/spacewalk:latest
+ded4a8b7eb1ee61fecc8ddc2eb1b092917a361bc36f7f752b32d76e79501d70a
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now you have the container running, check if all the ports are properly
+exposed&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;[egonzalez@localhost ~]$ docker ps --latest --format &amp;#39;table &lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt;&lt;span class="nv"&gt;.ID&lt;/span&gt;&lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt;\t&lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt;&lt;span class="nv"&gt;.Image&lt;/span&gt;&lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt;\t&lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt;&lt;span class="nv"&gt;.Ports&lt;/span&gt;&lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="x"&gt;CONTAINER ID        IMAGE                   PORTS&lt;/span&gt;
+&lt;span class="x"&gt;ded4a8b7eb1e        egonzalez90/spacewalk   68-69/tcp, 80/tcp, 443/tcp, 5222/tcp&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Get the container IP address in order to enter from a Web Browser&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[egonzalez@localhost ~]$ docker inspect ded4a8b7eb1e | egrep IPAddress
+            &amp;quot;SecondaryIPAddresses&amp;quot;: null,
+            &amp;quot;IPAddress&amp;quot;: &amp;quot;172.17.0.3&amp;quot;,
+                    &amp;quot;IPAddress&amp;quot;: &amp;quot;172.17.0.3&amp;quot;,
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Open A browser and go to the container IP address, if you use HTTP, by
+default it will redirect you to HTTPS.&lt;br&gt;
+The container uses an auto-signed SSL certificate, you have to add an
+exception in the Browser you use to allow connections to Spacewalk.&lt;br&gt;
+Once in the Welcome page, create an Organization.&lt;/p&gt;
+&lt;p&gt;Now you are in Spacewalk and can play/test some features.  &lt;/p&gt;
+&lt;p&gt;&lt;img alt="Selection_003" src="http://egonzalez.org/wp-content/uploads/2016/07/Selection_003-1024x483.png"&gt;&lt;/p&gt;
+&lt;p&gt;There is an issue I was not able to fix, so osa-dispatcher and some
+other features will not work with this image.&lt;br&gt;
+If someone can give me an input to fix the issue it will appreciated.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[egonzalez@localhost ~]$ docker logs ded4a8b7eb1e | egrep FATAL
+2016-07-12 18:13:32,220 INFO gave up: osa-dispatcher entered FATAL state, too many start retries too quickly
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Thanks for your time and hopes this image at least serves you to learn
+and play with the interface.&lt;/p&gt;
+&lt;p&gt;Regards, Eduardo Gonzalez&lt;/p&gt;</content><category term="container"></category><category term="docker"></category><category term="dockerfile"></category><category term="github"></category><category term="image"></category><category term="poc"></category><category term="proofofconcept"></category><category term="redhat"></category><category term="satellite"></category><category term="spacewalk"></category></entry></feed>

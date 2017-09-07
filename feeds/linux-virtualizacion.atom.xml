@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>OpenStack Stuff - Linux, Virtualizacion</title><link href="https://egonzalez90.github.io/" rel="alternate"></link><link href="https://egonzalez90.github.io/feeds/linux-virtualizacion.atom.xml" rel="self"></link><id>https://egonzalez90.github.io/</id><updated>2014-09-03T15:21:00+02:00</updated><entry><title>Alineamiento MBR maquinas virtuales</title><link href="https://egonzalez90.github.io/alineamiento-mbr-maquinas-virtuales.html" rel="alternate"></link><published>2014-09-03T15:21:00+02:00</published><updated>2014-09-03T15:21:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-09-03:/alineamiento-mbr-maquinas-virtuales.html</id><summary type="html">&lt;p&gt;Antes de la llegada de el sistema de ficheros EXT4, cuando creabas
+maquinas virtuales, estas estaban desalineadas el mbr del vmfs y de el
+almacenamiento,  lo que generaba menor rendimiento.&lt;!--more--&gt;&lt;/p&gt;
+&lt;p&gt;Para ello dedico esta entrada, con la que mostrare como alinear el mbr.&lt;/p&gt;
+&lt;p&gt;Lo primero que necesitaremos es el paquete …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Antes de la llegada de el sistema de ficheros EXT4, cuando creabas
+maquinas virtuales, estas estaban desalineadas el mbr del vmfs y de el
+almacenamiento,  lo que generaba menor rendimiento.&lt;!--more--&gt;&lt;/p&gt;
+&lt;p&gt;Para ello dedico esta entrada, con la que mostrare como alinear el mbr.&lt;/p&gt;
+&lt;p&gt;Lo primero que necesitaremos es el paquete con las tools mbrscan y
+mbralign, este paquete le copiaremos a el directorio /opt/ontap/ de un
+host ESXi que tenga acceso al almacenamiento donde tenemos la maquina
+guardada.&lt;/p&gt;
+&lt;p&gt;Una vez copiado el paquete a dicho directorio pasaremos a escanear y a
+realinear el mbr de la maquina, para ello necesitamos que este apagada.&lt;/p&gt;
+&lt;p&gt;Una vez apagada iremos al directorio /opt/ontap/ y ejecutaremos el
+siguiente comando con el que analizaremos el disco de la maquina para
+ver si necesita ser alineado.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;./mbrscan
+/vmfs/volumes/ALMACENAMIENTO/maquinavirtual/maquinavirtual-flat.vmdk&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Esto nos mostrara un mensaje en el que pondra:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Aligned yes o Aligned no&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;En el caso de que pusiera align no, deberemos realinear el mbr de la
+maquina, lo haremos mediante este comando:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;./mbralign
+/vmfs/volumes/ALMACENAMIENTO/maquinavirtual/maquinavirtual-flat.vmdk&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Esto nos creara un archivo .bak del disco que vamos a alinear por si
+fallara este proceso poder recuperarlo, este proceso tardara
+bastante(dependiendo del tamaño del disco)&lt;/p&gt;
+&lt;p&gt;Una vez acabado ese proceso de alineamiento, volveremos a utilizar el
+comando mbrscan para comprobar que este bien hecho.&lt;/p&gt;
+&lt;p&gt;Por ultimo, el alineado del mbr se carga totalmente el GRUB de la
+maquina, por lo que deberemos recuperarlo.&lt;/p&gt;
+&lt;p&gt;En esta entrada tienes como hacerlo: &lt;a href="http://egonzalez.org/recuperar-grub-rhel-y-centos/%20" title="Recuperar GRUB RHEL y CentOS"&gt;&lt;span id="sample-permalink"
+style="color: #666666;" tabindex="-1"&gt;http://egonzalez.org/&lt;span
+id="editable-post-name"
+title="Enlace permanente temporal. Haz clic para editar esta parte."&gt;recuperar-grub-rhel-y-centos&lt;/span&gt;/&lt;/span&gt;&lt;span
+style="color: #666666;"&gt; &lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Una vez recuperado el GRUB y comprobado que la maquina funciona
+correctamente, borraremos el archivo .bak que se había creado.&lt;/p&gt;
+&lt;p&gt;Espero poder ayudar, un saludo&lt;/p&gt;</content><category term="alinear"></category><category term="esxi"></category><category term="ext3"></category><category term="ext4"></category><category term="grub"></category><category term="maquina virtual"></category><category term="mbr"></category><category term="mbralign"></category><category term="mbrscan"></category><category term="netapp"></category><category term="redhat"></category><category term="rhel"></category><category term="VM"></category><category term="vmfs"></category><category term="vmware"></category><category term="volumes"></category></entry></feed>

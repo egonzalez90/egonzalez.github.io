@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Creación de claves con OpenPGP</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li class="active"><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="https://egonzalez90.github.io/creacion-de-claves-con-opengpg.html" rel="bookmark"
+           title="Permalink to Creación de claves con OpenPGP">Creación de claves con OpenPGP</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 30 March 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/asimetrico.html">asimetrico</a><a href="https://egonzalez90.github.io/tag/cifrado.html">cifrado</a><a href="https://egonzalez90.github.io/tag/clave.html">clave</a><a href="https://egonzalez90.github.io/tag/linux.html">linux</a><a href="https://egonzalez90.github.io/tag/opengpg.html">opengpg</a><a href="https://egonzalez90.github.io/tag/openpgp.html">openpgp</a><a href="https://egonzalez90.github.io/tag/seguridad.html">Seguridad</a><a href="https://egonzalez90.github.io/tag/simetrico.html">simetrico</a></span>
+</footer><!-- /.post-info -->      <p><strong>En esta entrada mostrare el proceso para la creación de claves
+simétricas y asimétricas con openpgp en Linux</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/1.png"><!--more--></a></p>
+<p><span style="color: #ff0000;"><strong><em>Clave Simétrica </em></strong></span></p>
+<p><strong>En Linux por defecto te viene instalado openpgp.</strong></p>
+<p><strong>Para crear una clave simétrica, deberemos escribir gpg con el
+modificador –c y el nombre del archivo creado que se quiera encriptar</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/1.png"><img alt="1" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/1.png"></a></p>
+<p><strong>Esto nos solicitara la clave que queramos asignarla dos veces, la
+rellenamos y ya tenemos el archivo encriptado de forma simétrica.</strong></p>
+<p><strong>Para desencriptar usaremos el comando gpg con el modificado –d y el
+archivo que queramos desencriptar, que tiene que acabar en .gpg</strong></p>
+<p><strong>Esto nos solicitara la clave que le habíamos puesto, y a continuación
+nos creara el archivo desencriptado</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/2.png"><img alt="2" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/2.png"></a></p>
+<p><strong><span style="color: #ff0000;">Clave asimétrica </span></strong></p>
+<p><strong>Para crear la clave asimétrica, pondremos el comando gpg –gen-key</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/3.png"><img alt="3" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/3.png"></a></p>
+<p><strong>Esto nos solicitara que le indiquemos el algoritmo de cifrado que
+deseemos utilizar, nosotros usaremos la opción 1 default RSA</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/4.png"><img alt="4" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/4.png"></a></p>
+<p><strong>Ahora nos pide que indiquemos la longitud de bits de las claves RSA,
+nosotros pondremos un término medio y el que nos aconseja, esta longitud
+es 2048</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/5.png"><img alt="5" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/5.png"></a></p>
+<p><strong>Ahora indicaremos el tiempo que queremos que tenga de vida la clave,
+nosotros usaremos 1y, para indicar 1 año</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/6.png"><img alt="6" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/6.png"></a></p>
+<p><strong>Nos indicara el día y hora de la expiración de la clave y preguntara
+si es correcto, damos y avanzamos</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/7.png"><img alt="7" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/7.png"></a></p>
+<p><strong>Ahora nos preguntara el nombre real del que crea la clave, yo pongo el
+nombre de usuario</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/8.png"><img alt="8" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/8.png"></a></p>
+<p><strong>Seguidamente, nos preguntara el email,  le ponemos, y avanzamos a lo
+siguiente</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/9.png"><img alt="9" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/9.png"></a></p>
+<p><strong>Después nos dirá si todo es correcto y nos mostrara el nombre e email
+del usuario, damos O y pasamos al siguiente paso</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/10.png"><img alt="10" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/10.png"></a></p>
+<p><strong>Lo siguiente sería crear la clave, para ello la indicamos la clave que
+queramos usar, la repetimos dos veces</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/12.png"><img alt="12" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/12.png"></a></p>
+<p><strong>Ahora generara el proceso de creación de la clave, esto nos puede
+solicitar que utilicemos recursos del sistema, abrimos ventanas,
+navegadores, etc para que complete la creación de la clave asimétrica.</strong></p>
+<p><strong>Después nos dará un mensaje con la información del proceso, deberías
+ser que se ha creado correctamente todo.</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/131.png"><img alt="13" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/131.png"></a></p>
+<p><strong>Ahora iremos a comprobar que se han creado las claves correctamente,
+para ello utilizaremos el comando gpg –k, que nos mostrara las claves
+que tenemos creadas.</strong></p>
+<p><strong>Aquí vemos la clave pública y la privada, y en el medio de ambas, el
+nombre de usuario de la clave.</strong></p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/141.png"><img alt="14" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/141.png"></a></p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_identifier = "creacion-de-claves-con-opengpg.html";
+        var disqus_url = "https://egonzalez90.github.io/creacion-de-claves-con-opengpg.html";
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//egonzalez-1.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

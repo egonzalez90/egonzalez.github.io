@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - tunel</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://egonzalez90.github.io/91.html">Configuración VPN en Linux</a></h1>
+<footer class="post-info">
+        <span>Fri 18 January 2013</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/linux.html">linux</a><a href="https://egonzalez90.github.io/tag/seguridad.html">Seguridad</a><a href="https://egonzalez90.github.io/tag/tunel.html">tunel</a><a href="https://egonzalez90.github.io/tag/vpn.html">vpn</a></span>
+</footer><!-- /.post-info --><p>Para configurar una VPN en Linux a veces si no se conoce o mira un
+tutorial puede ser dificil, incluso imposible realizarla.Pero una vez se
+adivina como es, piensas en lo tonto que has sido durante el tiempo que
+pasastes buscando y buscando informacion.<!--more--></p>
+<p>Para este ejemplo vamos a usar una VPN gratuita, como
+SecurityKiss <a href="http://www.securitykiss.com/">http://www.securitykiss.com/</a> Lo unico que tienes que
+hacer es registrarte en la pagina, yo
+uso <a href="http://10minutemail.com/">http://10minutemail.com</a> asi no me llenan
+de SPAM ni tienen mis datos, aunque si la IP, pero bueno es de los
+metodos mas seguros, siempre y cuando se complemente con otros. En el
+email tambien te vienen unos datos sobre los servidores, que son los que
+tendras que utilizar. Te enviaran un email con un usuario y contraseña
+que es lo que utilizaras para entrar a la zona de descargas, en la cual
+selecionaras Linux y te descargara el paquete personalizado. Para poder
+instalar las VPN deberas instalar antes OpenVPN o algun similar, si lo
+tienes instalado sigue al siguiente paso. Es un simple comando:</p>
+<ul>
+<li><address>
+    sudo apt-get install network-manager-openvpn
+    </address></li>
+</ul>
+<p>Despues hay que reiniciar el gestor de redes</p>
+<ul>
+<li>sudo restart network-manager</li>
+</ul>
+<p>Con esto estaria instalado y ya solo quedaria configurar la VPN. Se iria
+al gestor de redes/conexiones VPN/configurar VPN</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/seleccic3b3n_001.png"><img alt="Selección_001" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/seleccic3b3n_001.png?w=300"></a></p>
+<p>Despues dentro de la configuracion VPN, se le de a añadir, se selecciona
+OpenVPN que es lo que vamos a utilizar, se le da a crear:</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/seleccic3b3n_002.png"><img alt="Selección_002" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/seleccic3b3n_002.png?w=300"></a></p>
+<p>Aqui es donde se va a configurar todo lo correspondiente a la VPN.</p>
+<p>Se puede seleccionar conectar automaticamente o no, eso como quieras, yo
+le pongo que no porque va mas lenta la conexion.</p>
+<p>Se abre el archivo descargado anteriormente, y se busca el servidor que
+nos dijeron en el email.</p>
+<p>Se copia la IP y se pega en la casilla de pasarela o gateway.</p>
+<p>Se pone SecurityKISS nombredelservidor protocolo y puerto. Como ejemplo
+la imagen:</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/editando-securitykiss-maidenhead-udp-123-_003.png"><img alt="Editando SecurityKISS Maidenhead UDP 123
+_003" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/editando-securitykiss-maidenhead-udp-123-_003.png?w=274"></a></p>
+<p>PD: entre UDP y 123 hay un espacio, que se quedo editando.</p>
+<p>En tipo de certificado hay que poner certificados TLS</p>
+<p>Se pincha en la carpeta de certificado de usuario, en la que deberas
+buscar los archivos descargados.</p>
+<p>Una vez encontrados se selecciona client.crt, en certificado se pone
+ca.crt y en clase privada client.key</p>
+<p>,<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/editando-securitykiss-maidenhead-udp-123-_004.png"><img alt="Editando SecurityKISS Maidenhead UDP 123
+_004" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/editando-securitykiss-maidenhead-udp-123-_004.png?w=274"></a></p>
+<p>Despues se entra en avanzado y se pone el puerto que se puso en el
+nombre de conexion, que deberia ser el mismo que el del servidor
+escogido, en  mi caso el 123, tambien se seleciona el check de usar
+compresion LZO, quedaria de esta manera:</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/opciones-avanzadas-de-openvpn_005.png"><img alt="Opciones avanzadas de
+OpenVPN_005" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/01/opciones-avanzadas-de-openvpn_005.png?w=300"></a></p>
+<p>Si se puso como protocolo TCP tambien tendra que marcar la de usar
+compresion TCP.</p>
+<p>Se acepta, se guarda.</p>
+<p>Se reinicia el gestor de red</p>
+<ul>
+<li><address>
+    sudo restart network-manager
+    </address></li>
+</ul>
+<p>Se abre la pestaña de conexiones VPN de nuevo se selecciona la VPN que
+hemos creado,se debería conectar, ahora miras la IP y debería ser la del
+servidor seleccionado para la VPN.</p>
+<p>Con esto ya estaría configurada y funcional la VPN.</p>
+<p>Si hubiera alguna pregunta, duda o aclaración no duden en comentar para
+corregirlo o añadir información adicional</p><p><a href="https://egonzalez90.github.io/91.html#disqus_thread">comments</a></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
