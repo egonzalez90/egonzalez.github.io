@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 AUTHOR = u'Eduardo Gonzalez'
 SITENAME = u'OpenStack Stuff'
 #SITEURL = 'http://egonzalez90.github.io'
-THEME = 'themes/blueidea'
+THEME = 'themes/blue-penguin'
 PATH = 'content'
 
 TIMEZONE = 'Europe/Paris'
@@ -34,6 +34,25 @@ SOCIAL = (('Twitter', 'https://twitter.com/egongu90'),
 
 DEFAULT_PAGINATION = 3
 FEED_MAX_ITEMS = 1
+
+TAGS_URL           = 'tags'
+TAGS_SAVE_AS       = 'tags/index.html'
+AUTHORS_URL        = 'authors'
+AUTHORS_SAVE_AS    = 'authors/index.html'
+CATEGORIES_URL     = 'categories'
+CATEGORIES_SAVE_AS = 'categories/index.html'
+ARCHIVES_URL       = 'archives'
+ARCHIVES_SAVE_AS   = 'archives/index.html'
+
+MENU_INTERNAL_PAGES = (
+    ('Archives', ARCHIVES_URL, ARCHIVES_SAVE_AS),
+)
+# additional menu items
+MENUITEMS = (
+    ('OpenStack', 'https://docs.openstack.org'),
+    ('Linkedin', 'https://www.linkedin.com/in/eduardogonzalezgutierrez'),
+    ('Github', 'https://github.com/egonzalez90'),
+)
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
