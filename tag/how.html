@@ -1,47 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>OpenStack Stuff | articles tagged "how"</title>
-    <link rel="shortcut icon" type="image/png" href="https://egonzalez90.github.io/favicon.png">
-    <link rel="shortcut icon" type="image/x-icon" href="https://egonzalez90.github.io/favicon.ico">
-    <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Full Atom Feed" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/screen.css" type="text/css" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/print.css" type="text/css" media="print" />
-    <meta name="generator" content="Pelican" />
-    <meta name="description" content="" />
-    <meta name="author" content="Eduardo Gonzalez" />
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - how</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
 </head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li class="ephemeral selected"><a href="https://egonzalez90.github.io/tag/how.html">how</a></li>
-                <li><a href="https://egonzalez90.github.io/">Home</a></li>
-                <li><a href="https://docs.openstack.org">OpenStack</a></li>
-                <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
-                <li><a href="https://github.com/egonzalez90">Github</a></li>
-                <li><a href="https://egonzalez90.github.io/archives">Archives</a></li>
-            </ul>
-        </nav>
-        <div class="header_box">
-            <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff</a></h1>
-        </div>
-    </header>
-    <div id="wrapper">
-        <div id="content">            <h4 class="date">Mar 02, 2016</h4>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/nova-vnc-flows-under-the-hood.html" rel="bookmark" title="Permanent Link to &quot;Nova VNC flows under the hood&quot;">Nova VNC flows under the hood</a>
-                </h2>
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="https://docs.openstack.org">OpenStack</a></li>
+                    <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                    <li><a href="https://github.com/egonzalez90">Github</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
 
-                
-                
-
-                <p>Most OpenStack deployments has a VNC console implemented with
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://egonzalez90.github.io/nova-vnc-flows-under-the-hood.html">Nova VNC flows under the hood</a></h1>
+<footer class="post-info">
+        <span>Wed 02 March 2016</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/auth.html">auth</a><a href="https://egonzalez90.github.io/tag/console.html">console</a><a href="https://egonzalez90.github.io/tag/consoleauth.html">consoleauth</a><a href="https://egonzalez90.github.io/tag/flow.html">flow</a><a href="https://egonzalez90.github.io/tag/flows.html">flows</a><a href="https://egonzalez90.github.io/tag/how.html">how</a><a href="https://egonzalez90.github.io/tag/internal.html">internal</a><a href="https://egonzalez90.github.io/tag/liberty.html">liberty</a><a href="https://egonzalez90.github.io/tag/nova.html">nova</a><a href="https://egonzalez90.github.io/tag/novnc.html">novnc</a><a href="https://egonzalez90.github.io/tag/novncproxy.html">novncproxy</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/traffic.html">traffic</a><a href="https://egonzalez90.github.io/tag/vnc.html">vnc</a><a href="https://egonzalez90.github.io/tag/works.html">works</a></span>
+</footer><!-- /.post-info --><p>Most OpenStack deployments has a VNC console implemented with
 nova-novncproxy. This service gives the final user the ability to log
 into their instances in a web based method through a browser.</p>
 <p>At this post i'm going to show how a vnc console request works under the
@@ -218,41 +215,23 @@ we can see a message like the following.</p>
 
 <p>handler exception: The token '3dfcd011-28f1-4cf3-8f5c-8cd18de4560e' is invalid or has expired</p>
 <p>Regards.<br>
-Eduardo Gonzalez</p>
-                <div class="clear"></div>
+Eduardo Gonzalez</p><p><a href="https://egonzalez90.github.io/nova-vnc-flows-under-the-hood.html#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
 
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/nova-vnc-flows-under-the-hood.html">posted at 22:26</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/auth.html" class="tags">auth</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/console.html" class="tags">console</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/consoleauth.html" class="tags">consoleauth</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/flow.html" class="tags">flow</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/flows.html" class="tags">flows</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/how.html" class="tags selected">how</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/internal.html" class="tags">internal</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/liberty.html" class="tags">liberty</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/nova.html" class="tags">nova</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/novnc.html" class="tags">novnc</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/novncproxy.html" class="tags">novncproxy</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/traffic.html" class="tags">traffic</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/vnc.html" class="tags">vnc</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/works.html" class="tags">works</a>
-                </div>
-		<a href="https://egonzalez90.github.io/nova-vnc-flows-under-the-hood.html#disqus_thread">Click to read and post comments</a>
-            </article>            <h4 class="date">Jul 02, 2015</h4>
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/list-all-tenants-belonging-an-user.html" rel="bookmark"
+                           title="Permalink to List all tenants belonging an user Keystone v2">List all tenants belonging an user  Keystone v2</a></h1>
+                </header>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/list-all-tenants-belonging-an-user.html" rel="bookmark" title="Permanent Link to &quot;List all tenants belonging an user  Keystone v2&quot;">List all tenants belonging an user  Keystone v2</a>
-                </h2>
-
-                
-                
-
-                <p>Here is a simple script to list all tenants belonging an user:</p>
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 02 July 2015</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/all.html">all</a><a href="https://egonzalez90.github.io/tag/bash.html">bash</a><a href="https://egonzalez90.github.io/tag/belong.html">belong</a><a href="https://egonzalez90.github.io/tag/curl.html">curl</a><a href="https://egonzalez90.github.io/tag/get.html">GET</a><a href="https://egonzalez90.github.io/tag/how.html">how</a><a href="https://egonzalez90.github.io/tag/inside.html">inside</a><a href="https://egonzalez90.github.io/tag/keystone.html">keystone</a><a href="https://egonzalez90.github.io/tag/keystoneclient.html">keystoneclient</a><a href="https://egonzalez90.github.io/tag/keystonev2.html">keystonev2</a><a href="https://egonzalez90.github.io/tag/list.html">list</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/python.html">python</a><a href="https://egonzalez90.github.io/tag/role.html">role</a><a href="https://egonzalez90.github.io/tag/script.html">script</a><a href="https://egonzalez90.github.io/tag/tenant.html">tenant</a><a href="https://egonzalez90.github.io/tag/tenants.html">tenants</a><a href="https://egonzalez90.github.io/tag/to.html">to</a><a href="https://egonzalez90.github.io/tag/token.html">Token</a><a href="https://egonzalez90.github.io/tag/user.html">user</a><a href="https://egonzalez90.github.io/tag/users.html">users</a><a href="https://egonzalez90.github.io/tag/v2.html">v2</a></span>
+</footer><!-- /.post-info -->                <p>Here is a simple script to list all tenants belonging an user:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -272,79 +251,40 @@ Eduardo Gonzalez</p>
 
 <span class="k">for</span> userid in <span class="k">$(</span>keystone user-list <span class="p">|</span> grep -w <span class="nv">$usercheck</span> <span class="p">|</span> awk <span class="s1">&#39;{print$2}&#39;</span><span class="k">)</span>
     <span class="k">do</span>
-    <span class="k">for</span> tenant in <span class="k">$(</span>keystone tenant-list <span class="p">|</span> awk <span class="s1">&#39;NR&gt;3 &amp;&amp; /^|/ {print$2}&#39;</span><span class="k">)</span>
-    <span class="k">do</span>
-        <span class="k">for</span> tenantid in <span class="k">$(</span>keystone user-role-list --user <span class="nv">$userid</span> --tenant <span class="nv">$tenant</span> <span class="p">|</span> awk <span class="s1">&#39;NR&gt;3 &amp;&amp; /^|/ {print$8}&#39;</span><span class="k">)</span>
-        <span class="k">do</span>
-            keystone tenant-list <span class="p">|</span> grep <span class="nv">$tenantid</span> <span class="p">|</span> awk <span class="s1">&#39;{print$4}&#39;</span>
-        <span class="k">done</span>
-    <span class="k">done</span>
-<span class="k">done</span>
-</pre></div>
-</td></tr></table>
-
-<p>Also you can run all in a simple cmd line:<br>
+    <span class="k">for</span> tenant in <span class="k">$(</span>keystone tenant-list …</pre></div></td></tr></table>
+                <a class="readmore" href="https://egonzalez90.github.io/list-all-tenants-belonging-an-user.html">read more</a>
+<p><a href="https://egonzalez90.github.io/list-all-tenants-belonging-an-user.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 1
 </p>
-<div class="highlight"><pre><span></span>echo -n &quot;user name &quot;; read usercheck; for userid in $(keystone user-list | grep $usercheck | awk &#39;{print$2}&#39;); do echo $userid | for tenant in $(keystone tenant-list | awk &#39;NR&gt;3 &amp;&amp; /^|/ {print$2}&#39;); do echo $tenant | for tenantid in $(keystone user-role-list --user $userid --tenant $tenant | awk &#39;NR&gt;3 &amp;&amp; /^|/ {print$8}&#39;); do keystone tenant-list | grep $tenantid | awk &#39;{print$4}&#39;; done ; done ; done
-</pre></div>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
 
-<p>If you are a developer, probably you need to list all tenants in a HTTP
-request, for this purpose you can use curl to the port 5000 of keystone<br>
-</p>
-<div class="highlight"><pre><span></span>curl -i -X GET http://KEYSTONEIP:5000/v2.0/tenants -H &quot;User-Agent: python-keystoneclient&quot; -H &quot;X-Auth-Token: USERTOKEN&quot;
-</pre></div>
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
 
-
-<p>I have saved the user token in a OS_VARIABLE called OS_TOKEN, if you
-don't do that, you should input all the token in the HTTP request.<br>
-For example:<br>
-</p>
-<div class="highlight"><pre><span></span>curl -i -X GET http://192.168.1.11:5000/v2.0/tenants -H &quot;User-Agent: python-keystoneclient&quot; -H &quot;X-Auth-Token: $OS_TOKEN&quot;
-</pre></div>
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/list-all-tenants-belonging-an-user.html">posted at 14:29</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/all.html" class="tags">all</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/bash.html" class="tags">bash</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/belong.html" class="tags">belong</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/curl.html" class="tags">curl</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/get.html" class="tags">GET</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/how.html" class="tags selected">how</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/inside.html" class="tags">inside</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/keystone.html" class="tags">keystone</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/keystoneclient.html" class="tags">keystoneclient</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/keystonev2.html" class="tags">keystonev2</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/list.html" class="tags">list</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/python.html" class="tags">python</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/role.html" class="tags">role</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/script.html" class="tags">script</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/tenant.html" class="tags">tenant</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/tenants.html" class="tags">tenants</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/to.html" class="tags">to</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/token.html" class="tags">Token</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/user.html" class="tags">user</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/users.html" class="tags">users</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/v2.html" class="tags">v2</a>
-                </div>
-		<a href="https://egonzalez90.github.io/list-all-tenants-belonging-an-user.html#disqus_thread">Click to read and post comments</a>
-            </article>
-
-            <div class="clear"></div>
-            <footer>
-                <p>
-                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
-                &middot;
-                Powered by <a href="http://getpelican.com">Pelican</a>
-                &middot;
-                <a href="https://egonzalez90.github.io/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
-            </footer>
-        </div>
-        <div class="clear"></div>
-    </div>
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
 </body>
 </html>

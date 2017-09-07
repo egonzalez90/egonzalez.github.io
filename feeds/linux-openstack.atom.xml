@@ -627,4 +627,220 @@ Removing sample config
 &lt;p&gt;In following posts will show how to tacker templates works and an in
 deep&lt;br&gt;
 sfc traffic flows analysis.&lt;/p&gt;
-&lt;p&gt;Regards, Eduardo Gonzalez&lt;/p&gt;</content><category term="ansible"></category><category term="barbican"></category><category term="etsi"></category><category term="heat"></category><category term="kolla"></category><category term="MANO"></category><category term="mistral"></category><category term="NFV"></category><category term="openstack"></category><category term="pike"></category><category term="sdn"></category><category term="service function chaining"></category><category term="sfc"></category><category term="tacker"></category></entry></feed>
+&lt;p&gt;Regards, Eduardo Gonzalez&lt;/p&gt;</content><category term="ansible"></category><category term="barbican"></category><category term="etsi"></category><category term="heat"></category><category term="kolla"></category><category term="MANO"></category><category term="mistral"></category><category term="NFV"></category><category term="openstack"></category><category term="pike"></category><category term="sdn"></category><category term="service function chaining"></category><category term="sfc"></category><category term="tacker"></category></entry><entry><title>Instalar aws-cli</title><link href="https://egonzalez90.github.io/instalar-aws-cli.html" rel="alternate"></link><published>2014-10-03T17:11:00+02:00</published><updated>2014-10-03T17:11:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-10-03:/instalar-aws-cli.html</id><summary type="html">&lt;p&gt;AWS-cli es una potente línea de comandos que permite interactuar con
+todos los servicios de AWS, en esta entrada mostrare como instalarlo en
+un Ubuntu Server.&lt;!--more--&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Esto mismo lo podrás instalar en RHEL cambiando el gestor de paquetes
+apt por yum.&lt;/p&gt;
+&lt;p&gt;Primero instalaremos python y pip&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;sudo apt-get install -y …&lt;/p&gt;&lt;/blockquote&gt;</summary><content type="html">&lt;p&gt;AWS-cli es una potente línea de comandos que permite interactuar con
+todos los servicios de AWS, en esta entrada mostrare como instalarlo en
+un Ubuntu Server.&lt;!--more--&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Esto mismo lo podrás instalar en RHEL cambiando el gestor de paquetes
+apt por yum.&lt;/p&gt;
+&lt;p&gt;Primero instalaremos python y pip&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;sudo apt-get install -y python-pip&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A continuación instalaremos awscli con pip&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;sudo pip install awscli&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Después configuraremos awscli para que conecte con nuestra cuenta de AWS&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;aws configure&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Aquí introduciremos los siguientes parámetros:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Access Key ID: En el archivo credentials que se descarga al crear
+    una nueva Access Key en IAM&lt;/li&gt;
+&lt;li&gt;Secret Access Key:&lt;span style="line-height: 20.7999992370605px;"&gt; En
+    el archivo credentials que se descarga al crear una nueva Access Key
+    en IAM&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Region Name: La region de EC2 (no la zona de disponibilidad), es
+    importante no poner el ultimo dígito(a,b,c,d) porque dará error de
+    configuración y no conectará&lt;/li&gt;
+&lt;li&gt;Output format: Formato en que queremos que nos muestre los datos
+    awscli, lo normal suele ser table o text&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;AWS Access Key ID [None]: AK***XCLG******XYR7A&lt;br&gt;
+ AWS Secret Access Key [None]:
+m*********q**********r5Zpyqsb*********AOL&lt;br&gt;
+ Default region name [None]: eu-west-1&lt;br&gt;
+ Default output format [None]: table&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Por ultimo probaremos que funciona, listando las regiones que tenemos
+disponibles, si este comando funciona quiere decir que esta bien
+configurado&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;aws ec2 describe-regions&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div&gt;
+
+&lt;div&gt;
+
+[![describe-regions](http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/describe-regions.png)](http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/describe-regions.png)
+
+ 
+
+&lt;/div&gt;
+
+&lt;div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Un saludo&lt;/p&gt;</content><category term="access key"></category><category term="amazon"></category><category term="AWS"></category><category term="awscli"></category><category term="cloud"></category><category term="configurar"></category><category term="instalar"></category><category term="linux"></category><category term="region"></category><category term="secret"></category><category term="services"></category><category term="web"></category></entry><entry><title>s3cmd, administración bucket AWS</title><link href="https://egonzalez90.github.io/s3cmd-administracion-bucket-aws.html" rel="alternate"></link><published>2014-09-29T18:42:00+02:00</published><updated>2014-09-29T18:42:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-09-29:/s3cmd-administracion-bucket-aws.html</id><summary type="html">&lt;p&gt;Buenos días, en esta entrada mostrare el proceso para instalar s3cmd con
+el que podremos administrar nuestros contenedores de AWS.&lt;!--more--&gt;&lt;/p&gt;
+&lt;p&gt;Para ello primero deberemos localizar el repositorio para la versión de
+nuestro RHEL, lo podéis hacer en este enlace:
+&lt;a href="http://s3tools.org/repositories"&gt;http://s3tools.org/repositories&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;En mi caso uso la versión 6 …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Buenos días, en esta entrada mostrare el proceso para instalar s3cmd con
+el que podremos administrar nuestros contenedores de AWS.&lt;!--more--&gt;&lt;/p&gt;
+&lt;p&gt;Para ello primero deberemos localizar el repositorio para la versión de
+nuestro RHEL, lo podéis hacer en este enlace:
+&lt;a href="http://s3tools.org/repositories"&gt;http://s3tools.org/repositories&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;En mi caso uso la versión 6.5 de RHEL, por lo que usare el repositorio
+de la versión 6, descargaremos el archivo .repo acorde con nuestra
+versión, cambiando el enlace por el proporcionado por la pagina anterior
+si fuera otra versión fuera de la 6&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;wget http://s3tools.org/repo/RHEL_6/s3tools.repo&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A continuación moveremos el archivo .repo a la localización de los
+repositorios en el SO, este paso se puede saltar si el comando wget se
+lanza desde el mismo directorio /etc/yum.repos.d/&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;mv s3tools.repo /etc/yum.repos.d/&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Ahora actualizaremos la lista de repositorios para que el SO la
+reconozca&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;sudo yum repolist&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Después instalaremos s3cmd mediante el siguiente comando&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;sudo yum install s3cmd&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Para acabar, procederemos a configurar s3cmd para que pueda acceder a
+nuestros contenedores en AWS&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;s3cmd --configure&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;Enter&lt;/span&gt; &lt;span class="s s-Atom"&gt;new&lt;/span&gt; &lt;span class="s s-Atom"&gt;values&lt;/span&gt; &lt;span class="s s-Atom"&gt;or&lt;/span&gt; &lt;span class="s s-Atom"&gt;accept&lt;/span&gt; &lt;span class="s s-Atom"&gt;defaults&lt;/span&gt; &lt;span class="s s-Atom"&gt;in&lt;/span&gt; &lt;span class="s s-Atom"&gt;brackets&lt;/span&gt; &lt;span class="s s-Atom"&gt;with&lt;/span&gt; &lt;span class="nv"&gt;Enter&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;span class="nv"&gt;Refer&lt;/span&gt; &lt;span class="s s-Atom"&gt;to&lt;/span&gt; &lt;span class="s s-Atom"&gt;user&lt;/span&gt; &lt;span class="s s-Atom"&gt;manual&lt;/span&gt; &lt;span class="s s-Atom"&gt;for&lt;/span&gt; &lt;span class="s s-Atom"&gt;detailed&lt;/span&gt; &lt;span class="s s-Atom"&gt;description&lt;/span&gt; &lt;span class="s s-Atom"&gt;of&lt;/span&gt; &lt;span class="s s-Atom"&gt;all&lt;/span&gt; &lt;span class="s s-Atom"&gt;options&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+
+&lt;span class="nv"&gt;Access&lt;/span&gt; &lt;span class="s s-Atom"&gt;key&lt;/span&gt; &lt;span class="s s-Atom"&gt;and&lt;/span&gt; &lt;span class="nv"&gt;Secret&lt;/span&gt; &lt;span class="s s-Atom"&gt;key&lt;/span&gt; &lt;span class="s s-Atom"&gt;are&lt;/span&gt; &lt;span class="s s-Atom"&gt;your&lt;/span&gt; &lt;span class="s s-Atom"&gt;identifiers&lt;/span&gt; &lt;span class="s s-Atom"&gt;for&lt;/span&gt; &lt;span class="nv"&gt;Amazon&lt;/span&gt; &lt;span class="nv"&gt;S3&lt;/span&gt;
+&lt;span class="nv"&gt;Access&lt;/span&gt; &lt;span class="nv"&gt;Key&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="s s-Atom"&gt;xxxxxxxxxxxxxxxxxxxxxx&lt;/span&gt;
+&lt;span class="nv"&gt;Secret&lt;/span&gt; &lt;span class="nv"&gt;Key&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="s s-Atom"&gt;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&lt;/span&gt;
+
+&lt;span class="nv"&gt;Encryption&lt;/span&gt; &lt;span class="s s-Atom"&gt;password&lt;/span&gt; &lt;span class="o"&gt;is&lt;/span&gt; &lt;span class="s s-Atom"&gt;used&lt;/span&gt; &lt;span class="s s-Atom"&gt;to&lt;/span&gt; &lt;span class="s s-Atom"&gt;protect&lt;/span&gt; &lt;span class="s s-Atom"&gt;your&lt;/span&gt; &lt;span class="s s-Atom"&gt;files&lt;/span&gt; &lt;span class="s s-Atom"&gt;from&lt;/span&gt; &lt;span class="s s-Atom"&gt;reading&lt;/span&gt;
+&lt;span class="s s-Atom"&gt;by&lt;/span&gt; &lt;span class="s s-Atom"&gt;unauthorized&lt;/span&gt; &lt;span class="s s-Atom"&gt;persons&lt;/span&gt; &lt;span class="s s-Atom"&gt;while&lt;/span&gt; &lt;span class="s s-Atom"&gt;in&lt;/span&gt; &lt;span class="s s-Atom"&gt;transfer&lt;/span&gt; &lt;span class="s s-Atom"&gt;to&lt;/span&gt; &lt;span class="nv"&gt;S3&lt;/span&gt;
+&lt;span class="nv"&gt;Encryption&lt;/span&gt; &lt;span class="nn"&gt;password&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s s-Atom"&gt;xxxxxxxxxx&lt;/span&gt;
+&lt;span class="nv"&gt;Path&lt;/span&gt; &lt;span class="s s-Atom"&gt;to&lt;/span&gt; &lt;span class="nv"&gt;GPG&lt;/span&gt; &lt;span class="s s-Atom"&gt;program&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="s s-Atom"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="s s-Atom"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="s s-Atom"&gt;gpg&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt;
+
+&lt;span class="nv"&gt;When&lt;/span&gt; &lt;span class="s s-Atom"&gt;using&lt;/span&gt; &lt;span class="s s-Atom"&gt;secure&lt;/span&gt; &lt;span class="nv"&gt;HTTPS&lt;/span&gt; &lt;span class="s s-Atom"&gt;protocol&lt;/span&gt; &lt;span class="s s-Atom"&gt;all&lt;/span&gt; &lt;span class="s s-Atom"&gt;communication&lt;/span&gt; &lt;span class="s s-Atom"&gt;with&lt;/span&gt; &lt;span class="nv"&gt;Amazon&lt;/span&gt; &lt;span class="nv"&gt;S3&lt;/span&gt;
+&lt;span class="s s-Atom"&gt;servers&lt;/span&gt; &lt;span class="o"&gt;is&lt;/span&gt; &lt;span class="s s-Atom"&gt;protected&lt;/span&gt; &lt;span class="s s-Atom"&gt;from&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="s s-Atom"&gt;rd&lt;/span&gt; &lt;span class="s s-Atom"&gt;party&lt;/span&gt; &lt;span class="s s-Atom"&gt;eavesdropping&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="nv"&gt;This&lt;/span&gt; &lt;span class="s s-Atom"&gt;method&lt;/span&gt; &lt;span class="o"&gt;is&lt;/span&gt;
+&lt;span class="s s-Atom"&gt;slower&lt;/span&gt; &lt;span class="s s-Atom"&gt;than&lt;/span&gt; &lt;span class="s s-Atom"&gt;plain&lt;/span&gt; &lt;span class="nv"&gt;HTTP&lt;/span&gt; &lt;span class="s s-Atom"&gt;and&lt;/span&gt; &lt;span class="s s-Atom"&gt;can&amp;#39;t be used if you&amp;#39;re&lt;/span&gt; &lt;span class="s s-Atom"&gt;behind&lt;/span&gt; &lt;span class="s s-Atom"&gt;a&lt;/span&gt; &lt;span class="s s-Atom"&gt;proxy&lt;/span&gt;
+&lt;span class="nv"&gt;Use&lt;/span&gt; &lt;span class="nv"&gt;HTTPS&lt;/span&gt; &lt;span class="s s-Atom"&gt;protocol&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;No&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="nv"&gt;Yes&lt;/span&gt;
+
+&lt;span class="nv"&gt;New&lt;/span&gt; &lt;span class="nn"&gt;settings&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="nv"&gt;Access&lt;/span&gt; &lt;span class="nv"&gt;Key&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="s s-Atom"&gt;xxxxxxxxxxxxxxxxxxxxxx&lt;/span&gt;
+  &lt;span class="nv"&gt;Secret&lt;/span&gt; &lt;span class="nv"&gt;Key&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="s s-Atom"&gt;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&lt;/span&gt;
+  &lt;span class="nv"&gt;Encryption&lt;/span&gt; &lt;span class="nn"&gt;password&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s s-Atom"&gt;xxxxxxxxxx&lt;/span&gt;
+  &lt;span class="nv"&gt;Path&lt;/span&gt; &lt;span class="s s-Atom"&gt;to&lt;/span&gt; &lt;span class="nv"&gt;GPG&lt;/span&gt; &lt;span class="nn"&gt;program&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="s s-Atom"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="s s-Atom"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="s s-Atom"&gt;gpg&lt;/span&gt;
+  &lt;span class="nv"&gt;Use&lt;/span&gt; &lt;span class="nv"&gt;HTTPS&lt;/span&gt; &lt;span class="nn"&gt;protocol&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nv"&gt;True&lt;/span&gt;
+  &lt;span class="nv"&gt;HTTP&lt;/span&gt; &lt;span class="nv"&gt;Proxy&lt;/span&gt; &lt;span class="s s-Atom"&gt;server&lt;/span&gt; &lt;span class="nn"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="nv"&gt;HTTP&lt;/span&gt; &lt;span class="nv"&gt;Proxy&lt;/span&gt; &lt;span class="s s-Atom"&gt;server&lt;/span&gt; &lt;span class="nn"&gt;port&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+
+&lt;span class="nv"&gt;Test&lt;/span&gt; &lt;span class="s s-Atom"&gt;access&lt;/span&gt; &lt;span class="s s-Atom"&gt;with&lt;/span&gt; &lt;span class="s s-Atom"&gt;supplied&lt;/span&gt; &lt;span class="s s-Atom"&gt;credentials?&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="s s-Atom"&gt;n&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="nv"&gt;Y&lt;/span&gt;
+&lt;span class="nv"&gt;Please&lt;/span&gt; &lt;span class="s s-Atom"&gt;wait&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s s-Atom"&gt;attempting&lt;/span&gt; &lt;span class="s s-Atom"&gt;to&lt;/span&gt; &lt;span class="s s-Atom"&gt;list&lt;/span&gt; &lt;span class="s s-Atom"&gt;all&lt;/span&gt; &lt;span class="s s-Atom"&gt;buckets&lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;
+&lt;span class="nv"&gt;Success&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="nv"&gt;Your&lt;/span&gt; &lt;span class="s s-Atom"&gt;access&lt;/span&gt; &lt;span class="s s-Atom"&gt;key&lt;/span&gt; &lt;span class="s s-Atom"&gt;and&lt;/span&gt; &lt;span class="s s-Atom"&gt;secret&lt;/span&gt; &lt;span class="s s-Atom"&gt;key&lt;/span&gt; &lt;span class="s s-Atom"&gt;worked&lt;/span&gt; &lt;span class="nf"&gt;fine&lt;/span&gt; &lt;span class="o"&gt;:-&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="nv"&gt;Now&lt;/span&gt; &lt;span class="s s-Atom"&gt;verifying&lt;/span&gt; &lt;span class="s s-Atom"&gt;that&lt;/span&gt; &lt;span class="s s-Atom"&gt;encryption&lt;/span&gt; &lt;span class="s s-Atom"&gt;works&lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;
+&lt;span class="nv"&gt;Success&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="nv"&gt;Encryption&lt;/span&gt; &lt;span class="s s-Atom"&gt;and&lt;/span&gt; &lt;span class="s s-Atom"&gt;decryption&lt;/span&gt; &lt;span class="s s-Atom"&gt;worked&lt;/span&gt; &lt;span class="nf"&gt;fine&lt;/span&gt; &lt;span class="o"&gt;:-&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="nv"&gt;Save&lt;/span&gt; &lt;span class="s s-Atom"&gt;settings?&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s s-Atom"&gt;y&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nv"&gt;N&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="s s-Atom"&gt;y&lt;/span&gt;
+&lt;span class="nv"&gt;Configuration&lt;/span&gt; &lt;span class="s s-Atom"&gt;saved&lt;/span&gt; &lt;span class="s s-Atom"&gt;to&lt;/span&gt; &lt;span class="s s-Atom"&gt;&amp;#39;/root/.s3cfg&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/blockquote&gt;
+&lt;p&gt;Access Key la puedes encontrar en: Security Credentials/ Users/ Access
+Credentials&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/access.png"&gt;&lt;img alt="access" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/access.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Secret Key solo se puede descargar una única vez, al crear las claves de
+acceso, si fuera necesario, deberías de crear unas nuevas para poder
+obtener Secret Key para esa clave.&lt;/p&gt;
+&lt;p&gt;Seguramente que te de un error si lanzas el comando ahora, para que no
+te de el error Access Denied, tienes que agregar una política de usuario
+con permisos&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/userpolicy.png"&gt;&lt;img alt="userpolicy" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/userpolicy.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Por ultimo probaremos que tenemos acceso a los bucket&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;s3cmd ls&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Esto nos debería de mostrar los contenedores a los que tenemos permisos
+dentro de AWS&lt;/p&gt;
+&lt;p&gt;Ahora solo te queda investigar las diferentes posibilidades que te da
+s3cmd&lt;/p&gt;
+&lt;p&gt;Un saludo&lt;/p&gt;</content><category term="--configure"></category><category term="access denied"></category><category term="access key"></category><category term="amazon"></category><category term="AWS"></category><category term="cloud"></category><category term="configurar"></category><category term="IAM"></category><category term="instalar"></category><category term="permisos"></category><category term="policy"></category><category term="s3cmd"></category><category term="s3tools"></category><category term="secret key"></category><category term="services"></category><category term="usuario"></category><category term="web"></category></entry><entry><title>Crear Swap AWS en RHEL</title><link href="https://egonzalez90.github.io/crear-swap-rhel-aws.html" rel="alternate"></link><published>2014-09-19T16:28:00+02:00</published><updated>2014-09-19T16:28:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-09-19:/crear-swap-rhel-aws.html</id><summary type="html">&lt;p&gt;Cuando creas una instancia, esta se hace sin swap, el cual es necesario
+para el uso de determinadas aplicaciones.&lt;!--more--&gt;&lt;/p&gt;
+&lt;p&gt;Para ello deberemos tener espacio en disco, si no tuvieras suficiente
+puedes seguir esta entrada pare ver como se
+hace: &lt;a href="http://egonzalez.org/?p=662" title="Montar volumen AWS en RHEL"&gt;http://egonzalez.org/?p=635&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;A continuación iremos a la consola …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Cuando creas una instancia, esta se hace sin swap, el cual es necesario
+para el uso de determinadas aplicaciones.&lt;!--more--&gt;&lt;/p&gt;
+&lt;p&gt;Para ello deberemos tener espacio en disco, si no tuvieras suficiente
+puedes seguir esta entrada pare ver como se
+hace: &lt;a href="http://egonzalez.org/?p=662" title="Montar volumen AWS en RHEL"&gt;http://egonzalez.org/?p=635&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;A continuación iremos a la consola y ejecutaremos los siguientes
+comandos:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;sudo /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024&lt;/p&gt;
+&lt;p&gt;sudo /sbin/mkswap /var/swap.1&lt;/p&gt;
+&lt;p&gt;sudo /sbin/swapon /var/swap.1&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Con ello crearemos el archivo swap y lo montaremos.&lt;br&gt;
+Con este comando se crea de un tamaño de 1024 MB, si se quisiera mas,
+abría que cambiar el valor count a el deseado.&lt;/p&gt;
+&lt;p&gt;Por ultimo abría que añadir esta linea al archivo /etc/fstab , esto
+permitirá que se monte durante el arranque automáticamente.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;/var/swap.1 swap swap defaults 0 0&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Espero ser de ayuda, un saludo&lt;/p&gt;</content><category term="/etc/fstab"></category><category term="amazon"></category><category term="AWS"></category><category term="cloud"></category><category term="mkswap"></category><category term="red hat"></category><category term="rhel"></category><category term="services"></category><category term="swap"></category><category term="swapon"></category><category term="web"></category></entry><entry><title>Montar volumen AWS en RHEL</title><link href="https://egonzalez90.github.io/montar-volumen-aws-en-rhel.html" rel="alternate"></link><published>2014-09-17T17:05:00+02:00</published><updated>2014-09-17T17:05:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-09-17:/montar-volumen-aws-en-rhel.html</id><summary type="html">&lt;p&gt;Para poder realizar estos pasos es necesario que se haya creado un
+volumen previamente en EC2 de AWS, nos conectaremos a la maquina por SSH
+y seguiremos los siguientes pasos&lt;!--more--&gt;&lt;/p&gt;
+&lt;p&gt;Primero comprobaremos que el volumen que habíamos creado en EC2 le ve el
+SO, utilizaremos este comando&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span class="command" style="color: #000000;"&gt;lsblk&lt;/span&gt;&lt;span
+style="color: #000000;"&gt; &lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Lo normal …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Para poder realizar estos pasos es necesario que se haya creado un
+volumen previamente en EC2 de AWS, nos conectaremos a la maquina por SSH
+y seguiremos los siguientes pasos&lt;!--more--&gt;&lt;/p&gt;
+&lt;p&gt;Primero comprobaremos que el volumen que habíamos creado en EC2 le ve el
+SO, utilizaremos este comando&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span class="command" style="color: #000000;"&gt;lsblk&lt;/span&gt;&lt;span
+style="color: #000000;"&gt; &lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Lo normal es que el primer  volumen que añadas se llame xvdf alojado en
+/dev/&lt;/p&gt;
+&lt;p&gt;Ahora lo formatearemos en EXT4&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;sudo mkfs -t ext4 /dev/xvdf&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A continuación crearemos la carpeta en donde montaremos el volumen y
+después lo montaremos en dicha carpeta&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;sudo mkdir /mnt/volumen&lt;/p&gt;
+&lt;p&gt;sudo mount /dev/xvdf /mnt/volumen&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Ahora con el comando df -h comprobaremos que el SO ya lo ve montado&lt;/p&gt;</content><category term="amazon"></category><category term="añadir"></category><category term="AWS"></category><category term="cloud"></category><category term="computing"></category><category term="formatear"></category><category term="linux"></category><category term="montar"></category><category term="red hat"></category><category term="rhel"></category><category term="services"></category><category term="volumen"></category><category term="web"></category><category term="xvdf"></category></entry></feed>

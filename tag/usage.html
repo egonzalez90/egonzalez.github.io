@@ -1,47 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>OpenStack Stuff | articles tagged "usage"</title>
-    <link rel="shortcut icon" type="image/png" href="https://egonzalez90.github.io/favicon.png">
-    <link rel="shortcut icon" type="image/x-icon" href="https://egonzalez90.github.io/favicon.ico">
-    <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Full Atom Feed" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/screen.css" type="text/css" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/print.css" type="text/css" media="print" />
-    <meta name="generator" content="Pelican" />
-    <meta name="description" content="" />
-    <meta name="author" content="Eduardo Gonzalez" />
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - usage</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
 </head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li class="ephemeral selected"><a href="https://egonzalez90.github.io/tag/usage.html">usage</a></li>
-                <li><a href="https://egonzalez90.github.io/">Home</a></li>
-                <li><a href="https://docs.openstack.org">OpenStack</a></li>
-                <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
-                <li><a href="https://github.com/egonzalez90">Github</a></li>
-                <li><a href="https://egonzalez90.github.io/archives">Archives</a></li>
-            </ul>
-        </nav>
-        <div class="header_box">
-            <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff</a></h1>
-        </div>
-    </header>
-    <div id="wrapper">
-        <div id="content">            <h4 class="date">Jan 14, 2016</h4>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/openstack-segregation-with-availability-zones-and-host-aggregates.html" rel="bookmark" title="Permanent Link to &quot;OpenStack segregation with Availability Zones and Host Aggregates&quot;">OpenStack segregation with Availability Zones and Host Aggregates</a>
-                </h2>
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="https://docs.openstack.org">OpenStack</a></li>
+                    <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                    <li><a href="https://github.com/egonzalez90">Github</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
 
-                
-                
-
-                <p>When a new OpenStack cloud born, usually all servers run over the same
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://egonzalez90.github.io/openstack-segregation-with-availability-zones-and-host-aggregates.html">OpenStack segregation with Availability Zones and Host Aggregates</a></h1>
+<footer class="post-info">
+        <span>Thu 14 January 2016</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/availability-zones.html">availability zones</a><a href="https://egonzalez90.github.io/tag/flavor.html">flavor</a><a href="https://egonzalez90.github.io/tag/guide.html">guide</a><a href="https://egonzalez90.github.io/tag/host-aggregates.html">host aggregates</a><a href="https://egonzalez90.github.io/tag/image.html">image</a><a href="https://egonzalez90.github.io/tag/meta.html">meta</a><a href="https://egonzalez90.github.io/tag/nova.html">nova</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/scheduler.html">scheduler</a><a href="https://egonzalez90.github.io/tag/segregation.html">segregation</a><a href="https://egonzalez90.github.io/tag/usage.html">usage</a></span>
+</footer><!-- /.post-info --><p>When a new OpenStack cloud born, usually all servers run over the same
 hardware and specifications, often, all servers are in the same
 building, room, rack, even a chassis when the cloud is in the first
 growth paces.</p>
@@ -353,193 +350,43 @@ OS-EXT-AZ:availability_zone:az2
 
 <p>That's all for now<br>
 Hope this guide helps.<br>
-Regards</p>
-                <div class="clear"></div>
+Regards</p><p><a href="https://egonzalez90.github.io/openstack-segregation-with-availability-zones-and-host-aggregates.html#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
 
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/openstack-segregation-with-availability-zones-and-host-aggregates.html">posted at 21:34</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/availability-zones.html" class="tags">availability zones</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/flavor.html" class="tags">flavor</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/guide.html" class="tags">guide</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/host-aggregates.html" class="tags">host aggregates</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/image.html" class="tags">image</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/meta.html" class="tags">meta</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/nova.html" class="tags">nova</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/scheduler.html" class="tags">scheduler</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/segregation.html" class="tags">segregation</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/usage.html" class="tags selected">usage</a>
-                </div>
-		<a href="https://egonzalez90.github.io/openstack-segregation-with-availability-zones-and-host-aggregates.html#disqus_thread">Click to read and post comments</a>
-            </article>            <h4 class="date">Sep 08, 2015</h4>
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/ceph-radosgw-admin-ops-how-to-use-it.html" rel="bookmark"
+                           title="Permalink to Ceph RadosGW Admin Ops, how to use it">Ceph RadosGW Admin Ops, how to use it</a></h1>
+                </header>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/ceph-radosgw-admin-ops-how-to-use-it.html" rel="bookmark" title="Permanent Link to &quot;Ceph RadosGW Admin Ops, how to use it&quot;">Ceph RadosGW Admin Ops, how to use it</a>
-                </h2>
-
-                
-                
-
-                <p>Using RadosGW admin ops for the first time, can be a real headache ,
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 08 September 2015</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/admin.html">admin</a><a href="https://egonzalez90.github.io/tag/admin-ops.html">admin ops</a><a href="https://egonzalez90.github.io/tag/ceph.html">ceph</a><a href="https://egonzalez90.github.io/tag/header.html">header</a><a href="https://egonzalez90.github.io/tag/ops.html">ops</a><a href="https://egonzalez90.github.io/tag/query.html">query</a><a href="https://egonzalez90.github.io/tag/radosgw.html">radosgw</a><a href="https://egonzalez90.github.io/tag/script.html">script</a><a href="https://egonzalez90.github.io/tag/sign.html">sign</a><a href="https://egonzalez90.github.io/tag/understand.html">understand</a><a href="https://egonzalez90.github.io/tag/usage.html">usage</a><a href="https://egonzalez90.github.io/tag/user.html">user</a></span>
+</footer><!-- /.post-info -->                <p>Using RadosGW admin ops for the first time, can be a real headache ,
 for this purpose i have made this post, where you will understand how to
 use this API.<br>
 Let's start:</p>
 <p>For issue a request through admin ops, you need to have a signature,
-this signature is make it signing a header.<br>
-The header must to be composed by the current date, the request
-type(GET/PUT/POST/DELETE) and the request itself.<br>
-This header must be signed by SSL including the admin ops secret on
-this signature.<br>
-Now , you can make a request.<br>
-Sometimes, the time is not the same as the radosgw node expect, you can
-hack on it changing the date=\$(date) value with:<br>
-If your host has two hours more than the radosgw node, substract this
-two hours under \$(( 10#\$i-2)) variable, where 2 is the two hours to
-substract.</p>
-<div class="highlight"><pre><span></span><span class="nt">date</span><span class="o">=$(</span><span class="nt">for</span> <span class="nt">i</span> <span class="nt">in</span> <span class="o">$(</span><span class="nt">date</span> <span class="s2">&quot;+%H&quot;</span><span class="o">)</span> <span class="o">;</span> <span class="nt">do</span> <span class="nt">date</span> <span class="s2">&quot;+%a, %d %b %Y $(( 10#$i-2 )):%M:%S +0000&quot;</span> <span class="o">;</span> <span class="nt">done</span><span class="o">)</span>
-</pre></div>
+this signature is make it …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/ceph-radosgw-admin-ops-how-to-use-it.html">read more</a>
+<p><a href="https://egonzalez90.github.io/ceph-radosgw-admin-ops-how-to-use-it.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
 
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/reiniciar-quota-count-incorrecto-openstack.html" rel="bookmark"
+                           title="Permalink to Reiniciar quota count incorrecto Openstack">Reiniciar quota count incorrecto Openstack</a></h1>
+                </header>
 
-<p>Examples:</p>
-<p>Create a user named egonzalez:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
-<span class="nv">token</span><span class="o">=</span>U2JCD4ZG4D1XJOI5XNF4 <span class="c1">## USER_TOKEN</span>
-<span class="nv">secret</span><span class="o">=</span>+IFgr7POzLWS0i3hQnC+dd3DOAZObHoY5NYm6m3b <span class="c1">## USER_SECRET</span>
-<span class="nv">query</span><span class="o">=</span><span class="nv">$1</span>
-<span class="nv">name</span><span class="o">=</span><span class="nv">$2</span>
-<span class="nv">query3</span><span class="o">=</span><span class="s2">&quot;&amp;uid=&quot;</span>
-<span class="nv">query2</span><span class="o">=</span>admin/user
-<span class="nv">query4</span><span class="o">=</span><span class="s2">&quot;&amp;quota-type=user&quot;</span>
-<span class="nv">date</span><span class="o">=</span><span class="k">$(</span>date<span class="k">)</span>
-<span class="nv">header</span><span class="o">=</span><span class="s2">&quot;PUT\n\n\n</span><span class="si">${</span><span class="nv">date</span><span class="si">}</span><span class="s2">\n/</span><span class="si">${</span><span class="nv">query2</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="nv">sig</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> -en <span class="si">${</span><span class="nv">header</span><span class="si">}</span> <span class="p">|</span> openssl sha1 -hmac <span class="si">${</span><span class="nv">secret</span><span class="si">}</span> -binary <span class="p">|</span> base64<span class="k">)</span>
-curl -v -H <span class="s2">&quot;Date: </span><span class="si">${</span><span class="nv">date</span><span class="si">}</span><span class="s2">&quot;</span> -H <span class="s2">&quot;Authorization: AWS </span><span class="si">${</span><span class="nv">token</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">sig</span><span class="si">}</span><span class="s2">&quot;</span> -L -X PUT <span class="s2">&quot;http://10.0.2.10/</span><span class="si">${</span><span class="nv">query2</span><span class="si">}</span><span class="s2">?format=json</span><span class="si">${</span><span class="nv">query3</span><span class="si">}${</span><span class="nv">query</span><span class="si">}</span><span class="s2">&amp;display-name=</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">&quot;</span> -H <span class="s2">&quot;Host: 10.0.2.10&quot;</span>
-<span class="c1">##Change IPs with your own IPs</span>
-</pre></div>
-</td></tr></table>
-
-<p>Output:</p>
-<div class="highlight"><pre><span></span>[ceph@adminnode scripts]$ sh createUser.sh egonzalez EgonzalezDescription
-{&quot;user_id&quot;:&quot;egonzalez&quot;,&quot;display_name&quot;:&quot;EgonzalezDescription&quot;,&quot;email&quot;:&quot;&quot;,&quot;suspended&quot;:0,&quot;max_buckets&quot;:1000,&quot;subusers&quot;:[],&quot;keys&quot;:[{&quot;user&quot;:&quot;egonzalez&quot;,&quot;access_key&quot;:&quot;24FUKCWD6BL9T08DQ2JA&quot;,&quot;secret_key&quot;:&quot;mEQdhcrsqOy7q6Snvu8B5d5A2Ek9OezJH+khwYvX&quot;}],&quot;swift_keys&quot;:[],&quot;caps&quot;:[]}
-</pre></div>
-
-
-<p>See egonzalez quotas</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
-<span class="nv">token</span><span class="o">=</span>U2JCD4ZG4D1XJOI5XNF4 <span class="c1">## USER_TOKEN</span>
-<span class="nv">secret</span><span class="o">=</span>+IFgr7POzLWS0i3hQnC+dd3DOAZObHoY5NYm6m3b <span class="c1">## USER_SECRET</span>
-<span class="nv">query</span><span class="o">=</span><span class="nv">$1</span>
-<span class="nv">query3</span><span class="o">=</span><span class="s2">&quot;&amp;uid=&quot;</span>
-<span class="nv">query2</span><span class="o">=</span>admin/user
-<span class="nv">query4</span><span class="o">=</span><span class="s2">&quot;&amp;quota-type=user&quot;</span>
-<span class="nv">date</span><span class="o">=</span><span class="k">$(</span>date<span class="k">)</span>
-<span class="nv">header</span><span class="o">=</span><span class="s2">&quot;GET\n\n\n</span><span class="si">${</span><span class="nv">date</span><span class="si">}</span><span class="s2">\n/</span><span class="si">${</span><span class="nv">query2</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="nv">sig</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> -en <span class="si">${</span><span class="nv">header</span><span class="si">}</span> <span class="p">|</span> openssl sha1 -hmac <span class="si">${</span><span class="nv">secret</span><span class="si">}</span> -binary <span class="p">|</span> base64<span class="k">)</span>
-curl -v -H <span class="s2">&quot;Date: </span><span class="si">${</span><span class="nv">date</span><span class="si">}</span><span class="s2">&quot;</span> -H <span class="s2">&quot;Authorization: AWS </span><span class="si">${</span><span class="nv">token</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">sig</span><span class="si">}</span><span class="s2">&quot;</span> -L -X GET <span class="s2">&quot;http://10.0.2.10/</span><span class="si">${</span><span class="nv">query2</span><span class="si">}</span><span class="s2">?quota</span><span class="si">${</span><span class="nv">query3</span><span class="si">}${</span><span class="nv">query</span><span class="si">}</span><span class="s2">&amp;quota-type=user&quot;</span> -H <span class="s2">&quot;Host: 10.0.2.10&quot;</span>
-<span class="c1">##Change IPs with your own IPs</span>
-</pre></div>
-</td></tr></table>
-
-<p>Output:</p>
-<div class="highlight"><pre><span></span>[ceph@adminnode scripts]$ sh getuserquota.sh egonzalez
-
-{&quot;enabled&quot;: true,&quot;max_size_kb&quot;:1000,&quot;max_objects&quot;:1000}Status: 200 OK
-</pre></div>
-
-
-<p>See egonzalez user information.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
-<span class="nv">token</span><span class="o">=</span>U2JCD4ZG4D1XJOI5XNF4 <span class="c1">## USER_TOKEN</span>
-<span class="nv">secret</span><span class="o">=</span>+IFgr7POzLWS0i3hQnC+dd3DOAZObHoY5NYm6m3b <span class="c1">## USER_SECRET</span>
-<span class="nv">query</span><span class="o">=</span><span class="nv">$1</span>
-<span class="nv">query3</span><span class="o">=</span><span class="s2">&quot;&amp;uid=&quot;</span>
-<span class="nv">query2</span><span class="o">=</span>admin/user
-<span class="nv">date</span><span class="o">=</span><span class="k">$(</span>date<span class="k">)</span>
-<span class="nv">header</span><span class="o">=</span><span class="s2">&quot;GET\n\n\n</span><span class="si">${</span><span class="nv">date</span><span class="si">}</span><span class="s2">\n/</span><span class="si">${</span><span class="nv">query2</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="nv">sig</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> -en <span class="si">${</span><span class="nv">header</span><span class="si">}</span> <span class="p">|</span> openssl sha1 -hmac <span class="si">${</span><span class="nv">secret</span><span class="si">}</span> -binary <span class="p">|</span> base64<span class="k">)</span>
-curl -v -H <span class="s2">&quot;Date: </span><span class="si">${</span><span class="nv">date</span><span class="si">}</span><span class="s2">&quot;</span> -H <span class="s2">&quot;Authorization: AWS </span><span class="si">${</span><span class="nv">token</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">sig</span><span class="si">}</span><span class="s2">&quot;</span> -L -X GET <span class="s2">&quot;http://10.0.2.10/</span><span class="si">${</span><span class="nv">query2</span><span class="si">}</span><span class="s2">?format=json</span><span class="si">${</span><span class="nv">query3</span><span class="si">}${</span><span class="nv">query</span><span class="si">}</span><span class="s2">&quot;</span> -H <span class="s2">&quot;Host: 10.0.2.10&quot;</span>
-<span class="c1">##Change IPs with your own IPs</span>
-</pre></div>
-</td></tr></table>
-
-<p>Output:</p>
-<div class="highlight"><pre><span></span>[ceph@adminnode scripts]$ sh userInfo.sh egonzalez
-{&quot;user_id&quot;:&quot;egonzalez&quot;,&quot;display_name&quot;:&quot;EgonzalezDescription&quot;,&quot;email&quot;:&quot;&quot;,&quot;suspended&quot;:0,&quot;max_buckets&quot;:1000,&quot;subusers&quot;:[],&quot;keys&quot;:[{&quot;user&quot;:&quot;egonzalez&quot;,&quot;access_key&quot;:&quot;24FUKCWD6BL9T08DQ2JA&quot;,&quot;secret_key&quot;:&quot;mEQdhcrsqOy7q6Snvu8B5d5A2Ek9OezJH+khwYvX&quot;}],&quot;swift_keys&quot;:[],&quot;caps&quot;:[]}
-</pre></div>
-
-
-<p>When you really understand how admin ops works, is not as dificult to
-use it, just search at the official documentation and modify the desired
-values.</p>
-<p>I hope this helps:</p>
-<p>Regards, Eduardo.</p>
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/ceph-radosgw-admin-ops-how-to-use-it.html">posted at 13:45</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/admin.html" class="tags">admin</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/admin-ops.html" class="tags">admin ops</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/ceph.html" class="tags">ceph</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/header.html" class="tags">header</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/ops.html" class="tags">ops</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/query.html" class="tags">query</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/radosgw.html" class="tags">radosgw</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/script.html" class="tags">script</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/sign.html" class="tags">sign</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/understand.html" class="tags">understand</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/usage.html" class="tags selected">usage</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/user.html" class="tags">user</a>
-                </div>
-		<a href="https://egonzalez90.github.io/ceph-radosgw-admin-ops-how-to-use-it.html#disqus_thread">Click to read and post comments</a>
-            </article>            <h4 class="date">Sep 07, 2014</h4>
-
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/reiniciar-quota-count-incorrecto-openstack.html" rel="bookmark" title="Permanent Link to &quot;Reiniciar quota count incorrecto Openstack&quot;">Reiniciar quota count incorrecto Openstack</a>
-                </h2>
-
-                
-                
-
-                <p>Para reiniciar quota count, deberemos conectarnos a la base de datos y
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 07 September 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/bbdd.html">bbdd</a><a href="https://egonzalez90.github.io/tag/cloud.html">cloud</a><a href="https://egonzalez90.github.io/tag/count.html">count</a><a href="https://egonzalez90.github.io/tag/cuenta.html">cuenta</a><a href="https://egonzalez90.github.io/tag/cuota.html">cuota</a><a href="https://egonzalez90.github.io/tag/error.html">error</a><a href="https://egonzalez90.github.io/tag/id.html">ID</a><a href="https://egonzalez90.github.io/tag/incorrecto.html">incorrecto</a><a href="https://egonzalez90.github.io/tag/nova.html">nova</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/quota.html">quota</a><a href="https://egonzalez90.github.io/tag/reinicio.html">reinicio</a><a href="https://egonzalez90.github.io/tag/reset.html">reset</a><a href="https://egonzalez90.github.io/tag/tenant.html">tenant</a><a href="https://egonzalez90.github.io/tag/usage.html">usage</a></span>
+</footer><!-- /.post-info -->                <p>Para reiniciar quota count, deberemos conectarnos a la base de datos y
 establecer in_use en "-1"</p>
 <blockquote>
 <p>mysql -u nova -p\&lt;password> nova</p>
@@ -547,47 +394,40 @@ establecer in_use en "-1"</p>
 <p>update quota_usages set in_use='-1'where project_id='\&lt;my project
 id>';</p>
 </blockquote>
-<p>A partir de la versión Icehouse, ya no se usa -1 y se pasa a usar 0</p>
-<blockquote>
-<p>update quota_usages set in_use='0'where project_id='\&lt;my project
-id>';</p>
-</blockquote>
-                <div class="clear"></div>
+<p>A partir de la versión Icehouse, ya no se usa -1 y se pasa a usar …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/reiniciar-quota-count-incorrecto-openstack.html">read more</a>
+<p><a href="https://egonzalez90.github.io/reiniciar-quota-count-incorrecto-openstack.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/reiniciar-quota-count-incorrecto-openstack.html">posted at 15:50</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/bbdd.html" class="tags">bbdd</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/cloud.html" class="tags">cloud</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/count.html" class="tags">count</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/cuenta.html" class="tags">cuenta</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/cuota.html" class="tags">cuota</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/error.html" class="tags">error</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/id.html" class="tags">ID</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/incorrecto.html" class="tags">incorrecto</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/nova.html" class="tags">nova</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/quota.html" class="tags">quota</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/reinicio.html" class="tags">reinicio</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/reset.html" class="tags">reset</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/tenant.html" class="tags">tenant</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/usage.html" class="tags selected">usage</a>
-                </div>
-		<a href="https://egonzalez90.github.io/reiniciar-quota-count-incorrecto-openstack.html#disqus_thread">Click to read and post comments</a>
-            </article>
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
 
-            <div class="clear"></div>
-            <footer>
-                <p>
-                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
-                &middot;
-                Powered by <a href="http://getpelican.com">Pelican</a>
-                &middot;
-                <a href="https://egonzalez90.github.io/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
-            </footer>
-        </div>
-        <div class="clear"></div>
-    </div>
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
 </body>
 </html>

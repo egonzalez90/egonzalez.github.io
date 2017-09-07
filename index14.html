@@ -1,158 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>OpenStack Stuff | Page 14</title>
-    <link rel="shortcut icon" type="image/png" href="https://egonzalez90.github.io/favicon.png">
-    <link rel="shortcut icon" type="image/x-icon" href="https://egonzalez90.github.io/favicon.ico">
-    <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Full Atom Feed" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/screen.css" type="text/css" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/print.css" type="text/css" media="print" />
-    <meta name="generator" content="Pelican" />
-    <meta name="description" content="" />
-    <meta name="author" content="Eduardo Gonzalez" />
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
 </head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="https://egonzalez90.github.io/">Home</a></li>
-                <li><a href="https://docs.openstack.org">OpenStack</a></li>
-                <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
-                <li><a href="https://github.com/egonzalez90">Github</a></li>
-                <li><a href="https://egonzalez90.github.io/archives">Archives</a></li>
-            </ul>
-        </nav>
-        <div class="header_box">
-            <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff</a></h1>
-        </div>
-    </header>
-    <div id="wrapper">
-        <div id="content">            <h4 class="date">Dec 29, 2014</h4>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/comprobar-keystone.html" rel="bookmark" title="Permanent Link to &quot;Comprobar Keystone&quot;">Comprobar Keystone</a>
-                </h2>
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="https://docs.openstack.org">OpenStack</a></li>
+                    <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                    <li><a href="https://github.com/egonzalez90">Github</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
 
-                
-                
+                <section id="content" class="body">
+                    <ol id="posts-list" class="hfeed" start="2">
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/comprobar-keystone.html" rel="bookmark"
+                           title="Permalink to Comprobar Keystone">Comprobar Keystone</a></h1>
+                </header>
 
-                <p>En anteriores post hemos configurado Keystone(Identity Service), ahora
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 29 December 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/-.html">-</a><a href="https://egonzalez90.github.io/tag/comprobar.html">comprobar</a><a href="https://egonzalez90.github.io/tag/instalacion.html">instalacion</a><a href="https://egonzalez90.github.io/tag/keystone.html">keystone</a><a href="https://egonzalez90.github.io/tag/list.html">list</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/role.html">role</a><a href="https://egonzalez90.github.io/tag/usr.html">usr</a></span>
+</footer><!-- /.post-info -->                <p>En anteriores post hemos configurado Keystone(Identity Service), ahora
 deberemos de comprobar que este correctamente configurado. Para ello he
 creado esta entrada en el blog.</p>
 <p>Lo primero que haremos será quitar las variables de entorno con las que
 nos autenticábamos en el servicio, con ello nos tendremos que autenticar
-con usuario y contraseña.</p>
-<blockquote>
-<p>unset OS_SERVICE_TOKEN OS_SERVICE_ENDPOINT</p>
-</blockquote>
-<p>A continuación crearemos el archivo admin-openrc.sh, en el que
-configuraremos los datos de nuestro usuario, en este caso el usuario
-admin previamente creado. Una vez creado el fichero anterior mediante un
-editor de texto, vi, gedit, nano, etc. Incluiremos el siguiente
-contenido:</p>
-<blockquote>
-<p>export OS_USERNAME=admin</p>
-<p>export OS_PASSWORD=\&lt;adminPASSWORD></p>
-<p>export OS_TENANT_NAME=admin</p>
-<p>export OS_AUTH_URL=http://controller:35357/v2.0</p>
-</blockquote>
-<p>A continuación, estableceremos las variables de entorno añadidas en el
-archivo admin-openrc.sh</p>
-<blockquote>
-<p>source admin-openrc.sh</p>
-</blockquote>
-<p>Comprobaremos que podemos listar los usuarios y ya de paso comprobamos
-que estan bien definidas las variables y por lo tanto estamos utilizando
-el usuario admin en esta operación</p>
-<blockquote>
-<p>keystone user-list</p>
-</blockquote>
-<p>Listamos los roles del usuario admin</p>
-<blockquote>
-<p>keystone user-role-list --user=admin --tenant=admin</p>
-</blockquote>
-<p>Estos dos últimos comandos nos mostraran una información, en la que
-comprobaremos que el ID del usuario admin esta en el rol de admin y
-_member_</p>
-<p>Si todo lo anterior salió correctamente quiere decir que tenemos la
-configuración básica de Identity Service correctamente realizada y
-podremos seguir configurando mas servicios en nuestro entorno</p>
-                <div class="clear"></div>
+con …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/comprobar-keystone.html">read more</a>
+<p><a href="https://egonzalez90.github.io/comprobar-keystone.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
 
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/comprobar-keystone.html">posted at 18:14</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/-.html" class="tags">-</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/comprobar.html" class="tags">comprobar</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/instalacion.html" class="tags">instalacion</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/keystone.html" class="tags">keystone</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/list.html" class="tags">list</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/role.html" class="tags">role</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/usr.html" class="tags">usr</a>
-                </div>
-		<a href="https://egonzalez90.github.io/comprobar-keystone.html#disqus_thread">Click to read and post comments</a>
-            </article>            <h4 class="date">Dec 23, 2014</h4>
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/keystone-api-endpoint.html" rel="bookmark"
+                           title="Permalink to Keystone API endpoint">Keystone API endpoint</a></h1>
+                </header>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/keystone-api-endpoint.html" rel="bookmark" title="Permanent Link to &quot;Keystone API endpoint&quot;">Keystone API endpoint</a>
-                </h2>
-
-                
-                
-
-                <p>Una vez configurado Keystone, creados sus usuarios y el servicio,
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 23 December 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/api.html">api</a><a href="https://egonzalez90.github.io/tag/cloud.html">cloud</a><a href="https://egonzalez90.github.io/tag/endpoint.html">endpoint</a><a href="https://egonzalez90.github.io/tag/identity-service.html">identity service</a><a href="https://egonzalez90.github.io/tag/keystone.html">keystone</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a></span>
+</footer><!-- /.post-info -->                <p>Una vez configurado Keystone, creados sus usuarios y el servicio,
 deberemos de decirle a Identity Service donde debe ir a "buscar" el
 servicio. Para ello configuramos los Endpoints, que no son ni mas ni
 menos que las direcciones donde están los servicios.Al tener únicamente
-a Identity Service configurado solo tenemos que configurar un Endpoint
-(de momento)</p>
-<p>Antes que nada, debemos tener Identity Service configurado, para ello lo
-haremos mediante el siguiente comando:</p>
-<blockquote>
-<p>keystone service-create --name=keystone --type=identity
---description="Openstack Identity"</p>
-</blockquote>
-<p>El siguiente paso a realizar es especificar/crear el Endpoint a Keystone
-de Identity Service. para ello necesitaremos el ID del servicio creado
-en el paso anterior.</p>
-<blockquote>
-<p>keystone endpoint-create --service-id=\&lt;ID></p>
-<p>--publicurl=http://controller:5000/v2.0</p>
-<p>--internalurl=http://controller:5000/v2.0</p>
-<p>--adminurl=http://controller:35357/v2.0</p>
-</blockquote>
-                <div class="clear"></div>
+a Identity Service configurado solo …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/keystone-api-endpoint.html">read more</a>
+<p><a href="https://egonzalez90.github.io/keystone-api-endpoint.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
 
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/keystone-api-endpoint.html">posted at 18:14</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/api.html" class="tags">api</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/cloud.html" class="tags">cloud</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/endpoint.html" class="tags">endpoint</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/identity-service.html" class="tags">identity service</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/keystone.html" class="tags">keystone</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
-                </div>
-		<a href="https://egonzalez90.github.io/keystone-api-endpoint.html#disqus_thread">Click to read and post comments</a>
-            </article>            <h4 class="date">Dec 02, 2014</h4>
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/eliminar-vm-ldom-en-sparc.html" rel="bookmark"
+                           title="Permalink to Eliminar VM (LDOM) en SPARC">Eliminar VM (LDOM) en SPARC</a></h1>
+                </header>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/eliminar-vm-ldom-en-sparc.html" rel="bookmark" title="Permanent Link to &quot;Eliminar VM (LDOM) en SPARC&quot;">Eliminar VM (LDOM) en SPARC</a>
-                </h2>
-
-                
-                
-
-                <p>Primero comprobaremos que maquinas tenemos y el estado de ellas</p>
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 02 December 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/eliminar.html">eliminar</a><a href="https://egonzalez90.github.io/tag/ldm-list.html">ldm list</a><a href="https://egonzalez90.github.io/tag/ldm-remove.html">ldm remove</a><a href="https://egonzalez90.github.io/tag/ldom.html">ldom</a><a href="https://egonzalez90.github.io/tag/list-bindings.html">list-bindings</a><a href="https://egonzalez90.github.io/tag/oracle.html">oracle</a><a href="https://egonzalez90.github.io/tag/quitar.html">quitar</a><a href="https://egonzalez90.github.io/tag/remove.html">remove</a><a href="https://egonzalez90.github.io/tag/solaris.html">solaris</a><a href="https://egonzalez90.github.io/tag/sparc.html">sparc</a><a href="https://egonzalez90.github.io/tag/vm.html">VM</a></span>
+</footer><!-- /.post-info -->                <p>Primero comprobaremos que maquinas tenemos y el estado de ellas</p>
 <blockquote>
 <p>ldm list</p>
 </blockquote>
@@ -165,76 +96,42 @@ apagaremos</p>
 <blockquote>
 <p>ldm unbind LDOM</p>
 </blockquote>
-<p>Listaremos la configuración de la maquina y buscaremos los discos que
-tenga asignados, normalmente está al final del archivo</p>
-<blockquote>
-<p>ldm list-bindings LDOM</p>
-</blockquote>
-<p>Quitaremos el controlador del disco de la maquina</p>
-<blockquote>
-<p>ldm remove-vdiskserverdevice VOLUMEN@LDOM</p>
-</blockquote>
-<p>Eliminaremos el disco de la configuración de la maquina</p>
-<blockquote>
-<p>ldm remove-vdisk DISKNAME LDOM</p>
-</blockquote>
-<p>Eliminamos las NIC</p>
-<blockquote>
-<p>ldm remove-vnet NIC_NAME LDOM</p>
-</blockquote>
-<p>Borramos VDS</p>
-<blockquote>
-<p>ldm remove-vds LDOM</p>
-</blockquote>
-<p>Eliminamos configuración de la maquina</p>
-<blockquote>
-<p>ldm remove-domain LDOM</p>
-</blockquote>
-<p>Borramos los datos de la maquina, esto se hace eliminando la carpeta
-donde están las maquinas guardadas</p>
-<blockquote>
-<p>rm -R /ruta/carpeta/LDOM/</p>
-</blockquote>
-                <div class="clear"></div>
+<p>Listaremos la configuración de la maquina y buscaremos los discos que …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/eliminar-vm-ldom-en-sparc.html">read more</a>
+<p><a href="https://egonzalez90.github.io/eliminar-vm-ldom-en-sparc.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+        <a href="https://egonzalez90.github.io/index13.html">&laquo;</a>
+    Page 14 / 34
+        <a href="https://egonzalez90.github.io/index15.html">&raquo;</a>
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/eliminar-vm-ldom-en-sparc.html">posted at 14:51</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/virtualizacion.html" rel="tag">Virtualizacion</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/eliminar.html" class="tags">eliminar</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/ldm-list.html" class="tags">ldm list</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/ldm-remove.html" class="tags">ldm remove</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/ldom.html" class="tags">ldom</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/list-bindings.html" class="tags">list-bindings</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/oracle.html" class="tags">oracle</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/quitar.html" class="tags">quitar</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/remove.html" class="tags">remove</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/solaris.html" class="tags">solaris</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/sparc.html" class="tags">sparc</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/vm.html" class="tags">VM</a>
-                </div>
-		<a href="https://egonzalez90.github.io/eliminar-vm-ldom-en-sparc.html#disqus_thread">Click to read and post comments</a>
-            </article>
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
 
-                <div class="clear"></div>
-                <div class="pages">
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
 
-                    <a href="https://egonzalez90.github.io/page/13" class="prev_page">&larr;&nbsp;Previous</a>
-                    <a href="https://egonzalez90.github.io/page/15" class="next_page">Next&nbsp;&rarr;</a>
-                    <span>Page 14 of 34</span>
-                </div>
-
-            <div class="clear"></div>
-            <footer>
-                <p>
-                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
-                &middot;
-                Powered by <a href="http://getpelican.com">Pelican</a>
-                &middot;
-                <a href="https://egonzalez90.github.io/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
-            </footer>
-        </div>
-        <div class="clear"></div>
-    </div>
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
 </body>
 </html>

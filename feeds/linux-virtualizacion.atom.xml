@@ -44,4 +44,39 @@ title="Enlace permanente temporal. Haz clic para editar esta parte."&gt;recupera
 style="color: #666666;"&gt; &lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Una vez recuperado el GRUB y comprobado que la maquina funciona
 correctamente, borraremos el archivo .bak que se había creado.&lt;/p&gt;
-&lt;p&gt;Espero poder ayudar, un saludo&lt;/p&gt;</content><category term="alinear"></category><category term="esxi"></category><category term="ext3"></category><category term="ext4"></category><category term="grub"></category><category term="maquina virtual"></category><category term="mbr"></category><category term="mbralign"></category><category term="mbrscan"></category><category term="netapp"></category><category term="redhat"></category><category term="rhel"></category><category term="VM"></category><category term="vmfs"></category><category term="vmware"></category><category term="volumes"></category></entry></feed>
+&lt;p&gt;Espero poder ayudar, un saludo&lt;/p&gt;</content><category term="alinear"></category><category term="esxi"></category><category term="ext3"></category><category term="ext4"></category><category term="grub"></category><category term="maquina virtual"></category><category term="mbr"></category><category term="mbralign"></category><category term="mbrscan"></category><category term="netapp"></category><category term="redhat"></category><category term="rhel"></category><category term="VM"></category><category term="vmfs"></category><category term="vmware"></category><category term="volumes"></category></entry><entry><title>Error configuración red en RHEL 6 y VMware ESXi 5.5</title><link href="https://egonzalez90.github.io/error-configuracion-red-en-rhel-6-y-vmware-esxi-5-5.html" rel="alternate"></link><published>2014-08-07T16:49:00+02:00</published><updated>2014-08-07T16:49:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-08-07:/error-configuracion-red-en-rhel-6-y-vmware-esxi-5-5.html</id><summary type="html">&lt;p&gt;Ultimamente, desde que hemos empezado a trabajar mas con RHEL 6, nos
+dimos cuenta que tras el clonado de las VM, las interfaces de red no se
+configuraban bien.&lt;/p&gt;
+&lt;p&gt;Primero vimos que las MAC de la eth, no se asignaban correctamente, y
+despues comprobamos que una vez configuradas al hacer …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Ultimamente, desde que hemos empezado a trabajar mas con RHEL 6, nos
+dimos cuenta que tras el clonado de las VM, las interfaces de red no se
+configuraban bien.&lt;/p&gt;
+&lt;p&gt;Primero vimos que las MAC de la eth, no se asignaban correctamente, y
+despues comprobamos que una vez configuradas al hacer reboot o reinicio
+de la red, estas se configuraban como les daba la gana y perdias la
+configuracion e internet.&lt;/p&gt;
+&lt;p&gt;Pues bien, tras un proceso de investigacion llege a la solucion( o al
+menos en nuestro sistema), los pasos son los siguientes:&lt;/p&gt;
+&lt;p&gt;-Quitar las NIC de la antigua configuracion&lt;/p&gt;
+&lt;p&gt;-Añadir las NIC en vmxnet3 en el vCenter igual que estaban configuradas
+anteriormente&lt;/p&gt;
+&lt;p&gt;-Borrar el archivo /etc/udev/rules.d/70-persistent-net.rules&lt;/p&gt;
+&lt;p&gt;-Configurar los archivos /etc/sysconfig/network-scripts/ifcfg-eth*
+añadiendo la linea entre su configuracion&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;NM_CONTROLLED=no&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;-Parar el servicio NetworkManager y deshabilitarlo del arranque&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;service NetworkManager stop&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;chkconfig NetworkManager off&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;-Habilitar el servicio network en arranque(puede que ya lo esté)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;chkconfig network on&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;-Instalar las vmtools&lt;/p&gt;
+&lt;p&gt;-Reiniciar la maquina y comprobar que no cambia la configuración entre
+el inicio del sistema y tras service network restart&lt;/p&gt;
+&lt;p&gt;Bien, el problema que había, es que por algún error, el network manager
+se hacia con el control de la red y daba errores con el demonio network,
+lo que hacemos para solucionarlo es, borrar el archivo de la
+configuración de las tarjetas,configurar las eth deshabilitando el
+control por el Network manager y después deshabilitar Network Manager
+del sistema.&lt;/p&gt;
+&lt;p&gt;De este modo nos funciona sin ningun problema la red.&lt;/p&gt;
+&lt;p&gt;Espero haber ayudado, un saludo&lt;/p&gt;</content><category term="5.5"></category><category term="70-persistent-net.rules"></category><category term="clon"></category><category term="clondado"></category><category term="daemon"></category><category term="esxi"></category><category term="eth0"></category><category term="ifcfg-eth"></category><category term="linux"></category><category term="network"></category><category term="network manager"></category><category term="nic"></category><category term="nm_controlled"></category><category term="red hat"></category><category term="rhel6"></category><category term="sysadmin"></category><category term="virtualizacion"></category><category term="vmware"></category><category term="vmxnet3"></category></entry></feed>

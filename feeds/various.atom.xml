@@ -99,4 +99,216 @@ in to_conditional method it clearly says Skipping.&lt;/p&gt;
 &lt;p&gt;Execution times are not a problem in most use cases, as is not commonly
 used this kind of tasks in CM systems, only a few tasks will need this
 type of logic.&lt;/p&gt;
-&lt;p&gt;Regards, Eduardo Gonzalez&lt;/p&gt;</content><category term="analysis"></category><category term="ansible"></category><category term="code"></category><category term="conditional"></category><category term="logic"></category><category term="opinion"></category><category term="skip"></category><category term="syntax"></category><category term="True"></category><category term="when"></category><category term="with_first_found"></category></entry></feed>
+&lt;p&gt;Regards, Eduardo Gonzalez&lt;/p&gt;</content><category term="analysis"></category><category term="ansible"></category><category term="code"></category><category term="conditional"></category><category term="logic"></category><category term="opinion"></category><category term="skip"></category><category term="syntax"></category><category term="True"></category><category term="when"></category><category term="with_first_found"></category></entry><entry><title>NETSTAT aplicaciones con conexión a Internet</title><link href="https://egonzalez90.github.io/netstat-aplicaciones-con-conexion-a-internet.html" rel="alternate"></link><published>2014-09-19T13:47:00+02:00</published><updated>2014-09-19T13:47:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-09-19:/netstat-aplicaciones-con-conexion-a-internet.html</id><summary type="html">&lt;p&gt;Mediante el comando netstat y alguna de sus opciones podremos analizar
+las conexiones de red, para ver las conexiones que establecen las
+aplicaciones utilizaremos estas:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;netstat -bo 10&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;o&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;netstat -b&lt;/p&gt;
+&lt;/blockquote&gt;</summary><content type="html">&lt;p&gt;Mediante el comando netstat y alguna de sus opciones podremos analizar
+las conexiones de red, para ver las conexiones que establecen las
+aplicaciones utilizaremos estas:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;netstat -bo 10&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;o&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;netstat -b&lt;/p&gt;
+&lt;/blockquote&gt;</content><category term="-bo"></category><category term=".exe"></category><category term="10"></category><category term="aplicaciones"></category><category term="conexion"></category><category term="dirección"></category><category term="IP"></category><category term="netstat"></category><category term="url"></category><category term="windows"></category></entry><entry><title>Leer manga en Amazon Kindle</title><link href="https://egonzalez90.github.io/leer-manga-en-amazon-kindle.html" rel="alternate"></link><published>2014-08-26T17:15:00+02:00</published><updated>2014-08-26T17:15:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-08-26:/leer-manga-en-amazon-kindle.html</id><summary type="html">&lt;p&gt;Muchos de los que tenemos un kindle somos fieles lectores de manga y
+comics, seguro que a ninguno nos gusta leer los pdf o las imágenes
+sueltas. Para poder crear los archivos en formato de kindle .MOBI,
+utilizaremos estos programas:&lt;/p&gt;
+&lt;p&gt;Kindle Comic Converter: http://kcc.iosphe.re/&lt;/p&gt;
+&lt;p&gt;Kindlegen.exe: híamos …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Muchos de los que tenemos un kindle somos fieles lectores de manga y
+comics, seguro que a ninguno nos gusta leer los pdf o las imágenes
+sueltas. Para poder crear los archivos en formato de kindle .MOBI,
+utilizaremos estos programas:&lt;/p&gt;
+&lt;p&gt;Kindle Comic Converter: http://kcc.iosphe.re/&lt;/p&gt;
+&lt;p&gt;Kindlegen.exe: híamos todo configurado para podre formatear imágenes,
+carpetas, zip, rar, pdf, etc a los formatos MOBI, EPUB, CBZ.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/08/kkc.png"&gt;&lt;img alt="kkc" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/08/kkc.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Para crear nuestros archivos en uno de los 3 formatos disponibles,
+primero seleccionaremos nuestro dispositivo Kindle en el desplegable,
+después añadiremos un archivo o carpeta mediante Add file o Add
+directory.&lt;/p&gt;
+&lt;p&gt;A continuación utilizaremos alguna de las opciones disponibles. Yo
+personalmente solo utilizo High/Ultra quality, las demás opciones no me
+gustan, pero eso es para gustos.&lt;/p&gt;
+&lt;p&gt;Ahora ya solo deberéis probar las diferentes combinaciones de las
+opciones hasta que encontréis las que mas os gusten. Y ya solo queda
+disfrutar de los mangas o comics en vuestros kindle.&lt;/p&gt;
+&lt;p&gt;PD: Si os gusta la obra de algún autor siempre es preferible comprarla y
+apoyar económicamente en la producción de dicha obra.&lt;/p&gt;
+&lt;p&gt;Un saludo&lt;/p&gt;</content><category term="amazon"></category><category term="comic"></category><category term="converter"></category><category term="jpg"></category><category term="kindle"></category><category term="kindle comic converter"></category><category term="kindlegen"></category><category term="leer"></category><category term="manga"></category><category term="mobi"></category><category term="pdf"></category></entry><entry><title>15 libros recomendados sobre Hacking</title><link href="https://egonzalez90.github.io/15-libros-recomendados-sobre-hacking.html" rel="alternate"></link><published>2014-03-29T15:54:00+01:00</published><updated>2014-03-29T15:54:00+01:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-03-29:/15-libros-recomendados-sobre-hacking.html</id><summary type="html">&lt;p&gt;En esta entrada os voy a poner una lista de libros recomendados que
+cualquier Security Researcher, Hacker o aficionado a la informática
+debería de leer.&lt;!--more--&gt;Dentro de esta lista tienen libros de todas
+las dificultades, desde para entender como funciona la seguridad
+informática, hasta aprender a utilizar aplicaciones con un …&lt;/p&gt;</summary><content type="html">&lt;p&gt;En esta entrada os voy a poner una lista de libros recomendados que
+cualquier Security Researcher, Hacker o aficionado a la informática
+debería de leer.&lt;!--more--&gt;Dentro de esta lista tienen libros de todas
+las dificultades, desde para entender como funciona la seguridad
+informática, hasta aprender a utilizar aplicaciones con un grado de
+profundización alto dentro de estas.&lt;/p&gt;
+&lt;p&gt;La mayoría de estos libros están en ingles, pero con un ingles técnico
+bastante fácil de entender.&lt;/p&gt;
+&lt;p&gt;Por temas de derechos de autor no pongo los enlaces, pero son fácilmente
+encontrados en la web simplemente escribiendo el nombre del libro o por
+algún filtro en los buscadores, aunque yo siempre recomiendo comprarles
+para ayudar a la creación de mas manuales.&lt;/p&gt;
+&lt;p&gt;Bien, aquí están los libros, espero les disfruten y aprendan lo máximo
+posible&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Practical Packet Analysis&lt;/li&gt;
+&lt;li&gt;Violent Python&lt;/li&gt;
+&lt;li&gt;Web Penetration Testing with Kali Linux&lt;/li&gt;
+&lt;li&gt;Metasploit - The Penetration Testers Guide&lt;/li&gt;
+&lt;li&gt;BackTrack-5-Cookbook&lt;/li&gt;
+&lt;li&gt;Hacking Etico - Carlos Tori&lt;/li&gt;
+&lt;li&gt;La_Biblia_del_Footprinting&lt;/li&gt;
+&lt;li&gt;Network Forensics Tracking Hackers Through Cyberspace&lt;/li&gt;
+&lt;li&gt;Cyber Crime Investigations&lt;/li&gt;
+&lt;li&gt;Intrusion, Prevention and Active Response&lt;/li&gt;
+&lt;li&gt;Nmap in the Enterprise - Your Guide to Network Scanning&lt;/li&gt;
+&lt;li&gt;Phishing Exposed&lt;/li&gt;
+&lt;li&gt;XSS Attacks&lt;/li&gt;
+&lt;li&gt;Untagling the web&lt;/li&gt;
+&lt;li&gt;Google Hacking for Penetration Tester - Vol.1 y Vol.2&lt;/li&gt;
+&lt;/ul&gt;</content><category term="backtrack"></category><category term="google hacking"></category><category term="Hacking"></category><category term="kali linux"></category><category term="libros"></category><category term="metasploit"></category><category term="nmap"></category><category term="pdf"></category><category term="python"></category><category term="recomendados"></category><category term="security researcher"></category><category term="Seguridad"></category><category term="xss"></category></entry><entry><title>Instalacion Active Directory Server 2012 Core</title><link href="https://egonzalez90.github.io/instalacion-active-directory-server-2012-core.html" rel="alternate"></link><published>2014-03-08T16:19:00+01:00</published><updated>2014-03-08T16:19:00+01:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-03-08:/instalacion-active-directory-server-2012-core.html</id><summary type="html">&lt;p&gt;En esta entrada vamos a configurar un Server 2012 Core de forma basica,
+ademas instalaremos y configuraremos un sistema de Directorio Activo con
+grupos, usuarios, horarios de acceso y perfiles moviles&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura10.png"&gt;&lt;!--more--&gt;&lt;/a&gt;Lo
+primero que haremos será configurar la red y el nombre del equipo.&lt;/p&gt;
+&lt;p&gt;Para ello abriremos el PowerShell&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura10.png"&gt;&lt;img alt="Captura" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura10.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Una …&lt;/p&gt;</summary><content type="html">&lt;p&gt;En esta entrada vamos a configurar un Server 2012 Core de forma basica,
+ademas instalaremos y configuraremos un sistema de Directorio Activo con
+grupos, usuarios, horarios de acceso y perfiles moviles&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura10.png"&gt;&lt;!--more--&gt;&lt;/a&gt;Lo
+primero que haremos será configurar la red y el nombre del equipo.&lt;/p&gt;
+&lt;p&gt;Para ello abriremos el PowerShell&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura10.png"&gt;&lt;img alt="Captura" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura10.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Una vez en el powershell, pondremos sconfig para abrir el configurador
+del sistema&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.12.png"&gt;&lt;img alt="Captura0.1" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.12.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Aquí vemos como está configurado actualmente el sistema.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.22.png"&gt;&lt;img alt="Captura0.2" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.22.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Elegiremos la opción 2 para cambiar el nombre al equipo, lo escribimos y
+pulsamos intro&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.32.png"&gt;&lt;img alt="Captura0.3" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.32.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ahora vemos como está el nombre del equipo cambiado, lo siguiente será
+configurar la red, para ello pondremos la opción 8&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.42.png"&gt;&lt;img alt="Captura0.4" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.42.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Esto nos mostrara esta imagen, en la que vemos las tarjetas de red que
+tenemos disponibles, pondremos la opción 10, que es la de nuestra
+tarjeta de red&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.52.png"&gt;&lt;img alt="Captura0.5" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.52.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Esto abrirá la información de nuestra tarjeta de red&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.62.png"&gt;&lt;img alt="Captura0.6" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.62.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ahora configuraremos la red con nuestras direcciones IP, para ello
+seleccionaremos la opción 1.&lt;/p&gt;
+&lt;p&gt;Aquí pondremos la opción s para seleccionar una IP estática, lo
+siguiente será poner la dirección IP, mascara de red, y puerta de enlace&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.72.png"&gt;&lt;img alt="Captura0.7" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.72.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;A continuación seleccionaremos la opción 2 para establecer un servidor
+DNS, nosotros pondremos el servidor DNS de google&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.82.png"&gt;&lt;img alt="Captura0.8" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.82.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ahora vemos como queda configurada nuestra tarjeta de red&lt;/p&gt;
+&lt;p&gt;Volveremos al menú principal con la opción 4.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.92.png"&gt;&lt;img alt="Captura0.9" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura0.92.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1 class="western"&gt;Instalación Active Directory&lt;/h1&gt;
+&lt;p&gt;Ahora procederemos a la instalación del directorio activo.&lt;/p&gt;
+&lt;p&gt;Para ello pondremos el comando Get-WindowsFeature, con el que cargara
+los roles del sistema disponible&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura22.png"&gt;&lt;img alt="Captura2" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura22.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;{.western}&lt;/p&gt;
+&lt;p&gt;{.western}&lt;/p&gt;
+&lt;p&gt;Después utilizaremos el comando Install-WindowsFeature –name
+AD-Domain-Services, con el que indicaremos que instale el rol de
+Directorio activo&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura32.png"&gt;&lt;img alt="Captura3" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura32.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Cuando acaben los procesos anteriores, utilizaremos el siguiente comando
+para instalar las herramientas de administración de directorio activo&lt;/p&gt;
+&lt;p&gt;&lt;span lang="en-US"&gt;El comando es el siguiente Install-WindowsFeature
+–name AD-Domain-Services -IncludeManagementTool&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura42.png"&gt;&lt;img alt="Captura4" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura42.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ahora utilizaremos el commando Get-command –module ADDSDeployment para
+adquirir este módulo de uso del directorio activ&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura52.png"&gt;&lt;img alt="Captura5" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura52.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Posteriormente importaremos este módulo a la configuración de nuestro
+directorio activo mediante el comando Import-Module ADDSDeployment&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura62.png"&gt;&lt;img alt="Captura6" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura62.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Finalmente instalaremos el bosque del dominio mediante el comando
+Install-ADDSForest&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura72.png"&gt;&lt;img alt="Captura7" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura72.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Aquí nos solicitara que indiquemos el nombre del dominio, después
+pondremos la contraseña de administrador del dominio.&lt;/p&gt;
+&lt;p&gt;Lo siguiente que hará será solicitarnos que reiniciemos el equipo para
+aplicar los cambios, pulsamos Y para aceptarlo&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura82.png"&gt;&lt;img alt="Captura8" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura82.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ahora cuando volvamos a iniciar el equipo, veremos que delante del
+nombre del usuario, nos aparece el nombre del dominio, esto indica que
+se ha creado correctamente este dominio&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura92.png"&gt;&lt;img alt="Captura9" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura92.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1 class="western"&gt;Usuarios y grupos&lt;/h1&gt;
+&lt;p&gt;Ahora lo siguiente que tenemos que hacer es crear los grupos del
+dominio.&lt;/p&gt;
+&lt;p&gt;Se hace mediante el comando net localgroup Nombregrupo /add /domain&lt;/p&gt;
+&lt;p&gt;Observamos que he creado los tres grupos necesarios&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura11.png"&gt;&lt;img alt="Captura" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura11.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura12.png"&gt;&lt;img alt="Captura" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura12.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ahora con este comando comprobamos que están los grupos creados
+correctamente.&lt;/p&gt;
+&lt;p&gt;Es este comando: net localgroup&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura23.png"&gt;&lt;img alt="Captura2" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura23.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ahora procederemos a crear los usuarios, se hace mediante el comando net
+user Nombreusuario contraseña /add /domain&lt;/p&gt;
+&lt;p&gt;Vemos como aquí creo los usuarios de Informática&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura33.png"&gt;&lt;img alt="Captura3" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura33.png"&gt;&lt;/a&gt;
+&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura43.png"&gt;&lt;img alt="Captura4" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura43.png"&gt;&lt;/a&gt;
+&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura53.png"&gt;&lt;img alt="Captura5" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura53.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Para comprobar que los usuarios se han creado correctamente lo hacemos
+mediante el comando net user&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura63.png"&gt;&lt;img alt="Captura6" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura63.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Para añadir los usuarios a los grupos utilizaremos el comando net
+localgroup nombregrupo nombres de usuarios /add&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura73.png"&gt;&lt;img alt="Captura7" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura73.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Vemos los usuarios de informática dentro de su grupo&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura83.png"&gt;&lt;img alt="Captura8" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura83.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ahora vemos los usuarios de Contabilidad dentro de su propio grupo&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura93.png"&gt;&lt;img alt="Captura9" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura93.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;En esta otra captura vemos a los usuarios de Marketing dentro del grupo&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura101.png"&gt;&lt;img alt="Captura10" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura101.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1 class="western"&gt;Horarios&lt;/h1&gt;
+&lt;p&gt;Ahora nos pondremos a indicarle restricciones de acceso a los usuarios
+al sistema en determinadas ocasiones.&lt;/p&gt;
+&lt;p&gt;Para ello utilizaremos el comando net user nombreusuario
+/time:Dia1-Dia2,horainicio-horafin&lt;/p&gt;
+&lt;p&gt;Aquí vemos las restricciones de uso a los usuarios de informática&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura13.png"&gt;&lt;img alt="Captura" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura13.png"&gt;&lt;/a&gt;
+&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura24.png"&gt;&lt;img alt="Captura2" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura24.png"&gt;&lt;/a&gt;
+&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura34.png"&gt;&lt;img alt="Captura3" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura34.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ahora si utilizamos el comando net user nombreusuario, veremos como en
+su perfil tienen puestos los horarios adecuadamente.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Info-Contabilidad.png"&gt;&lt;img alt="Info
+Contabilidad" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Info-Contabilidad.png"&gt;&lt;/a&gt;
+&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Info-Informatica.png"&gt;&lt;img alt="Info
+Informatica" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Info-Informatica.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Info-Marketing.png"&gt;&lt;img alt="Info
+Marketing" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Info-Marketing.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1 class="western"&gt;Perfiles Móviles&lt;/h1&gt;
+&lt;p&gt;Ahora estableceremos perfiles móviles a un usuario de cada grupo.&lt;/p&gt;
+&lt;p&gt;Lo haremos mediante el comando net user nombreusuario /profilepath:ruta
+carpeta&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura14.png"&gt;&lt;img alt="Captura" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura14.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Previamente habíamos creado la carpeta Profiles dentro de C:&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Carpeta-profiles.png"&gt;&lt;img alt="Carpeta
+profiles" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Carpeta-profiles.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ahora en el servidor vemos como se han creado las carpetas de cada
+perfil móvil una vez se han logeado en el sistema desde uno de los
+equipos dentro del dominio&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura35.png"&gt;&lt;img alt="Captura3" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/Captura35.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Con esto ya estaría creado el directorio activo y configurado de forma
+básica el servidor 2012 en Core&lt;/p&gt;</content><category term="2012"></category><category term="active directory"></category><category term="configuraccion"></category><category term="dominio"></category><category term="instalacion"></category><category term="server core"></category><category term="usuarios"></category><category term="windows server"></category></entry></feed>

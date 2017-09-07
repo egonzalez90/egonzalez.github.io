@@ -1,925 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>OpenStack Stuff | articles tagged "openstack" | Page 4</title>
-    <link rel="shortcut icon" type="image/png" href="https://egonzalez90.github.io/favicon.png">
-    <link rel="shortcut icon" type="image/x-icon" href="https://egonzalez90.github.io/favicon.ico">
-    <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Full Atom Feed" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/screen.css" type="text/css" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/print.css" type="text/css" media="print" />
-    <meta name="generator" content="Pelican" />
-    <meta name="description" content="" />
-    <meta name="author" content="Eduardo Gonzalez" />
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - openstack</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
 </head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li class="ephemeral selected"><a href="https://egonzalez90.github.io/tag/openstack4.html">openstack</a></li>
-                <li><a href="https://egonzalez90.github.io/">Home</a></li>
-                <li><a href="https://docs.openstack.org">OpenStack</a></li>
-                <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
-                <li><a href="https://github.com/egonzalez90">Github</a></li>
-                <li><a href="https://egonzalez90.github.io/archives">Archives</a></li>
-            </ul>
-        </nav>
-        <div class="header_box">
-            <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff</a></h1>
-        </div>
-    </header>
-    <div id="wrapper">
-        <div id="content">            <h4 class="date">Feb 15, 2016</h4>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/working-with-affinityanti-affinity-groups-openstack.html" rel="bookmark" title="Permanent Link to &quot;Working with affinity/anti-affinity groups OpenStack&quot;">Working with affinity/anti-affinity groups OpenStack</a>
-                </h2>
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="https://docs.openstack.org">OpenStack</a></li>
+                    <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                    <li><a href="https://github.com/egonzalez90">Github</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
 
-                
-                
+                <section id="content" class="body">
+                    <ol id="posts-list" class="hfeed" start="2">
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/working-with-affinityanti-affinity-groups-openstack.html" rel="bookmark"
+                           title="Permalink to Working with affinity/anti-affinity groups OpenStack">Working with affinity/anti-affinity groups OpenStack</a></h1>
+                </header>
 
-                <p>In a previous post, you learned how to segregate resources with
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 15 February 2016</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/affinity.html">affinity</a><a href="https://egonzalez90.github.io/tag/anti-affinity.html">anti-affinity</a><a href="https://egonzalez90.github.io/tag/filter.html">filter</a><a href="https://egonzalez90.github.io/tag/groups.html">groups</a><a href="https://egonzalez90.github.io/tag/liberty.html">liberty</a><a href="https://egonzalez90.github.io/tag/nova.html">nova</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/rdo.html">rdo</a><a href="https://egonzalez90.github.io/tag/scheduler.html">scheduler</a><a href="https://egonzalez90.github.io/tag/servergroupaffinityfilter.html">ServerGroupAffinityFilter</a><a href="https://egonzalez90.github.io/tag/servergroupantiaffinityfilter.html">ServerGroupAntiAffinityFilter</a><a href="https://egonzalez90.github.io/tag/working.html">working</a></span>
+</footer><!-- /.post-info -->                <p>In a previous post, you learned how to segregate resources with
 <a href="http://egonzalez.org/openstack-segregation-with-availability-zones-and-host-aggregates/">Availability Zones and Host
 Aggregates</a>,
 those methods allows the end user to specify where and on which types of
 resources their instances should be running.</p>
 <p>At this post, you will learn how specify to nova where nova-scheduler
-should schedule your instances based on two policies. These policies
-define if instances should share the same hypervisor (affinity rule) or
-if not depending of user needs(anti-affinity rule).</p>
-<p>First, you need to modify nova.conf and allow nova-scheduler to filter
-based on affinity rules. Add <code>ServerGroupAntiAffinityFilter</code> and
-<code>ServerGroupAffinityFilter</code> filters to scheduler default filter option.</p>
-<div class="highlight"><pre><span></span># vi /etc/nova.conf
+should schedule …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/working-with-affinityanti-affinity-groups-openstack.html">read more</a>
+<p><a href="https://egonzalez90.github.io/working-with-affinityanti-affinity-groups-openstack.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
 
-scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,CoreFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter
-</pre></div>
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty.html" rel="bookmark"
+                           title="Permalink to Migrate from keystone v2.0 to keystone v3 OpenStack Liberty">Migrate from keystone v2.0 to keystone v3 OpenStack Liberty</a></h1>
+                </header>
 
-
-<p>Restart nova-scheduler to apply changes</p>
-<div class="highlight"><pre><span></span>systemctl restart openstack-nova-scheduler
-</pre></div>
-
-
-<p>Once nova-scheduler has been restarted, we can create a group of servers
-based on affinity policy (All instances at this group will be launched
-in the same hypervisor)</p>
-<div class="highlight"><pre><span></span>nova server-group-create instancestogethergroup affinity
-+--------------------------------------+------------------------+---------------+---------+----------+
-| Id                                   | Name                   | Policies      | Members | Metadata |
-+--------------------------------------+------------------------+---------------+---------+----------+
-| 27abe662-c37e-431c-9715-0d2137fc5519 | instancestogethergroup | [u&#39;affinity&#39;] | []      | {}       |
-+--------------------------------------+------------------------+---------------+---------+----------+
-</pre></div>
-
-
-<p>Now create two instances, add <code>--hint group=GROUP-ID</code> option to specify
-the group where instances will be members.</p>
-<div class="highlight"><pre><span></span>nova boot --image a6d7a606-f725-480a-9b1b-7b3ae39b93d4 --flavor m1.tiny --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df --hint group=27abe662-c37e-431c-9715-0d2137fc5519 affinity1
-nova boot --image a6d7a606-f725-480a-9b1b-7b3ae39b93d4 --flavor m1.tiny --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df --hint group=27abe662-c37e-431c-9715-0d2137fc5519 affinity2
-</pre></div>
-
-
-<p>Ensure the instances are properly mapped to the group.</p>
-<div class="highlight"><pre><span></span>nova server-group-get 27abe662-c37e-431c-9715-0d2137fc5519 
-+--------------------------------------+------------------------+---------------+------------------------------------------------------------------------------------+----------+
-| Id                                   | Name                   | Policies      | Members                                                                            | Metadata |
-+--------------------------------------+------------------------+---------------+------------------------------------------------------------------------------------+----------+
-| 27abe662-c37e-431c-9715-0d2137fc5519 | instancestogethergroup | [u&#39;affinity&#39;] | [u&#39;b8b72a0a-c981-430e-a909-13d23d928655&#39;, u&#39;8affefff-0072-47e3-8d11-2ddf26e48b82&#39;] | {}       |
-+--------------------------------------+------------------------+---------------+------------------------------------------------------------------------------------+----------+
-</pre></div>
-
-
-<p>Once instances are running, ensure they share the same hypervisor as we
-specify in the affinity policy.</p>
-<div class="highlight"><pre><span></span># nova show affinity1 | grep hypervisor_hostname
-| OS-EXT-SRV-ATTR:hypervisor_hostname  | compute2az
-# nova show affinity2 | grep hypervisor_hostname
-| OS-EXT-SRV-ATTR:hypervisor_hostname  | compute2az
-</pre></div>
-
-
-<p>Now we create an anti-affinity policy based group.</p>
-<div class="highlight"><pre><span></span>nova server-group-create farinstancesgroup anti-affinity
-+--------------------------------------+-------------------+--------------------+---------+----------+
-| Id                                   | Name              | Policies           | Members | Metadata |
-+--------------------------------------+-------------------+--------------------+---------+----------+
-| 988a9fd2-3a97-481e-b083-fee36b33009d | farinstancesgroup | [u&#39;anti-affinity&#39;] | []      | {}       |
-+--------------------------------------+-------------------+--------------------+---------+----------+
-</pre></div>
-
-
-<p>Launch two instances and attach them to the anti-affinity group.</p>
-<div class="highlight"><pre><span></span>nova boot --image a6d7a606-f725-480a-9b1b-7b3ae39b93d4 --flavor m1.tiny --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df --hint group=988a9fd2-3a97-481e-b083-fee36b33009d anti-affinity1
-nova boot --image a6d7a606-f725-480a-9b1b-7b3ae39b93d4 --flavor m1.tiny --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df --hint group=988a9fd2-3a97-481e-b083-fee36b33009d anti-affinity2
-</pre></div>
-
-
-<p>Ensure the instances are in the anti-affinity group</p>
-<div class="highlight"><pre><span></span>nova server-group-get 988a9fd2-3a97-481e-b083-fee36b33009d 
-+--------------------------------------+-------------------+--------------------+------------------------------------------------------------------------------------+----------+
-| Id                                   | Name              | Policies           | Members                                                                            | Metadata |
-+--------------------------------------+-------------------+--------------------+------------------------------------------------------------------------------------+----------+
-| 988a9fd2-3a97-481e-b083-fee36b33009d | farinstancesgroup | [u&#39;anti-affinity&#39;] | [u&#39;cfb45193-9a7c-436f-ac2d-59a7a9a854ae&#39;, u&#39;25dc8671-0c9a-4774-90cf-7394380f91ef&#39;] | {}       |
-+--------------------------------------+-------------------+--------------------+------------------------------------------------------------------------------------+----------+
-</pre></div>
-
-
-<p>Once instances are running, ensure they are in different hypervisors as
-we specify in the anti-affinity policy.</p>
-<div class="highlight"><pre><span></span># nova show anti-affinity1 | grep hypervisor_hostname
-| OS-EXT-SRV-ATTR:hypervisor_hostname  | compute2az
-# nova show anti-affinity2 | grep hypervisor_hostname
-| OS-EXT-SRV-ATTR:hypervisor_hostname  | compute1az
-</pre></div>
-
-
-<p>Regards, Eduardo Gonzalez</p>
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/working-with-affinityanti-affinity-groups-openstack.html">posted at 21:05</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/affinity.html" class="tags">affinity</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/anti-affinity.html" class="tags">anti-affinity</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/filter.html" class="tags">filter</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/groups.html" class="tags">groups</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/liberty.html" class="tags">liberty</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/nova.html" class="tags">nova</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags selected">openstack</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/rdo.html" class="tags">rdo</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/scheduler.html" class="tags">scheduler</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/servergroupaffinityfilter.html" class="tags">ServerGroupAffinityFilter</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/servergroupantiaffinityfilter.html" class="tags">ServerGroupAntiAffinityFilter</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/working.html" class="tags">working</a>
-                </div>
-		<a href="https://egonzalez90.github.io/working-with-affinityanti-affinity-groups-openstack.html#disqus_thread">Click to read and post comments</a>
-            </article>            <h4 class="date">Feb 02, 2016</h4>
-
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty.html" rel="bookmark" title="Permanent Link to &quot;Migrate from keystone v2.0 to keystone v3 OpenStack Liberty&quot;">Migrate from keystone v2.0 to keystone v3 OpenStack Liberty</a>
-                </h2>
-
-                
-                
-
-                <p>Migrate from keystone v2.0 to v3 isn't as easy like just changing the
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 02 February 2016</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/auth.html">auth</a><a href="https://egonzalez90.github.io/tag/auth_url.html">auth_url</a><a href="https://egonzalez90.github.io/tag/core.html">core</a><a href="https://egonzalez90.github.io/tag/guide.html">guide</a><a href="https://egonzalez90.github.io/tag/how-to.html">how to</a><a href="https://egonzalez90.github.io/tag/keystone.html">keystone</a><a href="https://egonzalez90.github.io/tag/migrate.html">migrate</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/packstack.html">packstack</a><a href="https://egonzalez90.github.io/tag/rdo.html">rdo</a><a href="https://egonzalez90.github.io/tag/services.html">services</a><a href="https://egonzalez90.github.io/tag/tutorial.html">Tutorial</a><a href="https://egonzalez90.github.io/tag/v20.html">v2.0</a><a href="https://egonzalez90.github.io/tag/v3.html">v3</a><a href="https://egonzalez90.github.io/tag/version.html">version</a></span>
+</footer><!-- /.post-info -->                <p>Migrate from keystone v2.0 to v3 isn't as easy like just changing the
 endpoints at the database, every service must be configured to
 authenticate against keystone v3.</p>
 <p>I've been working on that the past few days looking for a method, with
-the purpose of facilitate operators life's who need this kind of
-migration.<br>
-I have to thank Adam Young work, i followed his blog to make a first
-configuration idea, after that, i configured all core services to make
-use of keystone v3.<br>
-If you want to check Adam's blog, follow this link:
-<a href="http://adam.younglogic.com/2015/05/rdo-v3-only/">http://adam.younglogic.com/2015/05/rdo-v3-only/</a></p>
-<p>I used OpenStack Liberty installed with RDO packstack over CentOS 7
-servers.<br>
-The example IP used is <code>192.168.200.168</code>, use your own according your
-needs.<br>
-Password used for all services is <code>PASSWD1234</code>, use your own password,
-you can locate your passwords at the packstack answer file.</p>
-<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>Horizon</strong></ins></p>
-<p>First we configure Horizon with keystone v3 as below:</p>
-<div class="highlight"><pre><span></span>vi /etc/openstack-dashboard/local_settings
-
-OPENSTACK_API_VERSIONS = {
-    &quot;identity&quot;: 3
-}
-
-OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True
-OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = &#39;Default&#39;
-</pre></div>
-
-
-<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>keystone</strong></ins></p>
-<p>Check your current identity endpoints</p>
-<div class="highlight"><pre><span></span>mysql  --user keystone_admin --password=PASSWD1234  keystone -e &quot;select interface, url from endpoint where service_id =  (select id from service where service.type = &#39;identity&#39;);&quot;
-</pre></div>
-
-
-<p>Change your public, admin and internal endpoints with v3 at the end,
-instead of v2.0</p>
-<div class="highlight"><pre><span></span><span class="nt">mysql</span>  <span class="nt">--user</span> <span class="nt">keystone_admin</span> <span class="nt">--password</span><span class="o">=</span><span class="nt">PASSWD1234</span>   <span class="nt">keystone</span> <span class="nt">-e</span> <span class="s2">&quot;update endpoint set   url  = &#39;http://192.168.200.178:5000/v3&#39; where  interface =&#39;internal&#39; and  service_id =  (select id from service where service.type = &#39;identity&#39;);&quot;</span>
-
-<span class="nt">mysql</span>  <span class="nt">--user</span> <span class="nt">keystone_admin</span> <span class="nt">--password</span><span class="o">=</span><span class="nt">PASSWD1234</span>   <span class="nt">keystone</span> <span class="nt">-e</span> <span class="s2">&quot;update endpoint set   url  = &#39;http://192.168.200.178:5000/v3&#39; where  interface =&#39;public&#39; and  service_id =  (select id from service where service.type = &#39;identity&#39;);&quot;</span>
-
-<span class="nt">mysql</span>  <span class="nt">--user</span> <span class="nt">keystone_admin</span> <span class="nt">--password</span><span class="o">=</span><span class="nt">PASSWD1234</span>   <span class="nt">keystone</span> <span class="nt">-e</span> <span class="s2">&quot;update endpoint set   url  = &#39;http://192.168.200.178:35357/v3&#39; where  interface =&#39;admin&#39; and  service_id =  (select id from service where service.type = &#39;identity&#39;);&quot;</span>
-</pre></div>
-
-
-<p>Ensure the endpoints are properly created</p>
-<div class="highlight"><pre><span></span>mysql  --user keystone_admin --password=KEYSTONE_DB_PW   keystone -e &quot;select interface, url from endpoint where service_id =  (select id from service where service.type = &#39;identity&#39;);&quot;
-</pre></div>
-
-
-<p>Create a source file or edit keystonerc_admin with the following data</p>
-<div class="highlight"><pre><span></span>vi v3_keystone
-
-unset OS_SERVICE_TOKEN
-export OS_USERNAME=admin
-export OS_PASSWORD=PASSWD1234
-export OS_AUTH_URL=http://192.168.200.178:5000/v3
-export OS_PROJECT_NAME=admin
-export OS_PROJECT_DOMAIN_NAME=Default
-export OS_USER_DOMAIN_NAME=Default
-export OS_REGION_NAME=RegionOne
-export PS1=&#39;[\u@\h \W(keystone_admin)]\$ &#39;
-export OS_IDENTITY_API_VERSION=3
-</pre></div>
-
-
-<p>Comment both pipelines, in public_api and admin_api</p>
-<div class="highlight"><pre><span></span>vi /usr/share/keystone/keystone-dist-paste.ini
-
-[pipeline:public_api]
-# The last item in this pipeline must be public_service or an equivalent
-# application. It cannot be a filter.
-#pipeline = sizelimit url_normalize request_id build_auth_context token_auth admin_token_auth json_body ec2_extension user_crud_extension public_service
-
-[pipeline:admin_api]
-# The last item in this pipeline must be admin_service or an equivalent
-# application. It cannot be a filter.
-#pipeline = sizelimit url_normalize request_id build_auth_context token_auth admin_token_auth json_body ec2_extension s3_extension crud_extension admin_service
-</pre></div>
-
-
-<p>Comment v2.0 entries in composite:main and admin sections.</p>
-<div class="highlight"><pre><span></span><span class="k">[composite:main]</span>
-<span class="na">use</span> <span class="o">=</span> <span class="s">egg:Paste#urlmap</span>
-<span class="c1">#/v2.0 = public_api</span>
-<span class="na">/v3</span> <span class="o">=</span> <span class="s">api_v3</span>
-<span class="na">/</span> <span class="o">=</span> <span class="s">public_version_api</span>
-
-<span class="k">[composite:admin]</span>
-<span class="na">use</span> <span class="o">=</span> <span class="s">egg:Paste#urlmap</span>
-<span class="c1">#/v2.0 = admin_api</span>
-<span class="na">/v3</span> <span class="o">=</span> <span class="s">api_v3</span>
-<span class="na">/</span> <span class="o">=</span> <span class="s">admin_version_api</span>
-</pre></div>
-
-
-<p>Restart httpd to apply changes</p>
-<div class="highlight"><pre><span></span>systemctl restart httpd
-</pre></div>
-
-
-<p>Check whether keystone and horizon are properly working<br>
-The command below should prompt an user list, if not, check
-configuration in previous steps</p>
-<div class="highlight"><pre><span></span>openstack user list
-</pre></div>
-
-
-<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>Glance</strong></ins></p>
-<p>Edit the following files, with the content below:</p>
-<div class="highlight"><pre><span></span>vi /etc/glance/glance-api.conf 
-vi /etc/glance/glance-registry.conf 
-vi /etc/glance/glance-cache.conf
-
-[keystone_authtoken]
-
-auth_plugin = password
-auth_url = http://192.168.200.178:35357
-username = glance
-password = PASSWD1234
-project_name = services
-user_domain_name = Default
-project_domain_name = Default
-auth_uri=http://192.168.200.178:5000
-</pre></div>
-
-
-<p>Comment the following lines:</p>
-<div class="highlight"><pre><span></span>#auth_host=127.0.0.1
-#auth_port=35357
-#auth_protocol=http
-#identity_uri=http://192.168.200.178:35357
-#admin_user=glance
-#admin_password=PASSWD1234
-#admin_tenant_name=services
-</pre></div>
-
-
-<p>Those lines, should be commented in all the other OpenStack core
-services at keystone_authtoken section</p>
-<p>Edit the files below and comment the lines inside keystone_authtoken
-section.</p>
-<div class="highlight"><pre><span></span>vi /usr/share/glance/glance-api-dist.conf 
-vi /usr/share/glance/glance-registry-dist.conf
-
-[keystone_authtoken]
-#admin_tenant_name = %SERVICE_TENANT_NAME%
-#admin_user = %SERVICE_USER%
-#admin_password = %SERVICE_PASSWORD%
-#auth_host = 127.0.0.1
-#auth_port = 35357
-#auth_protocol = http
-</pre></div>
-
-
-<p>Restart glance services</p>
-<div class="highlight"><pre><span></span>openstack-service restart glance
-</pre></div>
-
-
-<p>Ensure glance service is working</p>
-<div class="highlight"><pre><span></span>openstack image list
-</pre></div>
-
-
-<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>Nova</strong></ins></p>
-<p>Edit the file below and comment the lines inside keystone_authtoken</p>
-<div class="highlight"><pre><span></span>vi /usr/share/nova/nova-dist.conf
-
-[keystone_authtoken]
-#auth_host = 127.0.0.1
-#auth_port = 35357
-#auth_protocol = http
-</pre></div>
-
-
-<p>Edit nova.conf and add the auth content inside keystone_authtoken,
-don't forget to comment the lines related to the last auth method, which
-were commented in glance section.</p>
-<div class="highlight"><pre><span></span>vi /etc/nova/nova.conf
-
-[keystone_authtoken]
-
-auth_plugin = password
-auth_url = http://192.168.200.178:35357
-username = nova
-password = PASSWD1234
-project_name = services
-user_domain_name = Default
-project_domain_name = Default
-auth_uri=http://192.168.200.178:5000
-</pre></div>
-
-
-<p>Configure nova authentication against neutron</p>
-<div class="highlight"><pre><span></span><span class="k">[neutron]</span>
-
-<span class="na">auth_plugin</span> <span class="o">=</span> <span class="s">password</span>
-<span class="na">auth_url</span> <span class="o">=</span> <span class="s">http://192.168.200.178:35357</span>
-<span class="na">username</span> <span class="o">=</span> <span class="s">neutron</span>
-<span class="na">password</span> <span class="o">=</span> <span class="s">PASSWD1234</span>
-<span class="na">project_name</span> <span class="o">=</span> <span class="s">services</span>
-<span class="na">user_domain_name</span> <span class="o">=</span> <span class="s">Default</span>
-<span class="na">project_domain_name</span> <span class="o">=</span> <span class="s">Default</span>
-<span class="na">auth_uri</span><span class="o">=</span><span class="s">http://192.168.200.178:5000</span>
-</pre></div>
-
-
-<p>Restart nova services to apply changes</p>
-<div class="highlight"><pre><span></span>openstack-service restart nova
-</pre></div>
-
-
-<p>Check if nova works</p>
-<div class="highlight"><pre><span></span>openstack hypervisor list
-</pre></div>
-
-
-<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>Neutron</strong></ins></p>
-<p>Comment or remove the following entries at api-paste.ini and add the new
-version auth lines</p>
-<div class="highlight"><pre><span></span>vi /etc/neutron/api-paste.ini
-
-[filter:authtoken]
-#identity_uri=http://192.168.200.178:35357
-#admin_user=neutron
-#admin_password=PASSWD1234
-#auth_uri=http://192.168.200.178:5000/v2.0
-#admin_tenant_name=services
-
-auth_plugin = password
-auth_url = http://192.168.200.178:35357
-username = neutron
-password = PASSWD1234
-project_name = services
-user_domain_name = Default
-project_domain_name = Default
-auth_uri=http://192.168.200.178:5000
-</pre></div>
-
-
-<p>Configure v3 authentication for metadata service, remember comment the
-old auth lines</p>
-<div class="highlight"><pre><span></span>vi /etc/neutron/metadata_agent.ini
-
-[DEFAULT]
-
-auth_plugin = password
-auth_url = http://192.168.200.178:35357
-username = neutron
-password = PASSWD1234
-project_name = services
-user_domain_name = Default
-project_domain_name = Default
-auth_uri=http://192.168.200.178:5000
-</pre></div>
-
-
-<p>Configure neutron server with v3 auth</p>
-<div class="highlight"><pre><span></span>vi /etc/neutron/neutron.conf
-
-nova_admin_auth_url = http://192.168.200.178:5000
-# nova_admin_tenant_id =1fb93c84c6474c5ea92c0ed5f7d4a6a7
-nova_admin_tenant_name = services
-
-
-[keystone_authtoken]
-
-auth_plugin = password
-auth_url = http://192.168.200.178:35357
-username = neutron
-password = PASSWD1234
-project_name = services
-user_domain_name = Default
-project_domain_name = Default
-auth_uri=http://192.168.200.178:5000
-
-#auth_uri = http://192.168.200.178:5000/v2.0
-#identity_uri = http://192.168.200.178:35357
-#admin_tenant_name = services
-#admin_user = neutron
-#admin_password = PASSWD1234
-</pre></div>
-
-
-<p>Configure neutron auth against nova services</p>
-<div class="highlight"><pre><span></span><span class="k">[nova]</span>
-
-<span class="na">auth_plugin</span> <span class="o">=</span> <span class="s">password</span>
-<span class="na">auth_url</span> <span class="o">=</span> <span class="s">http://192.168.200.178:35357</span>
-<span class="na">username</span> <span class="o">=</span> <span class="s">nova</span>
-<span class="na">password</span> <span class="o">=</span> <span class="s">PASSWD1234</span>
-<span class="na">project_name</span> <span class="o">=</span> <span class="s">services</span>
-<span class="na">user_domain_name</span> <span class="o">=</span> <span class="s">Default</span>
-<span class="na">project_domain_name</span> <span class="o">=</span> <span class="s">Default</span>
-<span class="na">auth_uri</span><span class="o">=</span><span class="s">http://192.168.200.178:5000</span>
-</pre></div>
-
-
-<p>Restart neutron services to apply changes</p>
-<div class="highlight"><pre><span></span>openstack-service restart neutron
-</pre></div>
-
-
-<p>Test correct neutron funtionality</p>
-<div class="highlight"><pre><span></span>openstack network list
-</pre></div>
-
-
-<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>Cinder</strong></ins></p>
-<p>Edit api-paste.ini with the following content</p>
-<div class="highlight"><pre><span></span>vi /etc/cinder/api-paste.ini
-
-[filter:authtoken]
-paste.filter_factory = keystonemiddleware.auth_token:filter_factory
-auth_plugin = password
-auth_url = http://192.168.200.178:35357
-username = cinder
-password = PASSWD1234
-project_name = services
-user_domain_name = Default
-project_domain_name = Default
-auth_uri=http://192.168.200.178:5000
-#admin_tenant_name=services
-#auth_uri=http://192.168.200.178:5000/v2.0
-#admin_user=cinder
-#identity_uri=http://192.168.200.178:35357
-#admin_password=PASSWD1234
-</pre></div>
-
-
-<p>Restart cinder services to apply changes</p>
-<div class="highlight"><pre><span></span>openstack-service restart cinder
-</pre></div>
-
-
-<p>Ensure cinder is properly running</p>
-<div class="highlight"><pre><span></span>openstack volume create --size 1 testvolume
-openstack volume list
-</pre></div>
-
-
-<p>Now, you can check if nova is working fine, create an instance and
-ensure it is in ACTIVE state.</p>
-<div class="highlight"><pre><span></span>openstack server create --flavor m1.tiny --image cirros --nic net-id=a1aa6336-9ae2-4ffb-99f5-1b6d1130989c testinstance
-openstack server list
-</pre></div>
-
-
-<p>If any error occurs, review configuration files</p>
-<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>Swift</strong></ins></p>
-<p>Configure proxy server auth agains keystone v3</p>
-<div class="highlight"><pre><span></span>vi /etc/swift/proxy-server.conf
-
-[filter:authtoken]
-log_name = swift
-signing_dir = /var/cache/swift
-paste.filter_factory = keystonemiddleware.auth_token:filter_factory
-auth_plugin = password
-auth_url = http://192.168.200.178:35357
-username = swift
-password = PASSWD1234
-project_name = services
-user_domain_name = Default
-project_domain_name = Default
-auth_uri=http://192.168.200.178:5000
-
-#auth_uri = http://192.168.200.178:5000/v2.0
-#identity_uri = http://192.168.200.178:35357
-#admin_tenant_name = services
-#admin_user = swift
-#admin_password = PASSWD1234
-delay_auth_decision = 1
-cache = swift.cache
-include_service_catalog = False
-</pre></div>
-
-
-<p>Restart swift services to apply changes</p>
-<div class="highlight"><pre><span></span>openstack-service restart swift
-</pre></div>
-
-
-<p>Swift commands must be issued with python-openstackclient instead of
-swiftclient<br>
-If done with swiftclient a -V 3 option must be used in order to avoid
-issues</p>
-<p>Check if swift works fine</p>
-<div class="highlight"><pre><span></span>openstack container create testcontainer
-</pre></div>
-
-
-<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>Ceilometer</strong></ins></p>
-<p>Configure ceilometer service in order to authenticate agains keystone v3</p>
-<div class="highlight"><pre><span></span><span class="k">[keystone_authtoken]</span>
-
-<span class="na">auth_plugin</span> <span class="o">=</span> <span class="s">password</span>
-<span class="na">auth_url</span> <span class="o">=</span> <span class="s">http://192.168.200.178:35357</span>
-<span class="na">username</span> <span class="o">=</span> <span class="s">ceilometer</span>
-<span class="na">password</span> <span class="o">=</span> <span class="s">PASSWD1234</span>
-<span class="na">project_name</span> <span class="o">=</span> <span class="s">services</span>
-<span class="na">user_domain_name</span> <span class="o">=</span> <span class="s">Default</span>
-<span class="na">project_domain_name</span> <span class="o">=</span> <span class="s">Default</span>
-<span class="na">auth_uri</span><span class="o">=</span><span class="s">http://192.168.200.178:5000</span>
-
-<span class="k">[service_credentials]</span>
-
-<span class="na">os_auth_url</span> <span class="o">=</span> <span class="s">http://controller:5000/v3</span>
-<span class="na">os_username</span> <span class="o">=</span> <span class="s">ceilometer</span>
-<span class="na">os_tenant_name</span> <span class="o">=</span> <span class="s">services</span>
-<span class="na">os_password</span> <span class="o">=</span> <span class="s">PASSWD1234</span>
-<span class="na">os_endpoint_type</span> <span class="o">=</span> <span class="s">internalURL</span>
-<span class="na">os_region_name</span> <span class="o">=</span> <span class="s">RegionOne</span>
-</pre></div>
-
-
-<p>Restart ceilometer services</p>
-<div class="highlight"><pre><span></span>openstack-service restart ceilometer
-</pre></div>
-
-
-<p>Check ceilometer funtionality</p>
-<div class="highlight"><pre><span></span>ceilometer statistics -m memory
-</pre></div>
-
-
-<p><ins datetime="2016-02-02T18:25:21+00:00"><strong>Heat</strong></ins></p>
-<p>Configure Heat authentication, since trusts are not stable use password
-auth method</p>
-<div class="highlight"><pre><span></span>vi /etc/heat/heat.conf
-
-# Allowed values: password, trusts
-#deferred_auth_method = trusts
-deferred_auth_method = password
-</pre></div>
-
-
-<p>Configure auth_uri and keystone_authtoken section</p>
-<div class="highlight"><pre><span></span># From heat.common.config
-#
-# Unversioned keystone url in format like http://0.0.0.0:5000. (string value)
-#auth_uri =
-auth_uri = http://192.168.200.178:5000
-
-[keystone_authtoken]
-
-auth_plugin = password
-auth_url = http://192.168.200.178:35357
-username = heat
-password = PASSWD1234
-project_name = services
-user_domain_name = Default
-project_domain_name = Default
-auth_uri=http://192.168.200.178:5000
-
-#admin_user=heat
-#admin_password=PASSWD1234
-#admin_tenant_name=services
-#identity_uri=http://192.168.200.178:35357
-#auth_uri=http://192.168.200.178:5000/v2.0
-</pre></div>
-
-
-<p>Comment or remove heat-dist auth entries in order to avoid conflicts
-with your config files</p>
-<div class="highlight"><pre><span></span>vi /usr/share/heat/heat-dist.conf
-
-[keystone_authtoken]
-#auth_host = 127.0.0.1
-#auth_port = 35357
-#auth_protocol = http
-#auth_uri = http://127.0.0.1:5000/v2.0
-#signing_dir = /tmp/keystone-signing-heat
-</pre></div>
-
-
-<p>Restart heat services to apply changes</p>
-<div class="highlight"><pre><span></span>openstack-service restart heat
-</pre></div>
-
-
-<p>Ensure heat authentication is properly configured with a simple heat
-template</p>
-<div class="highlight"><pre><span></span>heat stack-create --template-file sample.yaml teststack
-</pre></div>
-
-
-<p>Most issues occurs in the authentication between nova and neutron
-services, if instances does not launch as expected, review [nova] and
-[neutron] sections.</p>
-<p>Best regards, Eduardo Gonzalez</p>
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty.html">posted at 19:43</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/auth.html" class="tags">auth</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/auth_url.html" class="tags">auth_url</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/core.html" class="tags">core</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/guide.html" class="tags">guide</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/how-to.html" class="tags">how to</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/keystone.html" class="tags">keystone</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/migrate.html" class="tags">migrate</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags selected">openstack</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/packstack.html" class="tags">packstack</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/rdo.html" class="tags">rdo</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/services.html" class="tags">services</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/tutorial.html" class="tags">Tutorial</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/v20.html" class="tags">v2.0</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/v3.html" class="tags">v3</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/version.html" class="tags">version</a>
-                </div>
-		<a href="https://egonzalez90.github.io/migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty.html#disqus_thread">Click to read and post comments</a>
-            </article>            <h4 class="date">Jan 27, 2016</h4>
-
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/configure-neutron-dvr-openstack-liberty.html" rel="bookmark" title="Permanent Link to &quot;Configure Neutron DVR OpenStack Liberty&quot;">Configure Neutron DVR OpenStack Liberty</a>
-                </h2>
-
-                
-                
-
-                <p>Distributed Virtual Routers aka DVR were created to avoid single point
+the purpose of facilitate operators life's who need …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty.html">read more</a>
+<p><a href="https://egonzalez90.github.io/migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/configure-neutron-dvr-openstack-liberty.html" rel="bookmark"
+                           title="Permalink to Configure Neutron DVR OpenStack Liberty">Configure Neutron DVR OpenStack Liberty</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Wed 27 January 2016</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/-configure.html">--configure</a><a href="https://egonzalez90.github.io/tag/distributed.html">distributed</a><a href="https://egonzalez90.github.io/tag/dvr.html">dvr</a><a href="https://egonzalez90.github.io/tag/fip.html">fip</a><a href="https://egonzalez90.github.io/tag/l3.html">l3</a><a href="https://egonzalez90.github.io/tag/liberty.html">liberty</a><a href="https://egonzalez90.github.io/tag/neutron.html">neutron</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/packstack.html">packstack</a><a href="https://egonzalez90.github.io/tag/qrouter.html">qrouter</a><a href="https://egonzalez90.github.io/tag/rdo.html">rdo</a><a href="https://egonzalez90.github.io/tag/routers.html">routers</a><a href="https://egonzalez90.github.io/tag/snat.html">snat</a><a href="https://egonzalez90.github.io/tag/virtual.html">virtual</a></span>
+</footer><!-- /.post-info -->                <p>Distributed Virtual Routers aka DVR were created to avoid single point
 of failure on neutron nodes.<br>
 When using standard routers, all the traffic is passing out through
 Neutron servers. Inside network servers, router namespaces are created
 routing all traffic and NAT forwarding between instances and public
-networks. When a network node falls down, instance traffic will no
-longer be available until a new namespace is created and executed in
-another network node.<br>
-Distributed routers is a way to avoid the SPOF neutron nodes were. When
-using DVR, router namespaces, are directly created inside compute nodes
-where all instance and l3 traffic are routed.</p>
-<p>If you want to know more about DVR check this awesome links:  </p>
-<p><a href="http://blog.gampel.net/2014/12/openstack-neutron-distributed-virtual.html">http://blog.gampel.net/2014/12/openstack-neutron-distributed-virtual.html</a><br>
-<a href="http://blog.gampel.net/2014/12/openstack-dvr2-floating-ips.html">http://blog.gampel.net/2014/12/openstack-dvr2-floating-ips.html</a><br>
-<a href="http://blog.gampel.net/2015/01/openstack-DVR-SNAT.html">http://blog.gampel.net/2015/01/openstack-DVR-SNAT.html</a></p>
-<p>A previous OpenStack Liberty installation is required, mine was done
-with RDO packstack.</p>
-<p><strong><ins datetime="2016-01-27T18:47:58+00:00">Configure all Neutron
-Servers</ins></strong></p>
-<p>Edit ml2 configuration file with the following:</p>
-<div class="highlight"><pre><span></span># vi /etc/neutron/plugins/ml2/ml2_conf.ini
+networks. When a network …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/configure-neutron-dvr-openstack-liberty.html">read more</a>
+<p><a href="https://egonzalez90.github.io/configure-neutron-dvr-openstack-liberty.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+        <a href="https://egonzalez90.github.io/tag/openstack3.html">&laquo;</a>
+    Page 4 / 15
+        <a href="https://egonzalez90.github.io/tag/openstack5.html">&raquo;</a>
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
-mechanism_drivers = openvswitch,l2population
-type_drivers = flat,vlan,vxlan
-tenant_network_types = vxlan
-vni_ranges = 10:100
-vxlan_group = 224.1.1.1
-enable_security_group = True
-</pre></div>
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
 
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
 
-<p>Edit neutron configuration file, enable DVR and uncomment dvr_base_mac
-option</p>
-<div class="highlight"><pre><span></span># vi /etc/neutron/neutron.conf
-
-router_distributed = True
-dvr_base_mac = fa:16:3f:00:00:00
-</pre></div>
-
-
-<p>Configure l3 agent to use dvr_snat</p>
-<div class="highlight"><pre><span></span># vi /etc/neutron/l3_agent.ini
-
-agent_mode = dvr_snat
-</pre></div>
-
-
-<p>Restart neutron server</p>
-<div class="highlight"><pre><span></span>systemctl restart neutron-server
-</pre></div>
-
-
-<p><strong><ins datetime="2016-01-27T18:47:58+00:00">Configure all Compute
-Nodes</ins></strong></p>
-<p>Install ml2 package</p>
-<div class="highlight"><pre><span></span>yum install openstack-neutron-ml2
-</pre></div>
-
-
-<p>Edit openvswitch agent file as below:</p>
-<div class="highlight"><pre><span></span># vi /etc/neutron/plugins/ml2/openvswitch_agent.ini
-
-l2_population = True
-arp_responder = True
-enable_distributed_routing = True
-</pre></div>
-
-
-<p>Enable DVR and select an interface driver to be used by l3 agent</p>
-<div class="highlight"><pre><span></span># vi /etc/neutron/l3_agent.ini
-
-interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
-agent_mode = dvr
-</pre></div>
-
-
-<p>Edit ml2 configuration file as below:</p>
-<div class="highlight"><pre><span></span># vi /etc/neutron/plugins/ml2/ml2_conf.ini
-
-type_drivers = flat,vlan,vxlan
-tenant_network_types = vxlan
-mechanism_drivers = openvswitch,l2population
-vni_ranges = 10:100
-vxlan_group = 224.1.1.1
-enable_security_group = True
-</pre></div>
-
-
-<p>Start and enable metadata agent in compute nodes</p>
-<div class="highlight"><pre><span></span>systemctl start neutron-l3-agent neutron-metadata-agent
-systemctl enable neutron-l3-agent neutron-metadata-agent
-</pre></div>
-
-
-<p>Create an external bridge with an external IP associated on it</p>
-<div class="highlight"><pre><span></span># vi /etc/sysconfig/network-scripts/ifcfg-br-ex
-
-DEVICE=br-ex
-DEVICETYPE=ovs
-TYPE=OVSBridge
-BOOTPROTO=static
-IPADDR=192.168.100.4                                                          
-NETMASK=255.255.255.0
-GATEWAY=192.168.100.1
-ONBOOT=yes
-</pre></div>
-
-
-<p>Modify an unused interface connected with the same network as the IP
-configured with br-ex, edit the interface to be used as OVS port by
-br-ex</p>
-<div class="highlight"><pre><span></span># vi /etc/sysconfig/network-scripts/ifcfg-eth1
-DEVICE=eth1
-TYPE=OVSPort
-DEVICETYPE=ovs
-OVS_BRIDGE=br-ex
-ONBOOT=yes
-</pre></div>
-
-
-<p>Restart network service to apply changes on the interfaces and
-openvswith-agent</p>
-<div class="highlight"><pre><span></span>systemctl restart network
-systemctl restart neutron-openvswitch-agent
-</pre></div>
-
-
-<p>Create an external network and a subnet on it</p>
-<div class="highlight"><pre><span></span>neutron net-create external_network --provider:network_type flat --provider:physical_network extnet  --router:external --shared
-neutron subnet-create --name public_subnet --enable_dhcp=False --allocation-pool=start=192.168.100.100,end=192.168.100.150 --gateway=192.168.100.1 external_network 192.168.100.0/24
-</pre></div>
-
-
-<p>Create a router and associate external network as router gateway</p>
-<div class="highlight"><pre><span></span>neutron router-create router1
-neutron router-gateway-set router1 external_network
-</pre></div>
-
-
-<p>Create an internal network, a subnet and associate an interface to the
-router</p>
-<div class="highlight"><pre><span></span>neutron net-create private_network
-neutron subnet-create --name private_subnet private_network 10.0.1.0/24
-neutron router-interface-add router1 private_subnet
-</pre></div>
-
-
-<p>Boot 2 instances</p>
-<div class="highlight"><pre><span></span>nova boot --flavor m1.tiny --image cirros --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df test1
-nova boot --flavor m1.tiny --image cirros --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df test2
-</pre></div>
-
-
-<p>Create 2 floating ips and associate it to instances</p>
-<div class="highlight"><pre><span></span>neutron floatingip-create external_network
-neutron floatingip-create external_network
-nova floating-ip-associate test1 192.168.100.101
-nova floating-ip-associate test2 192.168.100.102
-</pre></div>
-
-
-<p>Test if all works as expected pinging floating ips</p>
-<div class="highlight"><pre><span></span># ping 192.168.100.101
-# ping 192.168.100.102
-</pre></div>
-
-
-<p>As you can see, in network nodes, a snat namespace is created</p>
-<div class="highlight"><pre><span></span># sudo ip netns
-qdhcp-154da7a8-fa49-415e-9d35-c840b144a8df
-snat-77fef58a-6d0c-4e96-b4b6-5d8e81ebead3
-</pre></div>
-
-
-<p>In compute nodes, a fip namespace per instance with floating ip
-associated running on the compute node are created and a qrouter
-namespace are created.</p>
-<div class="highlight"><pre><span></span># sudo ip netns
-fip-4dfdabb0-d2d6-4d4a-8c00-84df834eec8b
-qrouter-77fef58a-6d0c-4e96-b4b6-5d8e81ebead3
-</pre></div>
-
-
-<p>Best regards, Eduardo Gonzalez</p>
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/configure-neutron-dvr-openstack-liberty.html">posted at 20:13</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/-configure.html" class="tags">--configure</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/distributed.html" class="tags">distributed</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/dvr.html" class="tags">dvr</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/fip.html" class="tags">fip</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/l3.html" class="tags">l3</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/liberty.html" class="tags">liberty</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/neutron.html" class="tags">neutron</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags selected">openstack</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/packstack.html" class="tags">packstack</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/qrouter.html" class="tags">qrouter</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/rdo.html" class="tags">rdo</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/routers.html" class="tags">routers</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/snat.html" class="tags">snat</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/virtual.html" class="tags">virtual</a>
-                </div>
-		<a href="https://egonzalez90.github.io/configure-neutron-dvr-openstack-liberty.html#disqus_thread">Click to read and post comments</a>
-            </article>
-
-                <div class="clear"></div>
-                <div class="pages">
-
-                    <a href="https://egonzalez90.github.io/page/3" class="prev_page">&larr;&nbsp;Previous</a>
-                    <a href="https://egonzalez90.github.io/page/5" class="next_page">Next&nbsp;&rarr;</a>
-                    <span>Page 4 of 15</span>
-                </div>
-
-            <div class="clear"></div>
-            <footer>
-                <p>
-                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
-                &middot;
-                Powered by <a href="http://getpelican.com">Pelican</a>
-                &middot;
-                <a href="https://egonzalez90.github.io/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
-            </footer>
-        </div>
-        <div class="clear"></div>
-    </div>
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
 </body>
 </html>

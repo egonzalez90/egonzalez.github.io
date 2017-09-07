@@ -54,4 +54,182 @@ tenga asignados, normalmente está al final del archivo&lt;/p&gt;
 donde están las maquinas guardadas&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;rm -R /ruta/carpeta/LDOM/&lt;/p&gt;
-&lt;/blockquote&gt;</content><category term="eliminar"></category><category term="ldm list"></category><category term="ldm remove"></category><category term="ldom"></category><category term="list-bindings"></category><category term="oracle"></category><category term="quitar"></category><category term="remove"></category><category term="solaris"></category><category term="sparc"></category><category term="VM"></category></entry></feed>
+&lt;/blockquote&gt;</content><category term="eliminar"></category><category term="ldm list"></category><category term="ldm remove"></category><category term="ldom"></category><category term="list-bindings"></category><category term="oracle"></category><category term="quitar"></category><category term="remove"></category><category term="solaris"></category><category term="sparc"></category><category term="VM"></category></entry><entry><title>Cambio de PSP para un dispositivo RDM en ESXi 5.x</title><link href="https://egonzalez90.github.io/cambio-de-psp-para-un-dispositivo-rdm-en-esxi-5-x.html" rel="alternate"></link><published>2014-09-27T16:33:00+02:00</published><updated>2014-09-27T16:33:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-09-27:/cambio-de-psp-para-un-dispositivo-rdm-en-esxi-5-x.html</id><summary type="html">&lt;p&gt;Primero veremos la información del RDM mediante este comando&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;vmkfstools -q
+/vmfs/volumes/CabinaAlmacenamiento/MaquinaVirtual/MaquinaVirtual.vmdk&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;!--more--&gt;
+
+&lt;p&gt;Nos sacara esta información. A nosotros nos interesa el vml.*****,
+el cual es el que utilizaremos en el siguiente paso.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Disk
+/vmfs/volumes/CabinaAlmacenamiento/MaquinaVirtual/MaquinaVirtual.vmdk
+is a Passthrough Raw Device Mapping …&lt;/p&gt;&lt;/blockquote&gt;</summary><content type="html">&lt;p&gt;Primero veremos la información del RDM mediante este comando&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;vmkfstools -q
+/vmfs/volumes/CabinaAlmacenamiento/MaquinaVirtual/MaquinaVirtual.vmdk&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;!--more--&gt;
+
+&lt;p&gt;Nos sacara esta información. A nosotros nos interesa el vml.*****,
+el cual es el que utilizaremos en el siguiente paso.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Disk
+/vmfs/volumes/CabinaAlmacenamiento/MaquinaVirtual/MaquinaVirtual.vmdk
+is a Passthrough Raw Device Mapping&lt;/p&gt;
+&lt;p&gt;Maps to: vml.0200460111600c0ff0001db1507629da5301000000333833383334&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A continuación utilizaremos el vml.**** para ver la información del
+dispositivo&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;esxcfg-scsidevs -l
+-d vml.0200460111600c0ff0001db1507629da5301000000333833383334&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Esto nos mostrara una información parecida a esta, a nosotros nos
+interesa el naa.*****&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;naa.600drtf0001db1507629da5301055555&lt;/p&gt;
+&lt;p&gt;Device Type: Direct-Access&lt;/p&gt;
+&lt;p&gt;Size: 7629388 MB&lt;/p&gt;
+&lt;p&gt;Display Name: DotHill Fibre Channel Disk
+(naa.600drtf0001db1507629da5301055555)&lt;/p&gt;
+&lt;p&gt;Multipath Plugin: NMP&lt;/p&gt;
+&lt;p&gt;Console Device:
+/vmfs/devices/disks/naa.600drtf0001db1507629da5301055555&lt;/p&gt;
+&lt;p&gt;Devfs Path: /vmfs/devices/disks/naa.600drtf0001db1507629da5301055555&lt;/p&gt;
+&lt;p&gt;Vendor: DotHill   Model: DH3834            Revis: G105&lt;/p&gt;
+&lt;p&gt;SCSI Level: 5  Is Pseudo: false Status: on&lt;/p&gt;
+&lt;p&gt;Is RDM Capable: true  Is Removable: false&lt;/p&gt;
+&lt;p&gt;Is Local: false Is SSD: false&lt;/p&gt;
+&lt;p&gt;Other Names:&lt;/p&gt;
+&lt;p&gt;vml.0200460111600c0ff0001db1507629da5301000000333833383334&lt;/p&gt;
+&lt;p&gt;VAAI Status: supported&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Los siguiente es ver que configuración de PSP tiene el dispositivo, para
+ello utilizaremos este comando con el naa.***** que nos mostró el
+comando anterior&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;esxcli storage nmp device list -d naa.600drtf0001db1507629da5301055555&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Esta es la salida del comando anterior, en el que podremos ver el tipo
+de PSP en la linea Path selection Policy, en este caso es MRU (Most
+Recent Used)&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;naa.600drtf0001db1507629da5301055555&lt;/p&gt;
+&lt;p&gt;Device Display Name: DotHill Fibre Channel Disk
+(naa.600drtf0001db1507629da5301055555)&lt;/p&gt;
+&lt;p&gt;Storage Array Type: VMW_SATP_ALUA&lt;/p&gt;
+&lt;p&gt;Storage Array Type Device Config:
+{implicit_support=on;explicit_support=off;
+explicit_allow=on;alua_followover=on;{TPG_id=1,TPG_state=ANO}{TPG_id=0,TPG_state=AO}}&lt;/p&gt;
+&lt;p&gt;Path Selection Policy: VMW_PSP_MRU&lt;/p&gt;
+&lt;p&gt;Path Selection Policy Device Config: Current Path=vmhba0:C0:T3:L1&lt;/p&gt;
+&lt;p&gt;Path Selection Policy Device Custom Config:&lt;/p&gt;
+&lt;p&gt;Working Paths: vmhba0:C0:T3:L1&lt;/p&gt;
+&lt;p&gt;Is Local SAS Device: false&lt;/p&gt;
+&lt;p&gt;Is Boot USB Device: false&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Si quisiéramos cambiar el PSP lo haremos mediante este comando, en este
+caso la política que aplicaremos sera RR(Round Robin)&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;esxcli storage nmp device set -d
+naa.600drtf0001db1507629da5301055555 --psp=VMW_PSP_RR&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Volvemos a comprobar que tipo de politica se ha aplicado&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;esxcli storage nmp device list -d naa.600drtf0001db1507629da5301055555&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Aquí vemos como efectivamente esta en RR el PSP&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;naa.600drtf0001db1507629da5301055555&lt;/p&gt;
+&lt;p&gt;Device Display Name: DotHill Fibre Channel Disk
+(naa.600drtf0001db1507629da5301055555)&lt;/p&gt;
+&lt;p&gt;Storage Array Type: VMW_SATP_ALUA&lt;/p&gt;
+&lt;p&gt;Storage Array Type Device Config:
+{implicit_support=on;explicit_support=off;
+explicit_allow=on;alua_followover=on;{TPG_id=1,TPG_state=ANO}{TPG_id=0,TPG_state=AO}}&lt;/p&gt;
+&lt;p&gt;Path Selection Policy: VMW_PSP_RR&lt;/p&gt;
+&lt;p&gt;Path Selection Policy Device Config: Current Path=vmhba0:C0:T3:L1&lt;/p&gt;
+&lt;p&gt;Path Selection Policy Device Custom Config:&lt;/p&gt;
+&lt;p&gt;Working Paths: vmhba0:C0:T3:L1&lt;/p&gt;
+&lt;p&gt;Is Local SAS Device: false&lt;/p&gt;
+&lt;p&gt;Is Boot USB Device: false&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Muchas gracias por leer el blog.&lt;/p&gt;</content><category term="cambiar"></category><category term="cambio"></category><category term="dispositivo"></category><category term="esxcli"></category><category term="esxi"></category><category term="most recent used"></category><category term="MRU"></category><category term="naa."></category><category term="nmp"></category><category term="PSP"></category><category term="raw"></category><category term="rdm"></category><category term="round robin"></category><category term="RR"></category><category term="storage"></category><category term="virtualizacion"></category><category term="vml."></category><category term="vmware"></category></entry><entry><title>Desplegar OVF VM Shared Disk</title><link href="https://egonzalez90.github.io/desplegar-ovf-vm-shared-disk.html" rel="alternate"></link><published>2014-08-26T14:22:00+02:00</published><updated>2014-08-26T14:22:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-08-26:/desplegar-ovf-vm-shared-disk.html</id><summary type="html">&lt;p&gt;Cuando se exporta una maquina virtual en formato OVF conVMware, en el
+entorno ESXi 5.1 es en donde lo tengo comprobado, los OVF que disponen
+de disco compartido o en diferentes controladoras SCSi se despliegan
+incorrectamente, intercambiando los discos compartidos de una
+controladora por los de otra y cambiando …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Cuando se exporta una maquina virtual en formato OVF conVMware, en el
+entorno ESXi 5.1 es en donde lo tengo comprobado, los OVF que disponen
+de disco compartido o en diferentes controladoras SCSi se despliegan
+incorrectamente, intercambiando los discos compartidos de una
+controladora por los de otra y cambiando la numeración ejemplo. VM1.vmdk
+por VM1_01.vmdk, por lo que al iniciar la maquina esta no encontrara el
+sistema operativo y dará un Boot error.&lt;br&gt;
+Pues bien, para poder exportar y desplegar correctamente estas maquinas
+con disco compartido lo que debemos de hacer es lo siguiente:&lt;/p&gt;
+&lt;p&gt;1º Copiar los discos compartidos a otro almacenamiento y quitar de la
+configuración de las maquinas virtuales que tengan esos discos
+compartidos.&lt;br&gt;
+2º Exportar en formato OVF la maquina virtual&lt;/p&gt;
+&lt;p&gt;Para un correcto despliegue de las VM hay que seguir unos pasos:&lt;/p&gt;
+&lt;p&gt;1º Desplegar OVF&lt;br&gt;
+2º Sin encender las VM, copiar los discos compartidos al Datastore
+correcto&lt;br&gt;
+3º Añadir el disco compartido a la configuración de de cada VM que
+comparta el disco&lt;/p&gt;
+&lt;p&gt;Para las VM que no tienen disco compartido solamente se desplegara e
+iniciara, habiendo antes configurado la red o los parámetros necesarios
+para el correcto funcionamiento.&lt;br&gt;
+La controladoras de los discos SCSi de discos compartidos deberán de
+ponerse en virtual y los discos en independiente/persistente.&lt;br&gt;
+Recordar que al desplegar la VM se cambiara la MAC de las NIC, por lo
+que se perderá la configuración de red que tenia configurada
+previamente, dentro de el directorio /etc/sysconfig/network-script/ se
+creara un archivo llamado eth*.bak en donde esta la configuración de
+red antigua.&lt;/p&gt;</content><category term=".vmdk"></category><category term="deploy"></category><category term="desplegar"></category><category term="disco compartido"></category><category term="error"></category><category term="esxi"></category><category term="ID"></category><category term="independent"></category><category term="intercambio"></category><category term="ovf"></category><category term="persistent"></category><category term="scsi"></category><category term="shared disk"></category><category term="virtual"></category><category term="virtualizacion"></category><category term="vmware"></category></entry><entry><title>Listar vlan ID con VMware PowerCLI</title><link href="https://egonzalez90.github.io/listar-vlan-con-id-con-vmware-powercli.html" rel="alternate"></link><published>2014-08-22T15:59:00+02:00</published><updated>2014-08-22T15:59:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-08-22:/listar-vlan-con-id-con-vmware-powercli.html</id><summary type="html">&lt;p&gt;Para poder listar todas las VLans de un host ESXi con su ID primero nos
+deberemos conectar a ese host por PowerCLI, usaremos este comando:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Connect_VIServer -server "host" -user "usuario" -password
+"contraseña"&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Una vez conectados a dicho ESXi, utilizaremos el siguiente comando con
+el que listaremos las vlans y los …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Para poder listar todas las VLans de un host ESXi con su ID primero nos
+deberemos conectar a ese host por PowerCLI, usaremos este comando:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Connect_VIServer -server "host" -user "usuario" -password
+"contraseña"&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Una vez conectados a dicho ESXi, utilizaremos el siguiente comando con
+el que listaremos las vlans y los ID, ademas lo exportaremos a un
+formato CSV para poder analizarlo con Excel&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Get-VirtualPortGroup -VMHost "Host" | Select Name, VirtualSwitch,
+VLanId | Export-Csv C:nombre.csv&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Espero les sirva, un saludo&lt;/p&gt;</content><category term="all vlan"></category><category term="CLI"></category><category term="CSV"></category><category term="esxi"></category><category term="Excel"></category><category term="host"></category><category term="ID"></category><category term="list portgroup id"></category><category term="list vlan"></category><category term="listar"></category><category term="portgroup"></category><category term="powercli"></category><category term="todas vlan"></category><category term="virtualizacion"></category><category term="Vlan"></category><category term="vlan id"></category><category term="vmware"></category></entry><entry><title>Syslog y coredump vCenter</title><link href="https://egonzalez90.github.io/syslog-y-coredump-vcenter.html" rel="alternate"></link><published>2014-08-08T16:55:00+02:00</published><updated>2014-08-08T16:55:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-08-08:/syslog-y-coredump-vcenter.html</id><summary type="html">&lt;p&gt;Vamos a configurar syslog y coredump de los host ESXi para que un
+vCenter recoja los logs de estos host&lt;/p&gt;
+&lt;p&gt;Primero deberemos tener instaladas y configuradas en el vCenter estas
+aplicaciones:&lt;/p&gt;
+&lt;p&gt;Dump Collector y Syslog collector.&lt;/p&gt;
+&lt;p&gt;Para configurar el Syslog&lt;br&gt;
+# esxcli system syslog config set --loghost="IPHOST"&lt;br&gt;
+# esxcli system syslog …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Vamos a configurar syslog y coredump de los host ESXi para que un
+vCenter recoja los logs de estos host&lt;/p&gt;
+&lt;p&gt;Primero deberemos tener instaladas y configuradas en el vCenter estas
+aplicaciones:&lt;/p&gt;
+&lt;p&gt;Dump Collector y Syslog collector.&lt;/p&gt;
+&lt;p&gt;Para configurar el Syslog&lt;br&gt;
+# esxcli system syslog config set --loghost="IPHOST"&lt;br&gt;
+# esxcli system syslog reload&lt;/p&gt;
+&lt;p&gt;Para configurar el Coredump&lt;br&gt;
+# esxcli system coredump network set --interface-name vmk0
+--server-ipv4 "IPHOST"&lt;br&gt;
+# esxcli system coredump network set --enable true&lt;br&gt;
+# esxcli system coredump network get ( para comprobar que todo ok )&lt;br&gt;
+--interface-name vmkX Hay que ver por que vmk ve la red de gestión&lt;/p&gt;
+&lt;p&gt;Estos comandos habría que ejecutarlos por cada host ESXi que queramos
+que envié los logs al vCenter&lt;/p&gt;
+&lt;p&gt;Un saludo y espero que sea de ayuda&lt;/p&gt;</content><category term="cloud"></category><category term="collector"></category><category term="coredump"></category><category term="esxi"></category><category term="log"></category><category term="syslog"></category><category term="vcenter"></category><category term="virtualizacion"></category><category term="vmware"></category></entry></feed>

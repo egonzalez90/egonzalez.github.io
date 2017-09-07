@@ -1,320 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>OpenStack Stuff | Page 29</title>
-    <link rel="shortcut icon" type="image/png" href="https://egonzalez90.github.io/favicon.png">
-    <link rel="shortcut icon" type="image/x-icon" href="https://egonzalez90.github.io/favicon.ico">
-    <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Full Atom Feed" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/screen.css" type="text/css" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/print.css" type="text/css" media="print" />
-    <meta name="generator" content="Pelican" />
-    <meta name="description" content="" />
-    <meta name="author" content="Eduardo Gonzalez" />
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
 </head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="https://egonzalez90.github.io/">Home</a></li>
-                <li><a href="https://docs.openstack.org">OpenStack</a></li>
-                <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
-                <li><a href="https://github.com/egonzalez90">Github</a></li>
-                <li><a href="https://egonzalez90.github.io/archives">Archives</a></li>
-            </ul>
-        </nav>
-        <div class="header_box">
-            <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff</a></h1>
-        </div>
-    </header>
-    <div id="wrapper">
-        <div id="content">            <h4 class="date">May 05, 2014</h4>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/habilitar-ssh-a-host-esxi.html" rel="bookmark" title="Permanent Link to &quot;Habilitar SSH a host ESXi&quot;">Habilitar SSH a host ESXi</a>
-                </h2>
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="https://docs.openstack.org">OpenStack</a></li>
+                    <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                    <li><a href="https://github.com/egonzalez90">Github</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
 
-                
-                
+                <section id="content" class="body">
+                    <ol id="posts-list" class="hfeed" start="2">
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/habilitar-ssh-a-host-esxi.html" rel="bookmark"
+                           title="Permalink to Habilitar SSH a host ESXi">Habilitar SSH a host ESXi</a></h1>
+                </header>
 
-                <p>Cuando instalas un host ESXi, lo normal es acceder a el a través de
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 05 May 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/connection-refused.html">connection refused</a><a href="https://egonzalez90.github.io/tag/error.html">error</a><a href="https://egonzalez90.github.io/tag/esxi.html">esxi</a><a href="https://egonzalez90.github.io/tag/host.html">host</a><a href="https://egonzalez90.github.io/tag/putty.html">putty</a><a href="https://egonzalez90.github.io/tag/ssh.html">ssh</a><a href="https://egonzalez90.github.io/tag/vcenter.html">vcenter</a><a href="https://egonzalez90.github.io/tag/virtualizacion.html">virtualizacion</a><a href="https://egonzalez90.github.io/tag/vmware.html">vmware</a><a href="https://egonzalez90.github.io/tag/vsphere.html">vSphere</a></span>
+</footer><!-- /.post-info -->                <p>Cuando instalas un host ESXi, lo normal es acceder a el a través de
 vSphere Client, web client o por un vCenter por alguno de los modos
 anteriores. El problema es que hasta que no lo necesitas, no te acuerdas
-de que existe el SSH, y el día que lo necesites no podrás utilizarlo...
-Es la Ley de Murphy.<!--more--></p>
-<p>Lo mas normal es acceder por SSH con un cliente como PUTTY, pues bien,
-una vez pones la direccion IP o el FQDN del host ESXi y das a
-conectar(esto tambien pasa desde una consola de Linux), te sale este
-mensaje de conexion rechazada.
-<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura13.png"><img alt="Captura" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura13.png"></a></p>
-<p>Esto se debe a que por defecto, los host ESXi tienen deshabilitado el
-acceso por SSH. Para habilitarlo, tenemos dos métodos: Desde vSphere
-Client al ESXi o vCenter, o desde el propio host ESXi</p>
-<p><span style="color: #ff0000;"><strong><em>vSphere Client</em></strong></span></p>
-<p>Una vez hemos accedido al VSphere Client, pulsaremos sobre el host al
-que queramos habilitar SSH, aquí iremos a la pestaña superior de
-Configuration.<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura14.png"><img alt="Captura1" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura14.png"></a></p>
-<p>Una vez dentro de la pestaña de Configuration, buscaremos por la barra
-lateral izquierda Security Profile, dentro de Software, nos mostrara
-esta ventana en la que iremos a el botón de Properties de la parte
-superior
-derecha<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura21.png"><img alt="Captura2" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura21.png"></a></p>
-<p>Esto nos abrirá esta ventana en la que buscaremos SSH, veremos que esta
-en estado Stoped, pulsaremos sobre el botón Options</p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura31.png"><img alt="Captura3" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura31.png"></a></p>
-<p>Aqui marcaremos la segunda opción para que inicie el servicio con el
-arranque y parada del host ESXi, ademas también pulsaremos sobre el
-botón Start para iniciar el servicio en estos momentos y finalizaremos
-pulsando sobre el botón OK</p>
-<p>[<img alt="Capturá que aceptemos la clave del host, esto lo haremos pulsando
-sobre Si\&lt;a
-href=" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura41.png"><img alt="Captura5" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura51.png">](http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura41.png)</p>
-<p>Se nos abrirá una consola de comandos en la que introduciremos el
-usuario y contraseña del host ESXi.</p>
-<p>Ya estaríamos conectados por
-SSH<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura61.png"><img alt="Captura6" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura61.png"></a></p>
-<p><strong><em><span style="color: #ff0000;">Host ESXi</span></em></strong></p>
-<p>Ahora haremos lo mismo que anteriormente pero a través del propio host.</p>
-<p>Para entrar en el menú de configuración, pulsaremos F2, esto nos pedirá
-usuario y contraseña. Una vez loggeados, veremos esta pantalla, aquí
-iremos a la opción Troubleshootin Options y pulsaremos
-Enter<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura71.png"><img alt="Captura7" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura71.png"></a></p>
-<p>Nos abrira esta otra pantalla en la que observamos que tenemos SSH
-deshabilitado, nos ponemos sobre Enable SSH y pulsamos
-Enter<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura81.png"><img alt="Captura8" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura81.png"></a></p>
-<p>Como vemos ahora tenemos SSH habilitado y tendríamos acceso remoto desde
-PuTTY</p>
-<p>Esta forma es mas sencilla que la anterior, pero deberemos de tener
-algún tipo de acceso hacia nuestro host para poder
-configurarlo<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura91.png"><img alt="Captura9" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura91.png"></a></p>
-<p>Espero les sirva de ayuda.</p>
-<p>Un saludo.</p>
-                <div class="clear"></div>
+de que existe el SSH, y el día que lo …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/habilitar-ssh-a-host-esxi.html">read more</a>
+<p><a href="https://egonzalez90.github.io/habilitar-ssh-a-host-esxi.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
 
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/habilitar-ssh-a-host-esxi.html">posted at 22:20</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/virtualizacion.html" rel="tag">Virtualizacion</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/connection-refused.html" class="tags">connection refused</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/error.html" class="tags">error</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/esxi.html" class="tags">esxi</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/host.html" class="tags">host</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/putty.html" class="tags">putty</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/ssh.html" class="tags">ssh</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/vcenter.html" class="tags">vcenter</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/virtualizacion.html" class="tags">virtualizacion</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/vmware.html" class="tags">vmware</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/vsphere.html" class="tags">vSphere</a>
-                </div>
-		<a href="https://egonzalez90.github.io/habilitar-ssh-a-host-esxi.html#disqus_thread">Click to read and post comments</a>
-            </article>            <h4 class="date">May 04, 2014</h4>
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/instalacion-vcenter-appliance.html" rel="bookmark"
+                           title="Permalink to Instalacion vCenter Appliance">Instalacion vCenter Appliance</a></h1>
+                </header>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/instalacion-vcenter-appliance.html" rel="bookmark" title="Permanent Link to &quot;Instalacion vCenter Appliance&quot;">Instalacion vCenter Appliance</a>
-                </h2>
-
-                
-                
-
-                <p>En esta entrada mostrare como instalar vCenter Appliance, muchos seréis
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 04 May 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/appliance.html">appliance</a><a href="https://egonzalez90.github.io/tag/configuracion.html">configuracion</a><a href="https://egonzalez90.github.io/tag/error-sso.html">error SSO</a><a href="https://egonzalez90.github.io/tag/esxi.html">esxi</a><a href="https://egonzalez90.github.io/tag/instalacion.html">instalacion</a><a href="https://egonzalez90.github.io/tag/vcenter.html">vcenter</a><a href="https://egonzalez90.github.io/tag/virtualizacion.html">virtualizacion</a><a href="https://egonzalez90.github.io/tag/vmware.html">vmware</a><a href="https://egonzalez90.github.io/tag/vsphere.html">vSphere</a></span>
+</footer><!-- /.post-info -->                <p>En esta entrada mostrare como instalar vCenter Appliance, muchos seréis
 los que os habréis encontrado los errores de SSO al hacer la instalación
 por defecto de vCenter(yo también fui de esos), por eso estuve
 investigando y conseguí instalarlo sin los errores.<br>
-<!--more-->El error de SSO le solucione configurando antes de iniciar
-el Wizard de configuracion la red correctamente en modo estatico. Para
-ello iremos al SO instalado de vCenter y daremos en Login
-<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura0.png"><img alt="Captura0" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura0.png"></a></p>
-<p>Esto nos abrira una consola, en la que nos pide login, el usuario por
-defecto es root y la password vmware
-<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura1.png"><img alt="Captura1" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura1.png"></a></p>
-<p>Una vez loggeados dentro del sistema, iremos a esta ruta en la que nos
-abrira un wizard de configuracion basica de la red.</p>
-<p>/opt/vmware/share/vami/vami_config_net</p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura.png"><img alt="Captura" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura.png"></a>Seleccionaremos
-para empezar la opcion 6, con la que editaremos la configuracion de la
-tarjeta de red eth0.</p>
-<p>Nos preguntara si queremos usar IPv6, le daremos que no.</p>
-<p>Nos preguntara si queremos utilizar IPv4, aqui damos yes.</p>
-<p>Nos preguntara si queremos usar DHCP, a lo que daremos que no.</p>
-<p>A continuacion nos solicitara que pongamos una direccion IP valida y
-despues una mascara de red</p>
-<p>Por ultimo nos mostrara un resumen de la configuracion y daremos a yes
-si estamos de acuerdo</p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura2.png"><img alt="Captura2" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura2.png"></a></p>
-<p>A continuacion configuraremos la puerta de enlace(gateway), para ello
-usaremos la opcion 2 del Main Menu.</p>
-<p>Nos pedira que seleccionemos una tarjeta de red para configurar la
-default gateway, aqui yo uso eth0 por lo que selecciono la opcion 0.</p>
-<p>A continuacion tendremos que poner la puerta de enlace correctamente,
-como veis hay que rellenar con tres cifras, por lo que me dio error
-cuando solo use
-1<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura3.png"><img alt="Captura3" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura3.png"></a></p>
-<p>A continuacion configuraremos los servidores DNS de nuestro vCenter,
-para ello usamos la opcion 4 del Main Menu</p>
-<p>Aqui nos pedira dos servidores DNS, el segundo es
-opcional<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura4.png"><img alt="Captura4" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura4.png"></a></p>
-<p>Lo siguiente seria configurar el hostname del vCenter con la opcion 3,
-pondremos un hostname
-correcto<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura5.png"><img alt="Captura5" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura5.png"></a></p>
-<p>Por ultimo daremos a la opcion 0 del Main Menu para ver la configuracion
-completa de la red, comprobaremos que este todo correcto y pulsaremos la
-opcion 1 para salir del
-wizard<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura6.png"><img alt="Captura6" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura6.png"></a></p>
-<p>A continuacion iremos a un navegador e iremos a la direccion
-https://IP:5480, nos loggearemos con el usuario root y password
-vmware<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura6_1.png"><img alt="Captura6_1" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura6_1.png"></a></p>
-<p>Nos saldra este asistente, aceptaremos los terminos de licencia y
-uso.<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura7.png"><img alt="Captura7" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura7.png"></a></p>
-<p>A continuacion marcaremos la opcion Configure whit default settings y
-daremos a Next para configurarlo por defecto, aqui tambien puedes
-configurarlo a tu gusto,yo uso la opcion por defecto para este
-tutorial<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura8.png"><img alt="Captura8" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura8.png"></a></p>
-<p>Nos saldra un resumen en el que tendremos que tener estas opciones asi:</p>
-<ul>
-<li>Database: Embedded<br>
-    SSO: Embedded<br>
-    SSO Database: Embedded<br>
-    AD Enabled: No</li>
-</ul>
-<p>Una vez comprobado esto pulsaremos en
-Start<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura9.png"><img alt="Captura9" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura9.png"></a></p>
-<p>Despues de esperar un buen rato, nos deberia aparecer todos los check en
-verde sin errores, de ser asi pulsaremos en Close</p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura10.png"><img alt="Captura10" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura10.png"></a></p>
-<p>A continuacion iremos a vSphere Client, pondremos la direcion Ip del
-vCenter, usuario y contrasena.</p>
-<p>Aqui nos pedira que aceptemos el certificado, marcaremos la opcion de
-Install this certificate y daremos a
-Ignore<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura11.png"><img alt="Captura11" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura11.png"></a></p>
-<p>Por ultimo se nos conectara al vCenter Appliance, con esto ya estaria
-terminado este
-tutorial<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura12.png"><img alt="Captura12" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/05/Captura12.png"></a></p>
-<p>Espero que les sirva de ayuda y puedan conectar sin problemas a vCenter,
-gracias por visitar este blog.</p>
-<p>Un saludo</p>
-                <div class="clear"></div>
+<!--more-->El error de SSO le solucione configurando antes …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/instalacion-vcenter-appliance.html">read more</a>
+<p><a href="https://egonzalez90.github.io/instalacion-vcenter-appliance.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
 
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/instalacion-vcenter-appliance.html">posted at 16:32</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/virtualizacion.html" rel="tag">Virtualizacion</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/appliance.html" class="tags">appliance</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/configuracion.html" class="tags">configuracion</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/error-sso.html" class="tags">error SSO</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/esxi.html" class="tags">esxi</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/instalacion.html" class="tags">instalacion</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/vcenter.html" class="tags">vcenter</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/virtualizacion.html" class="tags">virtualizacion</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/vmware.html" class="tags">vmware</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/vsphere.html" class="tags">vSphere</a>
-                </div>
-		<a href="https://egonzalez90.github.io/instalacion-vcenter-appliance.html#disqus_thread">Click to read and post comments</a>
-            </article>            <h4 class="date">Mar 30, 2014</h4>
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/creacion-de-claves-con-opengpg.html" rel="bookmark"
+                           title="Permalink to Creación de claves con OpenPGP">Creación de claves con OpenPGP</a></h1>
+                </header>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/creacion-de-claves-con-opengpg.html" rel="bookmark" title="Permanent Link to &quot;Creación de claves con OpenPGP&quot;">Creación de claves con OpenPGP</a>
-                </h2>
-
-                
-                
-
-                <p><strong>En esta entrada mostrare el proceso para la creación de claves
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 30 March 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/asimetrico.html">asimetrico</a><a href="https://egonzalez90.github.io/tag/cifrado.html">cifrado</a><a href="https://egonzalez90.github.io/tag/clave.html">clave</a><a href="https://egonzalez90.github.io/tag/linux.html">linux</a><a href="https://egonzalez90.github.io/tag/opengpg.html">opengpg</a><a href="https://egonzalez90.github.io/tag/openpgp.html">openpgp</a><a href="https://egonzalez90.github.io/tag/seguridad.html">Seguridad</a><a href="https://egonzalez90.github.io/tag/simetrico.html">simetrico</a></span>
+</footer><!-- /.post-info -->                <p><strong>En esta entrada mostrare el proceso para la creación de claves
 simétricas y asimétricas con openpgp en Linux</strong></p>
 <p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/1.png"><!--more--></a></p>
 <p><span style="color: #ff0000;"><strong><em>Clave Simétrica </em></strong></span></p>
 <p><strong>En Linux por defecto te viene instalado openpgp.</strong></p>
 <p><strong>Para crear una clave simétrica, deberemos escribir gpg con el
-modificador –c y el nombre del archivo creado que se quiera encriptar</strong></p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/1.png"><img alt="1" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/1.png"></a></p>
-<p><strong>Esto nos solicitara la clave que queramos asignarla dos veces, la
-rellenamos y ya tenemos el archivo encriptado de forma simétrica.</strong></p>
-<p><strong>Para desencriptar usaremos el comando gpg con el modificado –d y el
-archivo que queramos desencriptar, que tiene que acabar en .gpg</strong></p>
-<p><strong>Esto nos solicitara la clave que le habíamos puesto, y a continuación
-nos creara el archivo desencriptado</strong></p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/2.png"><img alt="2" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/2.png"></a></p>
-<p><strong><span style="color: #ff0000;">Clave asimétrica </span></strong></p>
-<p><strong>Para crear la clave asimétrica, pondremos el comando gpg –gen-key</strong></p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/3.png"><img alt="3" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/3.png"></a></p>
-<p><strong>Esto nos solicitara que le indiquemos el algoritmo de cifrado que
-deseemos utilizar, nosotros usaremos la opción 1 default RSA</strong></p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/4.png"><img alt="4" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/4.png"></a></p>
-<p><strong>Ahora nos pide que indiquemos la longitud de bits de las claves RSA,
-nosotros pondremos un término medio y el que nos aconseja, esta longitud
-es 2048</strong></p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/5.png"><img alt="5" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/5.png"></a></p>
-<p><strong>Ahora indicaremos el tiempo que queremos que tenga de vida la clave,
-nosotros usaremos 1y, para indicar 1 año</strong></p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/6.png"><img alt="6" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/6.png"></a></p>
-<p><strong>Nos indicara el día y hora de la expiración de la clave y preguntara
-si es correcto, damos y avanzamos</strong></p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/7.png"><img alt="7" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/7.png"></a></p>
-<p><strong>Ahora nos preguntara el nombre real del que crea la clave, yo pongo el
-nombre de usuario</strong></p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/8.png"><img alt="8" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/8.png"></a></p>
-<p><strong>Seguidamente, nos preguntara el email,  le ponemos, y avanzamos a lo
-siguiente</strong></p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/9.png"><img alt="9" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/9.png"></a></p>
-<p><strong>Después nos dirá si todo es correcto y nos mostrara el nombre e email
-del usuario, damos O y pasamos al siguiente paso</strong></p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/10.png"><img alt="10" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/10.png"></a></p>
-<p><strong>Lo siguiente sería crear la clave, para ello la indicamos la clave que
-queramos usar, la repetimos dos veces</strong></p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/12.png"><img alt="12" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/12.png"></a></p>
-<p><strong>Ahora generara el proceso de creación de la clave, esto nos puede
-solicitar que utilicemos recursos del sistema, abrimos ventanas,
-navegadores, etc para que complete la creación de la clave asimétrica.</strong></p>
-<p><strong>Después nos dará un mensaje con la información del proceso, deberías
-ser que se ha creado correctamente todo.</strong></p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/131.png"><img alt="13" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/131.png"></a></p>
-<p><strong>Ahora iremos a comprobar que se han creado las claves correctamente,
-para ello utilizaremos el comando gpg –k, que nos mostrara las claves
-que tenemos creadas.</strong></p>
-<p><strong>Aquí vemos la clave pública y la privada, y en el medio de ambas, el
-nombre de usuario de la clave.</strong></p>
-<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/141.png"><img alt="14" src="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/03/141.png"></a></p>
-                <div class="clear"></div>
+modificador –c y el nombre del archivo creado que se quiera encriptar …</strong></p>
+                <a class="readmore" href="https://egonzalez90.github.io/creacion-de-claves-con-opengpg.html">read more</a>
+<p><a href="https://egonzalez90.github.io/creacion-de-claves-con-opengpg.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+        <a href="https://egonzalez90.github.io/index28.html">&laquo;</a>
+    Page 29 / 34
+        <a href="https://egonzalez90.github.io/index30.html">&raquo;</a>
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/creacion-de-claves-con-opengpg.html">posted at 15:21</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/linux.html" rel="tag">Linux</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/asimetrico.html" class="tags">asimetrico</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/cifrado.html" class="tags">cifrado</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/clave.html" class="tags">clave</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/linux.html" class="tags">linux</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/opengpg.html" class="tags">opengpg</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/openpgp.html" class="tags">openpgp</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/seguridad.html" class="tags">Seguridad</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/simetrico.html" class="tags">simetrico</a>
-                </div>
-		<a href="https://egonzalez90.github.io/creacion-de-claves-con-opengpg.html#disqus_thread">Click to read and post comments</a>
-            </article>
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
 
-                <div class="clear"></div>
-                <div class="pages">
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
 
-                    <a href="https://egonzalez90.github.io/page/28" class="prev_page">&larr;&nbsp;Previous</a>
-                    <a href="https://egonzalez90.github.io/page/30" class="next_page">Next&nbsp;&rarr;</a>
-                    <span>Page 29 of 34</span>
-                </div>
-
-            <div class="clear"></div>
-            <footer>
-                <p>
-                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
-                &middot;
-                Powered by <a href="http://getpelican.com">Pelican</a>
-                &middot;
-                <a href="https://egonzalez90.github.io/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
-            </footer>
-        </div>
-        <div class="clear"></div>
-    </div>
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
 </body>
 </html>

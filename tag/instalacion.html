@@ -1,47 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>OpenStack Stuff | articles tagged "instalacion"</title>
-    <link rel="shortcut icon" type="image/png" href="https://egonzalez90.github.io/favicon.png">
-    <link rel="shortcut icon" type="image/x-icon" href="https://egonzalez90.github.io/favicon.ico">
-    <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Full Atom Feed" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/screen.css" type="text/css" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/print.css" type="text/css" media="print" />
-    <meta name="generator" content="Pelican" />
-    <meta name="description" content="" />
-    <meta name="author" content="Eduardo Gonzalez" />
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff - instalacion</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
 </head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li class="ephemeral selected"><a href="https://egonzalez90.github.io/tag/instalacion.html">instalacion</a></li>
-                <li><a href="https://egonzalez90.github.io/">Home</a></li>
-                <li><a href="https://docs.openstack.org">OpenStack</a></li>
-                <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
-                <li><a href="https://github.com/egonzalez90">Github</a></li>
-                <li><a href="https://egonzalez90.github.io/archives">Archives</a></li>
-            </ul>
-        </nav>
-        <div class="header_box">
-            <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff</a></h1>
-        </div>
-    </header>
-    <div id="wrapper">
-        <div id="content">            <h4 class="date">Jan 29, 2015</h4>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/configuracion-de-image-service-glance.html" rel="bookmark" title="Permanent Link to &quot;Configuración de Image Service Glance&quot;">Configuración de Image Service Glance</a>
-                </h2>
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="https://docs.openstack.org">OpenStack</a></li>
+                    <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                    <li><a href="https://github.com/egonzalez90">Github</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
 
-                
-                
-
-                <p>Lo primero que debemos instalar son los paquetes de Glance en Controller
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://egonzalez90.github.io/configuracion-de-image-service-glance.html">Configuración de Image Service Glance</a></h1>
+<footer class="post-info">
+        <span>Thu 29 January 2015</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/configuracion.html">configuracion</a><a href="https://egonzalez90.github.io/tag/glance.html">glance</a><a href="https://egonzalez90.github.io/tag/glance-api.html">glance-api</a><a href="https://egonzalez90.github.io/tag/image-service.html">image service</a><a href="https://egonzalez90.github.io/tag/instalacion.html">instalacion</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a></span>
+</footer><!-- /.post-info --><p>Lo primero que debemos instalar son los paquetes de Glance en Controller
 Node.</p>
 <blockquote>
 <p># yum install openstack-glance python-glanceclient</p>
@@ -124,99 +121,43 @@ y creamos el endpoint</p>
 <p># service openstack-glance-registry start</p>
 <p>#chkconfig openstack-glance-api on</p>
 <p># chkconfig openstack-glance-registry on</p>
-</blockquote>
-                <div class="clear"></div>
+</blockquote><p><a href="https://egonzalez90.github.io/configuracion-de-image-service-glance.html#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
 
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/configuracion-de-image-service-glance.html">posted at 17:36</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/configuracion.html" class="tags">configuracion</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/glance.html" class="tags">glance</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/glance-api.html" class="tags">glance-api</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/image-service.html" class="tags">image service</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/instalacion.html" class="tags selected">instalacion</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
-                </div>
-		<a href="https://egonzalez90.github.io/configuracion-de-image-service-glance.html#disqus_thread">Click to read and post comments</a>
-            </article>            <h4 class="date">Dec 29, 2014</h4>
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/comprobar-keystone.html" rel="bookmark"
+                           title="Permalink to Comprobar Keystone">Comprobar Keystone</a></h1>
+                </header>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/comprobar-keystone.html" rel="bookmark" title="Permanent Link to &quot;Comprobar Keystone&quot;">Comprobar Keystone</a>
-                </h2>
-
-                
-                
-
-                <p>En anteriores post hemos configurado Keystone(Identity Service), ahora
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 29 December 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/-.html">-</a><a href="https://egonzalez90.github.io/tag/comprobar.html">comprobar</a><a href="https://egonzalez90.github.io/tag/instalacion.html">instalacion</a><a href="https://egonzalez90.github.io/tag/keystone.html">keystone</a><a href="https://egonzalez90.github.io/tag/list.html">list</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/role.html">role</a><a href="https://egonzalez90.github.io/tag/usr.html">usr</a></span>
+</footer><!-- /.post-info -->                <p>En anteriores post hemos configurado Keystone(Identity Service), ahora
 deberemos de comprobar que este correctamente configurado. Para ello he
 creado esta entrada en el blog.</p>
 <p>Lo primero que haremos será quitar las variables de entorno con las que
 nos autenticábamos en el servicio, con ello nos tendremos que autenticar
-con usuario y contraseña.</p>
-<blockquote>
-<p>unset OS_SERVICE_TOKEN OS_SERVICE_ENDPOINT</p>
-</blockquote>
-<p>A continuación crearemos el archivo admin-openrc.sh, en el que
-configuraremos los datos de nuestro usuario, en este caso el usuario
-admin previamente creado. Una vez creado el fichero anterior mediante un
-editor de texto, vi, gedit, nano, etc. Incluiremos el siguiente
-contenido:</p>
-<blockquote>
-<p>export OS_USERNAME=admin</p>
-<p>export OS_PASSWORD=\&lt;adminPASSWORD></p>
-<p>export OS_TENANT_NAME=admin</p>
-<p>export OS_AUTH_URL=http://controller:35357/v2.0</p>
-</blockquote>
-<p>A continuación, estableceremos las variables de entorno añadidas en el
-archivo admin-openrc.sh</p>
-<blockquote>
-<p>source admin-openrc.sh</p>
-</blockquote>
-<p>Comprobaremos que podemos listar los usuarios y ya de paso comprobamos
-que estan bien definidas las variables y por lo tanto estamos utilizando
-el usuario admin en esta operación</p>
-<blockquote>
-<p>keystone user-list</p>
-</blockquote>
-<p>Listamos los roles del usuario admin</p>
-<blockquote>
-<p>keystone user-role-list --user=admin --tenant=admin</p>
-</blockquote>
-<p>Estos dos últimos comandos nos mostraran una información, en la que
-comprobaremos que el ID del usuario admin esta en el rol de admin y
-_member_</p>
-<p>Si todo lo anterior salió correctamente quiere decir que tenemos la
-configuración básica de Identity Service correctamente realizada y
-podremos seguir configurando mas servicios en nuestro entorno</p>
-                <div class="clear"></div>
+con …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/comprobar-keystone.html">read more</a>
+<p><a href="https://egonzalez90.github.io/comprobar-keystone.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
 
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/comprobar-keystone.html">posted at 18:14</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/-.html" class="tags">-</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/comprobar.html" class="tags">comprobar</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/instalacion.html" class="tags selected">instalacion</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/keystone.html" class="tags">keystone</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/list.html" class="tags">list</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/role.html" class="tags">role</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/usr.html" class="tags">usr</a>
-                </div>
-		<a href="https://egonzalez90.github.io/comprobar-keystone.html#disqus_thread">Click to read and post comments</a>
-            </article>            <h4 class="date">Nov 21, 2014</h4>
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/816.html" rel="bookmark"
+                           title="Permalink to Instalación Identity Service (Keystone)">Instalación Identity Service (Keystone)</a></h1>
+                </header>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/816.html" rel="bookmark" title="Permanent Link to &quot;Instalación Identity Service (Keystone)&quot;">Instalación Identity Service (Keystone)</a>
-                </h2>
-
-                
-                
-
-                <p>Primero instalaremos los paquetes necesarios de Openstack Identity
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 21 November 2014</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/cloud.html">cloud</a><a href="https://egonzalez90.github.io/tag/configuracion.html">configuracion</a><a href="https://egonzalez90.github.io/tag/guia.html">guia</a><a href="https://egonzalez90.github.io/tag/identity.html">identity</a><a href="https://egonzalez90.github.io/tag/instalacion.html">instalacion</a><a href="https://egonzalez90.github.io/tag/keystone.html">keystone</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a></span>
+</footer><!-- /.post-info -->                <p>Primero instalaremos los paquetes necesarios de Openstack Identity
 Service</p>
 <blockquote>
 <p>yum install openstack-keystone python-keystoneclient</p>
@@ -227,88 +168,41 @@ que habiamos creado</p>
 <p>openstack-config --set /etc/keystone/keystone.conf database connection
 mysql://keystone:PASSWORD@controller/keystone</p>
 </blockquote>
-<p>Crearemos la base de datos para keystone y el usuario keystone</p>
-<blockquote>
-<p>mysql -u root -p</p>
-<p>CREATE DATABASE keystone;</p>
-<p>GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'localhost'
-IDENTIFIED BY 'keystonepassword';</p>
-<p>GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' IDENTIFIED BY
-'keystonepassword';</p>
-<p>exit</p>
-</blockquote>
-<p>Creamos las tablas de keystone</p>
-<blockquote>
-<p>su -s /bin/sh -c "keystone-manage db_sync" keystone</p>
-</blockquote>
-<p>Creamos un token de autenticacion para usar como clave entre keystone y
-los demás servicios de openstack</p>
-<blockquote>
-<p>ADMIN_TOKEN=\$(openssl rand -hex 10)</p>
-<p>echo \$ADMIN_TOKEN</p>
-<p>openstack-config --set /etc/keystone/keystone.conf DEFAULT
-admin_token \$ADMIN_TOKEN</p>
-</blockquote>
-<p>Creamos las claves firmadas y los certificados, también restringimos el
-acceso a la información generada</p>
-<blockquote>
-<p>keystone-manage pki_setup --keystone-user keystone --keystone-group
-keystone</p>
-<p>chown -R keystone:keystone /etc/keystone/ssl</p>
-<p>chmod -R o-rwx /etc/keystone/ssl</p>
-</blockquote>
-<p>Iniciamos el servicio keystone y establecemos el arranque del servicio
-con el arranque del sistema</p>
-<blockquote>
-<p>service openstack-keystone start</p>
-<p>chkconfig openstack-keystone on</p>
-</blockquote>
-<p>Creamos una tarea en cron para que elimine los tokens caducados y
-prevenir  una acumulación innecesaria</p>
-<blockquote>
-<p>(crontab -l -u keystone 2>&amp;1 | grep -q token_flush) ||<br>
- echo '@hourly /usr/bin/keystone-manage token_flush
->/var/log/keystone/<br>
- keystone-tokenflush.log 2>&amp;1' >> /var/spool/cron/keystone</p>
-</blockquote>
-<p>Ya tendríamos instalado keystone, el siguiente paso sera crear los
-usuarios, tenants y roles de administración, eso lo veremos en la
-siguiente entrada.</p>
-                <div class="clear"></div>
+<p>Crearemos la base de datos para keystone y el usuario …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/816.html">read more</a>
+<p><a href="https://egonzalez90.github.io/816.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 3
+        <a href="https://egonzalez90.github.io/tag/instalacion2.html">&raquo;</a>
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/816.html">posted at 16:49</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/cloud.html" class="tags">cloud</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/configuracion.html" class="tags">configuracion</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/guia.html" class="tags">guia</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/identity.html" class="tags">identity</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/instalacion.html" class="tags selected">instalacion</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/keystone.html" class="tags">keystone</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
-                </div>
-		<a href="https://egonzalez90.github.io/816.html#disqus_thread">Click to read and post comments</a>
-            </article>
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
 
-                <div class="clear"></div>
-                <div class="pages">
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
 
-                    <a href="https://egonzalez90.github.io/page/2" class="next_page">Next&nbsp;&rarr;</a>
-                    <span>Page 1 of 3</span>
-                </div>
-
-            <div class="clear"></div>
-            <footer>
-                <p>
-                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
-                &middot;
-                Powered by <a href="http://getpelican.com">Pelican</a>
-                &middot;
-                <a href="https://egonzalez90.github.io/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
-            </footer>
-        </div>
-        <div class="clear"></div>
-    </div>
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
 </body>
 </html>

@@ -165,4 +165,139 @@ su servidor.&lt;/p&gt;
 &lt;p&gt;En la misma web, tienen un ejemplo práctico de como el encontró su
 webshell en phpmyadmin, os recomiendo que la lean.&lt;/p&gt;
 &lt;p&gt;Infinitamente agradecido.&lt;/p&gt;
-&lt;p&gt;Un saludo&lt;/p&gt;</content><category term="analisis"></category><category term="atacado"></category><category term="ataque"></category><category term="bash_history"></category><category term="busqueda"></category><category term="ethical"></category><category term="forense"></category><category term="Hacking"></category><category term="informatica"></category><category term="last"></category><category term="linux"></category><category term="lsattr"></category><category term="mtime"></category><category term="netstat"></category><category term="ps"></category><category term="rpm -Va"></category><category term="Seguridad"></category><category term="servidor"></category><category term="strace"></category><category term="top"></category><category term="unix"></category><category term="vulnerable"></category></entry></feed>
+&lt;p&gt;Un saludo&lt;/p&gt;</content><category term="analisis"></category><category term="atacado"></category><category term="ataque"></category><category term="bash_history"></category><category term="busqueda"></category><category term="ethical"></category><category term="forense"></category><category term="Hacking"></category><category term="informatica"></category><category term="last"></category><category term="linux"></category><category term="lsattr"></category><category term="mtime"></category><category term="netstat"></category><category term="ps"></category><category term="rpm -Va"></category><category term="Seguridad"></category><category term="servidor"></category><category term="strace"></category><category term="top"></category><category term="unix"></category><category term="vulnerable"></category></entry><entry><title>ShellShock CVE-2014-6271, CVE-2014-7169 RHEL</title><link href="https://egonzalez90.github.io/shellshock-cve-2014-6271-cve-2014-7169-rhel.html" rel="alternate"></link><published>2014-09-26T14:56:00+02:00</published><updated>2014-09-26T14:56:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-09-26:/shellshock-cve-2014-6271-cve-2014-7169-rhel.html</id><summary type="html">&lt;p&gt;Para comprobar que el sistema es vulnerable a &lt;span
+style="font-family: 'Liberation Sans', 'Trebuchet MS', 'Bitstream Vera Sans', helvetica, verdana, arial, sans-serif; line-height: 18.2000007629395px;"&gt;CVE-2014-6271&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;``` {style="border-width: 1px 1px 1px 2px; border-style: solid; border-color: #eeeeee #eeeeee #eeeeee #cccccc; margin: 10px 20px; padding: 10px; vertical-align: baseline; font-family: 'Liberation Sans', 'Luxi Sans', 'Trebuchet MS', 'Bitstream Vera Sans', helvetica, verdana, arial, sans-serif; white-space: pre; overflow-x: auto; width: auto; word-wrap …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Para comprobar que el sistema es vulnerable a &lt;span
+style="font-family: 'Liberation Sans', 'Trebuchet MS', 'Bitstream Vera Sans', helvetica, verdana, arial, sans-serif; line-height: 18.2000007629395px;"&gt;CVE-2014-6271&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;``` {style="border-width: 1px 1px 1px 2px; border-style: solid; border-color: #eeeeee #eeeeee #eeeeee #cccccc; margin: 10px 20px; padding: 10px; vertical-align: baseline; font-family: 'Liberation Sans', 'Luxi Sans', 'Trebuchet MS', 'Bitstream Vera Sans', helvetica, verdana, arial, sans-serif; white-space: pre; overflow-x: auto; width: auto; word-wrap: normal; line-height: 18.2000007629395px; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: repeat;"}
+$ env 'x=() { :;}; echo vulnerable' 'BASH_FUNC_x()=() { :;}; echo vulnerable' bash -c "echo test"&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c"&gt;&amp;lt;!--more--&amp;gt;&lt;/span&gt;
+
+Si el resultado es &amp;quot;vulnerable&amp;quot; tienes una versión de Bash vulnerable,
+si muestra errores y &amp;quot;test&amp;quot; quiere decir que tienes el parche de bash
+adecuado, por lo que estas protegido ante &lt;span class="nt"&gt;&amp;lt;span&lt;/span&gt;
+&lt;span class="na"&gt;style=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;font-family: &amp;#39;Liberation Sans&amp;#39;, &amp;#39;Trebuchet MS&amp;#39;, &amp;#39;Bitstream Vera Sans&amp;#39;, helvetica, verdana, arial, sans-serif; line-height: 18.2000007629395px;&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;CVE-2014-6271.&lt;span class="nt"&gt;&amp;lt;/span&amp;gt;&lt;/span&gt;
+
+&lt;span class="nt"&gt;&amp;lt;span&lt;/span&gt;
+&lt;span class="na"&gt;style=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;font-family: &amp;#39;Liberation Sans&amp;#39;, &amp;#39;Trebuchet MS&amp;#39;, &amp;#39;Bitstream Vera Sans&amp;#39;, helvetica, verdana, arial, sans-serif; line-height: 18.2000007629395px;&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;Ahora
+bien, con el parche de CVE-2014-6271, se ha encontrado la
+vulnerabilidad &lt;span class="nt"&gt;&amp;lt;/span&amp;gt;&lt;/span&gt;CVE-2014-7169
+
+Comprobaremos si somos vulnerables con el siguiente comando
+
+``` {style=&amp;quot;border-width: 1px 1px 1px 2px; border-style: solid; border-color: #eeeeee #eeeeee #eeeeee #cccccc; margin: 10px 20px; padding: 10px; vertical-align: baseline; font-family: &amp;#39;Liberation Sans&amp;#39;, &amp;#39;Luxi Sans&amp;#39;, &amp;#39;Trebuchet MS&amp;#39;, &amp;#39;Bitstream Vera Sans&amp;#39;, helvetica, verdana, arial, sans-serif; white-space: pre; overflow-x: auto; width: auto; word-wrap: normal; line-height: 18.2000007629395px; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: repeat;&amp;quot;}
+cd /tmp; rm -f /tmp/echo; env &amp;#39;x=() { (a)=&amp;gt;&amp;#39; bash -c &amp;quot;echo date&amp;quot;; cat /tmp/echo
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Si te muestra la fecha es que tienes la versión de bash vulnerable, si
+te muestra errores y "/tmp/echo no such file or directory" quiere decir
+que estas seguro frente a &lt;span
+style="line-height: 20.7999992370605px;"&gt;CVE-2014-7169&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="line-height: 20.7999992370605px;"&gt;Para corregir la
+vulnerabilidad introducir el siguiente comando para actualizar la
+versión de bash&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;``` {style="border-width: 1px 1px 1px 2px; border-style: solid; border-color: #eeeeee #eeeeee #eeeeee #cccccc; margin: 10px 20px; padding: 10px; vertical-align: baseline; font-family: 'Liberation Sans', 'Luxi Sans', 'Trebuchet MS', 'Bitstream Vera Sans', helvetica, verdana, arial, sans-serif; white-space: pre; overflow-x: auto; width: auto; word-wrap: normal; line-height: 18.2000007629395px; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: repeat;"}&lt;/p&gt;
+&lt;h1&gt;yum update bash&lt;/h1&gt;
+&lt;p&gt;```&lt;/p&gt;
+&lt;p&gt;&lt;span
+style="font-family: tahoma,geneva,sans-serif; color: #000000;"&gt;&lt;code style="font-size: 11px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; overflow-x: auto; width: auto; word-wrap: normal; background: transparent;"&gt;En estos momentos aun no hay parche adecuado para bash por lo que sigue siendo vulnerable a&lt;/code&gt;&lt;/span&gt;&lt;span
+style="line-height: 20.7999992370605px;"&gt;&lt;span
+style="font-family: lucida sans unicode,lucida grande,sans-serif;"&gt;&lt;span
+style="font-family: tahoma,geneva,sans-serif; color: #000000;"&gt;CVE-2014-7169&lt;/span&gt;,&lt;/span&gt;
+deberás estar atento al momento en que lo publiquen para minimizar los
+riesgos&lt;/span&gt;&lt;/p&gt;</content><category term="bash"></category><category term="CVE-2014-6271"></category><category term="CVE-2014-7169"></category><category term="fix"></category><category term="parche"></category><category term="red hat"></category><category term="rhel"></category><category term="Seguridad"></category><category term="shellshock"></category><category term="vulnerable"></category><category term="yum update"></category></entry><entry><title>Modo rescate monousuario RHEL</title><link href="https://egonzalez90.github.io/modo-rescate-rhel.html" rel="alternate"></link><published>2014-09-11T15:50:00+02:00</published><updated>2014-09-11T15:50:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-09-11:/modo-rescate-rhel.html</id><summary type="html">&lt;p&gt;Cuando en el arranque te da algún error de configuración e impide un
+inicio del sistema operativo normal, la solución es iniciar en modo
+monousuario son red para arreglar dichos errores. Para ello seguiremos
+estos pasos&lt;/p&gt;
+&lt;p&gt;Cuando aparece el GRUB, pulsar cualquier botón para entrar a la
+selección del SO …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Cuando en el arranque te da algún error de configuración e impide un
+inicio del sistema operativo normal, la solución es iniciar en modo
+monousuario son red para arreglar dichos errores. Para ello seguiremos
+estos pasos&lt;/p&gt;
+&lt;p&gt;Cuando aparece el GRUB, pulsar cualquier botón para entrar a la
+selección del SO a arrancar,aquí pulsar \&amp;lt;a&gt; y a continuación
+pulsaremos espacio y escribiremos \&amp;lt;single&gt;, de esta forma iniciaremos
+en modo monousuario sin red. Con lo que podremos solucionar los errores
+de configuración que nos impedían el arranque normal del sistema&lt;/p&gt;</content><category term="a"></category><category term="centos"></category><category term="error"></category><category term="grub"></category><category term="inicio"></category><category term="monousuario"></category><category term="red hat"></category><category term="rescate"></category><category term="rescue mode"></category><category term="rhel"></category><category term="single"></category><category term="sistema"></category><category term="user"></category></entry><entry><title>Añadir repositorios EPEL RHEL y CentOS</title><link href="https://egonzalez90.github.io/anadir-repositorios-epel-rhel-y-centos.html" rel="alternate"></link><published>2014-09-09T15:32:00+02:00</published><updated>2014-09-09T15:32:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-09-09:/anadir-repositorios-epel-rhel-y-centos.html</id><summary type="html">&lt;p&gt;Primero descargaremos el repositorio para nuestra versión de CentOS o
+RHEL mediante wget.&lt;/p&gt;
+&lt;p&gt;A continuacion instalaremos el paquete que habiamos descargado con rpm.&lt;/p&gt;
+&lt;p&gt;Esta son las diferentes versiones de CentOS y RHEL&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;## RHEL/CentOS 7 64-Bit ##&lt;br&gt;
+ #
+wget http://mirror.rackcentral.com.au/epel/7/x86_64/epel-release-7-1.noarch.rpm&lt;br&gt;
+ # rpm -ivh …&lt;/p&gt;&lt;/blockquote&gt;</summary><content type="html">&lt;p&gt;Primero descargaremos el repositorio para nuestra versión de CentOS o
+RHEL mediante wget.&lt;/p&gt;
+&lt;p&gt;A continuacion instalaremos el paquete que habiamos descargado con rpm.&lt;/p&gt;
+&lt;p&gt;Esta son las diferentes versiones de CentOS y RHEL&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;## RHEL/CentOS 7 64-Bit ##&lt;br&gt;
+ #
+wget http://mirror.rackcentral.com.au/epel/7/x86_64/epel-release-7-1.noarch.rpm&lt;br&gt;
+ # rpm -ivh epel-release-7-0.2.noarch.rpm&lt;/p&gt;
+&lt;p&gt;## RHEL/CentOS 6 32-Bit ##&lt;br&gt;
+ #
+wget http://mirror.rackcentral.com.au/epel/6/i386/epel-release-6-8.noarch.rpm&lt;br&gt;
+ # rpm -ivh epel-release-6-8.noarch.rpm&lt;/p&gt;
+&lt;p&gt;## RHEL/CentOS 6 64-Bit ##&lt;br&gt;
+ #
+wget http://mirror.rackcentral.com.au/epel/6/x86_64/epel-release-6-8.noarch.rpm&lt;br&gt;
+ # rpm -ivh epel-release-6-8.noarch.rpm&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Lo siguiente que haremos sera comprobar que esta en la lista de
+repositorios mediante este comando&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;yum repolist&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Por ultimo habilitaremos el repositorio, para que podamos usarlo
+habitualmente&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;yum --enablerepo=epel&lt;/p&gt;
+&lt;/blockquote&gt;</content><category term="añadir"></category><category term="centos"></category><category term="descargar"></category><category term="enablerepo"></category><category term="epel"></category><category term="fedoraproject"></category><category term="instalar"></category><category term="red hat"></category><category term="repolist"></category><category term="repositorios"></category><category term="rhel"></category></entry><entry><title>Montar directorio NFS</title><link href="https://egonzalez90.github.io/montar-directorio-nfs.html" rel="alternate"></link><published>2014-09-05T15:46:00+02:00</published><updated>2014-09-05T15:46:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2014-09-05:/montar-directorio-nfs.html</id><summary type="html">&lt;p&gt;Primero crearemos la carpeta en donde vamos a montar el directorio NFS&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;mkdir /rutadondemontareldirectorio&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A continuación utilizaremos este comando para montar el directorio NFS
+en la carpeta creada anteriormente.&lt;/p&gt;
+&lt;p&gt;SERVIDOR puede ser tanto hostname como IP(yo siempre prefiero utilizar
+IP)&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;mount SERVIDOR:/ruta/a/la/carpeta /rutadondemontareldirectorio&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Una vez …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Primero crearemos la carpeta en donde vamos a montar el directorio NFS&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;mkdir /rutadondemontareldirectorio&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A continuación utilizaremos este comando para montar el directorio NFS
+en la carpeta creada anteriormente.&lt;/p&gt;
+&lt;p&gt;SERVIDOR puede ser tanto hostname como IP(yo siempre prefiero utilizar
+IP)&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;mount SERVIDOR:/ruta/a/la/carpeta /rutadondemontareldirectorio&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Una vez montado sin darnos ningún error, utilizaremos este comando para
+comprobar que nos mostrara los directorios que están montados en nuestro
+sistema y que tamaño tienen&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;df -h&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Ahora que ya hemos montado el directorio NFS, lo incluiremos en fstab
+para que se monte siempre en el arranque del sistema sin tener que
+hacerlo manualmente por los pasos anteriores, para ello modificaremos
+este archivo&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;vi /etc/fstab&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Dentro del archivo incluiremos esta linea y guardaremos&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;SERVIDOR:/ruta/a/la/carpeta            /rutadondemontareldirectorio  
+         default            0 0&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Podemos comprobar que el archivo fstab funciona correctamente utilizando
+el mismo comando de antes para ver los directorios montados y su tamaño,
+pero esta vez lo haremos una vez encendida la maquina, sin haber montado
+el directorio NFS de forma manual&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;df -h&lt;/p&gt;
+&lt;/blockquote&gt;</content><category term="centos"></category><category term="default"></category><category term="df -h"></category><category term="directorio"></category><category term="fstab"></category><category term="linux"></category><category term="montar"></category><category term="mount"></category><category term="nfs"></category><category term="red hat"></category><category term="rhel"></category></entry></feed>

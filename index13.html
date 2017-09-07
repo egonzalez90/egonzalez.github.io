@@ -1,46 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>OpenStack Stuff | Page 13</title>
-    <link rel="shortcut icon" type="image/png" href="https://egonzalez90.github.io/favicon.png">
-    <link rel="shortcut icon" type="image/x-icon" href="https://egonzalez90.github.io/favicon.ico">
-    <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Full Atom Feed" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/screen.css" type="text/css" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/print.css" type="text/css" media="print" />
-    <meta name="generator" content="Pelican" />
-    <meta name="description" content="" />
-    <meta name="author" content="Eduardo Gonzalez" />
+        <meta charset="utf-8" />
+        <title>OpenStack Stuff</title>
+        <link rel="stylesheet" href="https://egonzalez90.github.io/theme/css/main.css" />
+        <link href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="OpenStack Stuff Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
 </head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="https://egonzalez90.github.io/">Home</a></li>
-                <li><a href="https://docs.openstack.org">OpenStack</a></li>
-                <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
-                <li><a href="https://github.com/egonzalez90">Github</a></li>
-                <li><a href="https://egonzalez90.github.io/archives">Archives</a></li>
-            </ul>
-        </nav>
-        <div class="header_box">
-            <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff</a></h1>
-        </div>
-    </header>
-    <div id="wrapper">
-        <div id="content">            <h4 class="date">Feb 04, 2015</h4>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/comprobar-glance-image-service.html" rel="bookmark" title="Permanent Link to &quot;Comprobar Glance Image Service&quot;">Comprobar Glance Image Service</a>
-                </h2>
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egonzalez90.github.io/">OpenStack Stuff </a></h1>
+                <nav><ul>
+                    <li><a href="https://docs.openstack.org">OpenStack</a></li>
+                    <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                    <li><a href="https://github.com/egonzalez90">Github</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux.html">Linux</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack.html">Linux, OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-openstack-various.html">Linux, OpenStack, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-various.html">Linux, Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/linux-virtualizacion.html">Linux, Virtualizacion</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/misc.html">misc</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/openstack.html">OpenStack</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/reflexiones.html">Reflexiones</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/various.html">Various</a></li>
+                    <li><a href="https://egonzalez90.github.io/category/virtualizacion.html">Virtualizacion</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
 
-                
-                
+                <section id="content" class="body">
+                    <ol id="posts-list" class="hfeed" start="2">
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/comprobar-glance-image-service.html" rel="bookmark"
+                           title="Permalink to Comprobar Glance Image Service">Comprobar Glance Image Service</a></h1>
+                </header>
 
-                <p>Una vez configurado Image Service, comprobaremos que funciona
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Wed 04 February 2015</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/cloud.html">cloud</a><a href="https://egonzalez90.github.io/tag/comprobar.html">comprobar</a><a href="https://egonzalez90.github.io/tag/glance.html">glance</a><a href="https://egonzalez90.github.io/tag/image.html">image</a><a href="https://egonzalez90.github.io/tag/image-create.html">image-create</a><a href="https://egonzalez90.github.io/tag/image-list.html">image-list</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/service.html">service</a></span>
+</footer><!-- /.post-info -->                <p>Una vez configurado Image Service, comprobaremos que funciona
 correctamente creando una carpeta y añadiendo una imagen de Cirros a
 nuestro nuevo entorno.</p>
 <p>Lo primero que haremos será crear una carpeta y descargaremos la imagen
@@ -49,49 +53,22 @@ de Cirros.</p>
 <p># mkdir /tmp/images</p>
 <p># cd /tmp/images</p>
 <p>#
-wget http://download.cirros-cloud.net/0.3.3/cirros-0.3.3-x86_64-disk.img</p>
-</blockquote>
-<p>Crearemos la imagen de Cirros en Glance</p>
-<blockquote>
-<p># glance image-create --name=cirros --disk-format=qcow2
---container-format=bare --is-public=True --      progress
-> cirros-0.3.3-x86_64-disk.img</p>
-</blockquote>
-<p>Listamos las imagenes disponibles</p>
-<blockquote>
-<p># glance image-list</p>
-</blockquote>
-<p>Eliminamos el archivo descargado de Cirros</p>
-<blockquote>
-<p># rm -rf /tmp/images/cirros-0.3.3-x86_64-disk.img</p>
-</blockquote>
-                <div class="clear"></div>
+wget http://download.cirros-cloud.net/0.3.3 …</p></blockquote>
+                <a class="readmore" href="https://egonzalez90.github.io/comprobar-glance-image-service.html">read more</a>
+<p><a href="https://egonzalez90.github.io/comprobar-glance-image-service.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
 
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/comprobar-glance-image-service.html">posted at 16:34</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/cloud.html" class="tags">cloud</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/comprobar.html" class="tags">comprobar</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/glance.html" class="tags">glance</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/image.html" class="tags">image</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/image-create.html" class="tags">image-create</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/image-list.html" class="tags">image-list</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/service.html" class="tags">service</a>
-                </div>
-		<a href="https://egonzalez90.github.io/comprobar-glance-image-service.html#disqus_thread">Click to read and post comments</a>
-            </article>            <h4 class="date">Jan 29, 2015</h4>
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/configuracion-de-image-service-glance.html" rel="bookmark"
+                           title="Permalink to Configuración de Image Service Glance">Configuración de Image Service Glance</a></h1>
+                </header>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/configuracion-de-image-service-glance.html" rel="bookmark" title="Permanent Link to &quot;Configuración de Image Service Glance&quot;">Configuración de Image Service Glance</a>
-                </h2>
-
-                
-                
-
-                <p>Lo primero que debemos instalar son los paquetes de Glance en Controller
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 29 January 2015</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/configuracion.html">configuracion</a><a href="https://egonzalez90.github.io/tag/glance.html">glance</a><a href="https://egonzalez90.github.io/tag/glance-api.html">glance-api</a><a href="https://egonzalez90.github.io/tag/image-service.html">image service</a><a href="https://egonzalez90.github.io/tag/instalacion.html">instalacion</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a></span>
+</footer><!-- /.post-info -->                <p>Lo primero que debemos instalar son los paquetes de Glance en Controller
 Node.</p>
 <blockquote>
 <p># yum install openstack-glance python-glanceclient</p>
@@ -101,105 +78,22 @@ configuración de Glance:</p>
 <blockquote>
 <p># openstack-config --set /etc/glance/glance-api.conf</p>
 <p>database connection mysql://glance:PASSWD@controller/glance</p>
-<p># openstack-config --set /etc/glance/glance-registry.conf</p>
-<p>database connection mysql://glance:PASSWD@controller/glance</p>
-</blockquote>
-<p>A continuación crearemos el usuario y la base de datos de Glance</p>
-<blockquote>
-<p>mysql -u root -p</p>
-<p># CREATE DATABASE glance;</p>
-<p>#GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' IDENTIFIED
-BY 'PASSWD'</p>
-<p>#GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' IDENTIFIED BY
-'PASSWD'</p>
-</blockquote>
-<p>Crearemos las tablas en la base de datos</p>
-<blockquote>
-<p># su -s /bin/sh -c "glance-manage db_sync" glance</p>
-</blockquote>
-<p>Creamos el usuario Glance en keystone con tenant "service" y rol "admin"</p>
-<blockquote>
-<p># keystone user-create --name=glance --pass=PASSWD
---email=email@mail.com</p>
-<p># keystone user-role-add --user=glance --tenant-service --role=admin</p>
-</blockquote>
-<p>A continuación modificaremos los ficheros de configuración de Glance</p>
-<blockquote>
-<p># openstack-config --set /etc/glance/glance-api.conf
-keystone_authtoken auth_uri http://controller:5000</p>
-<p># openstack-config --set /etc/glance/glance-api.conf
-keystone_authtoken  auth_host controller</p>
-<p># openstack-config --set /etc/glance/glance-api.conf
-keystone_authtoken auth_port 35357</p>
-<p># openstack-config --set /etc/glance/glance-api.conf
-keystone_authtoken auth_protocol http</p>
-<p># openstack-config --set /etc/glance/glance-api.conf
-keystone_authtoken admin_tenant_name service</p>
-<p># openstack-config --set /etc/glance/glance-api.conf
-keystone_authtoken admin_user glance</p>
-<p># openstack-config --set /etc/glance/glance-api.conf
-keystone_authtoken admin_password PASSWD</p>
-<p># openstack-config --set /etc/glance/glance-api.conf paste_deploy
-flavor keystone</p>
-<p># openstack-config --set /etc/glance/glance-registry.conf
-keystone_authtoken auth_uri http://controller:5000</p>
-<p># openstack-config --set /etc/glance/glance-registry.conf
-keystone_authtoken auth_host controller</p>
-<p># openstack-config --set /etc/glance/glance-registry.conf
-keystone_authtoken auth_port 35357</p>
-<p># openstack-config --set /etc/glance/glance-registry.conf
-keystone_authtoken auth_protocol http</p>
-<p># openstack-config --set /etc/glance/glance-registry.conf
-keystone_authtoken admin_tenant_name service</p>
-<p># openstack-config --set /etc/glance/glance-registry.conf
-keystone_authtoken admin_user glance</p>
-<p># openstack-config --set /etc/glance/glance-registry.conf
-keystone_authtoken admin_password PASSWD</p>
-<p># openstack-config --set /etc/glance/glance-registry.conf
-paste_deploy flavor keystone</p>
-</blockquote>
-<p>Después de configurar los ficheros anteriores, registraremos el servicio
-y creamos el endpoint</p>
-<blockquote>
-<p># keystone service-create --name=glance --type=image
---description="Image Service"</p>
-<p># keystone endpoint-create --service-id=\&lt;ID></p>
-<p>--publicurl=http://controller:9292</p>
-<p>--internalurl=http://controller:9292</p>
-<p>--adminurl=http://controller:9292</p>
-</blockquote>
-<p>Iniciamos el servicio y habilitamos la ejecución en el arranque</p>
-<blockquote>
-<p># service openstack-glance-api start</p>
-<p># service openstack-glance-registry start</p>
-<p>#chkconfig openstack-glance-api on</p>
-<p># chkconfig openstack-glance-registry on</p>
-</blockquote>
-                <div class="clear"></div>
+<p># openstack-config --set /etc/glance …</p></blockquote>
+                <a class="readmore" href="https://egonzalez90.github.io/configuracion-de-image-service-glance.html">read more</a>
+<p><a href="https://egonzalez90.github.io/configuracion-de-image-service-glance.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
 
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/configuracion-de-image-service-glance.html">posted at 17:36</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/configuracion.html" class="tags">configuracion</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/glance.html" class="tags">glance</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/glance-api.html" class="tags">glance-api</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/image-service.html" class="tags">image service</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/instalacion.html" class="tags">instalacion</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
-                </div>
-		<a href="https://egonzalez90.github.io/configuracion-de-image-service-glance.html#disqus_thread">Click to read and post comments</a>
-            </article>            <h4 class="date">Jan 05, 2015</h4>
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://egonzalez90.github.io/openstack-clients.html" rel="bookmark"
+                           title="Permalink to Openstack Clients">Openstack Clients</a></h1>
+                </header>
 
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://egonzalez90.github.io/openstack-clients.html" rel="bookmark" title="Permanent Link to &quot;Openstack Clients&quot;">Openstack Clients</a>
-                </h2>
-
-                
-                
-
-                <p>En esta entrada instalaremos las tools de openstack que facilitaran la
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 05 January 2015</span>
+<span>| tags: <a href="https://egonzalez90.github.io/tag/clients.html">clients</a><a href="https://egonzalez90.github.io/tag/openstack.html">openstack</a><a href="https://egonzalez90.github.io/tag/pip.html">pip</a><a href="https://egonzalez90.github.io/tag/setuptools.html">setuptools</a></span>
+</footer><!-- /.post-info -->                <p>En esta entrada instalaremos las tools de openstack que facilitaran la
 configuración de los diferentes módulos que compondrán nuestro entorno.</p>
 <p>Primero instalaremos setuptools</p>
 <blockquote>
@@ -209,49 +103,42 @@ configuración de los diferentes módulos que compondrán nuestro entorno.</p>
 <blockquote>
 <p>yum install python-pip</p>
 </blockquote>
-<p>Instalaremos los clientes de los diferentes módulos que vamos a instalar
-en el entorno</p>
-<blockquote>
-<p>pip install python-novaclient</p>
-<p>pip install python-swiftclient</p>
-<p>pip install python-keystoneclient</p>
-<p>pip install python-glanceclient</p>
-<p>pip install python-neutronclient</p>
-<p>pip install python-cinderclient</p>
-</blockquote>
-                <div class="clear"></div>
+<p>Instalaremos los clientes de los diferentes módulos que vamos a instalar …</p>
+                <a class="readmore" href="https://egonzalez90.github.io/openstack-clients.html">read more</a>
+<p><a href="https://egonzalez90.github.io/openstack-clients.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+        <a href="https://egonzalez90.github.io/index12.html">&laquo;</a>
+    Page 13 / 34
+        <a href="https://egonzalez90.github.io/index14.html">&raquo;</a>
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egonzalez90.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
-                <div class="info">
-                    <a href="https://egonzalez90.github.io/openstack-clients.html">posted at 16:23</a>
-                    &nbsp;&middot;&nbsp;<a href="https://egonzalez90.github.io/category/openstack.html" rel="tag">OpenStack</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/clients.html" class="tags">clients</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/openstack.html" class="tags">openstack</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/pip.html" class="tags">pip</a>
-                    &nbsp;<a href="https://egonzalez90.github.io/tag/setuptools.html" class="tags">setuptools</a>
-                </div>
-		<a href="https://egonzalez90.github.io/openstack-clients.html#disqus_thread">Click to read and post comments</a>
-            </article>
+                            <li><a href="https://twitter.com/egongu90">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/eduardogonzalezgutierrez">Linkedin</a></li>
+                            <li><a href="https://github.com/egonzalez90">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
 
-                <div class="clear"></div>
-                <div class="pages">
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
 
-                    <a href="https://egonzalez90.github.io/page/12" class="prev_page">&larr;&nbsp;Previous</a>
-                    <a href="https://egonzalez90.github.io/page/14" class="next_page">Next&nbsp;&rarr;</a>
-                    <span>Page 13 of 34</span>
-                </div>
-
-            <div class="clear"></div>
-            <footer>
-                <p>
-                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
-                &middot;
-                Powered by <a href="http://getpelican.com">Pelican</a>
-                &middot;
-                <a href="https://egonzalez90.github.io/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
-            </footer>
-        </div>
-        <div class="clear"></div>
-    </div>
+<script type="text/javascript">
+    var disqus_shortname = 'egonzalez-1';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
 </body>
 </html>

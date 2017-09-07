@@ -627,4 +627,901 @@ Removing sample config
 &lt;p&gt;In following posts will show how to tacker templates works and an in
 deep&lt;br&gt;
 sfc traffic flows analysis.&lt;/p&gt;
-&lt;p&gt;Regards, Eduardo Gonzalez&lt;/p&gt;</content><category term="ansible"></category><category term="barbican"></category><category term="etsi"></category><category term="heat"></category><category term="kolla"></category><category term="MANO"></category><category term="mistral"></category><category term="NFV"></category><category term="openstack"></category><category term="pike"></category><category term="sdn"></category><category term="service function chaining"></category><category term="sfc"></category><category term="tacker"></category></entry></feed>
+&lt;p&gt;Regards, Eduardo Gonzalez&lt;/p&gt;</content><category term="ansible"></category><category term="barbican"></category><category term="etsi"></category><category term="heat"></category><category term="kolla"></category><category term="MANO"></category><category term="mistral"></category><category term="NFV"></category><category term="openstack"></category><category term="pike"></category><category term="sdn"></category><category term="service function chaining"></category><category term="sfc"></category><category term="tacker"></category></entry><entry><title>Deploy OpenStack Designate with Kolla</title><link href="https://egonzalez90.github.io/deploy-openstack-designate-with-kolla-ansible.html" rel="alternate"></link><published>2017-02-22T15:39:00+01:00</published><updated>2017-02-22T15:39:00+01:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2017-02-22:/deploy-openstack-designate-with-kolla-ansible.html</id><summary type="html">&lt;p&gt;During Ocata release, OpenStack DNS-as-a-Service (Designate) support was
+implemented in OpenStack kolla project.&lt;/p&gt;
+&lt;p&gt;This post will guide you through a basic deployment and tests of
+designate service.&lt;/p&gt;
+&lt;p&gt;Install required dependencies and tools for kolla-ansible and designate.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# yum install -y epel-release
+# yum install -y python-pip python-devel libffi-devel gcc openssl-devel ansible ntp …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;During Ocata release, OpenStack DNS-as-a-Service (Designate) support was
+implemented in OpenStack kolla project.&lt;/p&gt;
+&lt;p&gt;This post will guide you through a basic deployment and tests of
+designate service.&lt;/p&gt;
+&lt;p&gt;Install required dependencies and tools for kolla-ansible and designate.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# yum install -y epel-release
+# yum install -y python-pip python-devel libffi-devel gcc openssl-devel ansible ntp wget bind-utils
+# pip install -U pip
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Install Docker and downgrade to 1.12.6. At the time of writing this post
+libvirt had issues to connect with D-Bus due SElinux issues with Docker
+1.13.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# curl -sSL https://get.docker.io | bash
+# yum downgrade docker-engine-1.12.6 docker-engine-selinux-1.12.6
+# yum install -y python-docker-py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Configure Docker daemon to allow insecure-registry (Use the IP where
+your remote registry will be located).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# mkdir -p /etc/systemd/system/docker.service.d
+# tee /etc/systemd/system/docker.service.d/kolla.conf &amp;lt;&amp;lt;-&amp;#39;EOF&amp;#39;
+[Service]
+ExecStart=
+ExecStart=/usr/bin/dockerd --insecure-registry 172.28.128.3:4000
+MountFlags=shared
+EOF
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Reload systemd daemons and start/stop/disable/enable the following
+services.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# systemctl daemon-reload
+# systemctl stop libvirtd
+# systemctl disable libvirtd
+# systemctl enable ntpd docker
+# systemctl start ntpd docker
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Download Ocata registry created in tarballs.openstack.org, skip this
+step if images used are custom builds or downloaded from DockerHub.&lt;br&gt;
+Create kolla registry from downloaded tarball.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# wget https://tarballs.openstack.org/kolla/images/centos-binary-registry-ocata.tar.gz
+# mkdir /opt/kolla_registry
+# sudo tar xzf centos-binary-registry-ocata.tar.gz -C /opt/kolla_registry
+# docker run -d -p 4000:5000 --restart=always -v /opt/kolla_registry/:/var/lib/registry --name registry registry:2
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Install kolla-ansible.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# pip install kolla-ansible
+# cp -r /usr/share/kolla-ansible/etc_examples/kolla /etc/kolla/
+# cp /usr/share/kolla-ansible/ansible/inventory/* .
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Configure kolla globals.yml configuration file with the following
+content.&lt;br&gt;
+Change values when necessary (IP addresses, interface names).&lt;br&gt;
+This is a sample minimal configuration.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# vi /etc/kolla/globals.yml
+---
+kolla_internal_vip_address: &amp;quot;172.28.128.10&amp;quot;
+kolla_base_distro: &amp;quot;centos&amp;quot;
+kolla_install_type: &amp;quot;binary&amp;quot;
+docker_registry: &amp;quot;172.28.128.3:4000&amp;quot;
+docker_namespace: &amp;quot;lokolla&amp;quot;
+network_interface: &amp;quot;enp0s8&amp;quot;
+neutron_external_interface: &amp;quot;enp0s9&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Configure designate options in globals.yml.&lt;br&gt;
+dns_interface must be network reachable from nova instances if
+internal DNS resolution is needed.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;enable_designate: &amp;quot;yes&amp;quot;
+dns_interface: &amp;quot;enp0s8&amp;quot;
+designate_backend: &amp;quot;bind9&amp;quot;
+designate_ns_record: &amp;quot;sample.openstack.org&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Configure inventory, add the nodes in their respective groups.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# vi ~/multinode
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Generate passwords.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# kolla-genpwd
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ensure the environment is ready to deploy with prechecks.&lt;br&gt;
+Until prechecks does not succeed do not start deployment.&lt;br&gt;
+Fix what is necessary.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# kolla-ansible prechecks -i ~/multinode
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Pull Docker images on the servers, this can be skipped because will be
+made in deploy step, but doing it first will ensure all the nodes have
+the images you need and will minimize the deployment time.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# kolla-ansible pull -i ~/multinode
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Deploy kolla-ansible and do a woot for kolla ;)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# kolla-ansible deploy -i ~/multinode
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create credentials file and source it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# kolla-ansible post-deploy -i ~/multinode
+# source /etc/kolla/admin-openrc.sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Check that all containers are running and none of them are restarting or
+exiting.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# docker ps -a --filter status=exited --filter status=restarting
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Install required python clients&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# pip install python-openstackclient python-designateclient python-neutronclient
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Execute a base OpenStack configuration (public and internal networks,
+cirros image).&lt;br&gt;
+Do no execute this script if custom networks are going to be used.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# sh /usr/share/kolla-ansible/init-runonce
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create a sample designate zone.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# openstack zone create --email admin@sample.openstack.org sample.openstack.org.
++----------------+--------------------------------------+
+| Field          | Value                                |
++----------------+--------------------------------------+
+| action         | CREATE                               |
+| attributes     |                                      |
+| created_at     | 2017-02-22T13:14:39.000000           |
+| description    | None                                 |
+| email          | admin@sample.openstack.org           |
+| id             | 4a44b0c9-bd07-4f5c-8908-523f453f269d |
+| masters        |                                      |
+| name           | sample.openstack.org.                |
+| pool_id        | 85d18aec-453e-45ae-9eb3-748841a1da12 |
+| project_id     | 937d49af6cfe4ef080a79f9a833d7c7d     |
+| serial         | 1487769279                           |
+| status         | PENDING                              |
+| transferred_at | None                                 |
+| ttl            | 3600                                 |
+| type           | PRIMARY                              |
+| updated_at     | None                                 |
+| version        | 1                                    |
++----------------+--------------------------------------+
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Configure designate sink to make use of the previously created zone,
+sink will need zone_id to automatically create neutron and nova records
+into designate.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# mkdir -p /etc/kolla/config/designate/designate-sink/
+# vi /etc/kolla/config/designate/designate-sink.conf
+[handler:nova_fixed]
+zone_id = 4a44b0c9-bd07-4f5c-8908-523f453f269d
+[handler:neutron_floatingip]
+zone_id = 4a44b0c9-bd07-4f5c-8908-523f453f269d
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After configure designate-sink.conf, reconfigure designate to make use
+of this configuration.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# kolla-ansible reconfigure -i ~/multinode --tags designate
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;List networks.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# neutron net-list
++--------------------------------------+----------+----------------------------------+--------------------------------------------------+
+| id                                   | name     | tenant_id                        | subnets                                          |
++--------------------------------------+----------+----------------------------------+--------------------------------------------------+
+| 3b56c605-5a01-45be-9ed6-e4c3285e4366 | demo-net | 937d49af6cfe4ef080a79f9a833d7c7d | 7f28f050-77b2-426e-b963-35b682077993 10.0.0.0/24 |
+| 6954d495-fb8c-4b0b-98a9-9672a7f65b7c | public1  | 937d49af6cfe4ef080a79f9a833d7c7d | 9bd9feca-40a7-4e82-b912-e51b726ad746 10.0.2.0/24 |
++--------------------------------------+----------+----------------------------------+--------------------------------------------------+
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Update the network with a dns_domain.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# neutron net-update 3b56c605-5a01-45be-9ed6-e4c3285e4366 --dns_domain sample.openstack.org.
+Updated network: 3b56c605-5a01-45be-9ed6-e4c3285e4366
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ensure dns_domain is properly applied.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# neutron net-show 3b56c605-5a01-45be-9ed6-e4c3285e4366
++---------------------------+--------------------------------------+
+| Field                     | Value                                |
++---------------------------+--------------------------------------+
+| admin_state_up            | True                                 |
+| availability_zone_hints   |                                      |
+| availability_zones        | nova                                 |
+| created_at                | 2017-02-22T13:13:06Z                 |
+| description               |                                      |
+| dns_domain                | sample.openstack.org.                |
+| id                        | 3b56c605-5a01-45be-9ed6-e4c3285e4366 |
+| ipv4_address_scope        |                                      |
+| ipv6_address_scope        |                                      |
+| mtu                       | 1450                                 |
+| name                      | demo-net                             |
+| port_security_enabled     | True                                 |
+| project_id                | 937d49af6cfe4ef080a79f9a833d7c7d     |
+| provider:network_type     | vxlan                                |
+| provider:physical_network |                                      |
+| provider:segmentation_id  | 27                                   |
+| revision_number           | 6                                    |
+| router:external           | False                                |
+| shared                    | False                                |
+| status                    | ACTIVE                               |
+| subnets                   | 7f28f050-77b2-426e-b963-35b682077993 |
+| tags                      |                                      |
+| tenant_id                 | 937d49af6cfe4ef080a79f9a833d7c7d     |
+| updated_at                | 2017-02-22T13:25:16Z                 |
++---------------------------+--------------------------------------+
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create a new instance in the previously updated network.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# openstack server create   
+   --image cirros   
+   --flavor m1.tiny   
+   --key-name mykey   
+   --nic net-id=3b56c605-5a01-45be-9ed6-e4c3285e4366   
+   demo1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Once the instance is ACTIVE, check the IP associated.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# openstack server list
++--------------------------------------+-------+--------+-------------------+------------+
+| ID                                   | Name  | Status | Networks          | Image Name |
++--------------------------------------+-------+--------+-------------------+------------+
+| d483e4ee-58c2-4e1e-9384-85174630428e | demo1 | ACTIVE | demo-net=10.0.0.3 | cirros     |
++--------------------------------------+-------+--------+-------------------+------------+
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;List records in the designate zone.&lt;br&gt;
+As you can see there is a record in designate associated with the
+instance IP.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# openstack recordset list sample.openstack.org.
++--------------------------------------+----------------------------------+------+-------------------------------------------+--------+--------+
+| id                                   | name                             | type | records                                   | status | action |
++--------------------------------------+----------------------------------+------+-------------------------------------------+--------+--------+
+| 4f70531e-c325-4ffd-a8d3-8172bd5163b8 | sample.openstack.org.            | SOA  | sample.openstack.org.                     | ACTIVE | NONE   |
+|                                      |                                  |      | admin.sample.openstack.org. 1487770304    |        |        |
+|                                      |                                  |      | 3586 600 86400 3600                       |        |        |
+| a9a09c5f-ccf1-4b52-8400-f36e8faa9549 | sample.openstack.org.            | NS   | sample.openstack.org.                     | ACTIVE | NONE   |
+| aa6cd25d-186e-425b-9153-699d8b0811de | 10-0-0-3.sample.openstack.org.   | A    | 10.0.0.3                                  | ACTIVE | NONE   |
+| 713650a5-a45e-470b-9539-74e110b15115 | demo1.None.sample.openstack.org. | A    | 10.0.0.3                                  | ACTIVE | NONE   |
+| 6506e6f6-f535-45eb-9bfb-4ac1f16c5c9b | demo1.sample.openstack.org.      | A    | 10.0.0.3                                  | ACTIVE | NONE   |
++--------------------------------------+----------------------------------+------+-------------------------------------------+--------+--------+
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Validate that designate resolves the DNS record.&lt;br&gt;
+You can use designate mDNS service or directly to bind9 servers to
+validate the test.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;# dig +short -p 5354 @172.28.128.3 demo1.sample.openstack.org. A&lt;/span&gt;
+&lt;span class="mf"&gt;10.0.0.3&lt;/span&gt;
+&lt;span class="cp"&gt;# dig +short -p 53 @172.28.128.3 demo1.sample.openstack.org. A&lt;/span&gt;
+&lt;span class="mf"&gt;10.0.0.3&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If you find any issue with designate in kolla-ansible or kolla, please
+fill a bug &lt;a href="https://bugs.launchpad.net/kolla-ansible/+filebug"&gt;https://bugs.launchpad.net/kolla-ansible/+filebug&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Regards,&lt;br&gt;
+Eduardo Gonzalez&lt;/p&gt;</content><category term="--configure"></category><category term="ansible"></category><category term="deploy"></category><category term="designate"></category><category term="DNS"></category><category term="kolla"></category><category term="kolla-ansible"></category><category term="ocata"></category><category term="openstack"></category></entry><entry><title>OpenStack Keystone Zero-Downtime upgrade process (N to O)</title><link href="https://egonzalez90.github.io/openstack-keystone-zero-downtime-upgrade-process-n-to-o.html" rel="alternate"></link><published>2017-01-31T17:00:00+01:00</published><updated>2017-01-31T17:00:00+01:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2017-01-31:/openstack-keystone-zero-downtime-upgrade-process-n-to-o.html</id><summary type="html">&lt;p&gt;This blog post will show Keystone upgrade procedure from OpenStack
+Newton to Ocata release with zero-downtime.&lt;/p&gt;
+&lt;p&gt;In the case of doing this in production, please read release notes,
+ensure a proper configuration, do database backups and test the upgrade
+a thousand times.&lt;/p&gt;
+&lt;p&gt;Keystone upgrade will need to stop one node …&lt;/p&gt;</summary><content type="html">&lt;p&gt;This blog post will show Keystone upgrade procedure from OpenStack
+Newton to Ocata release with zero-downtime.&lt;/p&gt;
+&lt;p&gt;In the case of doing this in production, please read release notes,
+ensure a proper configuration, do database backups and test the upgrade
+a thousand times.&lt;/p&gt;
+&lt;p&gt;Keystone upgrade will need to stop one node in order to use it as
+upgrade server.&lt;br&gt;
+In the case of a PoC this is not an issue, but in a production
+environment, Keystone loads may be intensive and stopping a node for a
+while may decrease other nodes performance more than expected.&lt;br&gt;
+For this reason I prefer orchestrate the upgrade from an external
+Docker container. With this method all nodes will be fully running
+almost all the time.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;New container won't start any service, just will sync the database
+    schema with new Keystone version avoiding stop a node to orchestrate
+    the upgrade.&lt;/li&gt;
+&lt;li&gt;The Docker image is provided by OpenStack Kolla project, if already
+    using Kolla this upgrade won't be needed as kolla-ansible already
+    provide an upgrade method.&lt;/li&gt;
+&lt;li&gt;At the moment of writing of this blog, Ocata packages were not
+    released into stable repositories. For this reason I use DLRN
+    repositories.&lt;/li&gt;
+&lt;li&gt;If Ocata is released please do not use DLRN, use stable packages
+    instead.&lt;/li&gt;
+&lt;li&gt;Use stable Ocata Docker image if available with tag 4.0.x and will
+    avoid repository configuration and package upgrades.&lt;/li&gt;
+&lt;li&gt;NOTE: Upgrade may need more steps depending of your own
+    configuration, i.e, if using fernet token more steps are necessary
+    during the upgrade.&lt;/li&gt;
+&lt;li&gt;All Keystone nodes are behind HAproxy.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Prepare the upgrade&lt;/h3&gt;
+&lt;p&gt;Start Keystone Docker container with host networking (needed to
+communicate with database nodes directly) and root user (needed to
+install packages).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(host)# docker run -ti --net host -u 0 kolla/centos-binary-keystone:3.0.2 bash
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Download Delorean CentOS trunk repositories&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(keystone-upgrade)# curl -Lo /etc/yum.repos.d/delorean.repo http://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-master-tested/delorean.repo
+(keystone-upgrade)# curl -Lo /etc/yum.repos.d/delorean-deps.repo http://trunk.rdoproject.org/centos7/delorean-deps.repo
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Disable Newton repository&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(keystone-upgrade)# yum-config-manager --disable centos-openstack-newton
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ensure Newton repository is not longer used by the system&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(keystone-upgrade)# yum repolist | grep -i openstack
+delorean                        delorean-openstack-glance-0bf9d805886c2  565+255
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Update all packages in the Docker container to bump keystone version to
+Ocata.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(keystone-upgrade)# yum clean all &amp;amp;&amp;amp; yum update -y
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Configure keystone.conf file, this are my settings. Review you
+configuration and ensure all is correctly, otherwise may cause issues in
+the database.&lt;br&gt;
+An important option is default_domain_id, this value is for backward
+compatible with users created under default domain.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;keystone&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;upgrade&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="n"&gt;egrep&lt;/span&gt; &lt;span class="o"&gt;^&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;^&lt;/span&gt;&lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;keystone&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;keystone&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;conf&lt;/span&gt; 
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;DEFAULT&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;debug&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;False&lt;/span&gt;
+&lt;span class="n"&gt;log_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;var&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;log&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;keystone&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;keystone&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;log&lt;/span&gt;
+&lt;span class="n"&gt;secure_proxy_ssl_header&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HTTP_X_FORWARDED_PROTO&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;database&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;connection&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mysql&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="nl"&gt;pymysql&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//keystone:ickvaHC9opkwbz8z8sy28aLiFNezc7Z6Fm34frcB@192.168.100.10:3306/keystone&lt;/span&gt;
+&lt;span class="n"&gt;max_retries&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;cache&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;backend&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;oslo_cache&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;memcache_pool&lt;/span&gt;
+&lt;span class="n"&gt;enabled&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;True&lt;/span&gt;
+&lt;span class="n"&gt;memcache_servers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;192.168.100.215&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;11211&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mf"&gt;192.168.100.170&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;11211&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;identity&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;default_domain_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;default&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;provider&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;uuid&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Check migrate version in the database.&lt;br&gt;
+As you will notice, contract/data_migrate/expand are in the same
+version&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(mariadb)# mysql -ukeystone -pickvaHC9opkwbz8z8sy28aLiFNezc7Z6Fm34frcB -h192.168.100.10 keystone -e &amp;quot;select * from migrate_version;&amp;quot; 
+Warning: Using a password on the command line interface can be insecure.
++-----------------------+--------------------------------------------------------------------------+---------+
+| repository_id         | repository_path                                                          | version |
++-----------------------+--------------------------------------------------------------------------+---------+
+| keystone              | /usr/lib/python2.7/site-packages/keystone/common/sql/migrate_repo        |     109 |
+| keystone_contract     | /usr/lib/python2.7/site-packages/keystone/common/sql/contract_repo       |       4 |
+| keystone_data_migrate | /usr/lib/python2.7/site-packages/keystone/common/sql/data_migration_repo |       4 |
+| keystone_expand       | /usr/lib/python2.7/site-packages/keystone/common/sql/expand_repo         |       4 |
++-----------------------+--------------------------------------------------------------------------+---------+
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Before start upgrading the database schema, you will need add SUPER
+privileges in the database to keystone user or set
+log_bin_trust_function_creators to True.&lt;br&gt;
+In my opinion is safer set the value to True, I don't want keystone
+with SUPER privileges.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(mariadb)# mysql -uroot -pnkLMrBibfMTRqOGBAP3UAxdO4kOFfEaPptGM5UDL -h192.168.100.10 keystone -e &amp;quot;set global log_bin_trust_function_creators=1;&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now use Rally, tempest or some tool to test/benchmarch keystone service
+during upgrade.&lt;br&gt;
+If don't want to use one of those tools, just use this for command.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(host)# for i in {1000..6000} ; do openstack user create --password $i $i; done
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Start Upgrade&lt;/h3&gt;
+&lt;p&gt;Check database status before upgrade using Doctor, this may raise issues
+in the configuration. Some of them may be ignored(Please, ensure is not
+an issue before ignoring).&lt;br&gt;
+As example, I'm not using fernet tokens and errors appear about missing
+folder.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(keystone-upgrade)# keystone-manage doctor
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Remove obsoleted tokens&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(keystone-upgrade)# keystone-manage token_flush
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, expand the database schema to latest version, in keystone.log can
+see the status.&lt;br&gt;
+Check in the logs if some error is raised before jump to the next step.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(keystone-upgrade)# keystone-manage db_sync --expand
+
+
+2017-01-31 13:42:02.772 306 INFO migrate.versioning.api [-] 4 -&amp;gt; 5... 
+2017-01-31 13:42:03.004 306 INFO migrate.versioning.api [-] done
+2017-01-31 13:42:03.005 306 INFO migrate.versioning.api [-] 5 -&amp;gt; 6... 
+2017-01-31 13:42:03.310 306 INFO migrate.versioning.api [-] done
+2017-01-31 13:42:03.310 306 INFO migrate.versioning.api [-] 6 -&amp;gt; 7... 
+2017-01-31 13:42:03.670 306 INFO migrate.versioning.api [-] done
+2017-01-31 13:42:03.671 306 INFO migrate.versioning.api [-] 7 -&amp;gt; 8... 
+2017-01-31 13:42:03.984 306 INFO migrate.versioning.api [-] done
+2017-01-31 13:42:03.985 306 INFO migrate.versioning.api [-] 8 -&amp;gt; 9... 
+2017-01-31 13:42:04.185 306 INFO migrate.versioning.api [-] done
+2017-01-31 13:42:04.185 306 INFO migrate.versioning.api [-] 9 -&amp;gt; 10... 
+2017-01-31 13:42:07.202 306 INFO migrate.versioning.api [-] done
+2017-01-31 13:42:07.202 306 INFO migrate.versioning.api [-] 10 -&amp;gt; 11... 
+2017-01-31 13:42:07.481 306 INFO migrate.versioning.api [-] done
+2017-01-31 13:42:07.481 306 INFO migrate.versioning.api [-] 11 -&amp;gt; 12... 
+2017-01-31 13:42:11.334 306 INFO migrate.versioning.api [-] done
+2017-01-31 13:42:11.334 306 INFO migrate.versioning.api [-] 12 -&amp;gt; 13... 
+2017-01-31 13:42:11.560 306 INFO migrate.versioning.api [-] done
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After expand the database, migrate it to latest version.&lt;br&gt;
+Ensure there are not errors in Keystone logs.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(keystone-upgrade)# keystone-manage db_sync --migrate
+
+#keystone.log
+2017-01-31 13:42:58.771 314 INFO migrate.versioning.api [-] 4 -&amp;gt; 5... 
+2017-01-31 13:42:58.943 314 INFO migrate.versioning.api [-] done
+2017-01-31 13:42:58.943 314 INFO migrate.versioning.api [-] 5 -&amp;gt; 6... 
+2017-01-31 13:42:59.143 314 INFO migrate.versioning.api [-] done
+2017-01-31 13:42:59.143 314 INFO migrate.versioning.api [-] 6 -&amp;gt; 7... 
+2017-01-31 13:42:59.340 314 INFO migrate.versioning.api [-] done
+2017-01-31 13:42:59.341 314 INFO migrate.versioning.api [-] 7 -&amp;gt; 8... 
+2017-01-31 13:42:59.698 314 INFO migrate.versioning.api [-] done
+2017-01-31 13:42:59.699 314 INFO migrate.versioning.api [-] 8 -&amp;gt; 9... 
+2017-01-31 13:42:59.852 314 INFO migrate.versioning.api [-] done
+2017-01-31 13:42:59.852 314 INFO migrate.versioning.api [-] 9 -&amp;gt; 10... 
+2017-01-31 13:43:00.135 314 INFO migrate.versioning.api [-] done
+2017-01-31 13:43:00.135 314 INFO migrate.versioning.api [-] 10 -&amp;gt; 11... 
+2017-01-31 13:43:00.545 314 INFO migrate.versioning.api [-] done
+2017-01-31 13:43:00.545 314 INFO migrate.versioning.api [-] 11 -&amp;gt; 12... 
+2017-01-31 13:43:00.703 314 INFO migrate.versioning.api [-] done
+2017-01-31 13:43:00.703 314 INFO migrate.versioning.api [-] 12 -&amp;gt; 13... 
+2017-01-31 13:43:00.854 314 INFO migrate.versioning.api [-] done
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, see migrate_version table, you will notice that expand and
+data_migrate are in the latest version, but contract still in the
+previous version.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(mariadb)# mysql -ukeystone -pickvaHC9opkwbz8z8sy28aLiFNezc7Z6Fm34frcB -h192.168.100.10 keystone -e &amp;quot;select * from migrate_version;&amp;quot;
++-----------------------+--------------------------------------------------------------------------+---------+
+| repository_id         | repository_path                                                          | version |
++-----------------------+--------------------------------------------------------------------------+---------+
+| keystone              | /usr/lib/python2.7/site-packages/keystone/common/sql/migrate_repo        |     109 |
+| keystone_contract     | /usr/lib/python2.7/site-packages/keystone/common/sql/contract_repo       |       4 |
+| keystone_data_migrate | /usr/lib/python2.7/site-packages/keystone/common/sql/data_migration_repo |      13 |
+| keystone_expand       | /usr/lib/python2.7/site-packages/keystone/common/sql/expand_repo         |      13 |
++-----------------------+--------------------------------------------------------------------------+---------+
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Every Keystone node, one by one&lt;/h3&gt;
+&lt;p&gt;Go to keystone nodes.&lt;br&gt;
+Stop Keystone services, in my case using wsgi inside Apache&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(keystone_nodes)# systemctl stop httpd
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Configure Ocata repositories as made in the Docker container.&lt;br&gt;
+Update packages, if you have Keystone sharing the node with other
+OpenStack service, do not update all packages as it will break other
+services.&lt;br&gt;
+Update only required packages.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(keystone_nodes)# yum clean all &amp;amp;&amp;amp; yum update -y
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Configure Keystone configuration file to the desired state. Your
+configuration may change.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;keystone_nodes&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="n"&gt;egrep&lt;/span&gt; &lt;span class="o"&gt;^&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;^&lt;/span&gt;&lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;keystone&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;keystone&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;conf&lt;/span&gt; 
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;DEFAULT&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;debug&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;False&lt;/span&gt;
+&lt;span class="n"&gt;log_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;var&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;log&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;keystone&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;keystone&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;log&lt;/span&gt;
+&lt;span class="n"&gt;secure_proxy_ssl_header&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HTTP_X_FORWARDED_PROTO&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;database&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;connection&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mysql&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="nl"&gt;pymysql&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//keystone:ickvaHC9opkwbz8z8sy28aLiFNezc7Z6Fm34frcB@192.168.100.10:3306/keystone&lt;/span&gt;
+&lt;span class="n"&gt;max_retries&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;cache&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;backend&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;oslo_cache&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;memcache_pool&lt;/span&gt;
+&lt;span class="n"&gt;enabled&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;True&lt;/span&gt;
+&lt;span class="n"&gt;memcache_servers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;192.168.100.215&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;11211&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mf"&gt;192.168.100.170&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;11211&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;identity&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;default_domain_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;default&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;provider&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;uuid&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Start Keystone service.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(keystone_nodes)# systemctl start httpd
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Finish Upgrade&lt;/h3&gt;
+&lt;p&gt;After all the nodes are updated to latest version (please ensure all
+nodes are using latest packages, if not will fail).&lt;br&gt;
+Contract Keystone database schema.&lt;br&gt;
+Look at keystone.log for errors.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(keystone-upgrade)# keystone-manage db_sync --contract
+
+keystone.log
+
+2017-01-31 13:57:52.164 322 INFO migrate.versioning.api [-] 4 -&amp;gt; 5... 
+2017-01-31 13:57:52.379 322 INFO migrate.versioning.api [-] done
+2017-01-31 13:57:52.379 322 INFO migrate.versioning.api [-] 5 -&amp;gt; 6... 
+2017-01-31 13:57:52.969 322 INFO migrate.versioning.api [-] done
+2017-01-31 13:57:52.969 322 INFO migrate.versioning.api [-] 6 -&amp;gt; 7... 
+2017-01-31 13:57:53.462 322 INFO migrate.versioning.api [-] done
+2017-01-31 13:57:53.462 322 INFO migrate.versioning.api [-] 7 -&amp;gt; 8... 
+2017-01-31 13:57:53.793 322 INFO migrate.versioning.api [-] done
+2017-01-31 13:57:53.793 322 INFO migrate.versioning.api [-] 8 -&amp;gt; 9... 
+2017-01-31 13:57:53.957 322 INFO migrate.versioning.api [-] done
+2017-01-31 13:57:53.957 322 INFO migrate.versioning.api [-] 9 -&amp;gt; 10... 
+2017-01-31 13:57:54.111 322 INFO migrate.versioning.api [-] done
+2017-01-31 13:57:54.112 322 INFO migrate.versioning.api [-] 10 -&amp;gt; 11... 
+2017-01-31 13:57:54.853 322 INFO migrate.versioning.api [-] done
+2017-01-31 13:57:54.853 322 INFO migrate.versioning.api [-] 11 -&amp;gt; 12... 
+2017-01-31 13:57:56.727 322 INFO migrate.versioning.api [-] done
+2017-01-31 13:57:56.728 322 INFO migrate.versioning.api [-] 12 -&amp;gt; 13... 
+2017-01-31 13:57:59.529 322 INFO migrate.versioning.api [-] done
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now if we look at migrate_version table, will see that contract version
+is latest and match with the other version (Ensure all are in the same
+version).&lt;br&gt;
+This means the database upgrade has been successfully implemented.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(mariadb)# mysql -ukeystone -pickvaHC9opkwbz8z8sy28aLiFNezc7Z6Fm34frcB -h192.168.100.10 keystone -e &amp;quot;select * from migrate_version;&amp;quot;
++-----------------------+--------------------------------------------------------------------------+---------+
+| repository_id         | repository_path                                                          | version |
++-----------------------+--------------------------------------------------------------------------+---------+
+| keystone              | /usr/lib/python2.7/site-packages/keystone/common/sql/migrate_repo        |     109 |
+| keystone_contract     | /usr/lib/python2.7/site-packages/keystone/common/sql/contract_repo       |      13 |
+| keystone_data_migrate | /usr/lib/python2.7/site-packages/keystone/common/sql/data_migration_repo |      13 |
+| keystone_expand       | /usr/lib/python2.7/site-packages/keystone/common/sql/expand_repo         |      13 |
++-----------------------+--------------------------------------------------------------------------+---------+
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Remove log_bin_trust_function_creators value.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(mariadb)# mysql -uroot -pnkLMrBibfMTRqOGBAP3UAxdO4kOFfEaPptGM5UDL -h192.168.100.10 keystone -e &amp;quot;set global log_bin_trust_function_creators=0;&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After finish the upgrade, Rally tests should not have any error. **If
+using HAproxy for load balance Keystone service, some errors may happen
+due a connection drop while stopping Keystone service and re-balance to
+other Keystone node. This can be avoided putting the node to update in
+Maintenance Mode in HAproxy backend.&lt;/p&gt;
+&lt;p&gt;Have to thank Keystone team in #openstack-keystone IRC channel for the
+help provided with a couple of issues.&lt;/p&gt;
+&lt;p&gt;Regards, Eduardo Gonzalez&lt;/p&gt;</content><category term="contract"></category><category term="database"></category><category term="docker"></category><category term="Downtime"></category><category term="expand"></category><category term="keystone"></category><category term="kolla"></category><category term="migrate"></category><category term="newton"></category><category term="ocata"></category><category term="openstack"></category><category term="schema"></category><category term="Upgrade"></category><category term="Zero"></category><category term="zero-downtime"></category></entry><entry><title>To Conditional or To Skip, that is the Ansible question</title><link href="https://egonzalez90.github.io/to-conditional-or-to-skip-that-is-the-ansible-question.html" rel="alternate"></link><published>2016-10-31T20:49:00+01:00</published><updated>2016-10-31T20:49:00+01:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2016-10-31:/to-conditional-or-to-skip-that-is-the-ansible-question.html</id><summary type="html">&lt;p&gt;Have you ever think about if an Ansible task should be skipped with a
+conditional or without (hidden skip)?.&lt;br&gt;
+Well, this post will analyse both methods.&lt;/p&gt;
+&lt;p&gt;Let's use a example to create the same result and analyse the both
+methods:&lt;/p&gt;
+&lt;p&gt;In OpenStack Kolla we found that sometimes operators need to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Have you ever think about if an Ansible task should be skipped with a
+conditional or without (hidden skip)?.&lt;br&gt;
+Well, this post will analyse both methods.&lt;/p&gt;
+&lt;p&gt;Let's use a example to create the same result and analyse the both
+methods:&lt;/p&gt;
+&lt;p&gt;In OpenStack Kolla we found that sometimes operators need to customise
+policy.json files. That's fine, but the problem is that policy.json
+files are installed with the services by default and we don't need/want
+to maintain policy.json files in our repository because for sure will
+cause bugs from outdated policy files in the future.&lt;/p&gt;
+&lt;p&gt;What's the proposed solution to this? Allow operators use their own
+policy files only when their files exists in a custom configuration
+folder. If custom files are not present, default policy.json files are
+already present as part of the software installation. ( Actually this
+change is under review )&lt;/p&gt;
+&lt;h2&gt;To Conditional method&lt;/h2&gt;
+&lt;p&gt;Code snippet:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;  - name: Check if file exists&lt;/span&gt;
+&lt;span class="x"&gt;    stat:&lt;/span&gt;
+&lt;span class="x"&gt;      path: &amp;quot;/tmp/custom_file.json&amp;quot;&lt;/span&gt;
+&lt;span class="x"&gt;    register: check_custom_file_exist&lt;/span&gt;
+
+&lt;span class="x"&gt;  - name: Copy custom policy when exist&lt;/span&gt;
+&lt;span class="x"&gt;    template:&lt;/span&gt;
+&lt;span class="x"&gt;      src: &amp;quot;/tmp/custom_file.json&amp;quot;&lt;/span&gt;
+&lt;span class="x"&gt;      dest: &amp;quot;/tmp/destination_file.json&amp;quot;&lt;/span&gt;
+&lt;span class="x"&gt;    when: &amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt; &lt;span class="nv"&gt;check_custom_file_exist.stat.exists&lt;/span&gt; &lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt;&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The first task checks if the file is present and register the stat
+result.&lt;br&gt;
+The second task, copy the file only when the registered result of the
+previous task is True. (exists == True)&lt;/p&gt;
+&lt;p&gt;Outputs the following when the file is not present:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;PLAY [localhost] ***************************************************************
+
+TASK [Check if file exists] ****************************************************
+ok: [localhost]
+
+TASK [Copy custom policy when exist] *******************************************
+skipping: [localhost]
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=1    changed=0    unreachable=0    failed=0
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We can see the copy file task is skipped with a skipping message.&lt;/p&gt;
+&lt;h2&gt;To Skip method&lt;/h2&gt;
+&lt;p&gt;Code snippet:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;  - name: Copy custom policy when exist&lt;/span&gt;
+&lt;span class="x"&gt;    template:&lt;/span&gt;
+&lt;span class="x"&gt;      src: &amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt; &lt;span class="nv"&gt;item&lt;/span&gt; &lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="x"&gt;      dest: &amp;quot;/tmp/destination_file.json&amp;quot;&lt;/span&gt;
+&lt;span class="x"&gt;    with_first_found:&lt;/span&gt;
+&lt;span class="x"&gt;    - files:&lt;/span&gt;
+&lt;span class="x"&gt;      - custom_file.json&lt;/span&gt;
+&lt;span class="x"&gt;      skip: True&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This playbook contains a single task, this task will use the first found
+file in a list of files. If no file is present will skip the task.&lt;/p&gt;
+&lt;p&gt;Output from this execution:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;PLAY [localhost] ***************************************************************
+
+TASK [Copy custom policy when exist] *******************************************
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=0    changed=0    unreachable=0    failed=0
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We can see that no task is executed when custom files are not present,
+no output from the task (hidden skip).&lt;/p&gt;
+&lt;h2&gt;Analysis and own opinion&lt;/h2&gt;
+&lt;p&gt;Both methods do the same, both copy custom files when are present and
+both skip copy task when are not present.&lt;br&gt;
+What are the differences between both methods?&lt;/p&gt;
+&lt;p&gt;To_skip method is simpler to read and unified in a single task,
+to_conditional is created within two tasks.&lt;br&gt;
+To_conditional method takes longer to be executed as it has to check
+the existence of a file and then evaluate a conditional.&lt;/p&gt;
+&lt;p&gt;You may think that to_skip method is better than to_conditional
+method, that's right in terms of code syntax and execution times.
+But...&lt;br&gt;
+As both, operator and infrastructure developer, I always use
+to_conditional method because when I'm deploying something new, I want
+to know what is executed and what not. In to_skip method you don't know
+because there is no output provided from the task(not really true) but
+in to_conditional method it clearly says Skipping.&lt;/p&gt;
+&lt;p&gt;Execution times are not a problem in most use cases, as is not commonly
+used this kind of tasks in CM systems, only a few tasks will need this
+type of logic.&lt;/p&gt;
+&lt;p&gt;Regards, Eduardo Gonzalez&lt;/p&gt;</content><category term="analysis"></category><category term="ansible"></category><category term="code"></category><category term="conditional"></category><category term="logic"></category><category term="opinion"></category><category term="skip"></category><category term="syntax"></category><category term="True"></category><category term="when"></category><category term="with_first_found"></category></entry><entry><title>Spacewalk (Red Hat Satellite v5) in a Docker container PoC</title><link href="https://egonzalez90.github.io/spacewalk-red-hat-satellite-v5-in-a-docker-container-poc.html" rel="alternate"></link><published>2016-07-12T20:57:00+02:00</published><updated>2016-07-12T20:57:00+02:00</updated><author><name>egongu90</name></author><id>tag:egonzalez90.github.io,2016-07-12:/spacewalk-red-hat-satellite-v5-in-a-docker-container-poc.html</id><summary type="html">&lt;p&gt;Spacewalk was the upstream project to provide a Linux systems management
+layer on which Red Hat Satellite was based, was based at least until RH
+Satellite version 5. Newer versions are not anymore based on Spacewalk,
+instead Satellite is a federation of several upstream open source
+projects, including Katello, Foreman …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Spacewalk was the upstream project to provide a Linux systems management
+layer on which Red Hat Satellite was based, was based at least until RH
+Satellite version 5. Newer versions are not anymore based on Spacewalk,
+instead Satellite is a federation of several upstream open source
+projects, including Katello, Foreman, Pulp, and Candlepin.&lt;/p&gt;
+&lt;p&gt;Some weeks ago, a friend asked me if I knew a Docker container image for
+Satellite.&lt;br&gt;
+I have not found any image. What I found was some Spacewalk images, but
+sadly none of them worked for me.&lt;br&gt;
+I decided to create an image for this purpose.&lt;/p&gt;
+&lt;p&gt;While developing the image, I found serious troubles to make it run with
+systemd (I'm a fan of systemd, but not inside containers yet).&lt;br&gt;
+The result was a semi functional working image. I said semi functional
+because some Spacewalk features are not working (probably an issue with
+systemd again).&lt;br&gt;
+The main problem was that spacewalk-setup script starts and uses
+systemd to configure the database and the other needed services, that's
+OK in a VM but not in a container.&lt;br&gt;
+So i needed to hack into postgres setup and start the services with the
+typical &lt;code&gt;command --config-file file.conf&lt;/code&gt; executed from supervisord as
+Docker entrypoint.&lt;br&gt;
+Currently there is an issue with &lt;code&gt;osa-dispatcher&lt;/code&gt;, on which I can't
+find a fix to make it run.&lt;/p&gt;
+&lt;p&gt;This image is primarily created just for test Spacewalk interface and be
+more comfortable with it aka testing/development purposes, or just to
+have fun hacking with Docker containers.&lt;/p&gt;
+&lt;p&gt;Now, I'm going to make a short description of what the Dockerfile makes
+and then start the container.&lt;br&gt;
+Have fun.&lt;/p&gt;
+&lt;p&gt;I used centos as image base for this PoC&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FROM centos:7
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Typical Maintainer line&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;MAINTAINER Eduardo Gonzalez Gutierrez
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Add jpackage repo which provides Java packages for Linux&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;COPY jpackage-generic.repo /etc/yum.repos.d/jpackage-generic.repo
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Install EPEL and Spacewalk repositories, after install, clean all stored
+cache to minimize image size&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;RUN yum install -y http://yum.spacewalkproject.org/2.5/RHEL/7/x86_64/spacewalk-repo-2.5-3.el7.noarch.rpm   
+       epel-release &amp;amp;&amp;amp;   
+       yum clean all
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Import Keys to allow installation from these repositories&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;rpm&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;www&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;jpackage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;jpackage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;asc&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;   
+   &lt;span class="n"&gt;rpm&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;dl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fedoraproject&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;pub&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;epel&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;RPM&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;GPG&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;KEY&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;EPEL&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;   
+   &lt;span class="n"&gt;rpm&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;yum&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;spacewalkproject&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;RPM&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;GPG&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;KEY&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;spacewalk&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;2015&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;   
+   &lt;span class="n"&gt;yum&lt;/span&gt; &lt;span class="n"&gt;clean&lt;/span&gt; &lt;span class="nb"&gt;all&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Install spacewalk and supervisord packages&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;RUN yum -y install   
+       spacewalk-setup-postgresql   
+       spacewalk-postgresql   
+       supervisor    
+       yum clean all
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Copy the example file used to sync spacewalk database in a later step&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;COPY answerfile.txt /tmp/answerfile.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Open necessary ports&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;EXPOSE 80 443 5222 68 69
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Change to postgres user&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;USER postgres
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Initialize the database&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;RUN /usr/bin/pg_ctl initdb  -D /var/lib/pgsql/data/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create spacewalk database, user, role and create pltclu language&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;RUN /usr/bin/pg_ctl start -D /var/lib/pgsql/data/  -w -t 300 &amp;amp;&amp;amp;   
+    psql -c &amp;#39;CREATE DATABASE spaceschema&amp;#39; &amp;amp;&amp;amp;   
+    psql -c &amp;quot;CREATE USER spaceuser WITH PASSWORD &amp;#39;spacepw&amp;#39;&amp;quot; &amp;amp;&amp;amp;   
+    psql -c &amp;#39;ALTER ROLE spaceuser SUPERUSER&amp;#39; &amp;amp;&amp;amp;   
+    createlang pltclu spaceschema
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Change to root user&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;USER root
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Start the database and execute spacewalk configuration script&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;RUN su -c &amp;quot;/usr/bin/pg_ctl start -D /var/lib/pgsql/data/  -w -t 300&amp;quot; postgres &amp;amp;&amp;amp;   
+   su -c &amp;quot;spacewalk-setup --answer-file=/tmp/answerfile.txt --skip-db-diskspace-check --skip-db-install&amp;quot; root ; exit 0
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Copy supervisord configuration&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ADD supervisord.conf /etc/supervisord.d/supervisord.conf
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Use supervisord command to start all services at container launch time&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ENTRYPOINT supervisord -c /etc/supervisord.d/supervisord.conf
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can check or download the source code at GitHub
+&lt;a href="https://github.com/egonzalez90/docker-spacewalk"&gt;https://github.com/egonzalez90/docker-spacewalk&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;I uploaded the image to DockerHub, which is auto-build from my GitHub
+repository, you can find it with the following command.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[egonzalez@localhost ~]$ docker search spacewalk
+INDEX       NAME                                       DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+docker.io   docker.io/ruo91/spacewalk                  Spacewalk is an open source Linux systems ...   3                    [OK]
+docker.io   docker.io/jamesnetherton/spacewalk         Spacewalk running under Docker                  1                    
+docker.io   docker.io/coffmant/spacewalk-docker        Spacewalk                                       0                    [OK]
+docker.io   docker.io/csabakollar/spacewalk            Spacewalk 2.4 in a CentOS6 container            0                    
+docker.io   docker.io/egonzalez90/spacewalk            Spacewalk docker image                          0                    [OK]
+docker.io   docker.io/jdostal/spacewalk-clients        Repository containing spacewalk-clients         0                    
+docker.io   docker.io/jhutar/spacewalk-client                                                          0                    
+docker.io   docker.io/norus/spacewalk-reposync                                                         0                    
+docker.io   docker.io/pajinek/spacewalk-client                                                         0                    [OK]
+docker.io   docker.io/perfectweb/spacewalk             spacewalk                                       0                    [OK]
+docker.io   docker.io/researchiteng/docker-spacewalk   spacewalk is the open source version of Re...   0                    [OK]
+docker.io   docker.io/varhoo/spacewalk-proxy                                                           0                    [OK]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To start the container use the following command. If you don't have the
+image locally, it will download the image from DockerHub&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[egonzalez@localhost ~]$ docker run -d --privileged=True egonzalez90/spacewalk
+Unable to find image &amp;#39;egonzalez90/spacewalk:latest&amp;#39; locally
+Trying to pull repository docker.io/egonzalez90/spacewalk ... 
+latest: Pulling from docker.io/egonzalez90/spacewalk
+a3ed95caeb02: Already exists 
+da71393503ec: Already exists 
+519093688e2c: Pull complete 
+97bbffaa9fc9: Pull complete 
+63bfb115f62d: Pull complete 
+929bbb68aff9: Pull complete 
+532bc4af8e1a: Pull complete 
+3eb667dda9ee: Pull complete 
+275894897aa4: Pull complete 
+93bcddf9cedb: Pull complete 
+266c3b70754f: Pull complete 
+Digest: sha256:a4dd98548f9dbb405fb4c6bb4a2a07b83d5f2bf730f29f71913b72876b1a61ab
+Status: Downloaded newer image for docker.io/egonzalez90/spacewalk:latest
+ded4a8b7eb1ee61fecc8ddc2eb1b092917a361bc36f7f752b32d76e79501d70a
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now you have the container running, check if all the ports are properly
+exposed&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;[egonzalez@localhost ~]$ docker ps --latest --format &amp;#39;table &lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt;&lt;span class="nv"&gt;.ID&lt;/span&gt;&lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt;\t&lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt;&lt;span class="nv"&gt;.Image&lt;/span&gt;&lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt;\t&lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt;&lt;span class="nv"&gt;.Ports&lt;/span&gt;&lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="x"&gt;CONTAINER ID        IMAGE                   PORTS&lt;/span&gt;
+&lt;span class="x"&gt;ded4a8b7eb1e        egonzalez90/spacewalk   68-69/tcp, 80/tcp, 443/tcp, 5222/tcp&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Get the container IP address in order to enter from a Web Browser&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[egonzalez@localhost ~]$ docker inspect ded4a8b7eb1e | egrep IPAddress
+            &amp;quot;SecondaryIPAddresses&amp;quot;: null,
+            &amp;quot;IPAddress&amp;quot;: &amp;quot;172.17.0.3&amp;quot;,
+                    &amp;quot;IPAddress&amp;quot;: &amp;quot;172.17.0.3&amp;quot;,
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Open A browser and go to the container IP address, if you use HTTP, by
+default it will redirect you to HTTPS.&lt;br&gt;
+The container uses an auto-signed SSL certificate, you have to add an
+exception in the Browser you use to allow connections to Spacewalk.&lt;br&gt;
+Once in the Welcome page, create an Organization.&lt;/p&gt;
+&lt;p&gt;Now you are in Spacewalk and can play/test some features.  &lt;/p&gt;
+&lt;p&gt;&lt;img alt="Selection_003" src="http://egonzalez.org/wp-content/uploads/2016/07/Selection_003-1024x483.png"&gt;&lt;/p&gt;
+&lt;p&gt;There is an issue I was not able to fix, so osa-dispatcher and some
+other features will not work with this image.&lt;br&gt;
+If someone can give me an input to fix the issue it will appreciated.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[egonzalez@localhost ~]$ docker logs ded4a8b7eb1e | egrep FATAL
+2016-07-12 18:13:32,220 INFO gave up: osa-dispatcher entered FATAL state, too many start retries too quickly
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Thanks for your time and hopes this image at least serves you to learn
+and play with the interface.&lt;/p&gt;
+&lt;p&gt;Regards, Eduardo Gonzalez&lt;/p&gt;</content><category term="container"></category><category term="docker"></category><category term="dockerfile"></category><category term="github"></category><category term="image"></category><category term="poc"></category><category term="proofofconcept"></category><category term="redhat"></category><category term="satellite"></category><category term="spacewalk"></category></entry></feed>
