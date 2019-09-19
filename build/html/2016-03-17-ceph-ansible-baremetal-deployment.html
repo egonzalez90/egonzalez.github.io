@@ -1,0 +1,637 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Ceph Ansible baremetal deployment &#8212; egonzalez  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Nova VNC flows under the hood" href="2016-03-02-nova-vnc-flows-under-the-hood.html" />
+    <link rel="prev" title="Magnum in RDO OpenStack Liberty manual installation from source code" href="2016-03-24-magnum-in-rdo-openstack-liberty-manual-installation-from-source-code.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="ceph-ansible-baremetal-deployment">
+<h1>Ceph Ansible baremetal deployment<a class="headerlink" href="#ceph-ansible-baremetal-deployment" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">How many times you tried to install Ceph? How many fails with no
+reason?</div>
+<div class="line">All Ceph operator should agree with me when i say that Ceph installer
+doesn’t really works as expected so far.</div>
+<div class="line">Yes, i’m talking about ceph-deploy and the main reason why i’m posting
+this guide about deploying Ceph with Ansible.</div>
+</div>
+<div class="line-block">
+<div class="line">At this post, i will show how to install a Ceph cluster with Ansible
+on baremetal servers.</div>
+<div class="line">My configuration is as follows:</div>
+</div>
+<ol class="arabic simple">
+<li>3 x ceph monitors 8GB of RAM each one</li>
+<li>3 x OSD nodes 16GB of RAM and 3x100 GB of Disk</li>
+<li>1 x RadosGateway node 8GB of RAM</li>
+</ol>
+<p>First, download Ceph-Ansible playbooks</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ceph</span><span class="o">/</span><span class="n">ceph</span><span class="o">-</span><span class="n">ansible</span><span class="o">/</span>
+<span class="n">Cloning</span> <span class="n">into</span> <span class="s1">&#39;ceph-ansible&#39;</span><span class="o">...</span>
+<span class="n">remote</span><span class="p">:</span> <span class="n">Counting</span> <span class="n">objects</span><span class="p">:</span> <span class="mi">5764</span><span class="p">,</span> <span class="n">done</span><span class="o">.</span>
+<span class="n">remote</span><span class="p">:</span> <span class="n">Compressing</span> <span class="n">objects</span><span class="p">:</span> <span class="mi">100</span><span class="o">%</span> <span class="p">(</span><span class="mi">38</span><span class="o">/</span><span class="mi">38</span><span class="p">),</span> <span class="n">done</span><span class="o">.</span>
+<span class="n">remote</span><span class="p">:</span> <span class="n">Total</span> <span class="mi">5764</span> <span class="p">(</span><span class="n">delta</span> <span class="mi">7</span><span class="p">),</span> <span class="n">reused</span> <span class="mi">0</span> <span class="p">(</span><span class="n">delta</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pack</span><span class="o">-</span><span class="n">reused</span> <span class="mi">5726</span>
+<span class="n">Receiving</span> <span class="n">objects</span><span class="p">:</span> <span class="mi">100</span><span class="o">%</span> <span class="p">(</span><span class="mi">5764</span><span class="o">/</span><span class="mi">5764</span><span class="p">),</span> <span class="mf">1.12</span> <span class="n">MiB</span> <span class="o">|</span> <span class="mf">1.06</span> <span class="n">MiB</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">done</span><span class="o">.</span>
+<span class="n">Resolving</span> <span class="n">deltas</span><span class="p">:</span> <span class="mi">100</span><span class="o">%</span> <span class="p">(</span><span class="mi">3465</span><span class="o">/</span><span class="mi">3465</span><span class="p">),</span> <span class="n">done</span><span class="o">.</span>
+<span class="n">Checking</span> <span class="n">connectivity</span><span class="o">...</span> <span class="n">done</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Move to the newly created folder called ceph-ansible</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">ceph</span><span class="o">-</span><span class="n">ansible</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>Copy sample vars files, we will configure our environment in these
+variable files.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="n">site</span><span class="o">.</span><span class="n">yml</span><span class="o">.</span><span class="n">sample</span> <span class="n">site</span><span class="o">.</span><span class="n">yml</span>
+<span class="n">cp</span> <span class="n">group_vars</span><span class="o">/</span><span class="nb">all</span><span class="o">.</span><span class="n">sample</span> <span class="n">group_vars</span><span class="o">/</span><span class="nb">all</span>
+<span class="n">cp</span> <span class="n">group_vars</span><span class="o">/</span><span class="n">mons</span><span class="o">.</span><span class="n">sample</span> <span class="n">group_vars</span><span class="o">/</span><span class="n">mons</span>
+<span class="n">cp</span> <span class="n">group_vars</span><span class="o">/</span><span class="n">osds</span><span class="o">.</span><span class="n">sample</span> <span class="n">group_vars</span><span class="o">/</span><span class="n">osds</span>
+</pre></div>
+</div>
+<p>Next step is configure the inventory with our servers, i don’t really
+like use /etc/ansible/host file, i prefer create a new file per
+environment inside playbook’s folder.</p>
+<p>Create a file with the following content, use you own IPs to match your
+servers on the desired role inside the cluster</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@ansible</span> <span class="o">~</span><span class="p">]</span><span class="c1"># vi inventory_hosts</span>
+
+<span class="p">[</span><span class="n">mons</span><span class="p">]</span>
+<span class="mf">192.168</span><span class="o">.</span><span class="mf">1.48</span>
+<span class="mf">192.168</span><span class="o">.</span><span class="mf">1.49</span>
+<span class="mf">192.168</span><span class="o">.</span><span class="mf">1.52</span>
+
+<span class="p">[</span><span class="n">osds</span><span class="p">]</span>
+<span class="mf">192.168</span><span class="o">.</span><span class="mf">1.50</span>
+<span class="mf">192.168</span><span class="o">.</span><span class="mf">1.53</span>
+<span class="mf">192.168</span><span class="o">.</span><span class="mf">1.54</span>
+
+<span class="p">[</span><span class="n">rgws</span><span class="p">]</span>
+<span class="mf">192.168</span><span class="o">.</span><span class="mf">1.55</span>
+</pre></div>
+</div>
+<p>Test connectivity to you servers pinging them through Ansible ping
+module</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@ansible</span> <span class="o">~</span><span class="p">]</span><span class="c1"># ansible -m ping -i inventory_hosts all</span>
+<span class="mf">192.168</span><span class="o">.</span><span class="mf">1.48</span> <span class="o">|</span> <span class="n">success</span> <span class="o">&gt;&gt;</span> <span class="p">{</span>
+    <span class="s2">&quot;changed&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+    <span class="s2">&quot;ping&quot;</span><span class="p">:</span> <span class="s2">&quot;pong&quot;</span>
+<span class="p">}</span>
+
+<span class="mf">192.168</span><span class="o">.</span><span class="mf">1.50</span> <span class="o">|</span> <span class="n">success</span> <span class="o">&gt;&gt;</span> <span class="p">{</span>
+    <span class="s2">&quot;changed&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+    <span class="s2">&quot;ping&quot;</span><span class="p">:</span> <span class="s2">&quot;pong&quot;</span>
+<span class="p">}</span>
+
+<span class="mf">192.168</span><span class="o">.</span><span class="mf">1.55</span> <span class="o">|</span> <span class="n">success</span> <span class="o">&gt;&gt;</span> <span class="p">{</span>
+    <span class="s2">&quot;changed&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+    <span class="s2">&quot;ping&quot;</span><span class="p">:</span> <span class="s2">&quot;pong&quot;</span>
+<span class="p">}</span>
+
+<span class="mf">192.168</span><span class="o">.</span><span class="mf">1.53</span> <span class="o">|</span> <span class="n">success</span> <span class="o">&gt;&gt;</span> <span class="p">{</span>
+    <span class="s2">&quot;changed&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+    <span class="s2">&quot;ping&quot;</span><span class="p">:</span> <span class="s2">&quot;pong&quot;</span>
+<span class="p">}</span>
+
+<span class="mf">192.168</span><span class="o">.</span><span class="mf">1.49</span> <span class="o">|</span> <span class="n">success</span> <span class="o">&gt;&gt;</span> <span class="p">{</span>
+    <span class="s2">&quot;changed&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+    <span class="s2">&quot;ping&quot;</span><span class="p">:</span> <span class="s2">&quot;pong&quot;</span>
+<span class="p">}</span>
+
+<span class="mf">192.168</span><span class="o">.</span><span class="mf">1.54</span> <span class="o">|</span> <span class="n">success</span> <span class="o">&gt;&gt;</span> <span class="p">{</span>
+    <span class="s2">&quot;changed&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+    <span class="s2">&quot;ping&quot;</span><span class="p">:</span> <span class="s2">&quot;pong&quot;</span>
+<span class="p">}</span>
+
+<span class="mf">192.168</span><span class="o">.</span><span class="mf">1.52</span> <span class="o">|</span> <span class="n">success</span> <span class="o">&gt;&gt;</span> <span class="p">{</span>
+    <span class="s2">&quot;changed&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+    <span class="s2">&quot;ping&quot;</span><span class="p">:</span> <span class="s2">&quot;pong&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Edit site.yml file, i will remove/comment mds nodes since i’m not going
+to use them.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@ansible</span> <span class="o">~</span><span class="p">]</span><span class="c1"># vi site.yml</span>
+
+<span class="o">-</span> <span class="n">hosts</span><span class="p">:</span> <span class="n">mons</span>
+  <span class="n">become</span><span class="p">:</span> <span class="kc">True</span>
+  <span class="n">roles</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">ceph</span><span class="o">-</span><span class="n">mon</span>
+
+<span class="o">-</span> <span class="n">hosts</span><span class="p">:</span> <span class="n">agents</span>
+  <span class="n">become</span><span class="p">:</span> <span class="kc">True</span>
+  <span class="n">roles</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">ceph</span><span class="o">-</span><span class="n">agent</span>
+
+<span class="o">-</span> <span class="n">hosts</span><span class="p">:</span> <span class="n">osds</span>
+  <span class="n">become</span><span class="p">:</span> <span class="kc">True</span>
+  <span class="n">roles</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">ceph</span><span class="o">-</span><span class="n">osd</span>
+
+<span class="c1">#- hosts: mdss</span>
+<span class="c1">#  become: True</span>
+<span class="c1">#  roles:</span>
+<span class="c1">#  - ceph-mds</span>
+
+<span class="o">-</span> <span class="n">hosts</span><span class="p">:</span> <span class="n">rgws</span>
+  <span class="n">become</span><span class="p">:</span> <span class="kc">True</span>
+  <span class="n">roles</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">ceph</span><span class="o">-</span><span class="n">rgw</span>
+
+<span class="o">-</span> <span class="n">hosts</span><span class="p">:</span> <span class="n">restapis</span>
+  <span class="n">become</span><span class="p">:</span> <span class="kc">True</span>
+  <span class="n">roles</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">ceph</span><span class="o">-</span><span class="n">restapi</span>
+</pre></div>
+</div>
+<p>Edit main variable file, here we are going to configure our environment</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@ansible</span> <span class="o">~</span><span class="p">]</span><span class="c1"># vi group_vars/all</span>
+</pre></div>
+</div>
+<p>Here we configure from where ceph packages are going to be installed,
+for now we use upstream code with the stable release Infernalis.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## Configure package origin</span>
+<span class="n">ceph_origin</span><span class="p">:</span> <span class="n">upstream</span>
+<span class="n">ceph_stable</span><span class="p">:</span> <span class="n">true</span>
+<span class="n">ceph_stable_release</span><span class="p">:</span> <span class="n">infernalis</span>
+</pre></div>
+</div>
+<p>Configure interface on which monitor will be listening</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## Monitor options</span>
+<span class="n">monitor_interface</span><span class="p">:</span> <span class="n">eth2</span>
+</pre></div>
+</div>
+<p>Here we configure some OSD options, like journal size and what networks
+will be used by public and cluster data replication</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## OSD options</span>
+<span class="n">journal_size</span><span class="p">:</span> <span class="mi">1024</span>
+<span class="n">public_network</span><span class="p">:</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">1.0</span><span class="o">/</span><span class="mi">24</span>
+<span class="n">cluster_network</span><span class="p">:</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">200.0</span><span class="o">/</span><span class="mi">24</span>
+</pre></div>
+</div>
+<p>Edit osds variable file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@ansible</span> <span class="o">~</span><span class="p">]</span><span class="c1"># vi group_vars/osds</span>
+</pre></div>
+</div>
+<p>I will use auto discovery option to allow ceph ansible select empy or
+not used devices in my servers to create OSDs.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Declare devices</span>
+<span class="n">osd_auto_discovery</span><span class="p">:</span> <span class="kc">True</span>
+<span class="n">journal_collocation</span><span class="p">:</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Of course you can use other options, i’ll highly suggest you to read
+variable comments, as they provide valuable information about usage.</div>
+<div class="line">We’re ready to deploy ceph with ansible with our custom
+inventory_hosts file.</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@ansible</span> <span class="o">~</span><span class="p">]</span><span class="c1"># ansible-playbook site.yml -i inventory_hosts</span>
+</pre></div>
+</div>
+<p>After a while, you will have a fully functional ceph cluster.</p>
+<div class="line-block">
+<div class="line">Maybe you find some issues or bugs when running the playbooks.</div>
+<div class="line">There is a lot of efforts to fix issues on upstream repository. If a
+new bug is encountered, please, post a issue right here.</div>
+<div class="line"><a class="reference external" href="https://github.com/ceph/ceph-ansible/issues">https://github.com/ceph/ceph-ansible/issues</a></div>
+</div>
+<p>You can check your cluster status with ceph -s. we can see all OSDs are
+up and pgs active/clean.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@ceph</span><span class="o">-</span><span class="n">mon1</span> <span class="o">~</span><span class="p">]</span><span class="c1"># ceph -s</span>
+    <span class="n">cluster</span> <span class="mi">5</span><span class="n">ff692ab</span><span class="o">-</span><span class="mi">2150</span><span class="o">-</span><span class="mi">41</span><span class="n">a4</span><span class="o">-</span><span class="mi">8</span><span class="n">b6d</span><span class="o">-</span><span class="mi">001</span><span class="n">a4da21c9c</span>
+     <span class="n">health</span> <span class="n">HEALTH_OK</span>
+     <span class="n">monmap</span> <span class="n">e1</span><span class="p">:</span> <span class="mi">3</span> <span class="n">mons</span> <span class="n">at</span> <span class="p">{</span><span class="n">ceph</span><span class="o">-</span><span class="n">mon1</span><span class="o">=</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">200.141</span><span class="p">:</span><span class="mi">6789</span><span class="o">/</span><span class="mi">0</span><span class="p">,</span><span class="n">ceph</span><span class="o">-</span><span class="n">mon2</span><span class="o">=</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">200.180</span><span class="p">:</span><span class="mi">6789</span><span class="o">/</span><span class="mi">0</span><span class="p">,</span><span class="n">ceph</span><span class="o">-</span><span class="n">mon3</span><span class="o">=</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">200.232</span><span class="p">:</span><span class="mi">6789</span><span class="o">/</span><span class="mi">0</span><span class="p">}</span>
+            <span class="n">election</span> <span class="n">epoch</span> <span class="mi">6</span><span class="p">,</span> <span class="n">quorum</span> <span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span> <span class="n">ceph</span><span class="o">-</span><span class="n">mon1</span><span class="p">,</span><span class="n">ceph</span><span class="o">-</span><span class="n">mon2</span><span class="p">,</span><span class="n">ceph</span><span class="o">-</span><span class="n">mon3</span>
+     <span class="n">osdmap</span> <span class="n">e10</span><span class="p">:</span> <span class="mi">9</span> <span class="n">osds</span><span class="p">:</span> <span class="mi">9</span> <span class="n">up</span><span class="p">,</span> <span class="mi">9</span> <span class="ow">in</span>
+            <span class="n">flags</span> <span class="n">sortbitwise</span>
+      <span class="n">pgmap</span> <span class="n">v32</span><span class="p">:</span> <span class="mi">64</span> <span class="n">pgs</span><span class="p">,</span> <span class="mi">1</span> <span class="n">pools</span><span class="p">,</span> <span class="mi">0</span> <span class="nb">bytes</span> <span class="n">data</span><span class="p">,</span> <span class="mi">0</span> <span class="n">objects</span>
+            <span class="mi">102256</span> <span class="n">kB</span> <span class="n">used</span><span class="p">,</span> <span class="mi">896</span> <span class="n">GB</span> <span class="o">/</span> <span class="mi">896</span> <span class="n">GB</span> <span class="n">avail</span>
+                  <span class="mi">64</span> <span class="n">active</span><span class="o">+</span><span class="n">clean</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">We are going to do some tests.</div>
+<div class="line">Create a pool</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@ceph</span><span class="o">-</span><span class="n">mon1</span> <span class="o">~</span><span class="p">]</span><span class="c1"># ceph osd pool create test 128 128</span>
+<span class="n">pool</span> <span class="s1">&#39;test&#39;</span> <span class="n">created</span>
+</pre></div>
+</div>
+<p>Create a file big file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@ceph</span><span class="o">-</span><span class="n">mon1</span> <span class="o">~</span><span class="p">]</span><span class="c1"># dd if=/dev/zero of=/tmp/sample.txt bs=2M count=1000</span>
+<span class="mi">1000</span><span class="o">+</span><span class="mi">0</span> <span class="n">records</span> <span class="ow">in</span>
+<span class="mi">1000</span><span class="o">+</span><span class="mi">0</span> <span class="n">records</span> <span class="n">out</span>
+<span class="mi">2097152000</span> <span class="nb">bytes</span> <span class="p">(</span><span class="mf">2.1</span> <span class="n">GB</span><span class="p">)</span> <span class="n">copied</span><span class="p">,</span> <span class="mf">16.7386</span> <span class="n">s</span><span class="p">,</span> <span class="mi">125</span> <span class="n">MB</span><span class="o">/</span><span class="n">s</span>
+</pre></div>
+</div>
+<p>Upload the file to rados</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@ceph</span><span class="o">-</span><span class="n">mon1</span> <span class="o">~</span><span class="p">]</span><span class="c1"># rados -p test put sample /tmp/sample.txt</span>
+</pre></div>
+</div>
+<p>Check om which placement groups your file is saved</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@ceph</span><span class="o">-</span><span class="n">mon1</span> <span class="o">~</span><span class="p">]</span><span class="c1"># ceph osd map test sample</span>
+<span class="n">osdmap</span> <span class="n">e13</span> <span class="n">pool</span> <span class="s1">&#39;test&#39;</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="nb">object</span> <span class="s1">&#39;sample&#39;</span> <span class="o">-&gt;</span> <span class="n">pg</span> <span class="mf">1.</span><span class="n">bddbf0b9</span> <span class="p">(</span><span class="mf">1.39</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">up</span> <span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">p1</span><span class="p">)</span> <span class="n">acting</span> <span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">p1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Query the placement group where you file was uploaded, a similar output
+will prompts</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@ceph</span><span class="o">-</span><span class="n">mon1</span> <span class="o">~</span><span class="p">]</span><span class="c1"># ceph pg 1.39 query</span>
+<span class="p">{</span>
+    <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;active+clean&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;snap_trimq&quot;</span><span class="p">:</span> <span class="s2">&quot;[]&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;epoch&quot;</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span>
+    <span class="s2">&quot;up&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">0</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;acting&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">0</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;actingbackfill&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;1&quot;</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;pgid&quot;</span><span class="p">:</span> <span class="s2">&quot;1.39&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;last_update&quot;</span><span class="p">:</span> <span class="s2">&quot;13&#39;500&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;last_complete&quot;</span><span class="p">:</span> <span class="s2">&quot;13&#39;500&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;log_tail&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;last_user_version&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+        <span class="s2">&quot;last_backfill&quot;</span><span class="p">:</span> <span class="s2">&quot;MAX&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;last_backfill_bitwise&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;purged_snaps&quot;</span><span class="p">:</span> <span class="s2">&quot;[]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;history&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;epoch_created&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+            <span class="s2">&quot;last_epoch_started&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+            <span class="s2">&quot;last_epoch_clean&quot;</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span>
+            <span class="s2">&quot;last_epoch_split&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;last_epoch_marked_full&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;same_up_since&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+            <span class="s2">&quot;same_interval_since&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+            <span class="s2">&quot;same_primary_since&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+            <span class="s2">&quot;last_scrub&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_scrub_stamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-03-16 21:13:08.883121&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_deep_scrub&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_deep_scrub_stamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-03-16 21:13:08.883121&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_clean_scrub_stamp&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;stats&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;13&#39;500&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;reported_seq&quot;</span><span class="p">:</span> <span class="s2">&quot;505&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;reported_epoch&quot;</span><span class="p">:</span> <span class="s2">&quot;13&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;active+clean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_fresh&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-03-16 21:24:40.930724&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_change&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-03-16 21:14:09.874086&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_active&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-03-16 21:24:40.930724&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_peered&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-03-16 21:24:40.930724&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_clean&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-03-16 21:24:40.930724&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_became_active&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_became_peered&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_unstale&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-03-16 21:24:40.930724&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_undegraded&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-03-16 21:24:40.930724&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_fullsized&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-03-16 21:24:40.930724&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mapping_epoch&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+            <span class="s2">&quot;log_start&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ondisk_log_start&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;created&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+            <span class="s2">&quot;last_epoch_clean&quot;</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span>
+            <span class="s2">&quot;parent&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;parent_split_bits&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;last_scrub&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_scrub_stamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-03-16 21:13:08.883121&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_deep_scrub&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_deep_scrub_stamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-03-16 21:13:08.883121&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_clean_scrub_stamp&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;log_size&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+            <span class="s2">&quot;ondisk_log_size&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+            <span class="s2">&quot;stats_invalid&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;stat_sum&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;num_bytes&quot;</span><span class="p">:</span> <span class="mi">2097152000</span><span class="p">,</span>
+                <span class="s2">&quot;num_objects&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;num_object_clones&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_object_copies&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s2">&quot;num_objects_missing_on_primary&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_objects_degraded&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_objects_misplaced&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_objects_unfound&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_objects_dirty&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;num_whiteouts&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_read&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_read_kb&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_write&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+                <span class="s2">&quot;num_write_kb&quot;</span><span class="p">:</span> <span class="mi">2048000</span><span class="p">,</span>
+                <span class="s2">&quot;num_scrub_errors&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_shallow_scrub_errors&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_deep_scrub_errors&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_objects_recovered&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_bytes_recovered&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_keys_recovered&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_objects_omap&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_objects_hit_set_archive&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_bytes_hit_set_archive&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_flush&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_flush_kb&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_evict&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_evict_kb&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_promote&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_flush_mode_high&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_flush_mode_low&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_evict_mode_some&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;num_evict_mode_full&quot;</span><span class="p">:</span> <span class="mi">0</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;up&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="mi">1</span><span class="p">,</span>
+                <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;acting&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="mi">1</span><span class="p">,</span>
+                <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;blocked_by&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;up_primary&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;acting_primary&quot;</span><span class="p">:</span> <span class="mi">1</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;empty&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;dne&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;incomplete&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;last_epoch_started&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+        <span class="s2">&quot;hit_set_history&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;current_last_update&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;history&quot;</span><span class="p">:</span> <span class="p">[]</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;peer_info&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;peer&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;pgid&quot;</span><span class="p">:</span> <span class="s2">&quot;1.39&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_update&quot;</span><span class="p">:</span> <span class="s2">&quot;13&#39;500&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_complete&quot;</span><span class="p">:</span> <span class="s2">&quot;13&#39;500&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;log_tail&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_user_version&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;last_backfill&quot;</span><span class="p">:</span> <span class="s2">&quot;MAX&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;last_backfill_bitwise&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;purged_snaps&quot;</span><span class="p">:</span> <span class="s2">&quot;[]&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;history&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;epoch_created&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+                <span class="s2">&quot;last_epoch_started&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+                <span class="s2">&quot;last_epoch_clean&quot;</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span>
+                <span class="s2">&quot;last_epoch_split&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;last_epoch_marked_full&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;same_up_since&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;same_interval_since&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;same_primary_since&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;last_scrub&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_scrub_stamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-03-16 21:13:08.883121&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_deep_scrub&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_deep_scrub_stamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-03-16 21:13:08.883121&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_clean_scrub_stamp&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;stats&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;reported_seq&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;reported_epoch&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;inactive&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_fresh&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_change&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_active&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_peered&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_clean&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_became_active&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_became_peered&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_unstale&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_undegraded&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_fullsized&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;mapping_epoch&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;log_start&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ondisk_log_start&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;created&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;last_epoch_clean&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;parent&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;parent_split_bits&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;last_scrub&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_scrub_stamp&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_deep_scrub&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_deep_scrub_stamp&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;last_clean_scrub_stamp&quot;</span><span class="p">:</span> <span class="s2">&quot;0.000000&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;log_size&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;ondisk_log_size&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;stats_invalid&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;stat_sum&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;num_bytes&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_objects&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_object_clones&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_object_copies&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_objects_missing_on_primary&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_objects_degraded&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_objects_misplaced&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_objects_unfound&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_objects_dirty&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_whiteouts&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_read&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_read_kb&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_write&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_write_kb&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_scrub_errors&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_shallow_scrub_errors&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_deep_scrub_errors&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_objects_recovered&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_bytes_recovered&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_keys_recovered&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_objects_omap&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_objects_hit_set_archive&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_bytes_hit_set_archive&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_flush&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_flush_kb&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_evict&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_evict_kb&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_promote&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_flush_mode_high&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_flush_mode_low&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_evict_mode_some&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;num_evict_mode_full&quot;</span><span class="p">:</span> <span class="mi">0</span>
+                <span class="p">},</span>
+                <span class="s2">&quot;up&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">&quot;acting&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">&quot;blocked_by&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">&quot;up_primary&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;acting_primary&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;empty&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;dne&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;incomplete&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;last_epoch_started&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+            <span class="s2">&quot;hit_set_history&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;current_last_update&quot;</span><span class="p">:</span> <span class="s2">&quot;0&#39;0&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;history&quot;</span><span class="p">:</span> <span class="p">[]</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;recovery_state&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Started\/Primary\/Active&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;enter_time&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-03-16 21:13:36.769083&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;might_have_unfound&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;recovery_progress&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;backfill_targets&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">&quot;waiting_on_backfill&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">&quot;last_backfill_started&quot;</span><span class="p">:</span> <span class="s2">&quot;MIN&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;backfill_info&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;begin&quot;</span><span class="p">:</span> <span class="s2">&quot;MIN&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="s2">&quot;MIN&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;objects&quot;</span><span class="p">:</span> <span class="p">[]</span>
+                <span class="p">},</span>
+                <span class="s2">&quot;peer_backfill_info&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">&quot;backfills_in_flight&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">&quot;recovering&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">&quot;pg_backend&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;pull_from_peer&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                    <span class="s2">&quot;pushing&quot;</span><span class="p">:</span> <span class="p">[]</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;scrub&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;scrubber.epoch_start&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;scrubber.active&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;scrubber.waiting_on&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;scrubber.waiting_on_whom&quot;</span><span class="p">:</span> <span class="p">[]</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Started&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;enter_time&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-03-16 21:13:09.216260&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;agent_state&quot;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">That’s all for now.</div>
+<div class="line">Regards, Eduardo Gonzalez</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">egonzalez</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Post:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="2017-08-28-openstack-tacker-and-service-function-chaining-sfc-with-kolla.html">OpenStack tacker and service function chaining sfc with kolla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2017-02-22-deploy-openstack-designate-with-kolla-ansible.html">Deploy OpenStack designate with kolla-ansible</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2017-01-31-openstack-keystone-zero-downtime-upgrade-process-n-to-o.html">OpenStack keystone zero downtime upgrade process newton to ocata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-10-31-to-conditional-or-to-skip-that-is-the-ansible-question.html">To conditional or to skip, that’s the Ansible question</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-07-04-midonet-integration-with-openstack-mitaka.html">Midonet integration with OpenStack Mitaka</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-06-15-rally-openstack-benchmarking-from-docker-containers.html">Rally OpenStack benchmarking from Docker containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-06-06-opendaylight-in-a-docker-container.html">OpenDaylight in a Docker container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-04-24-openstack-kolla-deployment-from-rdo-packages.html">OpenStack kolla deployment from RDO packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-24-magnum-in-rdo-openstack-liberty-manual-installation-from-source-code.html">Magnum in RDO OpenStack Liberty manual installation from source code</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Ceph Ansible baremetal deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-02-nova-vnc-flows-under-the-hood.html">Nova VNC flows under the hood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-24-ansible-ini_file-module-simplifying-your-devops-life.html">Ansible INI file module, simplifying your DevOps life</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-15-working-with-affinityanti-affinity-groups-openstack.html">Working with affinity/anti-affinity groups OpenStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-02-migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty.html">Migrate keystone v2.0 to keystone v3 OpenStack Liberty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-01-27-configure-neutron-dvr-openstack-liberty.html">Configure neutron DVR OpenStack Liberty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-01-14-openstack-segregation-with-availability-zones-and-host-aggregates.html">OpenStack segregation with availability zones and host aggregates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-12-23-nova-docker-driver.html">Nova Docker driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-12-14-murano-in-rdo-openstack-manual-installation.html">Murano in RDO OpenStack manual installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-09-08-ceph-radosgw-admin-ops-how-to-use-it.html">Ceph RadosGW admin Ops, how to use it</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-08-13-multiple-store-locations-for-glance-images.html">Multiple store locations for glance images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-07-02-list-all-tenants-belonging-an-user.html">List all tenants belonging an user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-24-load-balancer-as-a-service-lbaas.html">Load balancer as a service OpenStack LbaaS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-16-openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use.html">OpenStack nova APi start error, could not bind to 0.0.0.0 address all ready in use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-09-delete-openstack-neutron-networks-solution-to-unable-to-complete-operation-on-subnet.html">Delete OpenStack neutron networks, fix to unable to complete operation on subnet</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="2016-03-24-magnum-in-rdo-openstack-liberty-manual-installation-from-source-code.html" title="previous chapter">Magnum in RDO OpenStack Liberty manual installation from source code</a></li>
+      <li>Next: <a href="2016-03-02-nova-vnc-flows-under-the-hood.html" title="next chapter">Nova VNC flows under the hood</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Eduardo Gonzalez.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/2016-03-17-ceph-ansible-baremetal-deployment.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

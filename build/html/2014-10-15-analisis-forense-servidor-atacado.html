@@ -1,0 +1,348 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Documentación &#8212; egonzalez  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <p>— layout: post title: Análisis Forense Servidor Atacado date:
+2014-10-15 16:42:06.000000000 +02:00 type: post parent_id: ‘0’
+published: true password: ‘’ status: publish categories: - Linux tags: -
+analisis - atacado - ataque - bash_history - busqueda - ethical -
+forense - Hacking - informatica - last - linux - lsattr - mtime -
+netstat - ps - rpm -Va - Seguridad - servidor - strace - top - unix -
+vulnerable meta: _oembed_0b940b452b8f86b13e4e928883bd12d6:
+“{{unknown}}” _edit_last: ‘2’ _publicize_facebook_user:
+<a class="reference external" href="https://www.facebook.com/dudu.gonzalez90">https://www.facebook.com/dudu.gonzalez90</a> _publicize_twitter_user:
+“&#64;hidanstillalive” _thumbnail_id: ‘526’ _wpas_done_all: ‘1’
+_oembed_27c22de3c5db2dffbe4d9cafc6f6fa80: “{{unknown}}”
+_oembed_50d11be3c2382d140a389810f92336cb: “{{unknown}}”
+_oembed_4f1d59ce18579da9cb150aa631462dc9: “{{unknown}}”
+_oembed_3b1a03fcbcf099fe0886b4ead3a022d6: “{{unknown}}”
+_oembed_469ff738d8db47b17eedb3fd5b6c17c5: “{{unknown}}”
+_oembed_4686e5d5ea21fd5938e822775d693ef9: “{{unknown}}”
+_oembed_21a9edc60b9cb3550ff6927acd3b0506: “{{unknown}}”
+_oembed_8b5ef124a3aa3f8a3a08955cd0b8799f: “{{unknown}}”
+_oembed_d11b48095c29c9597925233f5c243b32: “{{unknown}}”
+_oembed_2123c98d218896f1de3bb8bbbeab811c: “{{unknown}}”
+_oembed_6efeaa14b7a53a506e332ac0dd09c328: “{{unknown}}”
+_oembed_a0775bb7b24c065f35152ccb850c773a: “{{unknown}}”
+_oembed_a37f377026c13a511eb937b8e6ea0d66: “{{unknown}}”
+_oembed_822c54e1259bc1a9012ad23feb8ff06c: “{{unknown}}”
+_oembed_cd0a25c59bbc00681e3f81ec2d6af941: “{{unknown}}”
+_oembed_798821685e23e0e5ceb77b0e7a64b888: “{{unknown}}”
+_oembed_3fff32ee395a26eedd8d67bb5c0798db: “{{unknown}}”
+_oembed_6229174560a3e18f685d883161697ba6: “{{unknown}}”
+_oembed_115b1b6564a538650642c70977169c6e: “{{unknown}}”
+_oembed_9e64f8662eea03ed962c6e9802b4df42: “{{unknown}}”
+_oembed_a93acece23cc61109eee736cc16c5276: “{{unknown}}”
+_oembed_ff5520470ce4af87826549adf57cb70f: “{{unknown}}”
+_wpas_skip_5226565: ‘1’ _wpas_skip_4949654: ‘1’ _wpas_skip_8706018:
+‘1’ _oembed_b26790a613c3b1e3da91586ce676db8f: “{{unknown}}”
+_jetpack_related_posts_cache:
+a:1:{s:32:”8f6677c9d6b0f903e98ad32ec61f8deb”;a:2:{s:7:”expires”;i:1568902944;s:7:”payload”;a:3:{i:0;a:1:{s:2:”id”;i:186;}i:1;a:1:{s:2:”id”;i:590;}i:2;a:1:{s:2:”id”;i:605;}}}}
+dsq_thread_id: ‘6096047386’ author: login: egongu90 email:
+egongu90&#64;hotmail.com display_name: Editor first_name: ‘’ last_name: ‘’
+permalink: “/analisis-forense-servidor-atacado/” —</p>
+<p>Esta guía te proporcionara las bases para investigar servidores que su
+seguridad ha sido comprometida.</p>
+<p>Veremos &nbsp;los diferentes modos para determinar:</p>
+<ul class="simple">
+<li>Punto de entrada</li>
+<li>Origen del ataque</li>
+<li>Archivos comprometidos</li>
+<li>Nivel de acceso obtenido por el atacante</li>
+<li>Investigación de pruebas y rastros dejados por los atacantes</li>
+</ul>
+<p>Son muchos los puntos de entradas que un servidor Linux/Unix puede
+tener, pero es importante que método se ha usado para determinar el daño
+que ha podido hacer en a máquina y/o otros servidores conectados entre
+sí.</p>
+<p>La mejor forma de arreglar un servidor comprometido es re instalar el
+sistema operativo y restaurar los datos importantes desde una copia de
+seguridad, pero es importante investigar el servidor afectado para
+conocer el punto de entrada y así poder parchearlo en la reinstalación
+del SO.</p>
+<div class="section" id="documentacion">
+<h1>Documentación<a class="headerlink" href="#documentacion" title="Permalink to this headline">¶</a></h1>
+<p>Cuando te enteras que un sistema bajo tu control puede haber sido
+comprometido, debes de intentar obtener la mayor información posible del
+denunciante. Entre ellas:</p>
+<ul class="simple">
+<li>Cuando se encontró el problema inicial</li>
+<li>La hora estimada del ataque</li>
+<li>Se ha modificado el servidor desde el ataque</li>
+<li>Alguna cosa más que el denunciante considere importante</li>
+</ul>
+<p>NOTA: Si estás pensando en involucrar a las fuerzas de la ley, realizar
+denuncias, es muy importante que no se realice ninguna acción en el
+servidor. Este debe quedar en su estado actual a un equipo de
+informática forense para la búsqueda de pruebas.</p>
+<p>Si vas a proceder a la investigación, documenta toda lo que encuentres
+en el servidor.</p>
+</div>
+<div class="section" id="herramientas-usadas-en-la-investigacion">
+<h1>Herramientas usadas en la investigación<a class="headerlink" href="#herramientas-usadas-en-la-investigacion" title="Permalink to this headline">¶</a></h1>
+<p>En un escenario ideal para un atacante, todos los archivos de log se
+habrán borrado dejando su rastro limpio. Por suerte estos casos no se
+suelen dar, y aunque los ataques estén automatizados, siempre hay alguna
+pista desde la que encontrar información sobre cómo se ha realizado el
+ataque, si es ataque web básico o un ataque que compromete el acceso
+root.</p>
+<p>Aquí tienes algunas herramientas con las que podrás investigar posibles
+rastros para analizar el sistema.</p>
+<div class="section" id="last">
+<h2>last<a class="headerlink" href="#last" title="Permalink to this headline">¶</a></h2>
+<p>Esta herramienta listara las últimas sesiones de usuario, con este
+comando podrás ver horas de sesión, IP, nombre de usuario, etc.</p>
+<p>Un numero exagerado de direcciones IP en los archivos de log
+/var/log/messages o /var/log/secure puede indicar que el atacante
+realizo un ataque por fuerza bruta, eso reflejara en el comando last la
+hora de cuando consiguió dicho acceso al servidor</p>
+</div>
+<div class="section" id="ls-lart">
+<h2>ls -lart<a class="headerlink" href="#ls-lart" title="Permalink to this headline">¶</a></h2>
+<p>Este comando nos mostrara una lista de archivos y directorios ordenados
+por fecha según la última modificación. Esto nos permitirá saber que ha
+sido modificado o añadido comprobándolo con las fechas del ataque.</p>
+</div>
+<div class="section" id="netstat-na">
+<h2>netstat -na<a class="headerlink" href="#netstat-na" title="Permalink to this headline">¶</a></h2>
+<p>Eso nos listara las conexiones a la escucha existentes. Nos podrá
+revelar posibles backdoors o servicios que no deberían estar en escucha,
+los cuales pueden ser causa de alguno de los ficheros</p>
+</div>
+<div class="section" id="alias">
+<h2>alias<a class="headerlink" href="#alias" title="Permalink to this headline">¶</a></h2>
+<p>Este comando nos mostrara los alias de comandos, es posible que un
+atacante cree alias para que al ejecutar determinado comando se ejecute
+otro.</p>
+</div>
+<div class="section" id="ps-wauxef">
+<h2>ps -wauxef<a class="headerlink" href="#ps-wauxef" title="Permalink to this headline">¶</a></h2>
+<p>Este comando nos es muy útil a la hora de detectar procesos erróneos en
+escucha, además también nos listara otros procesos como los del usuario
+www. lsof | grep &lt;pid&gt; puede ser usado para encontrar que archivos está
+utilizando determinado proceso. Igualmente con cat /proc/&lt;pid&gt;/cmdline
+puedes saber dónde está el archivo que controla el proceso.</p>
+</div>
+<div class="section" id="bash-history">
+<h2>bash_history<a class="headerlink" href="#bash-history" title="Permalink to this headline">¶</a></h2>
+<p>Mediante este comando obtendremos el historial de los comandos
+ejecutados desde los diferentes usuarios. El archivo se encuentra en la
+carpeta / root y el /home/ de cada usuario. Es oculto</p>
+</div>
+<div class="section" id="top">
+<h2>top<a class="headerlink" href="#top" title="Permalink to this headline">¶</a></h2>
+<p>A veces un proceso malicioso causa extremo uso de CPU causando problemas
+en el entorno, suele estar situado en el principio de la lista. Todo
+proceso que este causando un consumo excesivo de CPU debe ser
+considerado sospechoso</p>
+</div>
+<div class="section" id="strace-p">
+<h2>strace -p<a class="headerlink" href="#strace-p" title="Permalink to this headline">¶</a></h2>
+<p>Este comando se ejecutara sobre procesos sospechosos, el cual nos dará
+mucha información sobre que está realizando.</p>
+<p>En algunos casos, este comando no nos proporcionara ninguna información
+real, debido a que se pueden haber modificado los binarios para que la
+salida del comando no muestre lo que debería, complicando la
+investigación del ataque. Para ello investigaremos que dichos binarios
+no están trojanizados:</p>
+</div>
+<div class="section" id="rpm-va">
+<h2>rpm -Va<a class="headerlink" href="#rpm-va" title="Permalink to this headline">¶</a></h2>
+<p>Este comando comprobara la información de los paquetes instalados con
+los metadatos de la base de datos rpm. Entre otras cosas, compara el
+tamaño, suma de verificación MD5, permisos, tipo, propietario y grupo.
+Cualquier modificación del paquete original será mostrada.</p>
+<p>Cuando se ejecuta este comando, es importante si alguno de los paquetes
+marcados como modificados esta en alguno de los siguientes directorios,
+de ser así, puede significar que se está usando una versión trojanizada
+del binario, por lo que no se puede fiar de la salida del comando.</p>
+<div class="section" id="bin">
+<h3>/bin<a class="headerlink" href="#bin" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="sbin">
+<h3>/sbin<a class="headerlink" href="#sbin" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="usr-bin">
+<h3>/usr/bin<a class="headerlink" href="#usr-bin" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="usr-sbin">
+<h3>/usr/sbin<a class="headerlink" href="#usr-sbin" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="rpm-qa">
+<h2>rpm -qa<a class="headerlink" href="#rpm-qa" title="Permalink to this headline">¶</a></h2>
+<p>Este comando te mostrara cuales son los últimos paquetes instalado en
+orden cronológico. En cualquier caso, si el acceso root ha sido
+comprometido, la base de datos rpm puede haber sido modificada y no ser
+fiable</p>
+</div>
+<div class="section" id="lsattr">
+<h2>lsattr<a class="headerlink" href="#lsattr" title="Permalink to this headline">¶</a></h2>
+<p>En el caso de que el atacante haya conseguido acceso root y trojanizar
+determinados binarios, puede que haya establecido dicho binario como
+inmutable, por lo que no podrás reinstalar una versión limpia del
+binario. Los directorios más comunes son:</p>
+<div class="section" id="bin-1">
+<span id="id1"></span><h3>/bin<a class="headerlink" href="#bin-1" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="sbin-1">
+<span id="id2"></span><h3>/sbin<a class="headerlink" href="#sbin-1" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="usrbin-1">
+<span id="id3"></span><h3>/usr/bin<a class="headerlink" href="#usrbin-1" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="usrsbin-1">
+<span id="id4"></span><h3>/usr/sbin<a class="headerlink" href="#usrsbin-1" title="Permalink to this headline">¶</a></h3>
+<p>También deberías de buscar por otros directorios como /etc, /root, /tmp,
+etc.</p>
+<p>Un ejemplo del binario de ps establecido como inmutable es este:</p>
+</div>
+<div class="section" id="i-bin-ps">
+<h3>——-i—– /bin/ps<a class="headerlink" href="#i-bin-ps" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="find-mtime-5">
+<h2>find / mtime 5<a class="headerlink" href="#find-mtime-5" title="Permalink to this headline">¶</a></h2>
+<p>Con este comando buscaras archivos que han sido modificados en los
+últimos 5 días, puedes cambiar el digito numérico si sabes las fechas
+exactas, así afinaras más las búsqueda y evitaras ver archivos
+modificados que no tengan interés en la investigación.</p>
+</div>
+</div>
+<div class="section" id="directorios-comunes-donde-se-encuentran-los-exploits">
+<h1>Directorios comunes donde se encuentran los exploits<a class="headerlink" href="#directorios-comunes-donde-se-encuentran-los-exploits" title="Permalink to this headline">¶</a></h1>
+<p>Comprueba los directorios que Apache comúnmente puede escribir sus
+archivos temporales</p>
+<div class="section" id="ls-al-tmp">
+<h2>ls -al /tmp<a class="headerlink" href="#ls-al-tmp" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="ls-al-var-tmp">
+<h2>ls -al /var/tmp<a class="headerlink" href="#ls-al-var-tmp" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="ls-al-dev-shm">
+<h2>ls -al /dev/shm<a class="headerlink" href="#ls-al-dev-shm" title="Permalink to this headline">¶</a></h2>
+<p>Si tienes algun fichero con todos los permisos 777, sospecha de el.</p>
+<p>Comprueba que los ficheros ocultos no tengan permisos de ejecución.</p>
+</div>
+</div>
+<div class="section" id="encontrando-el-punto-de-acceso">
+<h1>Encontrando el punto de acceso<a class="headerlink" href="#encontrando-el-punto-de-acceso" title="Permalink to this headline">¶</a></h1>
+<p>Si has encontrado algo con la información anterior, quiere decir que ya
+sabes más o menos cuando el ataque se ha realizado, de qué forma y
+contra que. Ahora ya podrás investigar sobre los logs de acceso a la
+página web por la fecha por la que se produjo el ataque. También debes
+mirar en los archivos /var/log/* en los cuales encontraras información
+de accesos, del sistema, etc.</p>
+<p>Si tienes alguna aplicación afectada que también guarde logs, puedes
+investigar sobre ellos para buscar más información sobre el atacante.</p>
+<p>Debido a un ataque en uno de los servidores que administro tuve que
+lidiar con este tipo de investigación forense. Encontré poca información
+al respecto, hasta que encontré la siguiente web, que definitivamente me
+ayudo realmente.</p>
+<p><a class="reference external" href="https://community.rackspace.com/general/f/34/t/75">https://community.rackspace.com/general/f/34/t/75</a></p>
+<p>Estoy realmente agradecido al creador de esa información, por eso me
+decidí a traducirla (no literalmente) para que los que sufran de ese
+mismo problema y no sepan ingles puedan descubrir que les han hecho en
+su servidor.</p>
+<p>En la misma web, tienen un ejemplo práctico de como el encontró su
+webshell en phpmyadmin, os recomiendo que la lean.</p>
+<p>Infinitamente agradecido.</p>
+<p>Un saludo</p>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">egonzalez</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Eduardo Gonzalez.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/2014-10-15-analisis-forense-servidor-atacado.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

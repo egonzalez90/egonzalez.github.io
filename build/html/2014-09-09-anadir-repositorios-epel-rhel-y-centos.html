@@ -1,0 +1,145 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>&lt;no title&gt; &#8212; egonzalez  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <p>— layout: post title: Añadir repositorios EPEL RHEL y CentOS date:
+2014-09-09 15:32:52.000000000 +02:00 type: post parent_id: ‘0’
+published: true password: ‘’ status: publish categories: - Linux tags: -
+añadir - centos - descargar - enablerepo - epel - fedoraproject -
+instalar - red hat - repolist - repositorios - rhel meta: _edit_last:
+‘2’ _login_radius_meta: ‘0’ kopa_resolution_total_view: ‘3’
+_thumbnail_id: ‘557’ snap_MYURL: ‘’ snapEdIT: ‘1’ snapFB: N;
+snap_isAutoPosted: ‘1’ snapTW: N; _jetpack_related_posts_cache:
+a:1:{s:32:”8f6677c9d6b0f903e98ad32ec61f8deb”;a:2:{s:7:”expires”;i:1567706341;s:7:”payload”;a:3:{i:0;a:1:{s:2:”id”;i:759;}i:1;a:1:{s:2:”id”;i:806;}i:2;a:1:{s:2:”id”;i:705;}}}}
+dsq_thread_id: ‘6266827116’ author: login: egongu90 email:
+egongu90&#64;hotmail.com display_name: Editor first_name: ‘’ last_name: ‘’
+permalink: “/anadir-repositorios-epel-rhel-y-centos/” —</p>
+<p>Primero descargaremos el repositorio para nuestra versión de CentOS o
+RHEL mediante wget.</p>
+<p>A continuacion instalaremos el paquete que habiamos descargado con rpm.</p>
+<p>Esta son las diferentes versiones de CentOS y RHEL</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line">## RHEL/CentOS 7 64-Bit ##</div>
+<div class="line">#
+wget&nbsp;<a class="reference external" href="http://mirror.rackcentral.com.au/epel/7/x86_64/epel-release-7-1.noarch.rpm">http://mirror.rackcentral.com.au/epel/7/x86_64/epel-release-7-1.noarch.rpm</a></div>
+<div class="line"># rpm -ivh epel-release-7-0.2.noarch.rpm</div>
+</div>
+<div class="line-block">
+<div class="line">## RHEL/CentOS 6 32-Bit ##</div>
+<div class="line">#
+wget&nbsp;<a class="reference external" href="http://mirror.rackcentral.com.au/epel/6/i386/epel-release-6-8.noarch.rpm">http://mirror.rackcentral.com.au/epel/6/i386/epel-release-6-8.noarch.rpm</a></div>
+<div class="line"># rpm -ivh epel-release-6-8.noarch.rpm</div>
+</div>
+<div class="line-block">
+<div class="line">## RHEL/CentOS 6 64-Bit ##</div>
+<div class="line">#
+wget&nbsp;<a class="reference external" href="http://mirror.rackcentral.com.au/epel/6/x86_64/epel-release-6-8.noarch.rpm">http://mirror.rackcentral.com.au/epel/6/x86_64/epel-release-6-8.noarch.rpm</a></div>
+<div class="line"># rpm -ivh epel-release-6-8.noarch.rpm</div>
+</div>
+</div></blockquote>
+<p>Lo siguiente que haremos sera comprobar que esta en la lista de
+repositorios mediante este comando</p>
+<blockquote>
+<div>yum repolist</div></blockquote>
+<p>Por ultimo habilitaremos el repositorio, para que podamos usarlo
+habitualmente</p>
+<blockquote>
+<div>yum –enablerepo=epel</div></blockquote>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">egonzalez</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Eduardo Gonzalez.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/2014-09-09-anadir-repositorios-epel-rhel-y-centos.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

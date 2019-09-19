@@ -1,0 +1,210 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>&lt;no title&gt; &#8212; egonzalez  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <p>— layout: post title: Crear instancia Amazon Web Services (AWS) date:
+2014-09-15 16:10:06.000000000 +02:00 type: post parent_id: ‘0’
+published: true password: ‘’ status: publish categories: - OpenStack
+tags: - amazon - AWS - cloud - computing - creacion - crear - ec2 -
+instancia - linux - pem - ppk - primera - putty - services - web meta:
+_edit_last: ‘2’ _thumbnail_id: ‘631’ snap_MYURL: ‘’ snapEdIT: ‘1’
+snapFB: N; snap_isAutoPosted: ‘1’ snapTW: N;
+_jetpack_related_posts_cache:
+a:1:{s:32:”8f6677c9d6b0f903e98ad32ec61f8deb”;a:2:{s:7:”expires”;i:1568291610;s:7:”payload”;a:3:{i:0;a:1:{s:2:”id”;i:684;}i:1;a:1:{s:2:”id”;i:769;}i:2;a:1:{s:2:”id”;i:777;}}}}
+dsq_thread_id: ‘6106850238’ author: login: egongu90 email:
+egongu90&#64;hotmail.com display_name: Editor first_name: ‘’ last_name: ‘’
+permalink: “/crear-instancia-amazon-web-services-aws/” —</p>
+<p>Buenos días, en esta entrada mostrare como crear una instancia en la
+plataforma cloud de Amazon Web Services.</p>
+<p>&nbsp;Para poder crear las instancias, deberemos tener cuenta de AWS y nos
+logearemos en la consola.</p>
+<p>Lo primero que nos encontraremos sera el dashboard principal, aqui
+podremos administrar las diferentes secciones de AWS. Nosotros iremos a
+EC2</p>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/01.png">01</a></p>
+<p>`&nbsp; &lt;<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/01.png">http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/01.png</a>&gt;`__Una
+vez entrado en EC2, nos encontraremos con esta ventana que nos mostrara
+un resumen de lo que tenemos en nuestro EC2.</p>
+<p>A nosotros nos interesa crear una instancia nueva, por lo que pulsaremos
+sobre Launch Instance</p>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/02.png">02</a></p>
+<p>`&nbsp; &lt;<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/02.png">http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/02.png</a>&gt;`__La
+siguiente pantalla nos mostrara varias instancias disponibles para
+crear, en nuestro plan free disponemos de alguna, nosotros
+seleccionaremos Amazon Linux AMI</p>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/03.png">03</a></p>
+<p>`&nbsp; &lt;<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/03.png">http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/03.png</a>&gt;`__Al
+utilizar el plan free solo podremos usar el tipo t2.micro, por lo que lo
+dejaremos por defecto y daremos a Configure Instance Details</p>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/04.png">04</a></p>
+<p>`&nbsp; &lt;<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/04.png">http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/04.png</a>&gt;`__En
+esta pantalla también la dejaremos por defecto, se puede seleccionar
+alguna opción si se quisiera como por ejemplo Monitoring, nosotros
+iremos directamente a Add Storage</p>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/05.png">05</a></p>
+<p>`&nbsp; &lt;<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/05.png">http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/05.png</a>&gt;`__En
+esta otra pantalla lo mismo, lo dejaremos por defecto y pasaremos a Tag
+Instance</p>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/06.png">06</a></p>
+<dl class="docutils">
+<dt><a href="#id1"><span class="problematic" id="id2">`</span></a></dt>
+<dd>&lt;<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/06.png">http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/06.png</a>&gt;`__<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/07.png">07</a></dd>
+</dl>
+<p>Aquí si que rellenaremos el Valor con el nombre de la instancia, en este
+ejemplo instancename, a continuación iremos a Configure Security Group</p>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/08.png">08</a></p>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/09.png">09</a></p>
+<p>`&nbsp; &lt;<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/09.png">http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/09.png</a>&gt;`__Aquí
+pondremos un nombre para el Grupo de Seguridad y una descripción, como
+vemos, tenemos creada una regla por defecto que permite el acceso por
+SSH desde cualquier IP, eso no es muy recomendable, pero al ser una
+Instancia de pruebas lo dejaremos por defecto</p>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/10.png">10</a></p>
+<p>`&nbsp; &lt;<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/10.png">http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/10.png</a>&gt;`__
+<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/11.png">11</a></p>
+<p>`&nbsp; &lt;<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/11.png">http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/11.png</a>&gt;`__Ya
+son pocos los pasos para acabar de crear la instancia, aqui tenemos un
+resumen de la configuración que hemos realizado, pulsaremos en Launch
+Instance para pasar al siguiente paso</p>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/12.png">12</a></p>
+<p>`&nbsp; &lt;<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/12.png">http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/12.png</a>&gt;`__Por
+ultimo crearemos una clave .pem para que podamos acceder a la instancia,
+para ello marcaremos Create a new key pair y pondremos un nombre para
+esa clave. Después pulsaremos en Download Key Pair, de esta forma se nos
+descargara la clave a nuestro equipo y se habilitara la opción de Launch
+Instances</p>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/13.png">13</a></p>
+<p>`&nbsp; &lt;<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/13.png">http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/13.png</a>&gt;`__</p>
+<p>Ahora mismo ya se esta creando nuestra instancia, podremos ver el
+progreso pulsando sobre View Instances</p>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/14.png">14</a></p>
+<p>`&nbsp; &lt;<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/14.png">http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/14.png</a>&gt;`__Esta
+es la ventana en donde podemos ver las instancias, la primera es una que
+esta en uso y completa, la segunda es la que acabamos de crear, cuando
+Status Checks este en verde ya la tendremos completamente creada</p>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/15.png">15</a></p>
+<p>`&nbsp; &lt;<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/15.png">http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/15.png</a>&gt;`__Lo
+ultimo que nos queda es conectarnos por SSH a la instancia creada, para
+ello copiaremos el Public DNS, que es la dirección a la que nos podremos
+conectar</p>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/16.png">16</a></p>
+<p>`&nbsp; &lt;<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/16.png">http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/16.png</a>&gt;`__En
+mi caso me conecto con PuTTy, para ello debes de convertir el formato de
+la clave .pem a .ppk, para ello tienes una entrada en este mismo blog de
+como hacerlo:&nbsp;<a class="reference external" href="http://egonzalez.org/?p=630">http://egonzalez.org/?p=630</a></p>
+<p>Una vez abierto PuTTy utilizaremos la siguiente direccion:
+<a class="reference external" href="mailto:ec2-user&#37;&#52;&#48;DNSPUBLICO">ec2-user<span>&#64;</span>DNSPUBLICO</a></p>
+<p>El usuario ec2-user es creado automaticamente</p>
+<p>DNSPUBLICO es la direccion que habiamos copiado previamente</p>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/17.png">17</a></p>
+<p>`&nbsp; &lt;<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/17.png">http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/17.png</a>&gt;`__Por
+ultimo iremos a SSH/Auth y buscaremos la clave privada de nuestra
+instancia</p>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/18.png">18</a></p>
+<p>`&nbsp; &lt;<a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/18.png">http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/18.png</a>&gt;`__Despues
+de aceptar la clave nos veremos logeados en la instancia, con esto ya
+estaria finalizada la instalacion y comprobacion de nuestra primera
+instancia en AWS.</p>
+<p>Es recomendable realizazar una actualizacion del sistema nada mas
+arrancar con el comando</p>
+<blockquote>
+<div>sudo yum update</div></blockquote>
+<p><a class="reference external" href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/19.png">19</a></p>
+<p>Espero ser de ayuda y muchas gracias por leer este blog, un saludo</p>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">egonzalez</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Eduardo Gonzalez.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/2014-09-15-crear-instancia-amazon-web-services-aws.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,1183 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Midonet integration with OpenStack Mitaka &#8212; egonzalez  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Rally OpenStack benchmarking from Docker containers" href="2016-06-15-rally-openstack-benchmarking-from-docker-containers.html" />
+    <link rel="prev" title="To conditional or to skip, that’s the Ansible question" href="2016-10-31-to-conditional-or-to-skip-that-is-the-ansible-question.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="midonet-integration-with-openstack-mitaka">
+<h1>Midonet integration with OpenStack Mitaka<a class="headerlink" href="#midonet-integration-with-openstack-mitaka" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">MidoNet is an Open Source network virtualization software for IaaS
+infrastructure.</div>
+<div class="line">It decouples your IaaS cloud from your network hardware, creating an
+intelligent software abstraction layer between your end hosts and your
+physical network.</div>
+<div class="line">This network abstraction layer allows the cloud operator to move what
+has traditionally been hardware-based network appliances into a
+software-based multi-tenant virtual domain.</div>
+</div>
+<p>This definition from MidoNet documentation explains what MidoNet is and
+what MidoNet does.</p>
+<div class="line-block">
+<div class="line">At this I will post cover my experiences integrating MidoNet with
+OpenStack.</div>
+<div class="line">I used the following configurations:</div>
+</div>
+<div class="line-block">
+<div class="line">All servers have CentOS 7.2 installed</div>
+<div class="line">OpenStack has been previously installed from RDO packages with
+multinode Packstack</div>
+</div>
+<ul class="simple">
+<li>x3 NSDB nodes (Casandra and Zookeeper services)</li>
+<li>x2 Gateway Nodes (Midolman Agent)</li>
+<li>x1 OpenStack Controller (MidoNet Cluster)</li>
+<li>x1 OpenStack compute node (Midolman Agent)</li>
+</ul>
+<p><strong>NSDB NODES</strong></p>
+<p>Disable SElinux</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">setenforce</span> <span class="mi">0</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s1">&#39;s/SELINUX=enforcing/SELINUX=permissive/g&#39;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">sysconfig</span><span class="o">/</span><span class="n">selinux</span>
+</pre></div>
+</div>
+<p>Install OpenStack Mitaka release repository</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">centos</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">openstack</span><span class="o">-</span><span class="n">mitaka</span>
+</pre></div>
+</div>
+<p>Add Cassandra repository</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cat</span> <span class="o">&lt;&lt;</span><span class="n">EOF</span><span class="o">&gt;/</span><span class="n">etc</span><span class="o">/</span><span class="n">yum</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">datastax</span><span class="o">.</span><span class="n">repo</span>
+<span class="p">[</span><span class="n">datastax</span><span class="p">]</span>
+<span class="n">name</span> <span class="o">=</span> <span class="n">DataStax</span> <span class="n">Repo</span> <span class="k">for</span> <span class="n">Apache</span> <span class="n">Cassandra</span>
+<span class="n">baseurl</span> <span class="o">=</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">rpm</span><span class="o">.</span><span class="n">datastax</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">community</span>
+<span class="n">enabled</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">gpgcheck</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">gpgkey</span> <span class="o">=</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">rpm</span><span class="o">.</span><span class="n">datastax</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">rpm</span><span class="o">/</span><span class="n">repo_key</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+<p>Add Midonet repository</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cat</span> <span class="o">&lt;&lt;</span><span class="n">EOF</span><span class="o">&gt;/</span><span class="n">etc</span><span class="o">/</span><span class="n">yum</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">midonet</span><span class="o">.</span><span class="n">repo</span>
+<span class="p">[</span><span class="n">midonet</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">MidoNet</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">midonet</span><span class="o">-</span><span class="mf">5.2</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">el7</span><span class="o">/</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">midorepo</span><span class="o">.</span><span class="n">key</span>
+
+<span class="p">[</span><span class="n">midonet</span><span class="o">-</span><span class="n">openstack</span><span class="o">-</span><span class="n">integration</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">MidoNet</span> <span class="n">OpenStack</span> <span class="n">Integration</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">openstack</span><span class="o">-</span><span class="n">mitaka</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">el7</span><span class="o">/</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">midorepo</span><span class="o">.</span><span class="n">key</span>
+
+<span class="p">[</span><span class="n">midonet</span><span class="o">-</span><span class="n">misc</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">MidoNet</span> <span class="mi">3</span><span class="n">rd</span> <span class="n">Party</span> <span class="n">Tools</span> <span class="ow">and</span> <span class="n">Libraries</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">misc</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">el7</span><span class="o">/</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">midorepo</span><span class="o">.</span><span class="n">key</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+<p>Clean repo cache and update packages</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">clean</span> <span class="nb">all</span>
+<span class="n">yum</span> <span class="n">update</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Zookeeper Configuration</strong></div>
+<div class="line">Install Zookeeper, java and dependencies</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">java</span><span class="o">-</span><span class="mf">1.7</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">openjdk</span><span class="o">-</span><span class="n">headless</span> <span class="n">zookeeper</span> <span class="n">zkdump</span> <span class="n">nmap</span><span class="o">-</span><span class="n">ncat</span>
+</pre></div>
+</div>
+<p>Edit zookeeper configuration file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">zookeeper</span><span class="o">/</span><span class="n">zoo</span><span class="o">.</span><span class="n">cfg</span>
+</pre></div>
+</div>
+<p>Add all NSDB nodes at the configuration file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">server</span><span class="o">.</span><span class="mi">1</span><span class="o">=</span><span class="n">nsdb1</span><span class="p">:</span><span class="mi">2888</span><span class="p">:</span><span class="mi">3888</span>
+<span class="n">server</span><span class="o">.</span><span class="mi">2</span><span class="o">=</span><span class="n">nsdb2</span><span class="p">:</span><span class="mi">2888</span><span class="p">:</span><span class="mi">3888</span>
+<span class="n">server</span><span class="o">.</span><span class="mi">3</span><span class="o">=</span><span class="n">nsdb3</span><span class="p">:</span><span class="mi">2888</span><span class="p">:</span><span class="mi">3888</span>
+<span class="n">autopurge</span><span class="o">.</span><span class="n">snapRetainCount</span><span class="o">=</span><span class="mi">10</span>
+<span class="n">autopurge</span><span class="o">.</span><span class="n">purgeInterval</span> <span class="o">=</span><span class="mi">12</span>
+</pre></div>
+</div>
+<p>Create zookeeper folder on which zookeeper will store data, change the
+owner to zookeeper user</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">zookeeper</span><span class="o">/</span><span class="n">data</span>
+<span class="n">chown</span> <span class="n">zookeeper</span><span class="p">:</span><span class="n">zookeeper</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">zookeeper</span><span class="o">/</span><span class="n">data</span>
+</pre></div>
+</div>
+<p>Create myid file at zookeeper data folder, the ID should match with the
+NSDB node number, insert that number as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#NSDB1</span>
+<span class="n">echo</span> <span class="mi">1</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">zookeeper</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">myid</span>
+<span class="c1">#NSDB2</span>
+<span class="n">echo</span> <span class="mi">2</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">zookeeper</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">myid</span>
+<span class="c1">#NSDB3</span>
+<span class="n">echo</span> <span class="mi">3</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">zookeeper</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">myid</span>
+</pre></div>
+</div>
+<p>Create java folder and create a softlink to it</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">java</span><span class="o">/</span><span class="n">default</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span>
+<span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">jvm</span><span class="o">/</span><span class="n">jre</span><span class="o">-</span><span class="mf">1.7</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">openjdk</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">java</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">java</span><span class="o">/</span><span class="n">default</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">java</span>
+</pre></div>
+</div>
+<p>Start and enable Zookeeper service</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">systemctl</span> <span class="n">enable</span> <span class="n">zookeeper</span><span class="o">.</span><span class="n">service</span>
+<span class="n">systemctl</span> <span class="n">start</span> <span class="n">zookeeper</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>Test if zookeeper is working locally</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="n">ruok</span> <span class="o">|</span> <span class="n">nc</span> <span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span> <span class="mi">2181</span>
+<span class="n">imok</span>
+</pre></div>
+</div>
+<p>Test if zookeeper is working at NSDB remote nodes</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="n">stat</span> <span class="o">|</span> <span class="n">nc</span> <span class="n">nsdb3</span> <span class="mi">2181</span>
+
+<span class="n">Zookeeper</span> <span class="n">version</span><span class="p">:</span> <span class="mf">3.4</span><span class="o">.</span><span class="mi">5</span><span class="o">--</span><span class="mi">1</span><span class="p">,</span> <span class="n">built</span> <span class="n">on</span> <span class="mi">02</span><span class="o">/</span><span class="mi">08</span><span class="o">/</span><span class="mi">2013</span> <span class="mi">12</span><span class="p">:</span><span class="mi">25</span> <span class="n">GMT</span>
+<span class="n">Clients</span><span class="p">:</span>
+ <span class="o">/</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">100.172</span><span class="p">:</span><span class="mi">35306</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">queued</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">recved</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">sent</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">Latency</span> <span class="nb">min</span><span class="o">/</span><span class="n">avg</span><span class="o">/</span><span class="nb">max</span><span class="p">:</span> <span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span>
+<span class="n">Received</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">Sent</span><span class="p">:</span> <span class="mi">0</span>
+<span class="n">Connections</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">Outstanding</span><span class="p">:</span> <span class="mi">0</span>
+<span class="n">Zxid</span><span class="p">:</span> <span class="mh">0x100000000</span>
+<span class="n">Mode</span><span class="p">:</span> <span class="n">follower</span>
+<span class="n">Node</span> <span class="n">count</span><span class="p">:</span> <span class="mi">4</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Cassandra configuration</strong></div>
+<div class="line">Install Java and Cassandra dependencies</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">java</span><span class="o">-</span><span class="mf">1.8</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">openjdk</span><span class="o">-</span><span class="n">headless</span> <span class="n">dsc22</span>
+</pre></div>
+</div>
+<p>Edit cassandra yaml file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">cassandra</span><span class="o">/</span><span class="n">conf</span><span class="o">/</span><span class="n">cassandra</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Change cluster_name to midonet</div>
+<div class="line">Configure seed_provider seeds to match all NSDB nodes</div>
+<div class="line">Configure listen_address and rpc_address to match the hostname of the
+self node</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cluster_name</span><span class="p">:</span> <span class="s1">&#39;midonet&#39;</span>
+<span class="o">....</span>
+<span class="n">seed_provider</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">class_name</span><span class="p">:</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">cassandra</span><span class="o">.</span><span class="n">locator</span><span class="o">.</span><span class="n">SimpleSeedProvider</span>
+      <span class="n">parameters</span><span class="p">:</span>
+          <span class="o">-</span> <span class="n">seeds</span><span class="p">:</span> <span class="s2">&quot;nsdb1,nsdb2,nsdb3&quot;</span>
+
+<span class="n">listen_address</span><span class="p">:</span> <span class="n">nsdb1</span>
+<span class="n">rpc_address</span><span class="p">:</span> <span class="n">nsdb1</span>
+</pre></div>
+</div>
+<p>Edit cassandra’s init script in order to fix a bug in the init script</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">init</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">cassandra</span>
+</pre></div>
+</div>
+<p>Add the next two lines after #Casandra startup</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>case &quot;$1&quot; in
+    start)
+        # Cassandra startup
+        echo -n &quot;Starting Cassandra: &quot;
+        mkdir -p /var/run/cassandra #Add this line
+        chown cassandra:cassandra /var/run/cassandra #Add this line
+        su $CASSANDRA_OWNR -c &quot;$CASSANDRA_PROG -p $pid_file&quot; &gt; $log_file 2&gt;&amp;1
+        retval=$?
+        [ $retval -eq 0 ] &amp;&amp; touch $lock_file
+        echo &quot;OK&quot;
+        ;;
+</pre></div>
+</div>
+<p>Start and enable Cassandra service</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">systemctl</span> <span class="n">enable</span> <span class="n">cassandra</span><span class="o">.</span><span class="n">service</span>
+<span class="n">systemctl</span> <span class="n">start</span> <span class="n">cassandra</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>Check if all NSDB nodes join the cluster</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nodetool</span> <span class="o">--</span><span class="n">host</span> <span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span> <span class="n">status</span>
+<span class="n">Datacenter</span><span class="p">:</span> <span class="n">datacenter1</span>
+<span class="o">=======================</span>
+<span class="n">Status</span><span class="o">=</span><span class="n">Up</span><span class="o">/</span><span class="n">Down</span>
+<span class="o">|/</span> <span class="n">State</span><span class="o">=</span><span class="n">Normal</span><span class="o">/</span><span class="n">Leaving</span><span class="o">/</span><span class="n">Joining</span><span class="o">/</span><span class="n">Moving</span>
+<span class="o">--</span>  <span class="n">Address</span>          <span class="n">Load</span>       <span class="n">Tokens</span>       <span class="n">Owns</span> <span class="p">(</span><span class="n">effective</span><span class="p">)</span>  <span class="n">Host</span> <span class="n">ID</span>                               <span class="n">Rack</span>
+<span class="n">UN</span>  <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.172</span>  <span class="mf">89.1</span> <span class="n">KB</span>    <span class="mi">256</span>          <span class="mf">70.8</span><span class="o">%</span>             <span class="mi">3</span><span class="n">f1ecedd</span><span class="o">-</span><span class="mi">8</span><span class="n">caf</span><span class="o">-</span><span class="mi">4938</span><span class="o">-</span><span class="mi">84</span><span class="n">ad</span><span class="o">-</span><span class="mi">8614</span><span class="n">d2134557</span>  <span class="n">rack1</span>
+<span class="n">UN</span>  <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.224</span>  <span class="mf">67.64</span> <span class="n">KB</span>   <span class="mi">256</span>          <span class="mf">60.7</span><span class="o">%</span>             <span class="n">cb36c999</span><span class="o">-</span><span class="n">a6e1</span><span class="o">-</span><span class="mi">4</span><span class="n">d98</span><span class="o">-</span><span class="n">a4dd</span><span class="o">-</span><span class="n">d4230b41df08</span>  <span class="n">rack1</span>
+<span class="n">UN</span>  <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.195</span>  <span class="mf">25.78</span> <span class="n">KB</span>   <span class="mi">256</span>          <span class="mf">68.6</span><span class="o">%</span>             <span class="mi">4758</span><span class="n">bae8</span><span class="o">-</span><span class="mi">9300</span><span class="o">-</span><span class="mf">4e57</span><span class="o">-</span><span class="mi">9</span><span class="n">a61</span><span class="o">-</span><span class="mi">5</span><span class="n">b1107082964</span>  <span class="n">rack1</span>
+</pre></div>
+</div>
+<p><strong>Configure OpenStack Controller Nodes (On which Neutron Server is
+running)</strong></p>
+<p>Disable SElinux</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">setenforce</span> <span class="mi">0</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s1">&#39;s/SELINUX=enforcing/SELINUX=permissive/g&#39;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">sysconfig</span><span class="o">/</span><span class="n">selinux</span>
+</pre></div>
+</div>
+<p>Install OpenStack Mitaka release repository</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">centos</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">openstack</span><span class="o">-</span><span class="n">mitaka</span>
+</pre></div>
+</div>
+<p>Add Midonet Repository</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cat</span> <span class="o">&lt;&lt;</span><span class="n">EOF</span><span class="o">&gt;/</span><span class="n">etc</span><span class="o">/</span><span class="n">yum</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">midonet</span><span class="o">.</span><span class="n">repo</span>
+<span class="p">[</span><span class="n">midonet</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">MidoNet</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">midonet</span><span class="o">-</span><span class="mf">5.2</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">el7</span><span class="o">/</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">midorepo</span><span class="o">.</span><span class="n">key</span>
+
+<span class="p">[</span><span class="n">midonet</span><span class="o">-</span><span class="n">openstack</span><span class="o">-</span><span class="n">integration</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">MidoNet</span> <span class="n">OpenStack</span> <span class="n">Integration</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">openstack</span><span class="o">-</span><span class="n">mitaka</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">el7</span><span class="o">/</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">midorepo</span><span class="o">.</span><span class="n">key</span>
+
+<span class="p">[</span><span class="n">midonet</span><span class="o">-</span><span class="n">misc</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">MidoNet</span> <span class="mi">3</span><span class="n">rd</span> <span class="n">Party</span> <span class="n">Tools</span> <span class="ow">and</span> <span class="n">Libraries</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">misc</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">el7</span><span class="o">/</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">midorepo</span><span class="o">.</span><span class="n">key</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+<p>Clean repos cache and update the system</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">clean</span> <span class="nb">all</span>
+<span class="n">yum</span> <span class="n">update</span>
+</pre></div>
+</div>
+<p>Create an OpenStack user for MidoNet, change the password to match your
+own</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># openstack user create --password temporal midonet</span>
+<span class="o">+----------+----------------------------------+</span>
+<span class="o">|</span> <span class="n">Field</span>    <span class="o">|</span> <span class="n">Value</span>                            <span class="o">|</span>
+<span class="o">+----------+----------------------------------+</span>
+<span class="o">|</span> <span class="n">email</span>    <span class="o">|</span> <span class="kc">None</span>                             <span class="o">|</span>
+<span class="o">|</span> <span class="n">enabled</span>  <span class="o">|</span> <span class="kc">True</span>                             <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>       <span class="o">|</span> <span class="n">ac25c5a77e7c4e4598ccadea89e09969</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>     <span class="o">|</span> <span class="n">midonet</span>                          <span class="o">|</span>
+<span class="o">|</span> <span class="n">username</span> <span class="o">|</span> <span class="n">midonet</span>                          <span class="o">|</span>
+<span class="o">+----------+----------------------------------+</span>
+</pre></div>
+</div>
+<p>Add admin role at tenant services to Midonet user</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># openstack role add --project services --user midonet admin</span>
+<span class="o">+-----------+----------------------------------+</span>
+<span class="o">|</span> <span class="n">Field</span>     <span class="o">|</span> <span class="n">Value</span>                            <span class="o">|</span>
+<span class="o">+-----------+----------------------------------+</span>
+<span class="o">|</span> <span class="n">domain_id</span> <span class="o">|</span> <span class="kc">None</span>                             <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>        <span class="o">|</span> <span class="n">bca2c6e1f3da42b0ba82aee401398a8a</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>      <span class="o">|</span> <span class="n">admin</span>                            <span class="o">|</span>
+<span class="o">+-----------+----------------------------------+</span>
+</pre></div>
+</div>
+<p>Create MidoNet service at Keystone</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># openstack service create --name midonet --description &quot;MidoNet API Service&quot; midonet</span>
+<span class="o">+-------------+----------------------------------+</span>
+<span class="o">|</span> <span class="n">Field</span>       <span class="o">|</span> <span class="n">Value</span>                            <span class="o">|</span>
+<span class="o">+-------------+----------------------------------+</span>
+<span class="o">|</span> <span class="n">description</span> <span class="o">|</span> <span class="n">MidoNet</span> <span class="n">API</span> <span class="n">Service</span>              <span class="o">|</span>
+<span class="o">|</span> <span class="n">enabled</span>     <span class="o">|</span> <span class="kc">True</span>                             <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>          <span class="o">|</span> <span class="mi">499059</span><span class="n">c4a3a040cfb632411408a2be4c</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>        <span class="o">|</span> <span class="n">midonet</span>                          <span class="o">|</span>
+<span class="o">|</span> <span class="nb">type</span>        <span class="o">|</span> <span class="n">midonet</span>                          <span class="o">|</span>
+<span class="o">+-------------+----------------------------------+</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Clean up neutron server</strong></div>
+<div class="line">Stop neutron services</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">openstack</span><span class="o">-</span><span class="n">service</span> <span class="n">stop</span> <span class="n">neutron</span>
+</pre></div>
+</div>
+<p>Remove neutron database and recreate it again</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mysql</span> <span class="o">-</span><span class="n">u</span> <span class="n">root</span> <span class="o">-</span><span class="n">p</span>
+<span class="n">DROP</span> <span class="n">DATABASE</span> <span class="n">neutron</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">157</span> <span class="n">rows</span> <span class="n">affected</span> <span class="p">(</span><span class="mf">11.50</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="n">MariaDB</span> <span class="p">[(</span><span class="n">none</span><span class="p">)]</span><span class="o">&gt;</span> <span class="n">CREATE</span> <span class="n">DATABASE</span> <span class="n">neutron</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">1</span> <span class="n">row</span> <span class="n">affected</span> <span class="p">(</span><span class="mf">0.00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="n">MariaDB</span> <span class="p">[(</span><span class="n">none</span><span class="p">)]</span><span class="o">&gt;</span> <span class="n">GRANT</span> <span class="n">ALL</span> <span class="n">PRIVILEGES</span> <span class="n">ON</span> <span class="n">neutron</span><span class="o">.*</span> <span class="n">TO</span> <span class="s1">&#39;neutron&#39;</span><span class="o">@</span><span class="s1">&#39;localhost&#39;</span> <span class="n">IDENTIFIED</span> <span class="n">BY</span> <span class="s1">&#39;ab4f81b1040a495e&#39;</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">0</span> <span class="n">rows</span> <span class="n">affected</span> <span class="p">(</span><span class="mf">0.00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="n">MariaDB</span> <span class="p">[(</span><span class="n">none</span><span class="p">)]</span><span class="o">&gt;</span> <span class="n">GRANT</span> <span class="n">ALL</span> <span class="n">PRIVILEGES</span> <span class="n">ON</span> <span class="n">neutron</span><span class="o">.*</span> <span class="n">TO</span> <span class="s1">&#39;neutron&#39;</span><span class="o">@</span><span class="s1">&#39;%&#39;</span> <span class="n">IDENTIFIED</span> <span class="n">BY</span> <span class="s1">&#39;ab4f81b1040a495e&#39;</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">0</span> <span class="n">rows</span> <span class="n">affected</span> <span class="p">(</span><span class="mf">0.00</span> <span class="n">sec</span><span class="p">)</span>
+<span class="n">MariaDB</span> <span class="p">[(</span><span class="n">none</span><span class="p">)]</span><span class="o">&gt;</span> <span class="n">exit</span>
+<span class="n">Bye</span>
+</pre></div>
+</div>
+<p>Remove plugin.ini symbolic link to ml2_conf.ini</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#rm /etc/neutron/plugin.ini
+rm: remove symbolic link ‘/etc/neutron/plugin.ini’? y
+</pre></div>
+</div>
+<p>Remove br-tun tunnel used by neutron in all the nodes</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ovs</span><span class="o">-</span><span class="n">vsctl</span> <span class="k">del</span><span class="o">-</span><span class="n">br</span> <span class="n">br</span><span class="o">-</span><span class="n">tun</span>
+</pre></div>
+</div>
+<p>Install MidoNet packages and remove ml2 package</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">openstack</span><span class="o">-</span><span class="n">neutron</span> <span class="n">python</span><span class="o">-</span><span class="n">networking</span><span class="o">-</span><span class="n">midonet</span> <span class="n">python</span><span class="o">-</span><span class="n">neutronclient</span>
+<span class="n">yum</span> <span class="n">remove</span> <span class="n">openstack</span><span class="o">-</span><span class="n">neutron</span><span class="o">-</span><span class="n">ml2</span>
+</pre></div>
+</div>
+<p>Make a backup of neutron configuration file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">neutron</span><span class="o">/</span><span class="n">neutron</span><span class="o">.</span><span class="n">conf</span> <span class="n">neutron</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">bak</span>
+</pre></div>
+</div>
+<p>Edit neutron configuration file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">neutron</span><span class="o">/</span><span class="n">neutron</span><span class="o">.</span><span class="n">conf</span>
+</pre></div>
+</div>
+<p>Most of the options are already configured by our older neutron
+configuration, change the ones who apply to match this configuration</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">DEFAULT</span><span class="p">]</span>
+<span class="n">core_plugin</span> <span class="o">=</span> <span class="n">midonet</span><span class="o">.</span><span class="n">neutron</span><span class="o">.</span><span class="n">plugin_v2</span><span class="o">.</span><span class="n">MidonetPluginV2</span>
+<span class="n">service_plugins</span> <span class="o">=</span> <span class="n">midonet</span><span class="o">.</span><span class="n">neutron</span><span class="o">.</span><span class="n">services</span><span class="o">.</span><span class="n">l3</span><span class="o">.</span><span class="n">l3_midonet</span><span class="o">.</span><span class="n">MidonetL3ServicePlugin</span>
+<span class="n">dhcp_agent_notification</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">allow_overlapping_ips</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">rpc_backend</span> <span class="o">=</span> <span class="n">rabbit</span>
+<span class="n">auth_strategy</span> <span class="o">=</span> <span class="n">keystone</span>
+<span class="n">notify_nova_on_port_status_changes</span> <span class="o">=</span> <span class="n">true</span>
+<span class="n">notify_nova_on_port_data_changes</span> <span class="o">=</span> <span class="n">true</span>
+<span class="n">nova_url</span> <span class="o">=</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">controller</span><span class="p">:</span><span class="mi">8774</span><span class="o">/</span><span class="n">v2</span>
+
+<span class="p">[</span><span class="n">database</span><span class="p">]</span>
+<span class="n">connection</span> <span class="o">=</span> <span class="n">mysql</span><span class="o">+</span><span class="n">pymysql</span><span class="p">:</span><span class="o">//</span><span class="n">neutron</span><span class="p">:</span><span class="n">ab4f81b1040a495e</span><span class="nd">@controller</span><span class="o">/</span><span class="n">neutron</span>
+
+<span class="p">[</span><span class="n">oslo_messaging_rabbit</span><span class="p">]</span>
+<span class="n">rabbit_host</span> <span class="o">=</span> <span class="n">controller</span>
+<span class="n">rabbit_userid</span> <span class="o">=</span> <span class="n">guest</span>
+<span class="n">rabbit_password</span> <span class="o">=</span> <span class="n">guest</span>
+
+<span class="p">[</span><span class="n">keystone_authtoken</span><span class="p">]</span>
+<span class="n">auth_uri</span> <span class="o">=</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">controller</span><span class="p">:</span><span class="mi">5000</span><span class="o">/</span><span class="n">v2</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">admin_user</span><span class="o">=</span><span class="n">neutron</span>
+<span class="n">admin_tenant_name</span><span class="o">=</span><span class="n">services</span>
+<span class="n">identity_uri</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">controller</span><span class="p">:</span><span class="mi">35357</span>
+<span class="n">admin_password</span><span class="o">=</span><span class="n">d88f0bd060d64c33</span>
+
+<span class="p">[</span><span class="n">nova</span><span class="p">]</span>
+<span class="n">region_name</span> <span class="o">=</span> <span class="n">RegionOne</span>
+<span class="n">auth_url</span> <span class="o">=</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">controller</span><span class="p">:</span><span class="mi">35357</span>
+<span class="n">auth_type</span> <span class="o">=</span> <span class="n">password</span>
+<span class="n">password</span> <span class="o">=</span> <span class="mi">9</span><span class="n">ca36d15e4824d93</span>
+<span class="n">project_domain_id</span> <span class="o">=</span> <span class="n">default</span>
+<span class="n">project_name</span> <span class="o">=</span> <span class="n">services</span>
+<span class="n">tenant_name</span> <span class="o">=</span> <span class="n">services</span>
+<span class="n">user_domain_id</span> <span class="o">=</span> <span class="n">default</span>
+<span class="n">username</span> <span class="o">=</span> <span class="n">nova</span>
+
+<span class="p">[</span><span class="n">oslo_concurrency</span><span class="p">]</span>
+<span class="n">lock_path</span> <span class="o">=</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">neutron</span><span class="o">/</span><span class="n">tmp</span>
+</pre></div>
+</div>
+<p>At my deployment these are the options I had to change to configure
+midonet</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>diff /etc/neutron/neutron.conf neutron.conf.bak
+33c33
+&lt; core_plugin = midonet.neutron.plugin_v2.MidonetPluginV2
+---
+&gt; core_plugin = neutron.plugins.ml2.plugin.Ml2Plugin
+37c37
+&lt; service_plugins = midonet.neutron.services.l3.l3_midonet.MidonetL3ServicePlugin
+---
+&gt; service_plugins =router
+120c120
+&lt; dhcp_agent_notification = False
+---
+&gt; #dhcp_agent_notification = true
+1087c1087,1088
+&lt; lock_path = /var/lib/neutron/tmp
+---
+&gt; lock_path = $state_path/lock
+&gt;
+</pre></div>
+</div>
+<p>Create midonet plugins folder</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">neutron</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">midonet</span>
+</pre></div>
+</div>
+<p>Create a file called midonet.ini</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">neutron</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">midonet</span><span class="o">/</span><span class="n">midonet</span><span class="o">.</span><span class="n">ini</span>
+</pre></div>
+</div>
+<p>Configure midonet.ini file to match your own configuration options</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">MIDONET</span><span class="p">]</span>
+<span class="c1"># MidoNet API URL</span>
+<span class="n">midonet_uri</span> <span class="o">=</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">controller</span><span class="p">:</span><span class="mi">8181</span><span class="o">/</span><span class="n">midonet</span><span class="o">-</span><span class="n">api</span>
+<span class="c1"># MidoNet administrative user in Keystone</span>
+<span class="n">username</span> <span class="o">=</span> <span class="n">midonet</span>
+<span class="n">password</span> <span class="o">=</span> <span class="n">temporal</span>
+<span class="c1"># MidoNet administrative user&#39;s tenant</span>
+<span class="n">project_id</span> <span class="o">=</span> <span class="n">services</span>
+</pre></div>
+</div>
+<p>Create a symbolic link from midonet.ini to plugin.ini</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">neutron</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">midonet</span><span class="o">/</span><span class="n">midonet</span><span class="o">.</span><span class="n">ini</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">neutron</span><span class="o">/</span><span class="n">plugin</span><span class="o">.</span><span class="n">ini</span>
+</pre></div>
+</div>
+<p>Sync and populate database tables with Midonet plugin</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">su</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/midonet/midonet.ini upgrade head&quot;</span> <span class="n">neutron</span>
+<span class="n">su</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;neutron-db-manage --subproject networking-midonet upgrade head&quot;</span> <span class="n">neutron</span>
+</pre></div>
+</div>
+<p>Restart nova api and neutron server services</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">systemctl</span> <span class="n">restart</span> <span class="n">openstack</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">api</span><span class="o">.</span><span class="n">service</span>
+<span class="n">systemctl</span> <span class="n">restart</span> <span class="n">neutron</span><span class="o">-</span><span class="n">server</span>
+</pre></div>
+</div>
+<p>Install midonet cluster package</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">midonet</span><span class="o">-</span><span class="n">cluster</span>
+</pre></div>
+</div>
+<p>Configure midonet.conf file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">midonet</span><span class="o">/</span><span class="n">midonet</span><span class="o">.</span><span class="n">conf</span>
+</pre></div>
+</div>
+<p>Add all NSDB nodes at zookeeper_hosts</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">zookeeper</span><span class="p">]</span>
+<span class="n">zookeeper_hosts</span> <span class="o">=</span> <span class="n">nsdb1</span><span class="p">:</span><span class="mi">2181</span><span class="p">,</span><span class="n">nsdb2</span><span class="p">:</span><span class="mi">2181</span><span class="p">,</span><span class="n">nsdb3</span><span class="p">:</span><span class="mi">2181</span>
+</pre></div>
+</div>
+<p>Configure midonet to make use of NSDB nodes as Zookeeper and cassandra
+hosts</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cat</span> <span class="o">&lt;&lt;</span> <span class="n">EOF</span> <span class="o">|</span> <span class="n">mn</span><span class="o">-</span><span class="n">conf</span> <span class="nb">set</span> <span class="o">-</span><span class="n">t</span> <span class="n">default</span>
+<span class="n">zookeeper</span> <span class="p">{</span>
+    <span class="n">zookeeper_hosts</span> <span class="o">=</span> <span class="s2">&quot;nsdb1:2181,nsdb2:2181,nsdb3:2181&quot;</span>
+<span class="p">}</span>
+
+<span class="n">cassandra</span> <span class="p">{</span>
+    <span class="n">servers</span> <span class="o">=</span> <span class="s2">&quot;nsdb1,nsdb2,nsdb3&quot;</span>
+<span class="p">}</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+<p>Set cassandra replication factor to 3</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="s2">&quot;cassandra.replication_factor : 3&quot;</span> <span class="o">|</span> <span class="n">mn</span><span class="o">-</span><span class="n">conf</span> <span class="nb">set</span> <span class="o">-</span><span class="n">t</span> <span class="n">default</span>
+</pre></div>
+</div>
+<p>Grab your admin token</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#egrep ^admin_token /etc/keystone/keystone.conf</span>
+<span class="n">admin_token</span> <span class="o">=</span> <span class="mi">7</span><span class="n">b84d89b32c34b71a697eb1a270807ab</span>
+</pre></div>
+</div>
+<p>Configure Midonet to auth with keystone</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cat</span> <span class="o">&lt;&lt;</span> <span class="n">EOF</span> <span class="o">|</span> <span class="n">mn</span><span class="o">-</span><span class="n">conf</span> <span class="nb">set</span> <span class="o">-</span><span class="n">t</span> <span class="n">default</span>
+<span class="n">cluster</span><span class="o">.</span><span class="n">auth</span> <span class="p">{</span>
+    <span class="n">provider_class</span> <span class="o">=</span> <span class="s2">&quot;org.midonet.cluster.auth.keystone.KeystoneService&quot;</span>
+    <span class="n">admin_role</span> <span class="o">=</span> <span class="s2">&quot;admin&quot;</span>
+    <span class="n">keystone</span><span class="o">.</span><span class="n">tenant_name</span> <span class="o">=</span> <span class="s2">&quot;admin&quot;</span>
+    <span class="n">keystone</span><span class="o">.</span><span class="n">admin_token</span> <span class="o">=</span> <span class="s2">&quot;7b84d89b32c34b71a697eb1a270807ab&quot;</span>
+    <span class="n">keystone</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">controller</span>
+    <span class="n">keystone</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="mi">35357</span>
+<span class="p">}</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+<p>Start and enable midonet cluster service</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">systemctl</span> <span class="n">enable</span> <span class="n">midonet</span><span class="o">-</span><span class="n">cluster</span><span class="o">.</span><span class="n">service</span>
+<span class="n">systemctl</span> <span class="n">start</span> <span class="n">midonet</span><span class="o">-</span><span class="n">cluster</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>Install midonet CLI</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python</span><span class="o">-</span><span class="n">midonetclient</span>
+</pre></div>
+</div>
+<p>Create a file at you home directory with midonet auth info</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#vi ~/.midonetrc</span>
+
+<span class="p">[</span><span class="n">cli</span><span class="p">]</span>
+<span class="n">api_url</span> <span class="o">=</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">controller</span><span class="p">:</span><span class="mi">8181</span><span class="o">/</span><span class="n">midonet</span><span class="o">-</span><span class="n">api</span>
+<span class="n">username</span> <span class="o">=</span> <span class="n">admin</span>
+<span class="n">password</span> <span class="o">=</span> <span class="n">temporal</span>
+<span class="n">project_id</span> <span class="o">=</span> <span class="n">admin</span>
+</pre></div>
+</div>
+<p><strong>Configure Compute nodes</strong></p>
+<p>Disable SElinux</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">setenforce</span> <span class="mi">0</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s1">&#39;s/SELINUX=enforcing/SELINUX=permissive/g&#39;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">sysconfig</span><span class="o">/</span><span class="n">selinux</span>
+</pre></div>
+</div>
+<p>Install OpenStack Mitaka release repository</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">centos</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">openstack</span><span class="o">-</span><span class="n">mitaka</span>
+</pre></div>
+</div>
+<p>Add Midonet repository</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cat</span> <span class="o">&lt;&lt;</span><span class="n">EOF</span><span class="o">&gt;/</span><span class="n">etc</span><span class="o">/</span><span class="n">yum</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">midonet</span><span class="o">.</span><span class="n">repo</span>
+<span class="p">[</span><span class="n">midonet</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">MidoNet</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">midonet</span><span class="o">-</span><span class="mf">5.2</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">el7</span><span class="o">/</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">midorepo</span><span class="o">.</span><span class="n">key</span>
+
+<span class="p">[</span><span class="n">midonet</span><span class="o">-</span><span class="n">openstack</span><span class="o">-</span><span class="n">integration</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">MidoNet</span> <span class="n">OpenStack</span> <span class="n">Integration</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">openstack</span><span class="o">-</span><span class="n">mitaka</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">el7</span><span class="o">/</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">midorepo</span><span class="o">.</span><span class="n">key</span>
+
+<span class="p">[</span><span class="n">midonet</span><span class="o">-</span><span class="n">misc</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">MidoNet</span> <span class="mi">3</span><span class="n">rd</span> <span class="n">Party</span> <span class="n">Tools</span> <span class="ow">and</span> <span class="n">Libraries</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">misc</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">el7</span><span class="o">/</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">midorepo</span><span class="o">.</span><span class="n">key</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+<p>Clean repos cache and update the system</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">clean</span> <span class="nb">all</span>
+<span class="n">yum</span> <span class="n">update</span>
+</pre></div>
+</div>
+<p>Edit qemu.conf</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">libvirt</span><span class="o">/</span><span class="n">qemu</span><span class="o">.</span><span class="n">conf</span>
+</pre></div>
+</div>
+<p>Configure with the following options, by default all these options are
+commented, you can paste it all wherever you want</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">user</span> <span class="o">=</span> <span class="s2">&quot;root&quot;</span>
+<span class="n">group</span> <span class="o">=</span> <span class="s2">&quot;root&quot;</span>
+
+<span class="n">cgroup_device_acl</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;/dev/null&quot;</span><span class="p">,</span> <span class="s2">&quot;/dev/full&quot;</span><span class="p">,</span> <span class="s2">&quot;/dev/zero&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;/dev/random&quot;</span><span class="p">,</span> <span class="s2">&quot;/dev/urandom&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;/dev/ptmx&quot;</span><span class="p">,</span> <span class="s2">&quot;/dev/kvm&quot;</span><span class="p">,</span> <span class="s2">&quot;/dev/kqemu&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;/dev/rtc&quot;</span><span class="p">,</span><span class="s2">&quot;/dev/hpet&quot;</span><span class="p">,</span> <span class="s2">&quot;/dev/vfio/vfio&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;/dev/net/tun&quot;</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>Restart libvirtd service</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">systemctl</span> <span class="n">restart</span> <span class="n">libvirtd</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>Install nova-network package</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">openstack</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">network</span>
+</pre></div>
+</div>
+<p>Disable Nova Network service and restart Nova compute service</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">systemctl</span> <span class="n">disable</span> <span class="n">openstack</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">network</span><span class="o">.</span><span class="n">service</span>
+<span class="n">systemctl</span> <span class="n">restart</span> <span class="n">openstack</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">compute</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>Install Midolman agent and java packages</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">java</span><span class="o">-</span><span class="mf">1.8</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">openjdk</span><span class="o">-</span><span class="n">headless</span> <span class="n">midolman</span>
+</pre></div>
+</div>
+<p>Configure midolman.conf</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">midolman</span><span class="o">/</span><span class="n">midolman</span><span class="o">.</span><span class="n">conf</span>
+</pre></div>
+</div>
+<p>Add all nsdb nodes as zookeeper hosts</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">zookeeper</span><span class="p">]</span>
+<span class="n">zookeeper_hosts</span> <span class="o">=</span> <span class="n">nsdb1</span><span class="p">:</span><span class="mi">2181</span><span class="p">,</span><span class="n">nsdb2</span><span class="p">:</span><span class="mi">2181</span><span class="p">,</span><span class="n">nsdb3</span><span class="p">:</span><span class="mi">2181</span>
+</pre></div>
+</div>
+<p>Configure each compute node with an appropiate flavor located at
+/etc/midolman/ folder, the have different hardware resources configured,
+use the one that better match your compute host capabilities</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mn</span><span class="o">-</span><span class="n">conf</span> <span class="n">template</span><span class="o">-</span><span class="nb">set</span> <span class="o">-</span><span class="n">h</span> <span class="n">local</span> <span class="o">-</span><span class="n">t</span> <span class="n">agent</span><span class="o">-</span><span class="n">compute</span><span class="o">-</span><span class="n">medium</span>
+<span class="n">cp</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">midolman</span><span class="o">/</span><span class="n">midolman</span><span class="o">-</span><span class="n">env</span><span class="o">.</span><span class="n">sh</span><span class="o">.</span><span class="n">compute</span><span class="o">.</span><span class="n">medium</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">midolman</span><span class="o">/</span><span class="n">midolman</span><span class="o">-</span><span class="n">env</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>Configure metadata, issue the following commands only once, it will
+automatically populate the configuration to all midonet agents</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="s2">&quot;agent.openstack.metadata.nova_metadata_url : </span><span class="se">\&quot;</span><span class="s2">http://controller:8775</span><span class="se">\&quot;</span><span class="s2">&quot;</span> <span class="o">|</span> <span class="n">mn</span><span class="o">-</span><span class="n">conf</span> <span class="nb">set</span> <span class="o">-</span><span class="n">t</span> <span class="n">default</span>
+<span class="n">echo</span> <span class="s2">&quot;agent.openstack.metadata.shared_secret : 2bfeb930a90d435d&quot;</span> <span class="o">|</span> <span class="n">mn</span><span class="o">-</span><span class="n">conf</span> <span class="nb">set</span> <span class="o">-</span><span class="n">t</span> <span class="n">default</span>
+<span class="n">echo</span> <span class="s2">&quot;agent.openstack.metadata.enabled : true&quot;</span> <span class="o">|</span> <span class="n">mn</span><span class="o">-</span><span class="n">conf</span> <span class="nb">set</span> <span class="o">-</span><span class="n">t</span> <span class="n">default</span>
+</pre></div>
+</div>
+<p>Allow metadata trafic at iptables</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">iptables</span> <span class="o">-</span><span class="n">I</span> <span class="n">INPUT</span> <span class="mi">1</span> <span class="o">-</span><span class="n">i</span> <span class="n">metadata</span> <span class="o">-</span><span class="n">j</span> <span class="n">ACCEPT</span>
+</pre></div>
+</div>
+<p>Remove br-tun bridge</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ovs</span><span class="o">-</span><span class="n">vsctl</span> <span class="k">del</span><span class="o">-</span><span class="n">br</span> <span class="n">br</span><span class="o">-</span><span class="n">tun</span>
+</pre></div>
+</div>
+<p>Start and enable midolman agent service</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">systemctl</span> <span class="n">enable</span> <span class="n">midolman</span><span class="o">.</span><span class="n">service</span>
+<span class="n">systemctl</span> <span class="n">start</span> <span class="n">midolman</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p><strong>Gateway nodes configuration</strong></p>
+<p>Disable SElinux</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">setenforce</span> <span class="mi">0</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s1">&#39;s/SELINUX=enforcing/SELINUX=permissive/g&#39;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">sysconfig</span><span class="o">/</span><span class="n">selinux</span>
+</pre></div>
+</div>
+<p>Install OpenStack Mitaka release repository</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">centos</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">openstack</span><span class="o">-</span><span class="n">mitaka</span>
+</pre></div>
+</div>
+<p>Add Midonet repository</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cat</span> <span class="o">&lt;&lt;</span><span class="n">EOF</span><span class="o">&gt;/</span><span class="n">etc</span><span class="o">/</span><span class="n">yum</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">midonet</span><span class="o">.</span><span class="n">repo</span>
+<span class="p">[</span><span class="n">midonet</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">MidoNet</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">midonet</span><span class="o">-</span><span class="mf">5.2</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">el7</span><span class="o">/</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">midorepo</span><span class="o">.</span><span class="n">key</span>
+
+<span class="p">[</span><span class="n">midonet</span><span class="o">-</span><span class="n">openstack</span><span class="o">-</span><span class="n">integration</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">MidoNet</span> <span class="n">OpenStack</span> <span class="n">Integration</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">openstack</span><span class="o">-</span><span class="n">mitaka</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">el7</span><span class="o">/</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">midorepo</span><span class="o">.</span><span class="n">key</span>
+
+<span class="p">[</span><span class="n">midonet</span><span class="o">-</span><span class="n">misc</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">MidoNet</span> <span class="mi">3</span><span class="n">rd</span> <span class="n">Party</span> <span class="n">Tools</span> <span class="ow">and</span> <span class="n">Libraries</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">misc</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">el7</span><span class="o">/</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">builds</span><span class="o">.</span><span class="n">midonet</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">midorepo</span><span class="o">.</span><span class="n">key</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+<p>Clean repos cache and update the system</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">clean</span> <span class="nb">all</span>
+<span class="n">yum</span> <span class="n">update</span>
+</pre></div>
+</div>
+<p>Install Midolman agent and java packages</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">java</span><span class="o">-</span><span class="mf">1.8</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">openjdk</span><span class="o">-</span><span class="n">headless</span> <span class="n">midolman</span>
+</pre></div>
+</div>
+<p>Configure midolman.conf</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">midolman</span><span class="o">/</span><span class="n">midolman</span><span class="o">.</span><span class="n">conf</span>
+</pre></div>
+</div>
+<p>Add all nsdb nodes as zookeeper hosts</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">zookeeper</span><span class="p">]</span>
+<span class="n">zookeeper_hosts</span> <span class="o">=</span> <span class="n">nsdb1</span><span class="p">:</span><span class="mi">2181</span><span class="p">,</span><span class="n">nsdb2</span><span class="p">:</span><span class="mi">2181</span><span class="p">,</span><span class="n">nsdb3</span><span class="p">:</span><span class="mi">2181</span>
+</pre></div>
+</div>
+<p>Configure each gateway node with an appropiate flavor located at
+/etc/midolman/ folder, the have different hardware resources configured,
+use the one that better match your gateway host capabilities</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mn</span><span class="o">-</span><span class="n">conf</span> <span class="n">template</span><span class="o">-</span><span class="nb">set</span> <span class="o">-</span><span class="n">h</span> <span class="n">local</span> <span class="o">-</span><span class="n">t</span> <span class="n">agent</span><span class="o">-</span><span class="n">gateway</span><span class="o">-</span><span class="n">medium</span>
+<span class="n">cp</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">midolman</span><span class="o">/</span><span class="n">midolman</span><span class="o">-</span><span class="n">env</span><span class="o">.</span><span class="n">sh</span><span class="o">.</span><span class="n">gateway</span><span class="o">.</span><span class="n">medium</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">midolman</span><span class="o">/</span><span class="n">midolman</span><span class="o">-</span><span class="n">env</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>Grab the metadata shared secret located at nova.conf at any of your nova
+nodes</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># egrep ^metadata_proxy_shared_secret /etc/nova/nova.conf</span>
+<span class="n">metadata_proxy_shared_secret</span> <span class="o">=</span><span class="mi">2</span><span class="n">bfeb930a90d435d</span>
+</pre></div>
+</div>
+<p>Allow metadata trafic at iptables</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">iptables</span> <span class="o">-</span><span class="n">I</span> <span class="n">INPUT</span> <span class="mi">1</span> <span class="o">-</span><span class="n">i</span> <span class="n">metadata</span> <span class="o">-</span><span class="n">j</span> <span class="n">ACCEPT</span>
+</pre></div>
+</div>
+<p>Start and enable midolman agent service</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">systemctl</span> <span class="n">enable</span> <span class="n">midolman</span><span class="o">.</span><span class="n">service</span>
+<span class="n">systemctl</span> <span class="n">start</span> <span class="n">midolman</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Configure encapsulation and register nodes</strong></div>
+<div class="line">Enter to midonet CLI from a controller node</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">midonet</span><span class="o">-</span><span class="n">cli</span>
+</pre></div>
+</div>
+<p>Create the tunnel zone with VXLAN encapsulation</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">midonet</span><span class="o">&gt;</span> <span class="n">tunnel</span><span class="o">-</span><span class="n">zone</span> <span class="n">create</span> <span class="n">name</span> <span class="n">tz</span> <span class="nb">type</span> <span class="n">vxlan</span>
+<span class="n">tzone0</span>
+<span class="n">midonet</span><span class="o">&gt;</span> <span class="nb">list</span> <span class="n">tunnel</span><span class="o">-</span><span class="n">zone</span>
+<span class="n">tzone</span> <span class="n">tzone0</span> <span class="n">name</span> <span class="n">tz</span> <span class="nb">type</span> <span class="n">vxlan</span>
+</pre></div>
+</div>
+<p>List hosts discovered by midonet, should be all the nodes where you
+configured midonet agents(midolman)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">midonet</span><span class="o">&gt;</span> <span class="nb">list</span> <span class="n">host</span>
+<span class="n">host</span> <span class="n">host0</span> <span class="n">name</span> <span class="n">gateway2</span> <span class="n">alive</span> <span class="n">true</span> <span class="n">addresses</span> <span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">11</span><span class="n">ff</span><span class="p">:</span><span class="n">fe00</span><span class="p">:</span><span class="mi">1102</span><span class="p">,</span><span class="mf">169.254</span><span class="o">.</span><span class="mf">123.1</span><span class="p">,</span><span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">11</span><span class="n">ff</span><span class="p">:</span><span class="n">fe00</span><span class="p">:</span><span class="mi">1101</span><span class="p">,</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">200.176</span><span class="p">,</span><span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">5054</span><span class="p">:</span><span class="n">ff</span><span class="p">:</span><span class="n">fef9</span><span class="p">:</span><span class="n">b2a0</span><span class="p">,</span><span class="mf">169.254</span><span class="o">.</span><span class="mf">169.254</span><span class="p">,</span><span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">7874</span><span class="p">:</span><span class="n">d6ff</span><span class="p">:</span><span class="n">fe5b</span><span class="p">:</span><span class="n">dea8</span><span class="p">,</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">100.227</span><span class="p">,</span><span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">5054</span><span class="p">:</span><span class="n">ff</span><span class="p">:</span><span class="n">fed9</span><span class="p">:</span><span class="mi">9</span><span class="n">cc0</span><span class="p">,</span><span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">5054</span><span class="p">:</span><span class="n">ff</span><span class="p">:</span><span class="n">fe4a</span><span class="p">:</span><span class="n">e39b</span><span class="p">,</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">1.86</span> <span class="n">flooding</span><span class="o">-</span><span class="n">proxy</span><span class="o">-</span><span class="n">weight</span> <span class="mi">1</span> <span class="n">container</span><span class="o">-</span><span class="n">weight</span> <span class="mi">1</span> <span class="n">container</span><span class="o">-</span><span class="n">limit</span> <span class="n">no</span><span class="o">-</span><span class="n">limit</span> <span class="n">enforce</span><span class="o">-</span><span class="n">container</span><span class="o">-</span><span class="n">limit</span> <span class="n">false</span>
+<span class="n">host</span> <span class="n">host1</span> <span class="n">name</span> <span class="n">gateway1</span> <span class="n">alive</span> <span class="n">true</span> <span class="n">addresses</span> <span class="mf">169.254</span><span class="o">.</span><span class="mf">169.254</span><span class="p">,</span><span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="n">cd1</span><span class="p">:</span><span class="mi">23</span><span class="n">ff</span><span class="p">:</span><span class="n">feac</span><span class="p">:</span><span class="n">a3c2</span><span class="p">,</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">1.87</span><span class="p">,</span><span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">5054</span><span class="p">:</span><span class="n">ff</span><span class="p">:</span><span class="n">fea8</span><span class="p">:</span><span class="n">da91</span><span class="p">,</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">5054</span><span class="p">:</span><span class="n">ff</span><span class="p">:</span><span class="n">feec</span><span class="p">:</span><span class="mi">92</span><span class="n">c1</span><span class="p">,</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">200.232</span><span class="p">,</span><span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">11</span><span class="n">ff</span><span class="p">:</span><span class="n">fe00</span><span class="p">:</span><span class="mi">1102</span><span class="p">,</span><span class="mf">169.254</span><span class="o">.</span><span class="mf">123.1</span><span class="p">,</span><span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">11</span><span class="n">ff</span><span class="p">:</span><span class="n">fe00</span><span class="p">:</span><span class="mi">1101</span><span class="p">,</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">100.141</span><span class="p">,</span><span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">5054</span><span class="p">:</span><span class="n">ff</span><span class="p">:</span><span class="n">fe20</span><span class="p">:</span><span class="mi">30</span><span class="n">fb</span> <span class="n">flooding</span><span class="o">-</span><span class="n">proxy</span><span class="o">-</span><span class="n">weight</span> <span class="mi">1</span> <span class="n">container</span><span class="o">-</span><span class="n">weight</span> <span class="mi">1</span> <span class="n">container</span><span class="o">-</span><span class="n">limit</span> <span class="n">no</span><span class="o">-</span><span class="n">limit</span> <span class="n">enforce</span><span class="o">-</span><span class="n">container</span><span class="o">-</span><span class="n">limit</span> <span class="n">false</span>
+<span class="n">host</span> <span class="n">host2</span> <span class="n">name</span> <span class="n">compute1</span> <span class="n">alive</span> <span class="n">true</span> <span class="n">addresses</span> <span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">11</span><span class="n">ff</span><span class="p">:</span><span class="n">fe00</span><span class="p">:</span><span class="mi">1101</span><span class="p">,</span><span class="mf">169.254</span><span class="o">.</span><span class="mf">123.1</span><span class="p">,</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">11</span><span class="n">ff</span><span class="p">:</span><span class="n">fe00</span><span class="p">:</span><span class="mi">1102</span><span class="p">,</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">100.173</span><span class="p">,</span><span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">5054</span><span class="p">:</span><span class="n">ff</span><span class="p">:</span><span class="n">fe06</span><span class="p">:</span><span class="mi">161</span><span class="p">,</span><span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">5054</span><span class="p">:</span><span class="n">ff</span><span class="p">:</span><span class="n">fee3</span><span class="p">:</span><span class="n">eb48</span><span class="p">,</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">200.251</span><span class="p">,</span><span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">5054</span><span class="p">:</span><span class="n">ff</span><span class="p">:</span><span class="n">fe8d</span><span class="p">:</span><span class="n">d22</span><span class="p">,</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">1.93</span><span class="p">,</span><span class="mf">169.254</span><span class="o">.</span><span class="mf">169.254</span><span class="p">,</span><span class="n">fe80</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">48</span><span class="n">cb</span><span class="p">:</span><span class="n">adff</span><span class="p">:</span><span class="n">fe69</span><span class="p">:</span><span class="n">f07b</span> <span class="n">flooding</span><span class="o">-</span><span class="n">proxy</span><span class="o">-</span><span class="n">weight</span> <span class="mi">1</span> <span class="n">container</span><span class="o">-</span><span class="n">weight</span> <span class="mi">1</span> <span class="n">container</span><span class="o">-</span><span class="n">limit</span> <span class="n">no</span><span class="o">-</span><span class="n">limit</span> <span class="n">enforce</span><span class="o">-</span><span class="n">container</span><span class="o">-</span><span class="n">limit</span> <span class="n">false</span>
+</pre></div>
+</div>
+<p>Register each of the nodes at the VXLAN zone we created before</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">midonet</span><span class="o">&gt;</span> <span class="n">tunnel</span><span class="o">-</span><span class="n">zone</span> <span class="n">tzone0</span> <span class="n">add</span> <span class="n">member</span> <span class="n">host</span> <span class="n">host0</span> <span class="n">address</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.227</span>
+<span class="n">zone</span> <span class="n">tzone0</span> <span class="n">host</span> <span class="n">host0</span> <span class="n">address</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.227</span>
+<span class="n">midonet</span><span class="o">&gt;</span> <span class="n">tunnel</span><span class="o">-</span><span class="n">zone</span> <span class="n">tzone0</span> <span class="n">add</span> <span class="n">member</span> <span class="n">host</span> <span class="n">host1</span> <span class="n">address</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.141</span>
+<span class="n">zone</span> <span class="n">tzone0</span> <span class="n">host</span> <span class="n">host1</span> <span class="n">address</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.141</span>
+<span class="n">midonet</span><span class="o">&gt;</span> <span class="n">tunnel</span><span class="o">-</span><span class="n">zone</span> <span class="n">tzone0</span> <span class="n">add</span> <span class="n">member</span> <span class="n">host</span> <span class="n">host2</span> <span class="n">address</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.173</span>
+<span class="n">zone</span> <span class="n">tzone0</span> <span class="n">host</span> <span class="n">host2</span> <span class="n">address</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.173</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Create Networks at Neutron</strong></div>
+<div class="line">Create an external network</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># neutron net-create ext-net --router:external</span>
+<span class="n">Created</span> <span class="n">a</span> <span class="n">new</span> <span class="n">network</span><span class="p">:</span>
+<span class="o">+-----------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">Field</span>                 <span class="o">|</span> <span class="n">Value</span>                                <span class="o">|</span>
+<span class="o">+-----------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">admin_state_up</span>        <span class="o">|</span> <span class="kc">True</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">created_at</span>            <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span><span class="n">T14</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">30</span>                  <span class="o">|</span>
+<span class="o">|</span> <span class="n">description</span>           <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>                    <span class="o">|</span> <span class="n">dc15245e</span><span class="o">-</span><span class="mi">4391</span><span class="o">-</span><span class="mi">4514</span><span class="o">-</span><span class="n">b489</span><span class="o">-</span><span class="mi">8976373046</span><span class="n">a3</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">is_default</span>            <span class="o">|</span> <span class="kc">False</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>                  <span class="o">|</span> <span class="n">ext</span><span class="o">-</span><span class="n">net</span>                              <span class="o">|</span>
+<span class="o">|</span> <span class="n">port_security_enabled</span> <span class="o">|</span> <span class="kc">True</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">provider</span><span class="p">:</span><span class="n">network_type</span> <span class="o">|</span> <span class="n">midonet</span>                              <span class="o">|</span>
+<span class="o">|</span> <span class="n">router</span><span class="p">:</span><span class="n">external</span>       <span class="o">|</span> <span class="kc">True</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">shared</span>                <span class="o">|</span> <span class="kc">False</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">status</span>                <span class="o">|</span> <span class="n">ACTIVE</span>                               <span class="o">|</span>
+<span class="o">|</span> <span class="n">subnets</span>               <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">tags</span>                  <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">tenant_id</span>             <span class="o">|</span> <span class="mi">2</span><span class="n">f7ee2716b3b4140be57b4a5b26401e3</span>     <span class="o">|</span>
+<span class="o">|</span> <span class="n">updated_at</span>            <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span><span class="n">T14</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">30</span>                  <span class="o">|</span>
+<span class="o">+-----------------------+--------------------------------------+</span>
+</pre></div>
+</div>
+<p>Create an external subnet in the network we created before, use you own
+IP ranges to match your environment</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># neutron subnet-create ext-net 192.168.200.0/24 --name ext-subnet \</span>
+  <span class="o">--</span><span class="n">allocation</span><span class="o">-</span><span class="n">pool</span> <span class="n">start</span><span class="o">=</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">200.225</span><span class="p">,</span><span class="n">end</span><span class="o">=</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">200.240</span> \
+  <span class="o">--</span><span class="n">disable</span><span class="o">-</span><span class="n">dhcp</span> <span class="o">--</span><span class="n">gateway</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">200.1</span>
+<span class="n">Created</span> <span class="n">a</span> <span class="n">new</span> <span class="n">subnet</span><span class="p">:</span>
+<span class="o">+-------------------+--------------------------------------------------------+</span>
+<span class="o">|</span> <span class="n">Field</span>             <span class="o">|</span> <span class="n">Value</span>                                                  <span class="o">|</span>
+<span class="o">+-------------------+--------------------------------------------------------+</span>
+<span class="o">|</span> <span class="n">allocation_pools</span>  <span class="o">|</span> <span class="p">{</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="s2">&quot;192.168.200.225&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="s2">&quot;192.168.200.240&quot;</span><span class="p">}</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">cidr</span>              <span class="o">|</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">200.0</span><span class="o">/</span><span class="mi">24</span>                                       <span class="o">|</span>
+<span class="o">|</span> <span class="n">created_at</span>        <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span><span class="n">T14</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mi">46</span>                                    <span class="o">|</span>
+<span class="o">|</span> <span class="n">description</span>       <span class="o">|</span>                                                        <span class="o">|</span>
+<span class="o">|</span> <span class="n">dns_nameservers</span>   <span class="o">|</span>                                                        <span class="o">|</span>
+<span class="o">|</span> <span class="n">enable_dhcp</span>       <span class="o">|</span> <span class="kc">False</span>                                                  <span class="o">|</span>
+<span class="o">|</span> <span class="n">gateway_ip</span>        <span class="o">|</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">200.1</span>                                          <span class="o">|</span>
+<span class="o">|</span> <span class="n">host_routes</span>       <span class="o">|</span>                                                        <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>                <span class="o">|</span> <span class="mi">234</span><span class="n">dcc9a</span><span class="o">-</span><span class="mi">2878</span><span class="o">-</span><span class="mi">4799</span><span class="o">-</span><span class="n">b564</span><span class="o">-</span><span class="n">bf3a1bd52cad</span>                   <span class="o">|</span>
+<span class="o">|</span> <span class="n">ip_version</span>        <span class="o">|</span> <span class="mi">4</span>                                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">ipv6_address_mode</span> <span class="o">|</span>                                                        <span class="o">|</span>
+<span class="o">|</span> <span class="n">ipv6_ra_mode</span>      <span class="o">|</span>                                                        <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>              <span class="o">|</span> <span class="n">ext</span><span class="o">-</span><span class="n">subnet</span>                                             <span class="o">|</span>
+<span class="o">|</span> <span class="n">network_id</span>        <span class="o">|</span> <span class="n">dc15245e</span><span class="o">-</span><span class="mi">4391</span><span class="o">-</span><span class="mi">4514</span><span class="o">-</span><span class="n">b489</span><span class="o">-</span><span class="mi">8976373046</span><span class="n">a3</span>                   <span class="o">|</span>
+<span class="o">|</span> <span class="n">subnetpool_id</span>     <span class="o">|</span>                                                        <span class="o">|</span>
+<span class="o">|</span> <span class="n">tenant_id</span>         <span class="o">|</span> <span class="mi">2</span><span class="n">f7ee2716b3b4140be57b4a5b26401e3</span>                       <span class="o">|</span>
+<span class="o">|</span> <span class="n">updated_at</span>        <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span><span class="n">T14</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mi">46</span>                                    <span class="o">|</span>
+<span class="o">+-------------------+--------------------------------------------------------+</span>
+</pre></div>
+</div>
+<p>Create a tenant network and a subnet on it</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># neutron net-create demo-net</span>
+<span class="n">Created</span> <span class="n">a</span> <span class="n">new</span> <span class="n">network</span><span class="p">:</span>
+<span class="o">+-----------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">Field</span>                 <span class="o">|</span> <span class="n">Value</span>                                <span class="o">|</span>
+<span class="o">+-----------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">admin_state_up</span>        <span class="o">|</span> <span class="kc">True</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">created_at</span>            <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span><span class="n">T14</span><span class="p">:</span><span class="mi">51</span><span class="p">:</span><span class="mi">39</span>                  <span class="o">|</span>
+<span class="o">|</span> <span class="n">description</span>           <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>                    <span class="o">|</span> <span class="mi">075</span><span class="n">ba699</span><span class="o">-</span><span class="n">dc4c</span><span class="o">-</span><span class="mi">4625</span><span class="o">-</span><span class="mf">8e0</span><span class="n">d</span><span class="o">-</span><span class="mi">0</span><span class="n">a258a9aeb7d</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>                  <span class="o">|</span> <span class="n">demo</span><span class="o">-</span><span class="n">net</span>                             <span class="o">|</span>
+<span class="o">|</span> <span class="n">port_security_enabled</span> <span class="o">|</span> <span class="kc">True</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">provider</span><span class="p">:</span><span class="n">network_type</span> <span class="o">|</span> <span class="n">midonet</span>                              <span class="o">|</span>
+<span class="o">|</span> <span class="n">router</span><span class="p">:</span><span class="n">external</span>       <span class="o">|</span> <span class="kc">False</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">shared</span>                <span class="o">|</span> <span class="kc">False</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">status</span>                <span class="o">|</span> <span class="n">ACTIVE</span>                               <span class="o">|</span>
+<span class="o">|</span> <span class="n">subnets</span>               <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">tags</span>                  <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">tenant_id</span>             <span class="o">|</span> <span class="mi">2</span><span class="n">f7ee2716b3b4140be57b4a5b26401e3</span>     <span class="o">|</span>
+<span class="o">|</span> <span class="n">updated_at</span>            <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span><span class="n">T14</span><span class="p">:</span><span class="mi">51</span><span class="p">:</span><span class="mi">39</span>                  <span class="o">|</span>
+<span class="o">+-----------------------+--------------------------------------+</span>
+<span class="c1"># neutron subnet-create demo-net 10.0.20.0/24 --name demo-subnet</span>
+<span class="n">Created</span> <span class="n">a</span> <span class="n">new</span> <span class="n">subnet</span><span class="p">:</span>
+<span class="o">+-------------------+----------------------------------------------+</span>
+<span class="o">|</span> <span class="n">Field</span>             <span class="o">|</span> <span class="n">Value</span>                                        <span class="o">|</span>
+<span class="o">+-------------------+----------------------------------------------+</span>
+<span class="o">|</span> <span class="n">allocation_pools</span>  <span class="o">|</span> <span class="p">{</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="s2">&quot;10.0.20.2&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="s2">&quot;10.0.20.254&quot;</span><span class="p">}</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">cidr</span>              <span class="o">|</span> <span class="mf">10.0</span><span class="o">.</span><span class="mf">20.0</span><span class="o">/</span><span class="mi">24</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">created_at</span>        <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span><span class="n">T14</span><span class="p">:</span><span class="mi">52</span><span class="p">:</span><span class="mi">32</span>                          <span class="o">|</span>
+<span class="o">|</span> <span class="n">description</span>       <span class="o">|</span>                                              <span class="o">|</span>
+<span class="o">|</span> <span class="n">dns_nameservers</span>   <span class="o">|</span>                                              <span class="o">|</span>
+<span class="o">|</span> <span class="n">enable_dhcp</span>       <span class="o">|</span> <span class="kc">True</span>                                         <span class="o">|</span>
+<span class="o">|</span> <span class="n">gateway_ip</span>        <span class="o">|</span> <span class="mf">10.0</span><span class="o">.</span><span class="mf">20.1</span>                                    <span class="o">|</span>
+<span class="o">|</span> <span class="n">host_routes</span>       <span class="o">|</span>                                              <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>                <span class="o">|</span> <span class="n">b299d899</span><span class="o">-</span><span class="mi">33</span><span class="n">a3</span><span class="o">-</span><span class="mi">4</span><span class="n">bfa</span><span class="o">-</span><span class="n">aff4</span><span class="o">-</span><span class="n">fda071545bdf</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="n">ip_version</span>        <span class="o">|</span> <span class="mi">4</span>                                            <span class="o">|</span>
+<span class="o">|</span> <span class="n">ipv6_address_mode</span> <span class="o">|</span>                                              <span class="o">|</span>
+<span class="o">|</span> <span class="n">ipv6_ra_mode</span>      <span class="o">|</span>                                              <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>              <span class="o">|</span> <span class="n">demo</span><span class="o">-</span><span class="n">subnet</span>                                  <span class="o">|</span>
+<span class="o">|</span> <span class="n">network_id</span>        <span class="o">|</span> <span class="mi">075</span><span class="n">ba699</span><span class="o">-</span><span class="n">dc4c</span><span class="o">-</span><span class="mi">4625</span><span class="o">-</span><span class="mf">8e0</span><span class="n">d</span><span class="o">-</span><span class="mi">0</span><span class="n">a258a9aeb7d</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="n">subnetpool_id</span>     <span class="o">|</span>                                              <span class="o">|</span>
+<span class="o">|</span> <span class="n">tenant_id</span>         <span class="o">|</span> <span class="mi">2</span><span class="n">f7ee2716b3b4140be57b4a5b26401e3</span>             <span class="o">|</span>
+<span class="o">|</span> <span class="n">updated_at</span>        <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span><span class="n">T14</span><span class="p">:</span><span class="mi">52</span><span class="p">:</span><span class="mi">32</span>                          <span class="o">|</span>
+<span class="o">+-------------------+----------------------------------------------+</span>
+</pre></div>
+</div>
+<p>Create a tenant router</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># neutron router-create router1</span>
+<span class="n">Created</span> <span class="n">a</span> <span class="n">new</span> <span class="n">router</span><span class="p">:</span>
+<span class="o">+-----------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">Field</span>                 <span class="o">|</span> <span class="n">Value</span>                                <span class="o">|</span>
+<span class="o">+-----------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">admin_state_up</span>        <span class="o">|</span> <span class="kc">True</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">description</span>           <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">external_gateway_info</span> <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>                    <span class="o">|</span> <span class="mi">258942</span><span class="n">d8</span><span class="o">-</span><span class="mi">9</span><span class="n">d82</span><span class="o">-</span><span class="mi">4</span><span class="n">ebd</span><span class="o">-</span><span class="n">b829</span><span class="o">-</span><span class="n">c7bdfcc973f5</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>                  <span class="o">|</span> <span class="n">router1</span>                              <span class="o">|</span>
+<span class="o">|</span> <span class="n">routes</span>                <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">status</span>                <span class="o">|</span> <span class="n">ACTIVE</span>                               <span class="o">|</span>
+<span class="o">|</span> <span class="n">tenant_id</span>             <span class="o">|</span> <span class="mi">2</span><span class="n">f7ee2716b3b4140be57b4a5b26401e3</span>     <span class="o">|</span>
+<span class="o">+-----------------------+--------------------------------------+</span>
+</pre></div>
+</div>
+<p>Attach the tenant subnet interface we created before to the router</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># neutron router-interface-add router1 demo-subnet</span>
+<span class="n">Added</span> <span class="n">interface</span> <span class="mi">06</span><span class="n">c85a56</span><span class="o">-</span><span class="mi">368</span><span class="n">c</span><span class="o">-</span><span class="mi">4</span><span class="n">d79</span><span class="o">-</span><span class="n">bbf0</span><span class="o">-</span><span class="mi">4</span><span class="n">bb077f163e5</span> <span class="n">to</span> <span class="n">router</span> <span class="n">router1</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Set the external network as router gateway</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># neutron router-gateway-set router1 ext-net</span>
+<span class="n">Set</span> <span class="n">gateway</span> <span class="k">for</span> <span class="n">router</span> <span class="n">router1</span>
+</pre></div>
+</div>
+<p>Now, you can create an instance at tenant network</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova boot --flavor m1.tiny --image 80871834-29dd-4100-b038-f5f83f126204 --nic net-id=075ba699-dc4c-4625-8e0d-0a258a9aeb7d test1</span>
+<span class="o">+--------------------------------------+-----------------------------------------------------+</span>
+<span class="o">|</span> <span class="n">Property</span>                             <span class="o">|</span> <span class="n">Value</span>                                               <span class="o">|</span>
+<span class="o">+--------------------------------------+-----------------------------------------------------+</span>
+<span class="o">|</span> <span class="n">OS</span><span class="o">-</span><span class="n">DCF</span><span class="p">:</span><span class="n">diskConfig</span>                    <span class="o">|</span> <span class="n">MANUAL</span>                                              <span class="o">|</span>
+<span class="o">|</span> <span class="n">OS</span><span class="o">-</span><span class="n">EXT</span><span class="o">-</span><span class="n">AZ</span><span class="p">:</span><span class="n">availability_zone</span>          <span class="o">|</span>                                                     <span class="o">|</span>
+<span class="o">|</span> <span class="n">OS</span><span class="o">-</span><span class="n">EXT</span><span class="o">-</span><span class="n">SRV</span><span class="o">-</span><span class="n">ATTR</span><span class="p">:</span><span class="n">host</span>                 <span class="o">|</span> <span class="o">-</span>                                                   <span class="o">|</span>
+<span class="o">|</span> <span class="n">OS</span><span class="o">-</span><span class="n">EXT</span><span class="o">-</span><span class="n">SRV</span><span class="o">-</span><span class="n">ATTR</span><span class="p">:</span><span class="n">hypervisor_hostname</span>  <span class="o">|</span> <span class="o">-</span>                                                   <span class="o">|</span>
+<span class="o">|</span> <span class="n">OS</span><span class="o">-</span><span class="n">EXT</span><span class="o">-</span><span class="n">SRV</span><span class="o">-</span><span class="n">ATTR</span><span class="p">:</span><span class="n">instance_name</span>        <span class="o">|</span> <span class="n">instance</span><span class="o">-</span><span class="mi">0000000</span><span class="n">a</span>                                   <span class="o">|</span>
+<span class="o">|</span> <span class="n">OS</span><span class="o">-</span><span class="n">EXT</span><span class="o">-</span><span class="n">STS</span><span class="p">:</span><span class="n">power_state</span>               <span class="o">|</span> <span class="mi">0</span>                                                   <span class="o">|</span>
+<span class="o">|</span> <span class="n">OS</span><span class="o">-</span><span class="n">EXT</span><span class="o">-</span><span class="n">STS</span><span class="p">:</span><span class="n">task_state</span>                <span class="o">|</span> <span class="n">scheduling</span>                                          <span class="o">|</span>
+<span class="o">|</span> <span class="n">OS</span><span class="o">-</span><span class="n">EXT</span><span class="o">-</span><span class="n">STS</span><span class="p">:</span><span class="n">vm_state</span>                  <span class="o">|</span> <span class="n">building</span>                                            <span class="o">|</span>
+<span class="o">|</span> <span class="n">OS</span><span class="o">-</span><span class="n">SRV</span><span class="o">-</span><span class="n">USG</span><span class="p">:</span><span class="n">launched_at</span>               <span class="o">|</span> <span class="o">-</span>                                                   <span class="o">|</span>
+<span class="o">|</span> <span class="n">OS</span><span class="o">-</span><span class="n">SRV</span><span class="o">-</span><span class="n">USG</span><span class="p">:</span><span class="n">terminated_at</span>             <span class="o">|</span> <span class="o">-</span>                                                   <span class="o">|</span>
+<span class="o">|</span> <span class="n">accessIPv4</span>                           <span class="o">|</span>                                                     <span class="o">|</span>
+<span class="o">|</span> <span class="n">accessIPv6</span>                           <span class="o">|</span>                                                     <span class="o">|</span>
+<span class="o">|</span> <span class="n">adminPass</span>                            <span class="o">|</span> <span class="n">q2Cq4kxePSLL</span>                                        <span class="o">|</span>
+<span class="o">|</span> <span class="n">config_drive</span>                         <span class="o">|</span>                                                     <span class="o">|</span>
+<span class="o">|</span> <span class="n">created</span>                              <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span><span class="n">T15</span><span class="p">:</span><span class="mi">46</span><span class="p">:</span><span class="mi">19</span><span class="n">Z</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">flavor</span>                               <span class="o">|</span> <span class="n">m1</span><span class="o">.</span><span class="n">tiny</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>                                         <span class="o">|</span>
+<span class="o">|</span> <span class="n">hostId</span>                               <span class="o">|</span>                                                     <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>                                   <span class="o">|</span> <span class="n">b8aa46f9</span><span class="o">-</span><span class="mi">186</span><span class="n">c</span><span class="o">-</span><span class="mi">4594</span><span class="o">-</span><span class="mi">8428</span><span class="o">-</span><span class="n">f8dbb16a5e16</span>                <span class="o">|</span>
+<span class="o">|</span> <span class="n">image</span>                                <span class="o">|</span> <span class="n">cirros</span> <span class="n">image</span> <span class="p">(</span><span class="mi">80871834</span><span class="o">-</span><span class="mi">29</span><span class="n">dd</span><span class="o">-</span><span class="mi">4100</span><span class="o">-</span><span class="n">b038</span><span class="o">-</span><span class="n">f5f83f126204</span><span class="p">)</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">key_name</span>                             <span class="o">|</span> <span class="o">-</span>                                                   <span class="o">|</span>
+<span class="o">|</span> <span class="n">metadata</span>                             <span class="o">|</span> <span class="p">{}</span>                                                  <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>                                 <span class="o">|</span> <span class="n">test1</span>                                               <span class="o">|</span>
+<span class="o">|</span> <span class="n">os</span><span class="o">-</span><span class="n">extended</span><span class="o">-</span><span class="n">volumes</span><span class="p">:</span><span class="n">volumes_attached</span> <span class="o">|</span> <span class="p">[]</span>                                                  <span class="o">|</span>
+<span class="o">|</span> <span class="n">progress</span>                             <span class="o">|</span> <span class="mi">0</span>                                                   <span class="o">|</span>
+<span class="o">|</span> <span class="n">security_groups</span>                      <span class="o">|</span> <span class="n">default</span>                                             <span class="o">|</span>
+<span class="o">|</span> <span class="n">status</span>                               <span class="o">|</span> <span class="n">BUILD</span>                                               <span class="o">|</span>
+<span class="o">|</span> <span class="n">tenant_id</span>                            <span class="o">|</span> <span class="mi">2</span><span class="n">f7ee2716b3b4140be57b4a5b26401e3</span>                    <span class="o">|</span>
+<span class="o">|</span> <span class="n">updated</span>                              <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span><span class="n">T15</span><span class="p">:</span><span class="mi">46</span><span class="p">:</span><span class="mi">20</span><span class="n">Z</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">user_id</span>                              <span class="o">|</span> <span class="n">a2482a91a1f14750b372445d28b07c75</span>                    <span class="o">|</span>
+<span class="o">+--------------------------------------+-----------------------------------------------------+</span>
+<span class="c1"># nova list</span>
+<span class="o">+--------------------------------------+-------+--------+------------+-------------+---------------------+</span>
+<span class="o">|</span> <span class="n">ID</span>                                   <span class="o">|</span> <span class="n">Name</span>  <span class="o">|</span> <span class="n">Status</span> <span class="o">|</span> <span class="n">Task</span> <span class="n">State</span> <span class="o">|</span> <span class="n">Power</span> <span class="n">State</span> <span class="o">|</span> <span class="n">Networks</span>            <span class="o">|</span>
+<span class="o">+--------------------------------------+-------+--------+------------+-------------+---------------------+</span>
+<span class="o">|</span> <span class="n">b8aa46f9</span><span class="o">-</span><span class="mi">186</span><span class="n">c</span><span class="o">-</span><span class="mi">4594</span><span class="o">-</span><span class="mi">8428</span><span class="o">-</span><span class="n">f8dbb16a5e16</span> <span class="o">|</span> <span class="n">test1</span> <span class="o">|</span> <span class="n">ACTIVE</span> <span class="o">|</span> <span class="o">-</span>          <span class="o">|</span> <span class="n">Running</span>     <span class="o">|</span> <span class="n">demo</span><span class="o">-</span><span class="n">net</span><span class="o">=</span><span class="mf">10.0</span><span class="o">.</span><span class="mf">20.11</span> <span class="o">|</span>
+<span class="o">+--------------------------------------+-------+--------+------------+-------------+---------------------+</span>
+</pre></div>
+</div>
+<p>Ensure the instance gets IP and the metadata service is properly running</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova console-log test1</span>
+<span class="o">...</span><span class="c1">#Snipp from the output</span>
+<span class="n">Sending</span> <span class="n">discover</span><span class="o">...</span>
+<span class="n">Sending</span> <span class="n">select</span> <span class="k">for</span> <span class="mf">10.0</span><span class="o">.</span><span class="mf">20.11</span><span class="o">...</span>
+<span class="n">Lease</span> <span class="n">of</span> <span class="mf">10.0</span><span class="o">.</span><span class="mf">20.11</span> <span class="n">obtained</span><span class="p">,</span> <span class="n">lease</span> <span class="n">time</span> <span class="mi">86400</span>
+<span class="n">cirros</span><span class="o">-</span><span class="n">ds</span> <span class="s1">&#39;net&#39;</span> <span class="n">up</span> <span class="n">at</span> <span class="mf">7.92</span>
+<span class="n">checking</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">169.254</span><span class="o">.</span><span class="mf">169.254</span><span class="o">/</span><span class="mi">2009</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">04</span><span class="o">/</span><span class="n">instance</span><span class="o">-</span><span class="nb">id</span>
+<span class="n">successful</span> <span class="n">after</span> <span class="mi">1</span><span class="o">/</span><span class="mi">20</span> <span class="n">tries</span><span class="p">:</span> <span class="n">up</span> <span class="mf">8.22</span><span class="o">.</span> <span class="n">iid</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="mi">0000000</span><span class="n">a</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>If you login to the instance through VNC you should be able to ping
+another instances</p>
+<div class="line-block">
+<div class="line"><strong>Edge router configuration</strong></div>
+<div class="line">Create a new router</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># neutron router-create edge-router</span>
+<span class="n">Created</span> <span class="n">a</span> <span class="n">new</span> <span class="n">router</span><span class="p">:</span>
+<span class="o">+-----------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">Field</span>                 <span class="o">|</span> <span class="n">Value</span>                                <span class="o">|</span>
+<span class="o">+-----------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">admin_state_up</span>        <span class="o">|</span> <span class="kc">True</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">description</span>           <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">external_gateway_info</span> <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>                    <span class="o">|</span> <span class="mi">5</span><span class="n">ecadb64</span><span class="o">-</span><span class="n">cb0d</span><span class="o">-</span><span class="mi">4</span><span class="n">f95</span><span class="o">-</span><span class="n">a00e</span><span class="o">-</span><span class="n">aa1dd20a2012</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>                  <span class="o">|</span> <span class="n">edge</span><span class="o">-</span><span class="n">router</span>                          <span class="o">|</span>
+<span class="o">|</span> <span class="n">routes</span>                <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">status</span>                <span class="o">|</span> <span class="n">ACTIVE</span>                               <span class="o">|</span>
+<span class="o">|</span> <span class="n">tenant_id</span>             <span class="o">|</span> <span class="mi">2</span><span class="n">f7ee2716b3b4140be57b4a5b26401e3</span>     <span class="o">|</span>
+<span class="o">+-----------------------+--------------------------------------+</span>
+</pre></div>
+</div>
+<p>Attach the external subnet interface to the router</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># neutron router-interface-add edge-router ext-subnet</span>
+<span class="n">Added</span> <span class="n">interface</span> <span class="n">e37f1986</span><span class="o">-</span><span class="n">c6b1</span><span class="o">-</span><span class="mi">47</span><span class="n">f4</span><span class="o">-</span><span class="mi">8268</span><span class="o">-</span><span class="mi">02</span><span class="n">b837ceac17</span> <span class="n">to</span> <span class="n">router</span> <span class="n">edge</span><span class="o">-</span><span class="n">router</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Create an uplink network</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># neutron net-create uplink-network --tenant_id admin --provider:network_type uplink</span>
+<span class="n">Created</span> <span class="n">a</span> <span class="n">new</span> <span class="n">network</span><span class="p">:</span>
+<span class="o">+-----------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">Field</span>                 <span class="o">|</span> <span class="n">Value</span>                                <span class="o">|</span>
+<span class="o">+-----------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">admin_state_up</span>        <span class="o">|</span> <span class="kc">True</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">created_at</span>            <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span><span class="n">T14</span><span class="p">:</span><span class="mi">57</span><span class="p">:</span><span class="mi">15</span>                  <span class="o">|</span>
+<span class="o">|</span> <span class="n">description</span>           <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>                    <span class="o">|</span> <span class="mi">77173</span><span class="n">ed4</span><span class="o">-</span><span class="mi">6106</span><span class="o">-</span><span class="mi">4515</span><span class="o">-</span><span class="n">af1c</span><span class="o">-</span><span class="mi">3683897955</span><span class="n">f9</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>                  <span class="o">|</span> <span class="n">uplink</span><span class="o">-</span><span class="n">network</span>                       <span class="o">|</span>
+<span class="o">|</span> <span class="n">port_security_enabled</span> <span class="o">|</span> <span class="kc">True</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">provider</span><span class="p">:</span><span class="n">network_type</span> <span class="o">|</span> <span class="n">uplink</span>                               <span class="o">|</span>
+<span class="o">|</span> <span class="n">router</span><span class="p">:</span><span class="n">external</span>       <span class="o">|</span> <span class="kc">False</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">shared</span>                <span class="o">|</span> <span class="kc">False</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">status</span>                <span class="o">|</span> <span class="n">ACTIVE</span>                               <span class="o">|</span>
+<span class="o">|</span> <span class="n">subnets</span>               <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">tags</span>                  <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">tenant_id</span>             <span class="o">|</span> <span class="n">admin</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">updated_at</span>            <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span><span class="n">T14</span><span class="p">:</span><span class="mi">57</span><span class="p">:</span><span class="mi">15</span>                  <span class="o">|</span>
+<span class="o">+-----------------------+--------------------------------------+</span>
+</pre></div>
+</div>
+<p>Create a subnet in the uplink network</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># neutron subnet-create --tenant_id admin --disable-dhcp --name uplink-subnet uplink-network 192.168.1.0/24</span>
+<span class="n">Created</span> <span class="n">a</span> <span class="n">new</span> <span class="n">subnet</span><span class="p">:</span>
+<span class="o">+-------------------+--------------------------------------------------+</span>
+<span class="o">|</span> <span class="n">Field</span>             <span class="o">|</span> <span class="n">Value</span>                                            <span class="o">|</span>
+<span class="o">+-------------------+--------------------------------------------------+</span>
+<span class="o">|</span> <span class="n">allocation_pools</span>  <span class="o">|</span> <span class="p">{</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="s2">&quot;192.168.1.2&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="s2">&quot;192.168.1.254&quot;</span><span class="p">}</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">cidr</span>              <span class="o">|</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">1.0</span><span class="o">/</span><span class="mi">24</span>                                   <span class="o">|</span>
+<span class="o">|</span> <span class="n">created_at</span>        <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span><span class="n">T15</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">28</span>                              <span class="o">|</span>
+<span class="o">|</span> <span class="n">description</span>       <span class="o">|</span>                                                  <span class="o">|</span>
+<span class="o">|</span> <span class="n">dns_nameservers</span>   <span class="o">|</span>                                                  <span class="o">|</span>
+<span class="o">|</span> <span class="n">enable_dhcp</span>       <span class="o">|</span> <span class="kc">False</span>                                            <span class="o">|</span>
+<span class="o">|</span> <span class="n">gateway_ip</span>        <span class="o">|</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">1.1</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">host_routes</span>       <span class="o">|</span>                                                  <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>                <span class="o">|</span> <span class="mf">4e98</span><span class="n">e789</span><span class="o">-</span><span class="mi">20</span><span class="n">d3</span><span class="o">-</span><span class="mi">45</span><span class="n">fd</span><span class="o">-</span><span class="n">a3b5</span><span class="o">-</span><span class="mi">9</span><span class="n">bcf02d8a832</span>             <span class="o">|</span>
+<span class="o">|</span> <span class="n">ip_version</span>        <span class="o">|</span> <span class="mi">4</span>                                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">ipv6_address_mode</span> <span class="o">|</span>                                                  <span class="o">|</span>
+<span class="o">|</span> <span class="n">ipv6_ra_mode</span>      <span class="o">|</span>                                                  <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>              <span class="o">|</span> <span class="n">uplink</span><span class="o">-</span><span class="n">subnet</span>                                    <span class="o">|</span>
+<span class="o">|</span> <span class="n">network_id</span>        <span class="o">|</span> <span class="mi">77173</span><span class="n">ed4</span><span class="o">-</span><span class="mi">6106</span><span class="o">-</span><span class="mi">4515</span><span class="o">-</span><span class="n">af1c</span><span class="o">-</span><span class="mi">3683897955</span><span class="n">f9</span>             <span class="o">|</span>
+<span class="o">|</span> <span class="n">subnetpool_id</span>     <span class="o">|</span>                                                  <span class="o">|</span>
+<span class="o">|</span> <span class="n">tenant_id</span>         <span class="o">|</span> <span class="n">admin</span>                                            <span class="o">|</span>
+<span class="o">|</span> <span class="n">updated_at</span>        <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span><span class="n">T15</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">28</span>                              <span class="o">|</span>
+<span class="o">+-------------------+--------------------------------------------------+</span>
+</pre></div>
+</div>
+<p>Create a port for each of the gateway nodes, interface should match with
+the NIC you want to use for binding the gateway nodes and a IP address
+for the same purposes</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># neutron port-create uplink-network --binding:host_id gateway1 --binding:profile type=dict interface_name=eth1 --fixed-ip ip_address=192.168.1.199</span>
+<span class="n">Created</span> <span class="n">a</span> <span class="n">new</span> <span class="n">port</span><span class="p">:</span>
+<span class="o">+-----------------------+--------------------------------------------------------------------------------------+</span>
+<span class="o">|</span> <span class="n">Field</span>                 <span class="o">|</span> <span class="n">Value</span>                                                                                <span class="o">|</span>
+<span class="o">+-----------------------+--------------------------------------------------------------------------------------+</span>
+<span class="o">|</span> <span class="n">admin_state_up</span>        <span class="o">|</span> <span class="kc">True</span>                                                                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">allowed_address_pairs</span> <span class="o">|</span>                                                                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">binding</span><span class="p">:</span><span class="n">host_id</span>       <span class="o">|</span> <span class="n">compute1</span>                                                                             <span class="o">|</span>
+<span class="o">|</span> <span class="n">binding</span><span class="p">:</span><span class="n">profile</span>       <span class="o">|</span> <span class="p">{</span><span class="s2">&quot;interface_name&quot;</span><span class="p">:</span> <span class="s2">&quot;eth1&quot;</span><span class="p">}</span>                                                           <span class="o">|</span>
+<span class="o">|</span> <span class="n">binding</span><span class="p">:</span><span class="n">vif_details</span>   <span class="o">|</span> <span class="p">{</span><span class="s2">&quot;port_filter&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">}</span>                                                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">binding</span><span class="p">:</span><span class="n">vif_type</span>      <span class="o">|</span> <span class="n">midonet</span>                                                                              <span class="o">|</span>
+<span class="o">|</span> <span class="n">binding</span><span class="p">:</span><span class="n">vnic_type</span>     <span class="o">|</span> <span class="n">normal</span>                                                                               <span class="o">|</span>
+<span class="o">|</span> <span class="n">created_at</span>            <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span><span class="n">T15</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">06</span>                                                                  <span class="o">|</span>
+<span class="o">|</span> <span class="n">description</span>           <span class="o">|</span>                                                                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">device_id</span>             <span class="o">|</span>                                                                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">device_owner</span>          <span class="o">|</span>                                                                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">extra_dhcp_opts</span>       <span class="o">|</span>                                                                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">fixed_ips</span>             <span class="o">|</span> <span class="p">{</span><span class="s2">&quot;subnet_id&quot;</span><span class="p">:</span> <span class="s2">&quot;4e98e789-20d3-45fd-a3b5-9bcf02d8a832&quot;</span><span class="p">,</span> <span class="s2">&quot;ip_address&quot;</span><span class="p">:</span> <span class="s2">&quot;192.168.1.199&quot;</span><span class="p">}</span> <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>                    <span class="o">|</span> <span class="mi">7</span><span class="n">b4f54dd</span><span class="o">-</span><span class="mi">2</span><span class="n">b41</span><span class="o">-</span><span class="mi">42</span><span class="n">ba</span><span class="o">-</span><span class="mi">9</span><span class="n">c5c</span><span class="o">-</span><span class="n">cda4640dc550</span>                                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">mac_address</span>           <span class="o">|</span> <span class="n">fa</span><span class="p">:</span><span class="mi">16</span><span class="p">:</span><span class="mi">3</span><span class="n">e</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="n">a8</span><span class="p">:</span><span class="n">c9</span>                                                                    <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>                  <span class="o">|</span>                                                                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">network_id</span>            <span class="o">|</span> <span class="mi">77173</span><span class="n">ed4</span><span class="o">-</span><span class="mi">6106</span><span class="o">-</span><span class="mi">4515</span><span class="o">-</span><span class="n">af1c</span><span class="o">-</span><span class="mi">3683897955</span><span class="n">f9</span>                                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">port_security_enabled</span> <span class="o">|</span> <span class="kc">True</span>                                                                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">security_groups</span>       <span class="o">|</span> <span class="mi">0</span><span class="n">cf3e33e</span><span class="o">-</span><span class="n">dbd6</span><span class="o">-</span><span class="mi">4</span><span class="n">b42</span><span class="o">-</span><span class="n">a0bd</span><span class="o">-</span><span class="mi">6679</span><span class="n">b5eed4e1</span>                                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">status</span>                <span class="o">|</span> <span class="n">ACTIVE</span>                                                                               <span class="o">|</span>
+<span class="o">|</span> <span class="n">tenant_id</span>             <span class="o">|</span> <span class="mi">2</span><span class="n">f7ee2716b3b4140be57b4a5b26401e3</span>                                                     <span class="o">|</span>
+<span class="o">|</span> <span class="n">updated_at</span>            <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span><span class="n">T15</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">06</span>                                                                  <span class="o">|</span>
+<span class="o">+-----------------------+--------------------------------------------------------------------------------------+</span>
+</pre></div>
+</div>
+<p>Attach each of the ports to the edge router</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># neutron router-interface-add edge-router port=7b4f54dd-2b41-42ba-9c5c-cda4640dc550</span>
+<span class="n">Added</span> <span class="n">interface</span> <span class="mi">7</span><span class="n">b4f54dd</span><span class="o">-</span><span class="mi">2</span><span class="n">b41</span><span class="o">-</span><span class="mi">42</span><span class="n">ba</span><span class="o">-</span><span class="mi">9</span><span class="n">c5c</span><span class="o">-</span><span class="n">cda4640dc550</span> <span class="n">to</span> <span class="n">router</span> <span class="n">edge</span><span class="o">-</span><span class="n">router</span><span class="o">.</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">At this point you have to decide if use border routers with BGP
+enabled or static routes.</div>
+<div class="line">Use one of the following links to configure your use case:</div>
+<div class="line"><a class="reference external" href="https://docs.midonet.org/docs/latest/operations-guide/content/bgp_uplink_configuration.html">https://docs.midonet.org/docs/latest/operations-guide/content/bgp_uplink_configuration.html</a></div>
+<div class="line"><a class="reference external" href="https://docs.midonet.org/docs/latest/operations-guide/content/static_setup.html">https://docs.midonet.org/docs/latest/operations-guide/content/static_setup.html</a></div>
+</div>
+<p><strong>Issues I faced during configuration of Midonet</strong></p>
+<div class="line-block">
+<div class="line">Midolman agent don’t start:</div>
+<div class="line">It was caused because midolman-env.sh file has more RAM configured as
+the one of my server.</div>
+<div class="line">Edit the file to match your server resources</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># egrep ^MAX_HEAP_SIZE /etc/midolman/midolman-env.sh</span>
+<span class="n">MAX_HEAP_SIZE</span><span class="o">=</span><span class="s2">&quot;2048M&quot;</span>
+</pre></div>
+</div>
+<p>Instances doesn’t boot with the following error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">could</span> <span class="ow">not</span> <span class="nb">open</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">net</span><span class="o">/</span><span class="n">tun</span><span class="p">:</span> <span class="n">Permission</span> <span class="n">denied</span>
+</pre></div>
+</div>
+<p>I had to remove br-tun bridges at ovs, if not, ovs locks the device and
+midolman cannot create the tunnel beetwen compute nodes and gateway
+nodes.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ovs</span><span class="o">-</span><span class="n">vsctl</span> <span class="k">del</span><span class="o">-</span><span class="n">br</span> <span class="n">br</span><span class="o">-</span><span class="n">tun</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">This post is my experience integrating Midonet into OpenStack, maybe
+some things are not correct, if you find any issue, please advise me
+to fix it.</div>
+<div class="line">Regards, Eduardo Gonzalez</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">egonzalez</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Post:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="2017-08-28-openstack-tacker-and-service-function-chaining-sfc-with-kolla.html">OpenStack tacker and service function chaining sfc with kolla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2017-02-22-deploy-openstack-designate-with-kolla-ansible.html">Deploy OpenStack designate with kolla-ansible</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2017-01-31-openstack-keystone-zero-downtime-upgrade-process-n-to-o.html">OpenStack keystone zero downtime upgrade process newton to ocata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-10-31-to-conditional-or-to-skip-that-is-the-ansible-question.html">To conditional or to skip, that’s the Ansible question</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Midonet integration with OpenStack Mitaka</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-06-15-rally-openstack-benchmarking-from-docker-containers.html">Rally OpenStack benchmarking from Docker containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-06-06-opendaylight-in-a-docker-container.html">OpenDaylight in a Docker container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-04-24-openstack-kolla-deployment-from-rdo-packages.html">OpenStack kolla deployment from RDO packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-24-magnum-in-rdo-openstack-liberty-manual-installation-from-source-code.html">Magnum in RDO OpenStack Liberty manual installation from source code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-17-ceph-ansible-baremetal-deployment.html">Ceph Ansible baremetal deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-02-nova-vnc-flows-under-the-hood.html">Nova VNC flows under the hood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-24-ansible-ini_file-module-simplifying-your-devops-life.html">Ansible INI file module, simplifying your DevOps life</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-15-working-with-affinityanti-affinity-groups-openstack.html">Working with affinity/anti-affinity groups OpenStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-02-migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty.html">Migrate keystone v2.0 to keystone v3 OpenStack Liberty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-01-27-configure-neutron-dvr-openstack-liberty.html">Configure neutron DVR OpenStack Liberty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-01-14-openstack-segregation-with-availability-zones-and-host-aggregates.html">OpenStack segregation with availability zones and host aggregates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-12-23-nova-docker-driver.html">Nova Docker driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-12-14-murano-in-rdo-openstack-manual-installation.html">Murano in RDO OpenStack manual installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-09-08-ceph-radosgw-admin-ops-how-to-use-it.html">Ceph RadosGW admin Ops, how to use it</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-08-13-multiple-store-locations-for-glance-images.html">Multiple store locations for glance images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-07-02-list-all-tenants-belonging-an-user.html">List all tenants belonging an user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-24-load-balancer-as-a-service-lbaas.html">Load balancer as a service OpenStack LbaaS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-16-openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use.html">OpenStack nova APi start error, could not bind to 0.0.0.0 address all ready in use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-09-delete-openstack-neutron-networks-solution-to-unable-to-complete-operation-on-subnet.html">Delete OpenStack neutron networks, fix to unable to complete operation on subnet</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="2016-10-31-to-conditional-or-to-skip-that-is-the-ansible-question.html" title="previous chapter">To conditional or to skip, that’s the Ansible question</a></li>
+      <li>Next: <a href="2016-06-15-rally-openstack-benchmarking-from-docker-containers.html" title="next chapter">Rally OpenStack benchmarking from Docker containers</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Eduardo Gonzalez.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/2016-07-04-midonet-integration-with-openstack-mitaka.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,81 @@
+--- layout: post title: Instalación Identity Service (Keystone) date:
+2014-11-21 16:49:07.000000000 +01:00 type: post parent_id: '0'
+published: true password: '' status: publish categories: - OpenStack
+tags: - cloud - configuracion - guia - identity - instalacion - keystone
+- openstack meta: \_edit_last: '2' \_publicize_facebook_user:
+https://www.facebook.com/dudu.gonzalez90 \_publicize_twitter_user:
+"@hidanstillalive" \_thumbnail_id: '615' \_wpas_done_all: '1'
+\_wpas_skip_5226565: '1' \_wpas_skip_4949654: '1' \_wpas_skip_8706018:
+'1' \_wpas_skip_10228321: '1' \_jetpack_related_posts_cache:
+a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1568452754;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:577;}i:1;a:1:{s:2:"id";i:859;}i:2;a:1:{s:2:"id";i:825;}}}}
+dsq_thread_id: '6171737693' author: login: egongu90 email:
+egongu90@hotmail.com display_name: Editor first_name: '' last_name: ''
+permalink: "/816/" ---
+
+Primero instalaremos los paquetes necesarios de Openstack Identity
+Service
+
+   yum install openstack-keystone python-keystoneclient
+
+A Continuación configuraremos keystone para usar la base de datos MySQL
+que habiamos creado
+
+   openstack-config --set /etc/keystone/keystone.conf database
+   connection mysql://keystone:PASSWORD@controller/keystone
+
+Crearemos la base de datos para keystone y el usuario keystone
+
+   mysql -u root -p
+
+   CREATE DATABASE keystone;
+
+   GRANT ALL PRIVILEGES ON keystone.\* TO 'keystone'@'localhost'
+   IDENTIFIED BY 'keystonepassword';
+
+   GRANT ALL PRIVILEGES ON keystone.\* TO 'keystone'@'%' IDENTIFIED BY
+   'keystonepassword';
+
+   exit
+
+Creamos las tablas de keystone
+
+   su -s /bin/sh -c "keystone-manage db_sync" keystone
+
+Creamos un token de autenticacion para usar como clave entre keystone y
+los demás servicios de openstack
+
+   ADMIN_TOKEN=$(openssl rand -hex 10)
+
+   echo $ADMIN_TOKEN
+
+   openstack-config --set /etc/keystone/keystone.conf DEFAULT
+   admin_token $ADMIN_TOKEN
+
+Creamos las claves firmadas y los certificados, también restringimos el
+acceso a la información generada
+
+   keystone-manage pki_setup --keystone-user keystone --keystone-group
+   keystone
+
+   chown -R keystone:keystone /etc/keystone/ssl
+
+   chmod -R o-rwx /etc/keystone/ssl
+
+Iniciamos el servicio keystone y establecemos el arranque del servicio
+con el arranque del sistema
+
+   service openstack-keystone start
+
+   chkconfig openstack-keystone on
+
+Creamos una tarea en cron para que elimine los tokens caducados y
+prevenir  una acumulación innecesaria
+
+   | (crontab -l -u keystone 2>&1 \| grep -q token_flush) \|\|
+   | echo '@hourly /usr/bin/keystone-manage token_flush
+     >/var/log/keystone/
+   | keystone-tokenflush.log 2>&1' >> /var/spool/cron/keystone
+
+Ya tendríamos instalado keystone, el siguiente paso sera crear los
+usuarios, tenants y roles de administración, eso lo veremos en la
+siguiente entrada.

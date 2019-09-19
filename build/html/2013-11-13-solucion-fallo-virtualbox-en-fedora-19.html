@@ -1,0 +1,171 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>&lt;no title&gt; &#8212; egonzalez  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <p>— layout: post title: Solución fallo VirtualBox en Fedora 19 date:
+2013-11-13 18:00:14.000000000 +01:00 type: post parent_id: ‘0’
+published: true password: ‘’ status: publish categories: - Linux tags: -
+error - fedora 19 - linux - maquina virtual - solucion - Virtualbox -
+virtualizacion - VM meta: _publicize_pending: ‘1’
+publicize_facebook_url: <a class="reference external" href="https://facebook.com/10201630879271416">https://facebook.com/10201630879271416</a>
+_wpas_done_5226565: ‘1’ _publicize_done_external:
+a:1:{s:8:”facebook”;a:1:{i:1161837279;b:1;}} publicize_twitter_user:
+suicidezombiie publicize_twitter_url: http://t.co/FSbdnIaLv0
+_wpas_done_4949654: ‘1’ publicize_tumblr_url:
+http://suicidezombiie.tumblr.com.tumblr.com/post/66884427381
+_wpas_done_5226570: ‘1’ _wpas_skip_5226565: ‘1’ _wpas_skip_4949654:
+‘1’ _wpas_skip_5226570: ‘1’ _wpas_mess: Solución fallo VirtualBox en
+Fedora 19 http://wp.me/p3476y-3i _edit_last: ‘2’ _layout: inherit
+_login_radius_meta: a:1:{s:7:”sharing”;i:0;} snap_MYURL: ‘’ snapEdIT:
+‘1’ snapFB: N; snapTW: N; _jetpack_related_posts_cache:
+a:1:{s:32:”8f6677c9d6b0f903e98ad32ec61f8deb”;a:2:{s:7:”expires”;i:1568927713;s:7:”payload”;a:3:{i:0;a:1:{s:2:”id”;i:97;}i:1;a:1:{s:2:”id”;i:295;}i:2;a:1:{s:2:”id”;i:527;}}}}
+dsq_thread_id: ‘6127711605’ author: login: egongu90 email:
+egongu90&#64;hotmail.com display_name: Editor first_name: ‘’ last_name: ‘’
+permalink: “/solucion-fallo-virtualbox-en-fedora-19/” —</p>
+<div class="line-block">
+<div class="line">Mucha gente ha tenido problemas a la hora de abrir una maquina virtual
+en VirtualBox con Fedora 19, suele salir un error de compilación de
+VBox que por mucho que lo recompiles no se soluciona si no sigues los
+pasos previos que voy a explicar.</div>
+<div class="line">En primer lugar deberías de desinstalar VirtualBox completamente, doy
+por hecho de que si lo has instalado también sabrás desinstalarlo.</div>
+<div class="line">A continuación deberías de actualizar los paquetes del sistema, esto
+no es necesario, pero siempre recomendable por motivos de seguridad.Se
+hace mediante este comando:</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># yum -y upate</span>
+</pre></div>
+</div>
+<p>Después instalamos datos del kernel</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># yum -y install kernel-headers kernel-devel dkms gcc</span>
+</pre></div>
+</div>
+<p>Ahora vamos a la carpeta de repositorios de fedora</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># cd /etc/yum.repos.d</span>
+</pre></div>
+</div>
+<p>Ahora creamos/modificamos este archivo</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># vi virtualbox.repo</span>
+</pre></div>
+</div>
+<p>Se rellena con la siguiente información:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>               [virtualbox]
+name=Fedora$releasever - $basearch - VirtualBox
+baseurl=http://download.virtualbox.org/virtualbox/rpm/fedora/$releasever/$basearch
+enabled=1
+gpgcheck=1
+gpgkey=http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc
+</pre></div>
+</div>
+<p>Guardamos y salimos de este archivo</p>
+<p>Ahora instalamos VirtualBox</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># yum -y install VirtualBox-4.2</span>
+</pre></div>
+</div>
+<p>Ahora ejecutamos este comando para configurar VirtualBox</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># /etc/init.d/vboxdrv setup</span>
+</pre></div>
+</div>
+<p>Ahora añadimos nuestro usuario al grupo que tiene permisos para usar
+VirtualBox</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># usermod -G vboxusers -a &quot;NombredeUsuario&quot;</span>
+</pre></div>
+</div>
+<p>Esto debería permitirnos crear maquinas virtuales y abrirlas ya</p>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">egonzalez</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Eduardo Gonzalez.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/2013-11-13-solucion-fallo-virtualbox-en-fedora-19.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

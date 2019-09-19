@@ -1,0 +1,371 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Load balancer as a service OpenStack LbaaS &#8212; egonzalez  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="OpenStack nova APi start error, could not bind to 0.0.0.0 address all ready in use" href="2015-03-16-openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use.html" />
+    <link rel="prev" title="List all tenants belonging an user" href="2015-07-02-list-all-tenants-belonging-an-user.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="load-balancer-as-a-service-openstack-lbaas">
+<h1>Load balancer as a service OpenStack LbaaS<a class="headerlink" href="#load-balancer-as-a-service-openstack-lbaas" title="Permalink to this headline">¶</a></h1>
+<p>The following guide will show you how to deploy a LoadBalancer in
+Openstack with Neutron, but first, you should understand how it works,
+and what his components do.</p>
+<p>A Load Balancer is composed of the following components:</p>
+<ul class="simple">
+<li>Pool - A pool is a group of servers(members) who are designed to make
+the same job, generally, a pool of web servers is used for balancing
+traffic between the members of the pool.&nbsp;Here we will configure the
+Load Balancing Method (ROUND_ROBIN,LEAST_CONNECTIONS,SOURCE_IP)</li>
+<li>Members - Members are instances, a server, any aplication that you
+can balance the load. They are assigned as pool members.</li>
+<li>VIP - VIPs are Virtual IPs that logically represents the pool
+members. It is the IP where the load will be balanced between
+instances.</li>
+<li>Healthmonitor - Healthmonitor will check if the members of a pool are
+healthy, if an member is not working or the port/protocol monitored
+is down, healthmonitor will send a message to the pool to not balance
+the load to this member.</li>
+</ul>
+<p>Now will create a Pool with 2 members, this Pool have a VIP and a
+Healthmonitor on it.</p>
+<p>First we create a Pool</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[stack@localhost devstack]$ neutron lb-pool-create --lb-method ROUND_ROBIN --name LoadBalancerPool --protocol HTTP --subnet-id e5a90ab2-918e-412b-9723-0d822804f022
+Created a new pool:
++------------------------+--------------------------------------+
+| Field                  | Value                                |
++------------------------+--------------------------------------+
+| admin_state_up         | True                                 |
+| description            |                                      |
+| health_monitors        |                                      |
+| health_monitors_status |                                      |
+| id                     | 3eb0d41c-3df5-4beb-9758-ebfef56909df |
+| lb_method              | ROUND_ROBIN                          |
+| members                |                                      |
+| name                   | LoadBalancerPool                     |
+| protocol               | HTTP                                 |
+| provider               | haproxy                              |
+| status                 | PENDING_CREATE                       |
+| status_description     |                                      |
+| subnet_id              | e5a90ab2-918e-412b-9723-0d822804f022 |
+| tenant_id              | b1aaddea9f694e60aea5f1c0d1dd7c24     |
+| vip_id                 |                                      |
++------------------------+--------------------------------------+
+</pre></div>
+</div>
+<p>Next boot 2 instances in the same network</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[stack@localhost devstack]$ nova boot --flavor m1.tiny --image 6a3a7880-bc6f-454d-9a62-d9c2d268ef78 --security-groups default --nic net-id=daddce32-b6e8-4e3f-bd55-32459ed327ea WebServer1
+[stack@localhost devstack]$ nova boot --flavor m1.tiny --image 6a3a7880-bc6f-454d-9a62-d9c2d268ef78 --security-groups default --nic net-id=daddce32-b6e8-4e3f-bd55-32459ed327ea WebServer2
+
+[stack@localhost devstack]$ nova list
++--------------------------------------+------------+--------+------------+-------------+------------------+
+| ID                                   | Name       | Status | Task State | Power State | Networks         |
++--------------------------------------+------------+--------+------------+-------------+------------------+
+| c10e63c6-f342-4d1c-ae22-146c392ce398 | WebServer1 | BUILD  | spawning   | NOSTATE     | private=10.0.0.3 |
+| ceef9e6b-6198-4118-8027-00898dee1abe | WebServer2 | BUILD  | spawning   | NOSTATE     | private=10.0.0.4 |
++--------------------------------------+------------+--------+------------+-------------+------------------+
+</pre></div>
+</div>
+<p>Assign both instances to the Pool</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[stack@localhost devstack]$ neutron lb-member-create --address 10.0.0.3 --protocol-port 80 LoadBalancerPool
+Created a new member:
++--------------------+--------------------------------------+
+| Field              | Value                                |
++--------------------+--------------------------------------+
+| address            | 10.0.0.3                             |
+| admin_state_up     | True                                 |
+| id                 | a6de6bf0-3191-4721-aa01-5781ff05876e |
+| pool_id            | 3eb0d41c-3df5-4beb-9758-ebfef56909df |
+| protocol_port      | 80                                   |
+| status             | PENDING_CREATE                       |
+| status_description |                                      |
+| tenant_id          | b1aaddea9f694e60aea5f1c0d1dd7c24     |
+| weight             | 1                                    |
++--------------------+--------------------------------------+
+
+[stack@localhost devstack]$ neutron lb-member-create --address 10.0.0.4 --protocol-port 80 LoadBalancerPool
+Created a new member:
++--------------------+--------------------------------------+
+| Field              | Value                                |
++--------------------+--------------------------------------+
+| address            | 10.0.0.4                             |
+| admin_state_up     | True                                 |
+| id                 | 9688a770-6494-4599-88fa-6afcd18c4dd1 |
+| pool_id            | 3eb0d41c-3df5-4beb-9758-ebfef56909df |
+| protocol_port      | 80                                   |
+| status             | PENDING_CREATE                       |
+| status_description |                                      |
+| tenant_id          | b1aaddea9f694e60aea5f1c0d1dd7c24     |
+| weight             | 1                                    |
++--------------------+--------------------------------------+
+</pre></div>
+</div>
+<p>Then create a Healthmonitor and associate it to the Pool</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[stack@localhost devstack]$ neutron lb-healthmonitor-create --timeout 3 --max-retries 3 --delay 60 --type HTTP
+Created a new health_monitor:
++----------------+--------------------------------------+
+| Field          | Value                                |
++----------------+--------------------------------------+
+| admin_state_up | True                                 |
+| delay          | 60                                   |
+| expected_codes | 200                                  |
+| http_method    | GET                                  |
+| id             | cb73f8fd-14ea-4937-aa10-019e3da8432f |
+| max_retries    | 3                                    |
+| pools          |                                      |
+| tenant_id      | b1aaddea9f694e60aea5f1c0d1dd7c24     |
+| timeout        | 3                                    |
+| type           | HTTP                                 |
+| url_path       | /                                    |
++----------------+--------------------------------------+
+[stack@localhost devstack]$ neutron lb-healthmonitor-associate cb73f8fd-14ea-4937-aa10-019e3da8432f LoadBalancerPool
+Associated health monitor cb73f8fd-14ea-4937-aa10-019e3da8432f
+</pre></div>
+</div>
+<p>Create a VIP to the Pool</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[stack@localhost devstack]$ neutron lb-vip-create --name LoadBalancerVIP --protocol-port 80 --protocol HTTP --subnet-id e5a90ab2-918e-412b-9723-0d822804f022 LoadBalancerPool
+Created a new vip:
++---------------------+--------------------------------------+
+| Field               | Value                                |
++---------------------+--------------------------------------+
+| address             | 10.0.0.5                             |
+| admin_state_up      | True                                 |
+| connection_limit    | -1                                   |
+| description         |                                      |
+| id                  | 4e3c2b84-a286-4999-a258-51c44965a81a |
+| name                | LoadBalancerVIP                      |
+| pool_id             | 3eb0d41c-3df5-4beb-9758-ebfef56909df |
+| port_id             | d4ed46ac-aabf-40b6-8f28-1a2013971391 |
+| protocol            | HTTP                                 |
+| protocol_port       | 80                                   |
+| session_persistence |                                      |
+| status              | PENDING_CREATE                       |
+| status_description  |                                      |
+| subnet_id           | e5a90ab2-918e-412b-9723-0d822804f022 |
+| tenant_id           | b1aaddea9f694e60aea5f1c0d1dd7c24     |
++---------------------+--------------------------------------+
+</pre></div>
+</div>
+<p>Create a floating IP to the VIP</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[stack@localhost devstack]$ neutron floatingip-create 23101147-e724-4574-82c7-a05ccb661d4d
+Created a new floatingip:
++---------------------+--------------------------------------+
+| Field               | Value                                |
++---------------------+--------------------------------------+
+| fixed_ip_address    |                                      |
+| floating_ip_address | 172.24.4.3                           |
+| floating_network_id | 23101147-e724-4574-82c7-a05ccb661d4d |
+| id                  | 62fbf609-77db-4471-b6ae-9fe25a091a21 |
+| port_id             |                                      |
+| router_id           |                                      |
+| status              | DOWN                                 |
+| tenant_id           | b1aaddea9f694e60aea5f1c0d1dd7c24     |
++---------------------+--------------------------------------+
+</pre></div>
+</div>
+<p>Associate the floating IP with the VIP port</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[stack@localhost devstack]$ neutron floatingip-associate 62fbf609-77db-4471-b6ae-9fe25a091a21 d4ed46ac-aabf-40b6-8f28-1a2013971391
+Associated floating IP 62fbf609-77db-4471-b6ae-9fe25a091a21
+</pre></div>
+</div>
+<p>Create security rules to allow HTTP, SSH and ICMP traffic</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[stack@localhost devstack]$ neutron security-group-rule-create --protocol TCP --port-range-min 80 --port-range-max 80 be0b2264-744a-48b8-9a1e-033227d78f2b
+Created a new security_group_rule:
++-------------------+--------------------------------------+
+| Field             | Value                                |
++-------------------+--------------------------------------+
+| direction         | ingress                              |
+| ethertype         | IPv4                                 |
+| id                | 4635cbb6-d939-40b3-ac11-637c8b63b027 |
+| port_range_max    | 80                                   |
+| port_range_min    | 80                                   |
+| protocol          | tcp                                  |
+| remote_group_id   |                                      |
+| remote_ip_prefix  |                                      |
+| security_group_id | be0b2264-744a-48b8-9a1e-033227d78f2b |
+| tenant_id         | b1aaddea9f694e60aea5f1c0d1dd7c24     |
++-------------------+--------------------------------------+
+
+[stack@localhost devstack]$ neutron security-group-rule-create --protocol icmp be0b2264-744a-48b8-9a1e-033227d78f2b
+Created a new security_group_rule:
++-------------------+--------------------------------------+
+| Field             | Value                                |
++-------------------+--------------------------------------+
+| direction         | ingress                              |
+| ethertype         | IPv4                                 |
+| id                | 988329a1-d686-4541-8950-a22c721f847b |
+| port_range_max    |                                      |
+| port_range_min    |                                      |
+| protocol          | icmp                                 |
+| remote_group_id   |                                      |
+| remote_ip_prefix  |                                      |
+| security_group_id | be0b2264-744a-48b8-9a1e-033227d78f2b |
+| tenant_id         | b1aaddea9f694e60aea5f1c0d1dd7c24     |
++-------------------+--------------------------------------+
+
+[stack@localhost devstack]$ neutron security-group-rule-create --protocol TCP --port-range-min 22 --port-range-max 22 be0b2264-744a-48b8-9a1e-033227d78f2b
+Created a new security_group_rule:
++-------------------+--------------------------------------+
+| Field             | Value                                |
++-------------------+--------------------------------------+
+| direction         | ingress                              |
+| ethertype         | IPv4                                 |
+| id                | d18724dc-2eda-4031-be88-202a73c30c24 |
+| port_range_max    | 22                                   |
+| port_range_min    | 22                                   |
+| protocol          | tcp                                  |
+| remote_group_id   |                                      |
+| remote_ip_pref                          |
+| security_group_id | d7412bb3-9824-4eb7-bc4b-cd80ab6a570d |
+| tenant_id         | b1aaddea9f694e60aea5f1c0d1dd7c24     |
++-------------------+--------------------------------------+
+</pre></div>
+</div>
+<p>Login to both instances and run the command below to run a “webserver”.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[stack@localhost devstack]$ ssh cirros@INSTANCEIP
+The authenticity of host &#39;10.0.0.3 (10.0.0.3)&#39; can&#39;t be established.
+RSA key fingerprint is 94:00:8e:fe:9a:9d:af:ef:bc:e3:fd:9d:ad:d3:ab:a3.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added &#39;10.0.0.3&#39; (RSA) to the list of known hosts.
+
+$ while true; do echo -e &#39;HTTP/1.0 200 OK \r\n\r\nServer1&#39; | sudo nc -l -p 80 ; done
+$ while true; do echo -e &#39;HTTP/1.0 200 OK \r\n\r\nServer2&#39; | sudo nc -l -p 80 ; done
+</pre></div>
+</div>
+<p>If we check with curl the VIP’s floating IP, we’ll see that in every
+connection one of both servers reply with his name.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[stack@localhost ~]$ curl http://172.24.4.3
+Server1
+[stack@localhost ~]$ curl http://172.24.4.3
+Server2
+[stack@localhost ~]$ curl http://172.24.4.3
+Server1
+[stack@localhost ~]$ curl http://172.24.4.3
+Server2
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">egonzalez</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Post:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="2017-08-28-openstack-tacker-and-service-function-chaining-sfc-with-kolla.html">OpenStack tacker and service function chaining sfc with kolla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2017-02-22-deploy-openstack-designate-with-kolla-ansible.html">Deploy OpenStack designate with kolla-ansible</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2017-01-31-openstack-keystone-zero-downtime-upgrade-process-n-to-o.html">OpenStack keystone zero downtime upgrade process newton to ocata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-10-31-to-conditional-or-to-skip-that-is-the-ansible-question.html">To conditional or to skip, that’s the Ansible question</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-07-04-midonet-integration-with-openstack-mitaka.html">Midonet integration with OpenStack Mitaka</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-06-15-rally-openstack-benchmarking-from-docker-containers.html">Rally OpenStack benchmarking from Docker containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-06-06-opendaylight-in-a-docker-container.html">OpenDaylight in a Docker container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-04-24-openstack-kolla-deployment-from-rdo-packages.html">OpenStack kolla deployment from RDO packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-24-magnum-in-rdo-openstack-liberty-manual-installation-from-source-code.html">Magnum in RDO OpenStack Liberty manual installation from source code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-17-ceph-ansible-baremetal-deployment.html">Ceph Ansible baremetal deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-02-nova-vnc-flows-under-the-hood.html">Nova VNC flows under the hood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-24-ansible-ini_file-module-simplifying-your-devops-life.html">Ansible INI file module, simplifying your DevOps life</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-15-working-with-affinityanti-affinity-groups-openstack.html">Working with affinity/anti-affinity groups OpenStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-02-migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty.html">Migrate keystone v2.0 to keystone v3 OpenStack Liberty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-01-27-configure-neutron-dvr-openstack-liberty.html">Configure neutron DVR OpenStack Liberty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-01-14-openstack-segregation-with-availability-zones-and-host-aggregates.html">OpenStack segregation with availability zones and host aggregates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-12-23-nova-docker-driver.html">Nova Docker driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-12-14-murano-in-rdo-openstack-manual-installation.html">Murano in RDO OpenStack manual installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-09-08-ceph-radosgw-admin-ops-how-to-use-it.html">Ceph RadosGW admin Ops, how to use it</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-08-13-multiple-store-locations-for-glance-images.html">Multiple store locations for glance images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-07-02-list-all-tenants-belonging-an-user.html">List all tenants belonging an user</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Load balancer as a service OpenStack LbaaS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-16-openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use.html">OpenStack nova APi start error, could not bind to 0.0.0.0 address all ready in use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-09-delete-openstack-neutron-networks-solution-to-unable-to-complete-operation-on-subnet.html">Delete OpenStack neutron networks, fix to unable to complete operation on subnet</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="2015-07-02-list-all-tenants-belonging-an-user.html" title="previous chapter">List all tenants belonging an user</a></li>
+      <li>Next: <a href="2015-03-16-openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use.html" title="next chapter">OpenStack nova APi start error, could not bind to 0.0.0.0 address all ready in use</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Eduardo Gonzalez.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/2015-03-24-load-balancer-as-a-service-lbaas.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

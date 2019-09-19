@@ -1,0 +1,503 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Rally OpenStack benchmarking from Docker containers &#8212; egonzalez  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="OpenDaylight in a Docker container" href="2016-06-06-opendaylight-in-a-docker-container.html" />
+    <link rel="prev" title="Midonet integration with OpenStack Mitaka" href="2016-07-04-midonet-integration-with-openstack-mitaka.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="rally-openstack-benchmarking-from-docker-containers">
+<h1>Rally OpenStack benchmarking from Docker containers<a class="headerlink" href="#rally-openstack-benchmarking-from-docker-containers" title="Permalink to this headline">¶</a></h1>
+<p>OpenStack Rally is a project under the Big Tent umbrella with the
+mission of verify OpenStack environments to ensure SLAs under high loads
+or fail over scenarios, and cloud services verification. Rally can also
+be used to continuous integration and delivery tasks.</p>
+<p>Why use Rally inside a Docker container? Rally is a service that is not
+commonly used in most environments, is a tool that is used when new
+infrastructure changes are made or when a SLAs review must be done, not
+make any sense have a service consuming infrastructure resources or
+block a server only for use under specific situations. Also, if your
+OpenStack infrastructure is automated, with a container you can have a
+nice integration with CI/CD tools like Jenkins.</p>
+<p>Main reasons to use Rally inside Docker containers:</p>
+<ul class="simple">
+<li>Quick tests/deployments of Rally tasks</li>
+<li>Automated testing</li>
+<li>Cost savings</li>
+<li>Operators can execute tasks with their own computers, freeing
+infrastructure resources</li>
+<li>Re-utilization of resources</li>
+</ul>
+<p>Here you got my suggestions about how to use Rally inside Docker:</p>
+<ul class="simple">
+<li>Create a new container(automatized or not by another tool)</li>
+<li>Always use an external volume to store rally reports data</li>
+<li>Execute Rally tasks</li>
+<li>Export the reports to the volume shared with the Docker host</li>
+<li>Kill the container</li>
+</ul>
+<div class="line-block">
+<div class="line">Let’s start with this quick guide:</div>
+<div class="line">Clone the repo i created with the Dockerfile</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[egonzalez@localhost ~]$ git clone https://github.com/egonzalez90/docker-rally.git
+</pre></div>
+</div>
+<p>Move to docker-rally directory</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[egonzalez@localhost ~]$ cd docker-rally/
+</pre></div>
+</div>
+<p>Create the Docker image</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[egonzalez@localhost docker-rally]$ docker build -t egonzalez90/rally-mitaka .
+Sending build context to Docker daemon  76.8 kB
+Step 1 : FROM centos:7
+ ---&gt; 904d6c400333
+Step 2 : MAINTAINER Eduardo Gonzalez Gutierrez &lt;dabarren@gmail.com&gt;
+ ---&gt; Using cache
+ ---&gt; ee93bc7747e1
+Step 3 : RUN yum install -y https://repos.fedorapeople.org/repos/openstack/openstack-mitaka/rdo-release-mitaka-3.noarch.rpm
+ ---&gt; Using cache
+ ---&gt; 8492ab9ee261
+Step 4 : RUN yum update -y
+ ---&gt; Using cache
+ ---&gt; 1374340eb39a
+Step 5 : RUN yum -y install         openstack-rally         gcc         libffi-devel         python-devel         openssl-devel         gmp-devel         libxml2-devel         libxslt-devel         postgresql-devel         redhat-rpm-config         wget         openstack-selinux         openstack-utils &amp;&amp;         yum clean all
+ ---&gt; Using cache
+ ---&gt; 9b65e4a281be
+Step 6 : RUN rally-manage --config-file /etc/rally/rally.conf db recreate
+ ---&gt; Using cache
+ ---&gt; dc4f3dbc1505
+Successfully built dc4f3dbc1505
+</pre></div>
+</div>
+<p>Start rally container with a pseudo-tty and a volume to store rally
+execution data</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[egonzalez@localhost docker-rally]$ docker run -ti -v /opt/rally-data/:/rally-data:Z egonzalez90/rally-mitaka
+[root@07766ba700e8 /]#
+</pre></div>
+</div>
+<p>Create a file called deploy.json with the admin info of your OpenStack
+environment</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@07766ba700e8</span> <span class="o">/</span><span class="p">]</span><span class="c1"># vi deploy.json</span>
+
+<span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;ExistingCloud&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;auth_url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://controller:5000/v2.0&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;region_name&quot;</span><span class="p">:</span> <span class="s2">&quot;RegionOne&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;admin&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;my_password&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tenant_name&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Create a deployment with the json we previously created</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@07766ba700e8</span> <span class="o">/</span><span class="p">]</span><span class="c1"># rally deployment create --file=deploy.json --name=existing</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">15</span> <span class="mi">09</span><span class="p">:</span><span class="mi">42</span><span class="p">:</span><span class="mf">25.428</span> <span class="mi">25</span> <span class="n">INFO</span> <span class="n">rally</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">engine</span> <span class="p">[</span><span class="o">-</span><span class="p">]</span> <span class="n">Deployment</span> <span class="n">a5162111</span><span class="o">-</span><span class="mi">02</span><span class="n">a5</span><span class="o">-</span><span class="mi">458</span><span class="n">f</span><span class="o">-</span><span class="n">bb59</span><span class="o">-</span><span class="n">f822cab1aa93</span> <span class="o">|</span> <span class="n">Starting</span><span class="p">:</span>  <span class="n">OpenStack</span> <span class="n">cloud</span> <span class="n">deployment</span><span class="o">.</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">15</span> <span class="mi">09</span><span class="p">:</span><span class="mi">42</span><span class="p">:</span><span class="mf">25.478</span> <span class="mi">25</span> <span class="n">INFO</span> <span class="n">rally</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">engine</span> <span class="p">[</span><span class="o">-</span><span class="p">]</span> <span class="n">Deployment</span> <span class="n">a5162111</span><span class="o">-</span><span class="mi">02</span><span class="n">a5</span><span class="o">-</span><span class="mi">458</span><span class="n">f</span><span class="o">-</span><span class="n">bb59</span><span class="o">-</span><span class="n">f822cab1aa93</span> <span class="o">|</span> <span class="n">Completed</span><span class="p">:</span> <span class="n">OpenStack</span> <span class="n">cloud</span> <span class="n">deployment</span><span class="o">.</span>
+<span class="o">+--------------------------------------+----------------------------+----------+------------------+--------+</span>
+<span class="o">|</span> <span class="n">uuid</span>                                 <span class="o">|</span> <span class="n">created_at</span>                 <span class="o">|</span> <span class="n">name</span>     <span class="o">|</span> <span class="n">status</span>           <span class="o">|</span> <span class="n">active</span> <span class="o">|</span>
+<span class="o">+--------------------------------------+----------------------------+----------+------------------+--------+</span>
+<span class="o">|</span> <span class="n">a5162111</span><span class="o">-</span><span class="mi">02</span><span class="n">a5</span><span class="o">-</span><span class="mi">458</span><span class="n">f</span><span class="o">-</span><span class="n">bb59</span><span class="o">-</span><span class="n">f822cab1aa93</span> <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">15</span> <span class="mi">09</span><span class="p">:</span><span class="mi">42</span><span class="p">:</span><span class="mf">25.391691</span> <span class="o">|</span> <span class="n">existing</span> <span class="o">|</span> <span class="n">deploy</span><span class="o">-&gt;</span><span class="n">finished</span> <span class="o">|</span>        <span class="o">|</span>
+<span class="o">+--------------------------------------+----------------------------+----------+------------------+--------+</span>
+<span class="n">Using</span> <span class="n">deployment</span><span class="p">:</span> <span class="n">a5162111</span><span class="o">-</span><span class="mi">02</span><span class="n">a5</span><span class="o">-</span><span class="mi">458</span><span class="n">f</span><span class="o">-</span><span class="n">bb59</span><span class="o">-</span><span class="n">f822cab1aa93</span>
+<span class="o">~/.</span><span class="n">rally</span><span class="o">/</span><span class="n">openrc</span> <span class="n">was</span> <span class="n">updated</span>
+
+<span class="n">HINTS</span><span class="p">:</span>
+<span class="o">*</span> <span class="n">To</span> <span class="n">get</span> <span class="n">your</span> <span class="n">cloud</span> <span class="n">resources</span><span class="p">,</span> <span class="n">run</span><span class="p">:</span>
+        <span class="n">rally</span> <span class="n">show</span> <span class="p">[</span><span class="n">flavors</span><span class="o">|</span><span class="n">images</span><span class="o">|</span><span class="n">keypairs</span><span class="o">|</span><span class="n">networks</span><span class="o">|</span><span class="n">secgroups</span><span class="p">]</span>
+
+<span class="o">*</span> <span class="n">To</span> <span class="n">use</span> <span class="n">standard</span> <span class="n">OpenStack</span> <span class="n">clients</span><span class="p">,</span> <span class="nb">set</span> <span class="n">up</span> <span class="n">your</span> <span class="n">env</span> <span class="n">by</span> <span class="n">running</span><span class="p">:</span>
+        <span class="n">source</span> <span class="o">~/.</span><span class="n">rally</span><span class="o">/</span><span class="n">openrc</span>
+  <span class="n">OpenStack</span> <span class="n">clients</span> <span class="n">are</span> <span class="n">now</span> <span class="n">configured</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">g</span> <span class="n">run</span><span class="p">:</span>
+        <span class="n">glance</span> <span class="n">image</span><span class="o">-</span><span class="nb">list</span>
+</pre></div>
+</div>
+<p>Source the openrc file rally has created with your user info and test if
+you can connect with glance</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@07766ba700e8</span> <span class="o">/</span><span class="p">]</span><span class="c1"># source ~/.rally/openrc</span>
+
+<span class="p">[</span><span class="n">root</span><span class="nd">@07766ba700e8</span> <span class="o">/</span><span class="p">]</span><span class="c1"># glance  image-list</span>
+<span class="o">+--------------------------------------+--------+</span>
+<span class="o">|</span> <span class="n">ID</span>                                   <span class="o">|</span> <span class="n">Name</span>   <span class="o">|</span>
+<span class="o">+--------------------------------------+--------+</span>
+<span class="o">|</span> <span class="mi">1</span><span class="n">c4fc8a6</span><span class="o">-</span><span class="mi">3</span><span class="n">ea7</span><span class="o">-</span><span class="mi">433</span><span class="n">c</span><span class="o">-</span><span class="mi">8</span><span class="n">ece</span><span class="o">-</span><span class="n">a14bbaf861e2</span> <span class="o">|</span> <span class="n">cirros</span> <span class="o">|</span>
+<span class="o">+--------------------------------------+--------+</span>
+</pre></div>
+</div>
+<p>Check deployment status</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@07766ba700e8</span> <span class="o">/</span><span class="p">]</span><span class="c1"># rally deployment check</span>
+<span class="n">keystone</span> <span class="n">endpoints</span> <span class="n">are</span> <span class="n">valid</span> <span class="ow">and</span> <span class="n">following</span> <span class="n">services</span> <span class="n">are</span> <span class="n">available</span><span class="p">:</span>
+<span class="o">+-------------+----------------+-----------+</span>
+<span class="o">|</span> <span class="n">services</span>    <span class="o">|</span> <span class="nb">type</span>           <span class="o">|</span> <span class="n">status</span>    <span class="o">|</span>
+<span class="o">+-------------+----------------+-----------+</span>
+<span class="o">|</span> <span class="n">__unknown__</span> <span class="o">|</span> <span class="n">volumev2</span>       <span class="o">|</span> <span class="n">Available</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">ceilometer</span>  <span class="o">|</span> <span class="n">metering</span>       <span class="o">|</span> <span class="n">Available</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">cinder</span>      <span class="o">|</span> <span class="n">volume</span>         <span class="o">|</span> <span class="n">Available</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">cloud</span>       <span class="o">|</span> <span class="n">cloudformation</span> <span class="o">|</span> <span class="n">Available</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">glance</span>      <span class="o">|</span> <span class="n">image</span>          <span class="o">|</span> <span class="n">Available</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">heat</span>        <span class="o">|</span> <span class="n">orchestration</span>  <span class="o">|</span> <span class="n">Available</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">keystone</span>    <span class="o">|</span> <span class="n">identity</span>       <span class="o">|</span> <span class="n">Available</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">neutron</span>     <span class="o">|</span> <span class="n">network</span>        <span class="o">|</span> <span class="n">Available</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">nova</span>        <span class="o">|</span> <span class="n">compute</span>        <span class="o">|</span> <span class="n">Available</span> <span class="o">|</span>
+<span class="o">+-------------+----------------+-----------+</span>
+<span class="n">NOTE</span><span class="p">:</span> <span class="s1">&#39;__unknown__&#39;</span> <span class="n">service</span> <span class="n">name</span> <span class="n">means</span> <span class="n">that</span> <span class="n">Keystone</span> <span class="n">service</span> <span class="n">catalog</span> <span class="n">doesn</span><span class="s1">&#39;t return name for this service and Rally can not identify service by its type. BUT you still can use such services with api_versions context, specifying type of service (execute `rally plugin show api_versions` for more details).</span>
+</pre></div>
+</div>
+<p>Create a test execution file, this test will check if nova can boot and
+delete some instances</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@07766ba700e8</span> <span class="o">/</span><span class="p">]</span><span class="c1"># vi execution.json</span>
+
+<span class="p">{</span>
+  <span class="s2">&quot;NovaServers.boot_and_delete_server&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;runner&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;constant&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;concurrency&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;times&quot;</span><span class="p">:</span> <span class="mi">10</span>
+      <span class="p">},</span>
+      <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;force_delete&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+        <span class="s2">&quot;flavor&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;m1.tiny&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cirros&quot;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;users&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">&quot;project_domain&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;users_per_tenant&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+          <span class="s2">&quot;tenants&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+          <span class="s2">&quot;resource_management_workers&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+          <span class="s2">&quot;user_domain&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Run the task with the following command</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[root@07766ba700e8 /]# rally task start execution.json
+--------------------------------------------------------------------------------
+ Preparing input task
+--------------------------------------------------------------------------------
+
+Input task is:
+{
+    &quot;NovaServers.boot_and_delete_server&quot;: [
+        {
+            &quot;args&quot;: {
+                &quot;flavor&quot;: {
+                    &quot;name&quot;: &quot;m1.tiny&quot;
+                },
+                &quot;image&quot;: {
+                    &quot;name&quot;: &quot;cirros&quot;
+                },
+                &quot;force_delete&quot;: false
+            },
+            &quot;runner&quot;: {
+                &quot;type&quot;: &quot;constant&quot;,
+                &quot;times&quot;: 10,
+                &quot;concurrency&quot;: 2
+            },
+            &quot;context&quot;: {
+                &quot;users&quot;: {
+                    &quot;tenants&quot;: 3,
+                    &quot;users_per_tenant&quot;: 2
+                }
+            }
+        }
+    ]
+}
+
+Task syntax is correct :)
+2016-06-15 09:48:11.556 101 INFO rally.task.engine [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Starting:  Task validation.
+2016-06-15 09:48:11.579 101 INFO rally.task.engine [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Starting:  Task validation of scenarios names.
+2016-06-15 09:48:11.581 101 INFO rally.task.engine [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Completed: Task validation of scenarios names.
+2016-06-15 09:48:11.581 101 INFO rally.task.engine [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Starting:  Task validation of syntax.
+2016-06-15 09:48:11.587 101 INFO rally.task.engine [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Completed: Task validation of syntax.
+2016-06-15 09:48:11.588 101 INFO rally.task.engine [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Starting:  Task validation of semantic.
+2016-06-15 09:48:11.588 101 INFO rally.task.engine [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Starting:  Task validation check cloud.
+2016-06-15 09:48:11.694 101 INFO rally.task.engine [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Completed: Task validation check cloud.
+2016-06-15 09:48:11.700 101 INFO rally.plugins.openstack.context.keystone.users [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Starting:  Enter context: `users`
+2016-06-15 09:48:12.004 101 INFO rally.plugins.openstack.context.keystone.users [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Completed: Enter context: `users`
+2016-06-15 09:48:12.106 101 WARNING rally.task.types [-] FlavorResourceType is deprecated in Rally v0.3.2; use the equivalent resource plugin name instead
+2016-06-15 09:48:12.207 101 WARNING rally.task.types [-] ImageResourceType is deprecated in Rally v0.3.2; use the equivalent resource plugin name instead
+2016-06-15 09:48:12.395 101 INFO rally.plugins.openstack.context.keystone.users [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Starting:  Exit context: `users`
+2016-06-15 09:48:13.546 101 INFO rally.plugins.openstack.context.keystone.users [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Completed: Exit context: `users`
+2016-06-15 09:48:13.546 101 INFO rally.task.engine [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Completed: Task validation of semantic.
+2016-06-15 09:48:13.547 101 INFO rally.task.engine [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Completed: Task validation.
+Task config is valid :)
+--------------------------------------------------------------------------------
+ Task  137eb997-d1f8-4d3f-918a-8aec3db7500f: started
+--------------------------------------------------------------------------------
+
+Benchmarking... This can take a while...
+
+To track task status use:
+
+        rally task status
+        or
+        rally task detailed
+
+Using task: 137eb997-d1f8-4d3f-918a-8aec3db7500f
+2016-06-15 09:48:13.555 101 INFO rally.api [-] Benchmark Task 137eb997-d1f8-4d3f-918a-8aec3db7500f on Deployment a5162111-02a5-458f-bb59-f822cab1aa93
+2016-06-15 09:48:13.558 101 INFO rally.task.engine [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Starting:  Benchmarking.
+2016-06-15 09:48:13.586 101 INFO rally.task.engine [-] Running benchmark with key:
+{
+  &quot;kw&quot;: {
+    &quot;runner&quot;: {
+      &quot;type&quot;: &quot;constant&quot;,
+      &quot;concurrency&quot;: 2,
+      &quot;times&quot;: 10
+    },
+    &quot;args&quot;: {
+      &quot;force_delete&quot;: false,
+      &quot;flavor&quot;: {
+        &quot;name&quot;: &quot;m1.tiny&quot;
+      },
+      &quot;image&quot;: {
+        &quot;name&quot;: &quot;cirros&quot;
+      }
+    },
+    &quot;context&quot;: {
+      &quot;users&quot;: {
+        &quot;users_per_tenant&quot;: 2,
+        &quot;tenants&quot;: 3
+      }
+    }
+  },
+  &quot;name&quot;: &quot;NovaServers.boot_and_delete_server&quot;,
+  &quot;pos&quot;: 0
+}
+2016-06-15 09:48:13.592 101 INFO rally.plugins.openstack.context.keystone.users [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Starting:  Enter context: `users`
+2016-06-15 09:48:14.994 101 INFO rally.plugins.openstack.context.keystone.users [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Completed: Enter context: `users`
+2016-06-15 09:48:15.244 292 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 0 START
+2016-06-15 09:48:15.245 293 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 1 START
+2016-06-15 09:48:16.975 292 WARNING rally.common.logging [-] &#39;wait_for&#39; is deprecated in Rally v0.1.2: Use wait_for_status instead.
+2016-06-15 09:48:17.095 293 WARNING rally.common.logging [-] &#39;wait_for&#39; is deprecated in Rally v0.1.2: Use wait_for_status instead.
+2016-06-15 09:49:21.024 292 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 0 END: OK
+2016-06-15 09:49:21.028 292 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 2 START
+2016-06-15 09:49:32.109 293 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 1 END: OK
+2016-06-15 09:49:32.112 293 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 3 START
+2016-06-15 09:49:41.504 292 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 2 END: OK
+2016-06-15 09:49:41.508 292 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 4 START
+2016-06-15 09:49:52.455 293 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 3 END: OK
+2016-06-15 09:49:52.462 293 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 5 START
+2016-06-15 09:50:01.907 292 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 4 END: OK
+2016-06-15 09:50:01.918 292 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 6 START
+2016-06-15 09:50:12.692 293 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 5 END: OK
+2016-06-15 09:50:12.694 293 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 7 START
+2016-06-15 09:50:23.122 292 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 6 END: OK
+2016-06-15 09:50:23.131 292 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 8 START
+2016-06-15 09:50:33.322 293 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 7 END: OK
+2016-06-15 09:50:33.332 293 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 9 START
+2016-06-15 09:50:43.285 292 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 8 END: OK
+2016-06-15 09:50:53.422 293 INFO rally.task.runner [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | ITER: 9 END: OK
+2016-06-15 09:50:53.436 101 INFO rally.plugins.openstack.context.cleanup.user [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Starting:  user resources cleanup
+2016-06-15 09:50:55.244 101 INFO rally.plugins.openstack.context.cleanup.user [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Completed: user resources cleanup
+2016-06-15 09:50:55.245 101 INFO rally.plugins.openstack.context.keystone.users [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Starting:  Exit context: `users`
+2016-06-15 09:50:57.438 101 INFO rally.plugins.openstack.context.keystone.users [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Completed: Exit context: `users`
+2016-06-15 09:50:58.023 101 INFO rally.task.engine [-] Task 137eb997-d1f8-4d3f-918a-8aec3db7500f | Completed: Benchmarking.
+
+--------------------------------------------------------------------------------
+Task 137eb997-d1f8-4d3f-918a-8aec3db7500f: finished
+--------------------------------------------------------------------------------
+
+test scenario NovaServers.boot_and_delete_server
+args position 0
+args values:
+{
+  &quot;runner&quot;: {
+    &quot;type&quot;: &quot;constant&quot;,
+    &quot;concurrency&quot;: 2,
+    &quot;times&quot;: 10
+  },
+  &quot;args&quot;: {
+    &quot;force_delete&quot;: false,
+    &quot;flavor&quot;: {
+      &quot;name&quot;: &quot;m1.tiny&quot;
+    },
+    &quot;image&quot;: {
+      &quot;name&quot;: &quot;cirros&quot;
+    }
+  },
+  &quot;context&quot;: {
+    &quot;users&quot;: {
+      &quot;project_domain&quot;: &quot;default&quot;,
+      &quot;users_per_tenant&quot;: 2,
+      &quot;tenants&quot;: 3,
+      &quot;resource_management_workers&quot;: 30,
+      &quot;user_domain&quot;: &quot;default&quot;
+    }
+  }
+}
+
++-----------------------------------------------------------------------------------------------------------------------+
+|                                                 Response Times (sec)                                                  |
++--------------------+-----------+--------------+--------------+--------------+-----------+-----------+---------+-------+
+| Action             | Min (sec) | Median (sec) | 90%ile (sec) | 95%ile (sec) | Max (sec) | Avg (sec) | Success | Count |
++--------------------+-----------+--------------+--------------+--------------+-----------+-----------+---------+-------+
+| nova.boot_server   | 17.84     | 18.158       | 64.433       | 69.419       | 74.405    | 28.299    | 100.0%  | 10    |
+| nova.delete_server | 2.24      | 2.275        | 2.454        | 2.456        | 2.458     | 2.317     | 100.0%  | 10    |
+| total              | 20.09     | 20.437       | 66.888       | 71.875       | 76.863    | 30.616    | 100.0%  | 10    |
++--------------------+-----------+--------------+--------------+--------------+-----------+-----------+---------+-------+
+
+Load duration: 158.199862003
+Full duration: 163.846753836
+
+HINTS:
+* To plot HTML graphics with this data, run:
+        rally task report 137eb997-d1f8-4d3f-918a-8aec3db7500f --out output.html
+
+* To generate a JUnit report, run:
+        rally task report 137eb997-d1f8-4d3f-918a-8aec3db7500f --junit --out output.xml
+
+* To get raw JSON output of task results, run:
+        rally task results 137eb997-d1f8-4d3f-918a-8aec3db7500f
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">After a while, you will receive an output execution resume, you can
+export to a report file with the following command in a pretty style
+report.</div>
+<div class="line">Use the volume we created with the Docker Host to save report files.</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@07766ba700e8</span> <span class="o">/</span><span class="p">]</span><span class="c1"># rally task report 137eb997-d1f8-4d3f-918a-8aec3db7500f --html-static --out /rally-data/output.html</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Open the output file form a Web browser and review the report.</div>
+</div>
+<div class="line-block">
+<div class="line">Regards</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">egonzalez</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Post:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="2017-08-28-openstack-tacker-and-service-function-chaining-sfc-with-kolla.html">OpenStack tacker and service function chaining sfc with kolla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2017-02-22-deploy-openstack-designate-with-kolla-ansible.html">Deploy OpenStack designate with kolla-ansible</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2017-01-31-openstack-keystone-zero-downtime-upgrade-process-n-to-o.html">OpenStack keystone zero downtime upgrade process newton to ocata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-10-31-to-conditional-or-to-skip-that-is-the-ansible-question.html">To conditional or to skip, that’s the Ansible question</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-07-04-midonet-integration-with-openstack-mitaka.html">Midonet integration with OpenStack Mitaka</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Rally OpenStack benchmarking from Docker containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-06-06-opendaylight-in-a-docker-container.html">OpenDaylight in a Docker container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-04-24-openstack-kolla-deployment-from-rdo-packages.html">OpenStack kolla deployment from RDO packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-24-magnum-in-rdo-openstack-liberty-manual-installation-from-source-code.html">Magnum in RDO OpenStack Liberty manual installation from source code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-17-ceph-ansible-baremetal-deployment.html">Ceph Ansible baremetal deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-02-nova-vnc-flows-under-the-hood.html">Nova VNC flows under the hood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-24-ansible-ini_file-module-simplifying-your-devops-life.html">Ansible INI file module, simplifying your DevOps life</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-15-working-with-affinityanti-affinity-groups-openstack.html">Working with affinity/anti-affinity groups OpenStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-02-migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty.html">Migrate keystone v2.0 to keystone v3 OpenStack Liberty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-01-27-configure-neutron-dvr-openstack-liberty.html">Configure neutron DVR OpenStack Liberty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-01-14-openstack-segregation-with-availability-zones-and-host-aggregates.html">OpenStack segregation with availability zones and host aggregates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-12-23-nova-docker-driver.html">Nova Docker driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-12-14-murano-in-rdo-openstack-manual-installation.html">Murano in RDO OpenStack manual installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-09-08-ceph-radosgw-admin-ops-how-to-use-it.html">Ceph RadosGW admin Ops, how to use it</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-08-13-multiple-store-locations-for-glance-images.html">Multiple store locations for glance images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-07-02-list-all-tenants-belonging-an-user.html">List all tenants belonging an user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-24-load-balancer-as-a-service-lbaas.html">Load balancer as a service OpenStack LbaaS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-16-openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use.html">OpenStack nova APi start error, could not bind to 0.0.0.0 address all ready in use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-09-delete-openstack-neutron-networks-solution-to-unable-to-complete-operation-on-subnet.html">Delete OpenStack neutron networks, fix to unable to complete operation on subnet</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="2016-07-04-midonet-integration-with-openstack-mitaka.html" title="previous chapter">Midonet integration with OpenStack Mitaka</a></li>
+      <li>Next: <a href="2016-06-06-opendaylight-in-a-docker-container.html" title="next chapter">OpenDaylight in a Docker container</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Eduardo Gonzalez.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/2016-06-15-rally-openstack-benchmarking-from-docker-containers.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
