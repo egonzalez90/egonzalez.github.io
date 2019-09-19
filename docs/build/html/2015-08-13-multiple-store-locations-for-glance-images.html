@@ -1,0 +1,222 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Multiple store locations for glance images &#8212; egonzalez  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="List all tenants belonging an user" href="2015-07-02-list-all-tenants-belonging-an-user.html" />
+    <link rel="prev" title="Ceph RadosGW admin Ops, how to use it" href="2015-09-08-ceph-radosgw-admin-ops-how-to-use-it.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="multiple-store-locations-for-glance-images">
+<h1>Multiple store locations for glance images<a class="headerlink" href="#multiple-store-locations-for-glance-images" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">In this post i will show you how to add multiple store locations for
+glance images.</div>
+<div class="line">This will allow you to extend your glance capacity without affect your
+current stored images.</div>
+<div class="line">The location can be any device or directory mounted at your glance
+host as a NFS, a physical hard disk, or an extended partition.</div>
+<div class="line">Let’s start:</div>
+</div>
+<div class="line-block">
+<div class="line">First we need to create the directories where hard disks are going to
+be mounted</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">mkdir</span> <span class="pre">/var/lib/glance/lvm-images</span> <span class="pre">sudo</span> <span class="pre">mkdir</span> <span class="pre">/var/lib/glance/extended-images</span></code></div>
+</div>
+<p>Next, we mount the devices at the directories created in the previous
+step</p>
+<p><code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">mount</span> <span class="pre">/dev/sdc1</span> <span class="pre">/var/lib/glance/lvm-images/</span> <span class="pre">sudo</span> <span class="pre">mount</span> <span class="pre">/dev/sdd1</span> <span class="pre">/var/lib/glance/extended-images/</span></code></p>
+<p>An important step is making the glance user the owner of that
+directories</p>
+<p><code class="docutils literal notranslate"><span class="pre">chown</span> <span class="pre">glance:glance</span> <span class="pre">/var/lib/glance/lvm-images/</span> <span class="pre">chown</span> <span class="pre">glance:glance</span> <span class="pre">/var/lib/glance/extended-images/</span></code></p>
+<div class="line-block">
+<div class="line">Once the previous steps has been made, we need to configure the
+/etc/glance/glance-api.conf file.</div>
+<div class="line">In this file, we’re going to configure glance to use multiple
+directories to store images.</div>
+<div class="line">We search the section “Filesystem Store Options” and modify/create the
+following:</div>
+<div class="line">We will leave the option “filesystem_store_datadir=” empty, if we
+comment this option, glance will use it as default store location and
+will show us an error during image creation.</div>
+<div class="line">And we add the option “filesystem_store_datadirs”, once for any
+directory we created in previous steps.</div>
+<div class="line">We can use priorities on glance, priority 200 has precedence over
+priority 100, if we don’t specify any priority, default will be 0</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">============</span> <span class="pre">Filesystem</span> <span class="pre">Store</span> <span class="pre">Options</span> <span class="pre">========================</span> <span class="pre">filesystem_store_datadir=</span> <span class="pre">filesystem_store_datadirs=/var/lib/glance/images</span> <span class="pre">filesystem_store_datadirs=/var/lib/glance/lvm-images:200</span> <span class="pre">filesystem_store_datadirs=/var/lib/glance/extended-images:100</span></code></p>
+<p>Once we have configured glance-api.conf, restart glance-api service</p>
+<p><code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">openstack-glance-api</span></code></p>
+<p>Now we’re going to create an image</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">glance</span> <span class="n">image</span><span class="o">-</span><span class="n">create</span> <span class="o">--</span><span class="n">name</span> <span class="n">CirrosDatadir</span> <span class="o">--</span><span class="n">file</span> <span class="o">~/</span><span class="n">Images</span><span class="o">/</span><span class="n">cirros</span><span class="o">-</span><span class="mf">0.3</span><span class="o">.</span><span class="mi">4</span><span class="o">-</span><span class="n">i386</span><span class="o">-</span><span class="n">disk</span><span class="o">.</span><span class="n">img</span> <span class="o">--</span><span class="n">disk</span><span class="o">-</span><span class="nb">format</span> <span class="n">qcow2</span> <span class="o">--</span><span class="n">container</span><span class="o">-</span><span class="nb">format</span> <span class="n">bare</span> <span class="o">--</span><span class="n">progress</span>
+<span class="p">[</span><span class="o">=============================&gt;</span><span class="p">]</span> <span class="mi">100</span><span class="o">%</span>
+<span class="o">+------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">Property</span>         <span class="o">|</span> <span class="n">Value</span>                                <span class="o">|</span>
+<span class="o">+------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">checksum</span>         <span class="o">|</span> <span class="mi">79</span><span class="n">b4436412283bb63c2cba4ac796bcd9</span>     <span class="o">|</span>
+<span class="o">|</span> <span class="n">container_format</span> <span class="o">|</span> <span class="n">bare</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">created_at</span>       <span class="o">|</span> <span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">13</span><span class="n">T11</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mf">00.000000</span>           <span class="o">|</span>
+<span class="o">|</span> <span class="n">deleted</span>          <span class="o">|</span> <span class="kc">False</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">deleted_at</span>       <span class="o">|</span> <span class="kc">None</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">disk_format</span>      <span class="o">|</span> <span class="n">qcow2</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>               <span class="o">|</span> <span class="mi">6</span><span class="n">ac8f5b9</span><span class="o">-</span><span class="mi">5863</span><span class="o">-</span><span class="mi">46</span><span class="n">ca</span><span class="o">-</span><span class="n">bb04</span><span class="o">-</span><span class="n">db352d35d829</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">is_public</span>        <span class="o">|</span> <span class="kc">False</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">min_disk</span>         <span class="o">|</span> <span class="mi">0</span>                                    <span class="o">|</span>
+<span class="o">|</span> <span class="n">min_ram</span>          <span class="o">|</span> <span class="mi">0</span>                                    <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>             <span class="o">|</span> <span class="n">CirrosDatadir</span>                        <span class="o">|</span>
+<span class="o">|</span> <span class="n">owner</span>            <span class="o">|</span> <span class="mi">738</span><span class="n">ec25d8b9c41f9b0cf84ce25730e92</span>     <span class="o">|</span>
+<span class="o">|</span> <span class="n">protected</span>        <span class="o">|</span> <span class="kc">False</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">size</span>             <span class="o">|</span> <span class="mi">12506112</span>                             <span class="o">|</span>
+<span class="o">|</span> <span class="n">status</span>           <span class="o">|</span> <span class="n">active</span>                               <span class="o">|</span>
+<span class="o">|</span> <span class="n">updated_at</span>       <span class="o">|</span> <span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">13</span><span class="n">T11</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mf">09.000000</span>           <span class="o">|</span>
+<span class="o">|</span> <span class="n">virtual_size</span>     <span class="o">|</span> <span class="kc">None</span>                                 <span class="o">|</span>
+<span class="o">+------------------+--------------------------------------+</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">The image has been properly created at glance, we’re going to check if
+the image has been properly created in the expected location.</div>
+<div class="line">As we have configured a priority of 200 on this directory, the image
+must be here.</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-lsrt</span> <span class="pre">/var/lib/glance/extended-images/</span> <span class="pre">total</span> <span class="pre">12216</span> <span class="pre">12216</span> <span class="pre">-rw-r-----.</span> <span class="pre">1</span> <span class="pre">glance</span> <span class="pre">glance</span> <span class="pre">12506112</span> <span class="pre">ago</span> <span class="pre">13</span> <span class="pre">13:34</span> <span class="pre">6ac8f5b9-5863-46ca-bb04-db352d35d829</span></code></p>
+<p>We have to keep the store location that we have been using till now, the
+images remain available here.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-lsrt</span> <span class="pre">/var/lib/glance/images/</span> <span class="pre">total</span> <span class="pre">12892</span> <span class="pre">12892</span> <span class="pre">-rw-r-----.</span> <span class="pre">1</span> <span class="pre">glance</span> <span class="pre">glance</span> <span class="pre">13200896</span> <span class="pre">ago</span> <span class="pre">6</span> <span class="pre">11:09</span> <span class="pre">10a7a49f-2533-4513-881f-c4c6e419b778</span></code></p>
+<p>Finally we check if the images are in active status</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">glance</span> <span class="n">image</span><span class="o">-</span><span class="nb">list</span>
+<span class="o">+--------------------------------------+----------------+-------------+------------------+----------+--------+</span>
+<span class="o">|</span> <span class="n">ID</span>                                   <span class="o">|</span> <span class="n">Name</span>           <span class="o">|</span> <span class="n">Disk</span> <span class="n">Format</span> <span class="o">|</span> <span class="n">Container</span> <span class="n">Format</span> <span class="o">|</span> <span class="n">Size</span>     <span class="o">|</span> <span class="n">Status</span> <span class="o">|</span>
+<span class="o">+--------------------------------------+----------------+-------------+------------------+----------+--------+</span>
+<span class="o">|</span> <span class="mi">10</span><span class="n">a7a49f</span><span class="o">-</span><span class="mi">2533</span><span class="o">-</span><span class="mi">4513</span><span class="o">-</span><span class="mi">881</span><span class="n">f</span><span class="o">-</span><span class="n">c4c6e419b778</span> <span class="o">|</span> <span class="n">cirros</span>         <span class="o">|</span> <span class="n">qcow2</span>       <span class="o">|</span> <span class="n">bare</span>             <span class="o">|</span> <span class="mi">13200896</span> <span class="o">|</span> <span class="n">active</span> <span class="o">|</span>
+<span class="o">|</span> <span class="mi">6</span><span class="n">ac8f5b9</span><span class="o">-</span><span class="mi">5863</span><span class="o">-</span><span class="mi">46</span><span class="n">ca</span><span class="o">-</span><span class="n">bb04</span><span class="o">-</span><span class="n">db352d35d829</span> <span class="o">|</span> <span class="n">CirrosDatadir</span>  <span class="o">|</span> <span class="n">qcow2</span>       <span class="o">|</span> <span class="n">bare</span>             <span class="o">|</span> <span class="mi">12506112</span> <span class="o">|</span> <span class="n">active</span> <span class="o">|</span>
+<span class="o">|</span> <span class="mf">9e957</span><span class="n">bad</span><span class="o">-</span><span class="n">d0f8</span><span class="o">-</span><span class="mi">4294</span><span class="o">-</span><span class="n">a438</span><span class="o">-</span><span class="mi">77</span><span class="n">ad0d6af02b</span> <span class="o">|</span> <span class="n">CirrosDatadir2</span> <span class="o">|</span> <span class="n">qcow2</span>       <span class="o">|</span> <span class="n">bare</span>             <span class="o">|</span> <span class="mi">12506112</span> <span class="o">|</span> <span class="n">active</span> <span class="o">|</span>
+<span class="o">+--------------------------------------+----------------+-------------+------------------+----------+--------+</span>
+</pre></div>
+</div>
+<p>Regards</p>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">egonzalez</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Post:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="2017-08-28-openstack-tacker-and-service-function-chaining-sfc-with-kolla.html">OpenStack tacker and service function chaining sfc with kolla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2017-02-22-deploy-openstack-designate-with-kolla-ansible.html">Deploy OpenStack designate with kolla-ansible</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2017-01-31-openstack-keystone-zero-downtime-upgrade-process-n-to-o.html">OpenStack keystone zero downtime upgrade process newton to ocata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-10-31-to-conditional-or-to-skip-that-is-the-ansible-question.html">To conditional or to skip, that’s the Ansible question</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-07-12-spacewalk-red-hat-satellite-v5-in-a-docker-container-poc.html">Spacewalk Red Hat Satellite v5 in a Docker container PoC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-07-04-midonet-integration-with-openstack-mitaka.html">Midonet integration with OpenStack Mitaka</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-06-15-rally-openstack-benchmarking-from-docker-containers.html">Rally OpenStack benchmarking from Docker containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-06-06-opendaylight-in-a-docker-container.html">OpenDaylight in a Docker container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-04-24-openstack-kolla-deployment-from-rdo-packages.html">OpenStack kolla deployment from RDO packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-24-magnum-in-rdo-openstack-liberty-manual-installation-from-source-code.html">Magnum in RDO OpenStack Liberty manual installation from source code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-17-ceph-ansible-baremetal-deployment.html">Ceph Ansible baremetal deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-02-nova-vnc-flows-under-the-hood.html">Nova VNC flows under the hood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-24-ansible-ini_file-module-simplifying-your-devops-life.html">Ansible INI file module, simplifying your DevOps life</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-15-working-with-affinityanti-affinity-groups-openstack.html">Working with affinity/anti-affinity groups OpenStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-02-migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty.html">Migrate keystone v2.0 to keystone v3 OpenStack Liberty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-01-27-configure-neutron-dvr-openstack-liberty.html">Configure neutron DVR OpenStack Liberty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-01-14-openstack-segregation-with-availability-zones-and-host-aggregates.html">OpenStack segregation with availability zones and host aggregates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-12-23-nova-docker-driver.html">Nova Docker driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-12-14-murano-in-rdo-openstack-manual-installation.html">Murano in RDO OpenStack manual installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-09-08-ceph-radosgw-admin-ops-how-to-use-it.html">Ceph RadosGW admin Ops, how to use it</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Multiple store locations for glance images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-07-02-list-all-tenants-belonging-an-user.html">List all tenants belonging an user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-24-load-balancer-as-a-service-lbaas.html">Load balancer as a service OpenStack LbaaS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-16-openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use.html">OpenStack nova APi start error, could not bind to 0.0.0.0 address all ready in use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-09-delete-openstack-neutron-networks-solution-to-unable-to-complete-operation-on-subnet.html">Delete OpenStack neutron networks, fix to unable to complete operation on subnet</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="2015-09-08-ceph-radosgw-admin-ops-how-to-use-it.html" title="previous chapter">Ceph RadosGW admin Ops, how to use it</a></li>
+      <li>Next: <a href="2015-07-02-list-all-tenants-belonging-an-user.html" title="next chapter">List all tenants belonging an user</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Eduardo Gonzalez.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/2015-08-13-multiple-store-locations-for-glance-images.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

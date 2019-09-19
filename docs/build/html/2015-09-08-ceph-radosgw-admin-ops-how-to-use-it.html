@@ -1,0 +1,226 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Ceph RadosGW admin Ops, how to use it &#8212; egonzalez  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Multiple store locations for glance images" href="2015-08-13-multiple-store-locations-for-glance-images.html" />
+    <link rel="prev" title="Murano in RDO OpenStack manual installation" href="2015-12-14-murano-in-rdo-openstack-manual-installation.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="ceph-radosgw-admin-ops-how-to-use-it">
+<h1>Ceph RadosGW admin Ops, how to use it<a class="headerlink" href="#ceph-radosgw-admin-ops-how-to-use-it" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">Using RadosGW admin ops for the first time, can be a real headache ,
+for this purpose i have made this post, where you will understand how
+to use this API.</div>
+<div class="line">Let’s start:</div>
+</div>
+<div class="line-block">
+<div class="line">For issue a request through admin ops, you need to have a signature,
+this signature is make it signing a header.</div>
+<div class="line">The header must to be composed by the current date, the request
+type(GET/PUT/POST/DELETE) and the request itself.</div>
+<div class="line">This header must be signed by SSL including the admin ops secret on
+this signature.</div>
+<div class="line">Now , you can make a request.</div>
+<div class="line">Sometimes, the time is not the same as the radosgw node expect, you
+can hack on it changing the date=$(date) value with:</div>
+<div class="line">If your host has two hours more than the radosgw node, substract this
+two hours under $(( 10#$i-2)) variable, where 2 is the two hours to
+substract.</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>date=$(for i in $(date &quot;+%H&quot;) ; do date &quot;+%a, %d %b %Y $(( 10#$i-2 )):%M:%S +0000&quot; ; done)
+</pre></div>
+</div>
+<p>Examples:</p>
+<p>Create a user named egonzalez:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#!/bin/bash
+token=U2JCD4ZG4D1XJOI5XNF4 ## USER_TOKEN
+secret=+IFgr7POzLWS0i3hQnC+dd3DOAZObHoY5NYm6m3b ## USER_SECRET
+query=$1
+name=$2
+query3=&quot;&amp;uid=&quot;
+query2=admin/user
+query4=&quot;&amp;quota-type=user&quot;
+date=$(date)
+header=&quot;PUT\n\n\n${date}\n/${query2}&quot;
+sig=$(echo -en ${header} | openssl sha1 -hmac ${secret} -binary | base64)
+curl -v -H &quot;Date: ${date}&quot; -H &quot;Authorization: AWS ${token}:${sig}&quot; -L -X PUT &quot;http://10.0.2.10/${query2}?format=json${query3}${query}&amp;display-name=${name}&quot; -H &quot;Host: 10.0.2.10&quot;
+##Change IPs with your own IPs
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[ceph@adminnode scripts]$ sh createUser.sh egonzalez EgonzalezDescription
+{&quot;user_id&quot;:&quot;egonzalez&quot;,&quot;display_name&quot;:&quot;EgonzalezDescription&quot;,&quot;email&quot;:&quot;&quot;,&quot;suspended&quot;:0,&quot;max_buckets&quot;:1000,&quot;subusers&quot;:[],&quot;keys&quot;:[{&quot;user&quot;:&quot;egonzalez&quot;,&quot;access_key&quot;:&quot;24FUKCWD6BL9T08DQ2JA&quot;,&quot;secret_key&quot;:&quot;mEQdhcrsqOy7q6Snvu8B5d5A2Ek9OezJH+khwYvX&quot;}],&quot;swift_keys&quot;:[],&quot;caps&quot;:[]}
+</pre></div>
+</div>
+<p>See egonzalez quotas</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#!/bin/bash
+token=U2JCD4ZG4D1XJOI5XNF4 ## USER_TOKEN
+secret=+IFgr7POzLWS0i3hQnC+dd3DOAZObHoY5NYm6m3b ## USER_SECRET
+query=$1
+query3=&quot;&amp;uid=&quot;
+query2=admin/user
+query4=&quot;&amp;quota-type=user&quot;
+date=$(date)
+header=&quot;GET\n\n\n${date}\n/${query2}&quot;
+sig=$(echo -en ${header} | openssl sha1 -hmac ${secret} -binary | base64)
+curl -v -H &quot;Date: ${date}&quot; -H &quot;Authorization: AWS ${token}:${sig}&quot; -L -X GET &quot;http://10.0.2.10/${query2}?quota${query3}${query}&amp;quota-type=user&quot; -H &quot;Host: 10.0.2.10&quot;
+##Change IPs with your own IPs
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[ceph@adminnode scripts]$ sh getuserquota.sh egonzalez
+
+{&quot;enabled&quot;: true,&quot;max_size_kb&quot;:1000,&quot;max_objects&quot;:1000}Status: 200 OK
+</pre></div>
+</div>
+<p>See egonzalez user information.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#!/bin/bash
+token=U2JCD4ZG4D1XJOI5XNF4 ## USER_TOKEN
+secret=+IFgr7POzLWS0i3hQnC+dd3DOAZObHoY5NYm6m3b ## USER_SECRET
+query=$1
+query3=&quot;&amp;uid=&quot;
+query2=admin/user
+date=$(date)
+header=&quot;GET\n\n\n${date}\n/${query2}&quot;
+sig=$(echo -en ${header} | openssl sha1 -hmac ${secret} -binary | base64)
+curl -v -H &quot;Date: ${date}&quot; -H &quot;Authorization: AWS ${token}:${sig}&quot; -L -X GET &quot;http://10.0.2.10/${query2}?format=json${query3}${query}&quot; -H &quot;Host: 10.0.2.10&quot;
+##Change IPs with your own IPs
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[ceph@adminnode scripts]$ sh userInfo.sh egonzalez
+{&quot;user_id&quot;:&quot;egonzalez&quot;,&quot;display_name&quot;:&quot;EgonzalezDescription&quot;,&quot;email&quot;:&quot;&quot;,&quot;suspended&quot;:0,&quot;max_buckets&quot;:1000,&quot;subusers&quot;:[],&quot;keys&quot;:[{&quot;user&quot;:&quot;egonzalez&quot;,&quot;access_key&quot;:&quot;24FUKCWD6BL9T08DQ2JA&quot;,&quot;secret_key&quot;:&quot;mEQdhcrsqOy7q6Snvu8B5d5A2Ek9OezJH+khwYvX&quot;}],&quot;swift_keys&quot;:[],&quot;caps&quot;:[]}
+</pre></div>
+</div>
+<p>When you really understand how admin ops works, is not as dificult to
+use it, just search at the official documentation and modify the desired
+values.</p>
+<p>I hope this helps:</p>
+<p>Regards, Eduardo.</p>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">egonzalez</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Post:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="2017-08-28-openstack-tacker-and-service-function-chaining-sfc-with-kolla.html">OpenStack tacker and service function chaining sfc with kolla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2017-02-22-deploy-openstack-designate-with-kolla-ansible.html">Deploy OpenStack designate with kolla-ansible</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2017-01-31-openstack-keystone-zero-downtime-upgrade-process-n-to-o.html">OpenStack keystone zero downtime upgrade process newton to ocata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-10-31-to-conditional-or-to-skip-that-is-the-ansible-question.html">To conditional or to skip, that’s the Ansible question</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-07-12-spacewalk-red-hat-satellite-v5-in-a-docker-container-poc.html">Spacewalk Red Hat Satellite v5 in a Docker container PoC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-07-04-midonet-integration-with-openstack-mitaka.html">Midonet integration with OpenStack Mitaka</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-06-15-rally-openstack-benchmarking-from-docker-containers.html">Rally OpenStack benchmarking from Docker containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-06-06-opendaylight-in-a-docker-container.html">OpenDaylight in a Docker container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-04-24-openstack-kolla-deployment-from-rdo-packages.html">OpenStack kolla deployment from RDO packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-24-magnum-in-rdo-openstack-liberty-manual-installation-from-source-code.html">Magnum in RDO OpenStack Liberty manual installation from source code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-17-ceph-ansible-baremetal-deployment.html">Ceph Ansible baremetal deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-02-nova-vnc-flows-under-the-hood.html">Nova VNC flows under the hood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-24-ansible-ini_file-module-simplifying-your-devops-life.html">Ansible INI file module, simplifying your DevOps life</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-15-working-with-affinityanti-affinity-groups-openstack.html">Working with affinity/anti-affinity groups OpenStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-02-migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty.html">Migrate keystone v2.0 to keystone v3 OpenStack Liberty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-01-27-configure-neutron-dvr-openstack-liberty.html">Configure neutron DVR OpenStack Liberty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-01-14-openstack-segregation-with-availability-zones-and-host-aggregates.html">OpenStack segregation with availability zones and host aggregates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-12-23-nova-docker-driver.html">Nova Docker driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-12-14-murano-in-rdo-openstack-manual-installation.html">Murano in RDO OpenStack manual installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Ceph RadosGW admin Ops, how to use it</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-08-13-multiple-store-locations-for-glance-images.html">Multiple store locations for glance images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-07-02-list-all-tenants-belonging-an-user.html">List all tenants belonging an user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-24-load-balancer-as-a-service-lbaas.html">Load balancer as a service OpenStack LbaaS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-16-openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use.html">OpenStack nova APi start error, could not bind to 0.0.0.0 address all ready in use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-09-delete-openstack-neutron-networks-solution-to-unable-to-complete-operation-on-subnet.html">Delete OpenStack neutron networks, fix to unable to complete operation on subnet</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="2015-12-14-murano-in-rdo-openstack-manual-installation.html" title="previous chapter">Murano in RDO OpenStack manual installation</a></li>
+      <li>Next: <a href="2015-08-13-multiple-store-locations-for-glance-images.html" title="next chapter">Multiple store locations for glance images</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Eduardo Gonzalez.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/2015-09-08-ceph-radosgw-admin-ops-how-to-use-it.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

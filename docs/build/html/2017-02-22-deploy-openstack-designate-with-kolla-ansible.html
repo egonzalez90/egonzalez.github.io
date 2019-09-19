@@ -1,0 +1,410 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Deploy OpenStack designate with kolla-ansible &#8212; egonzalez  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="OpenStack keystone zero downtime upgrade process newton to ocata" href="2017-01-31-openstack-keystone-zero-downtime-upgrade-process-n-to-o.html" />
+    <link rel="prev" title="OpenStack tacker and service function chaining sfc with kolla" href="2017-08-28-openstack-tacker-and-service-function-chaining-sfc-with-kolla.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="deploy-openstack-designate-with-kolla-ansible">
+<h1>Deploy OpenStack designate with kolla-ansible<a class="headerlink" href="#deploy-openstack-designate-with-kolla-ansible" title="Permalink to this headline">¶</a></h1>
+<p>During Ocata release, OpenStack DNS-as-a-Service (Designate) support was
+implemented in OpenStack kolla project.</p>
+<p>This post will guide you through a basic deployment and tests of
+designate service.</p>
+<p>Install required dependencies and tools for kolla-ansible and designate.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># yum install -y epel-release</span>
+<span class="c1"># yum install -y python-pip python-devel libffi-devel gcc openssl-devel ansible ntp wget bind-utils</span>
+<span class="c1"># pip install -U pip</span>
+</pre></div>
+</div>
+<p>Install Docker and downgrade to 1.12.6. At the time of writing this post
+libvirt had issues to connect with D-Bus due SElinux issues with Docker
+1.13.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># curl -sSL https://get.docker.io | bash</span>
+<span class="c1"># yum downgrade docker-engine-1.12.6 docker-engine-selinux-1.12.6</span>
+<span class="c1"># yum install -y python-docker-py</span>
+</pre></div>
+</div>
+<p>Configure Docker daemon to allow insecure-registry (Use the IP where
+your remote registry will be located).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># mkdir -p /etc/systemd/system/docker.service.d</span>
+<span class="c1"># tee /etc/systemd/system/docker.service.d/kolla.conf &lt;&lt;-&#39;EOF&#39;</span>
+<span class="p">[</span><span class="n">Service</span><span class="p">]</span>
+<span class="n">ExecStart</span><span class="o">=</span>
+<span class="n">ExecStart</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">dockerd</span> <span class="o">--</span><span class="n">insecure</span><span class="o">-</span><span class="n">registry</span> <span class="mf">172.28</span><span class="o">.</span><span class="mf">128.3</span><span class="p">:</span><span class="mi">4000</span>
+<span class="n">MountFlags</span><span class="o">=</span><span class="n">shared</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+<p>Reload systemd daemons and start/stop/disable/enable the following
+services.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># systemctl daemon-reload</span>
+<span class="c1"># systemctl stop libvirtd</span>
+<span class="c1"># systemctl disable libvirtd</span>
+<span class="c1"># systemctl enable ntpd docker</span>
+<span class="c1"># systemctl start ntpd docker</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Download Ocata registry created in tarballs.openstack.org, skip this
+step if images used are custom builds or downloaded from DockerHub.</div>
+<div class="line">Create kolla registry from downloaded tarball.</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># wget https://tarballs.openstack.org/kolla/images/centos-binary-registry-ocata.tar.gz</span>
+<span class="c1"># mkdir /opt/kolla_registry</span>
+<span class="c1"># sudo tar xzf centos-binary-registry-ocata.tar.gz -C /opt/kolla_registry</span>
+<span class="c1"># docker run -d -p 4000:5000 --restart=always -v /opt/kolla_registry/:/var/lib/registry --name registry registry:2</span>
+</pre></div>
+</div>
+<p>Install kolla-ansible.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># pip install kolla-ansible</span>
+<span class="c1"># cp -r /usr/share/kolla-ansible/etc_examples/kolla /etc/kolla/</span>
+<span class="c1"># cp /usr/share/kolla-ansible/ansible/inventory/* .</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Configure kolla globals.yml configuration file with the following
+content.</div>
+<div class="line">Change values when necessary (IP addresses, interface names).</div>
+<div class="line">This is a sample minimal configuration.</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># vi /etc/kolla/globals.yml</span>
+<span class="o">---</span>
+<span class="n">kolla_internal_vip_address</span><span class="p">:</span> <span class="s2">&quot;172.28.128.10&quot;</span>
+<span class="n">kolla_base_distro</span><span class="p">:</span> <span class="s2">&quot;centos&quot;</span>
+<span class="n">kolla_install_type</span><span class="p">:</span> <span class="s2">&quot;binary&quot;</span>
+<span class="n">docker_registry</span><span class="p">:</span> <span class="s2">&quot;172.28.128.3:4000&quot;</span>
+<span class="n">docker_namespace</span><span class="p">:</span> <span class="s2">&quot;lokolla&quot;</span>
+<span class="n">network_interface</span><span class="p">:</span> <span class="s2">&quot;enp0s8&quot;</span>
+<span class="n">neutron_external_interface</span><span class="p">:</span> <span class="s2">&quot;enp0s9&quot;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Configure designate options in globals.yml.</div>
+<div class="line">dns_interface must be network reachable from nova instances if
+internal DNS resolution is needed.</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">enable_designate</span><span class="p">:</span> <span class="s2">&quot;yes&quot;</span>
+<span class="n">dns_interface</span><span class="p">:</span> <span class="s2">&quot;enp0s8&quot;</span>
+<span class="n">designate_backend</span><span class="p">:</span> <span class="s2">&quot;bind9&quot;</span>
+<span class="n">designate_ns_record</span><span class="p">:</span> <span class="s2">&quot;sample.openstack.org&quot;</span>
+</pre></div>
+</div>
+<p>Configure inventory, add the nodes in their respective groups.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># vi ~/multinode</span>
+</pre></div>
+</div>
+<p>Generate passwords.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># kolla-genpwd</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Ensure the environment is ready to deploy with prechecks.</div>
+<div class="line">Until prechecks does not succeed do not start deployment.</div>
+<div class="line">Fix what is necessary.</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># kolla-ansible prechecks -i ~/multinode</span>
+</pre></div>
+</div>
+<p>Pull Docker images on the servers, this can be skipped because will be
+made in deploy step, but doing it first will ensure all the nodes have
+the images you need and will minimize the deployment time.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># kolla-ansible pull -i ~/multinode</span>
+</pre></div>
+</div>
+<p>Deploy kolla-ansible and do a woot for kolla ;)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># kolla-ansible deploy -i ~/multinode</span>
+</pre></div>
+</div>
+<p>Create credentials file and source it.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># kolla-ansible post-deploy -i ~/multinode</span>
+<span class="c1"># source /etc/kolla/admin-openrc.sh</span>
+</pre></div>
+</div>
+<p>Check that all containers are running and none of them are restarting or
+exiting.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># docker ps -a --filter status=exited --filter status=restarting</span>
+<span class="n">CONTAINER</span> <span class="n">ID</span>        <span class="n">IMAGE</span>               <span class="n">COMMAND</span>             <span class="n">CREATED</span>             <span class="n">STATUS</span>              <span class="n">PORTS</span>               <span class="n">NAMES</span>
+</pre></div>
+</div>
+<p>Install required python clients</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># pip install python-openstackclient python-designateclient python-neutronclient</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Execute a base OpenStack configuration (public and internal networks,
+cirros image).</div>
+<div class="line">Do no execute this script if custom networks are going to be used.</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># sh /usr/share/kolla-ansible/init-runonce</span>
+</pre></div>
+</div>
+<p>Create a sample designate zone.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># openstack zone create --email admin@sample.openstack.org sample.openstack.org.</span>
+<span class="o">+----------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">Field</span>          <span class="o">|</span> <span class="n">Value</span>                                <span class="o">|</span>
+<span class="o">+----------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">action</span>         <span class="o">|</span> <span class="n">CREATE</span>                               <span class="o">|</span>
+<span class="o">|</span> <span class="n">attributes</span>     <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">created_at</span>     <span class="o">|</span> <span class="mi">2017</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">22</span><span class="n">T13</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mf">39.000000</span>           <span class="o">|</span>
+<span class="o">|</span> <span class="n">description</span>    <span class="o">|</span> <span class="kc">None</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">email</span>          <span class="o">|</span> <span class="n">admin</span><span class="nd">@sample</span><span class="o">.</span><span class="n">openstack</span><span class="o">.</span><span class="n">org</span>           <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>             <span class="o">|</span> <span class="mi">4</span><span class="n">a44b0c9</span><span class="o">-</span><span class="n">bd07</span><span class="o">-</span><span class="mi">4</span><span class="n">f5c</span><span class="o">-</span><span class="mi">8908</span><span class="o">-</span><span class="mi">523</span><span class="n">f453f269d</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">masters</span>        <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>           <span class="o">|</span> <span class="n">sample</span><span class="o">.</span><span class="n">openstack</span><span class="o">.</span><span class="n">org</span><span class="o">.</span>                <span class="o">|</span>
+<span class="o">|</span> <span class="n">pool_id</span>        <span class="o">|</span> <span class="mi">85</span><span class="n">d18aec</span><span class="o">-</span><span class="mf">453e-45</span><span class="n">ae</span><span class="o">-</span><span class="mi">9</span><span class="n">eb3</span><span class="o">-</span><span class="mi">748841</span><span class="n">a1da12</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">project_id</span>     <span class="o">|</span> <span class="mi">937</span><span class="n">d49af6cfe4ef080a79f9a833d7c7d</span>     <span class="o">|</span>
+<span class="o">|</span> <span class="n">serial</span>         <span class="o">|</span> <span class="mi">1487769279</span>                           <span class="o">|</span>
+<span class="o">|</span> <span class="n">status</span>         <span class="o">|</span> <span class="n">PENDING</span>                              <span class="o">|</span>
+<span class="o">|</span> <span class="n">transferred_at</span> <span class="o">|</span> <span class="kc">None</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">ttl</span>            <span class="o">|</span> <span class="mi">3600</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="nb">type</span>           <span class="o">|</span> <span class="n">PRIMARY</span>                              <span class="o">|</span>
+<span class="o">|</span> <span class="n">updated_at</span>     <span class="o">|</span> <span class="kc">None</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">version</span>        <span class="o">|</span> <span class="mi">1</span>                                    <span class="o">|</span>
+<span class="o">+----------------+--------------------------------------+</span>
+</pre></div>
+</div>
+<p>Configure designate sink to make use of the previously created zone,
+sink will need zone_id to automatically create neutron and nova records
+into designate.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># mkdir -p /etc/kolla/config/designate/designate-sink/</span>
+<span class="c1"># vi /etc/kolla/config/designate/designate-sink.conf</span>
+<span class="p">[</span><span class="n">handler</span><span class="p">:</span><span class="n">nova_fixed</span><span class="p">]</span>
+<span class="n">zone_id</span> <span class="o">=</span> <span class="mi">4</span><span class="n">a44b0c9</span><span class="o">-</span><span class="n">bd07</span><span class="o">-</span><span class="mi">4</span><span class="n">f5c</span><span class="o">-</span><span class="mi">8908</span><span class="o">-</span><span class="mi">523</span><span class="n">f453f269d</span>
+<span class="p">[</span><span class="n">handler</span><span class="p">:</span><span class="n">neutron_floatingip</span><span class="p">]</span>
+<span class="n">zone_id</span> <span class="o">=</span> <span class="mi">4</span><span class="n">a44b0c9</span><span class="o">-</span><span class="n">bd07</span><span class="o">-</span><span class="mi">4</span><span class="n">f5c</span><span class="o">-</span><span class="mi">8908</span><span class="o">-</span><span class="mi">523</span><span class="n">f453f269d</span>
+</pre></div>
+</div>
+<p>After configure designate-sink.conf, reconfigure designate to make use
+of this configuration.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># kolla-ansible reconfigure -i ~/multinode --tags designate</span>
+</pre></div>
+</div>
+<p>List networks.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># neutron net-list</span>
+<span class="o">+--------------------------------------+----------+----------------------------------+--------------------------------------------------+</span>
+<span class="o">|</span> <span class="nb">id</span>                                   <span class="o">|</span> <span class="n">name</span>     <span class="o">|</span> <span class="n">tenant_id</span>                        <span class="o">|</span> <span class="n">subnets</span>                                          <span class="o">|</span>
+<span class="o">+--------------------------------------+----------+----------------------------------+--------------------------------------------------+</span>
+<span class="o">|</span> <span class="mi">3</span><span class="n">b56c605</span><span class="o">-</span><span class="mi">5</span><span class="n">a01</span><span class="o">-</span><span class="mi">45</span><span class="n">be</span><span class="o">-</span><span class="mi">9</span><span class="n">ed6</span><span class="o">-</span><span class="n">e4c3285e4366</span> <span class="o">|</span> <span class="n">demo</span><span class="o">-</span><span class="n">net</span> <span class="o">|</span> <span class="mi">937</span><span class="n">d49af6cfe4ef080a79f9a833d7c7d</span> <span class="o">|</span> <span class="mi">7</span><span class="n">f28f050</span><span class="o">-</span><span class="mi">77</span><span class="n">b2</span><span class="o">-</span><span class="mi">426</span><span class="n">e</span><span class="o">-</span><span class="n">b963</span><span class="o">-</span><span class="mi">35</span><span class="n">b682077993</span> <span class="mf">10.0</span><span class="o">.</span><span class="mf">0.0</span><span class="o">/</span><span class="mi">24</span> <span class="o">|</span>
+<span class="o">|</span> <span class="mi">6954</span><span class="n">d495</span><span class="o">-</span><span class="n">fb8c</span><span class="o">-</span><span class="mi">4</span><span class="n">b0b</span><span class="o">-</span><span class="mi">98</span><span class="n">a9</span><span class="o">-</span><span class="mi">9672</span><span class="n">a7f65b7c</span> <span class="o">|</span> <span class="n">public1</span>  <span class="o">|</span> <span class="mi">937</span><span class="n">d49af6cfe4ef080a79f9a833d7c7d</span> <span class="o">|</span> <span class="mi">9</span><span class="n">bd9feca</span><span class="o">-</span><span class="mi">40</span><span class="n">a7</span><span class="o">-</span><span class="mf">4e82</span><span class="o">-</span><span class="n">b912</span><span class="o">-</span><span class="n">e51b726ad746</span> <span class="mf">10.0</span><span class="o">.</span><span class="mf">2.0</span><span class="o">/</span><span class="mi">24</span> <span class="o">|</span>
+<span class="o">+--------------------------------------+----------+----------------------------------+--------------------------------------------------+</span>
+</pre></div>
+</div>
+<p>Update the network with a dns_domain.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># neutron net-update 3b56c605-5a01-45be-9ed6-e4c3285e4366 --dns_domain sample.openstack.org.</span>
+<span class="n">Updated</span> <span class="n">network</span><span class="p">:</span> <span class="mi">3</span><span class="n">b56c605</span><span class="o">-</span><span class="mi">5</span><span class="n">a01</span><span class="o">-</span><span class="mi">45</span><span class="n">be</span><span class="o">-</span><span class="mi">9</span><span class="n">ed6</span><span class="o">-</span><span class="n">e4c3285e4366</span>
+</pre></div>
+</div>
+<p>Ensure dns_domain is properly applied.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># neutron net-show 3b56c605-5a01-45be-9ed6-e4c3285e4366</span>
+<span class="o">+---------------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">Field</span>                     <span class="o">|</span> <span class="n">Value</span>                                <span class="o">|</span>
+<span class="o">+---------------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">admin_state_up</span>            <span class="o">|</span> <span class="kc">True</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">availability_zone_hints</span>   <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">availability_zones</span>        <span class="o">|</span> <span class="n">nova</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">created_at</span>                <span class="o">|</span> <span class="mi">2017</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">22</span><span class="n">T13</span><span class="p">:</span><span class="mi">13</span><span class="p">:</span><span class="mi">06</span><span class="n">Z</span>                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">description</span>               <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">dns_domain</span>                <span class="o">|</span> <span class="n">sample</span><span class="o">.</span><span class="n">openstack</span><span class="o">.</span><span class="n">org</span><span class="o">.</span>                <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>                        <span class="o">|</span> <span class="mi">3</span><span class="n">b56c605</span><span class="o">-</span><span class="mi">5</span><span class="n">a01</span><span class="o">-</span><span class="mi">45</span><span class="n">be</span><span class="o">-</span><span class="mi">9</span><span class="n">ed6</span><span class="o">-</span><span class="n">e4c3285e4366</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">ipv4_address_scope</span>        <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">ipv6_address_scope</span>        <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">mtu</span>                       <span class="o">|</span> <span class="mi">1450</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>                      <span class="o">|</span> <span class="n">demo</span><span class="o">-</span><span class="n">net</span>                             <span class="o">|</span>
+<span class="o">|</span> <span class="n">port_security_enabled</span>     <span class="o">|</span> <span class="kc">True</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">project_id</span>                <span class="o">|</span> <span class="mi">937</span><span class="n">d49af6cfe4ef080a79f9a833d7c7d</span>     <span class="o">|</span>
+<span class="o">|</span> <span class="n">provider</span><span class="p">:</span><span class="n">network_type</span>     <span class="o">|</span> <span class="n">vxlan</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">provider</span><span class="p">:</span><span class="n">physical_network</span> <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">provider</span><span class="p">:</span><span class="n">segmentation_id</span>  <span class="o">|</span> <span class="mi">27</span>                                   <span class="o">|</span>
+<span class="o">|</span> <span class="n">revision_number</span>           <span class="o">|</span> <span class="mi">6</span>                                    <span class="o">|</span>
+<span class="o">|</span> <span class="n">router</span><span class="p">:</span><span class="n">external</span>           <span class="o">|</span> <span class="kc">False</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">shared</span>                    <span class="o">|</span> <span class="kc">False</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">status</span>                    <span class="o">|</span> <span class="n">ACTIVE</span>                               <span class="o">|</span>
+<span class="o">|</span> <span class="n">subnets</span>                   <span class="o">|</span> <span class="mi">7</span><span class="n">f28f050</span><span class="o">-</span><span class="mi">77</span><span class="n">b2</span><span class="o">-</span><span class="mi">426</span><span class="n">e</span><span class="o">-</span><span class="n">b963</span><span class="o">-</span><span class="mi">35</span><span class="n">b682077993</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">tags</span>                      <span class="o">|</span>                                      <span class="o">|</span>
+<span class="o">|</span> <span class="n">tenant_id</span>                 <span class="o">|</span> <span class="mi">937</span><span class="n">d49af6cfe4ef080a79f9a833d7c7d</span>     <span class="o">|</span>
+<span class="o">|</span> <span class="n">updated_at</span>                <span class="o">|</span> <span class="mi">2017</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">22</span><span class="n">T13</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">16</span><span class="n">Z</span>                 <span class="o">|</span>
+<span class="o">+---------------------------+--------------------------------------+</span>
+</pre></div>
+</div>
+<p>Create a new instance in the previously updated network.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># openstack server create \</span>
+    <span class="o">--</span><span class="n">image</span> <span class="n">cirros</span> \
+    <span class="o">--</span><span class="n">flavor</span> <span class="n">m1</span><span class="o">.</span><span class="n">tiny</span> \
+    <span class="o">--</span><span class="n">key</span><span class="o">-</span><span class="n">name</span> <span class="n">mykey</span> \
+    <span class="o">--</span><span class="n">nic</span> <span class="n">net</span><span class="o">-</span><span class="nb">id</span><span class="o">=</span><span class="mi">3</span><span class="n">b56c605</span><span class="o">-</span><span class="mi">5</span><span class="n">a01</span><span class="o">-</span><span class="mi">45</span><span class="n">be</span><span class="o">-</span><span class="mi">9</span><span class="n">ed6</span><span class="o">-</span><span class="n">e4c3285e4366</span> \
+    <span class="n">demo1</span>
+</pre></div>
+</div>
+<p>Once the instance is ACTIVE, check the IP associated.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># openstack server list</span>
+<span class="o">+--------------------------------------+-------+--------+-------------------+------------+</span>
+<span class="o">|</span> <span class="n">ID</span>                                   <span class="o">|</span> <span class="n">Name</span>  <span class="o">|</span> <span class="n">Status</span> <span class="o">|</span> <span class="n">Networks</span>          <span class="o">|</span> <span class="n">Image</span> <span class="n">Name</span> <span class="o">|</span>
+<span class="o">+--------------------------------------+-------+--------+-------------------+------------+</span>
+<span class="o">|</span> <span class="n">d483e4ee</span><span class="o">-</span><span class="mi">58</span><span class="n">c2</span><span class="o">-</span><span class="mf">4e1</span><span class="n">e</span><span class="o">-</span><span class="mi">9384</span><span class="o">-</span><span class="mi">85174630428</span><span class="n">e</span> <span class="o">|</span> <span class="n">demo1</span> <span class="o">|</span> <span class="n">ACTIVE</span> <span class="o">|</span> <span class="n">demo</span><span class="o">-</span><span class="n">net</span><span class="o">=</span><span class="mf">10.0</span><span class="o">.</span><span class="mf">0.3</span> <span class="o">|</span> <span class="n">cirros</span>     <span class="o">|</span>
+<span class="o">+--------------------------------------+-------+--------+-------------------+------------+</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">List records in the designate zone.</div>
+<div class="line">As you can see there is a record in designate associated with the
+instance IP.</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># openstack recordset list sample.openstack.org.</span>
+<span class="o">+--------------------------------------+----------------------------------+------+-------------------------------------------+--------+--------+</span>
+<span class="o">|</span> <span class="nb">id</span>                                   <span class="o">|</span> <span class="n">name</span>                             <span class="o">|</span> <span class="nb">type</span> <span class="o">|</span> <span class="n">records</span>                                   <span class="o">|</span> <span class="n">status</span> <span class="o">|</span> <span class="n">action</span> <span class="o">|</span>
+<span class="o">+--------------------------------------+----------------------------------+------+-------------------------------------------+--------+--------+</span>
+<span class="o">|</span> <span class="mi">4</span><span class="n">f70531e</span><span class="o">-</span><span class="n">c325</span><span class="o">-</span><span class="mi">4</span><span class="n">ffd</span><span class="o">-</span><span class="n">a8d3</span><span class="o">-</span><span class="mi">8172</span><span class="n">bd5163b8</span> <span class="o">|</span> <span class="n">sample</span><span class="o">.</span><span class="n">openstack</span><span class="o">.</span><span class="n">org</span><span class="o">.</span>            <span class="o">|</span> <span class="n">SOA</span>  <span class="o">|</span> <span class="n">sample</span><span class="o">.</span><span class="n">openstack</span><span class="o">.</span><span class="n">org</span><span class="o">.</span>                     <span class="o">|</span> <span class="n">ACTIVE</span> <span class="o">|</span> <span class="n">NONE</span>   <span class="o">|</span>
+<span class="o">|</span>                                      <span class="o">|</span>                                  <span class="o">|</span>      <span class="o">|</span> <span class="n">admin</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">openstack</span><span class="o">.</span><span class="n">org</span><span class="o">.</span> <span class="mi">1487770304</span>    <span class="o">|</span>        <span class="o">|</span>        <span class="o">|</span>
+<span class="o">|</span>                                      <span class="o">|</span>                                  <span class="o">|</span>      <span class="o">|</span> <span class="mi">3586</span> <span class="mi">600</span> <span class="mi">86400</span> <span class="mi">3600</span>                       <span class="o">|</span>        <span class="o">|</span>        <span class="o">|</span>
+<span class="o">|</span> <span class="n">a9a09c5f</span><span class="o">-</span><span class="n">ccf1</span><span class="o">-</span><span class="mi">4</span><span class="n">b52</span><span class="o">-</span><span class="mi">8400</span><span class="o">-</span><span class="n">f36e8faa9549</span> <span class="o">|</span> <span class="n">sample</span><span class="o">.</span><span class="n">openstack</span><span class="o">.</span><span class="n">org</span><span class="o">.</span>            <span class="o">|</span> <span class="n">NS</span>   <span class="o">|</span> <span class="n">sample</span><span class="o">.</span><span class="n">openstack</span><span class="o">.</span><span class="n">org</span><span class="o">.</span>                     <span class="o">|</span> <span class="n">ACTIVE</span> <span class="o">|</span> <span class="n">NONE</span>   <span class="o">|</span>
+<span class="o">|</span> <span class="n">aa6cd25d</span><span class="o">-</span><span class="mf">186e-425</span><span class="n">b</span><span class="o">-</span><span class="mi">9153</span><span class="o">-</span><span class="mi">699</span><span class="n">d8b0811de</span> <span class="o">|</span> <span class="mi">10</span><span class="o">-</span><span class="mi">0</span><span class="o">-</span><span class="mi">0</span><span class="o">-</span><span class="mf">3.</span><span class="n">sample</span><span class="o">.</span><span class="n">openstack</span><span class="o">.</span><span class="n">org</span><span class="o">.</span>   <span class="o">|</span> <span class="n">A</span>    <span class="o">|</span> <span class="mf">10.0</span><span class="o">.</span><span class="mf">0.3</span>                                  <span class="o">|</span> <span class="n">ACTIVE</span> <span class="o">|</span> <span class="n">NONE</span>   <span class="o">|</span>
+<span class="o">|</span> <span class="mi">713650</span><span class="n">a5</span><span class="o">-</span><span class="n">a45e</span><span class="o">-</span><span class="mi">470</span><span class="n">b</span><span class="o">-</span><span class="mi">9539</span><span class="o">-</span><span class="mf">74e110</span><span class="n">b15115</span> <span class="o">|</span> <span class="n">demo1</span><span class="o">.</span><span class="kc">None</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">openstack</span><span class="o">.</span><span class="n">org</span><span class="o">.</span> <span class="o">|</span> <span class="n">A</span>    <span class="o">|</span> <span class="mf">10.0</span><span class="o">.</span><span class="mf">0.3</span>                                  <span class="o">|</span> <span class="n">ACTIVE</span> <span class="o">|</span> <span class="n">NONE</span>   <span class="o">|</span>
+<span class="o">|</span> <span class="mf">6506e6</span><span class="n">f6</span><span class="o">-</span><span class="n">f535</span><span class="o">-</span><span class="mi">45</span><span class="n">eb</span><span class="o">-</span><span class="mi">9</span><span class="n">bfb</span><span class="o">-</span><span class="mi">4</span><span class="n">ac1f16c5c9b</span> <span class="o">|</span> <span class="n">demo1</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">openstack</span><span class="o">.</span><span class="n">org</span><span class="o">.</span>      <span class="o">|</span> <span class="n">A</span>    <span class="o">|</span> <span class="mf">10.0</span><span class="o">.</span><span class="mf">0.3</span>                                  <span class="o">|</span> <span class="n">ACTIVE</span> <span class="o">|</span> <span class="n">NONE</span>   <span class="o">|</span>
+<span class="o">+--------------------------------------+----------------------------------+------+-------------------------------------------+--------+--------+</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Validate that designate resolves the DNS record.</div>
+<div class="line">You can use designate mDNS service or directly to bind9 servers to
+validate the test.</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># dig +short -p 5354 @172.28.128.3 demo1.sample.openstack.org. A</span>
+<span class="mf">10.0</span><span class="o">.</span><span class="mf">0.3</span>
+<span class="c1"># dig +short -p 53 @172.28.128.3 demo1.sample.openstack.org. A</span>
+<span class="mf">10.0</span><span class="o">.</span><span class="mf">0.3</span>
+</pre></div>
+</div>
+<p>If you find any issue with designate in kolla-ansible or kolla, please
+fill a bug <a class="reference external" href="https://bugs.launchpad.net/kolla-ansible/+filebug">https://bugs.launchpad.net/kolla-ansible/+filebug</a></p>
+<div class="line-block">
+<div class="line">Regards,</div>
+<div class="line">Eduardo Gonzalez</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">egonzalez</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Post:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="2017-08-28-openstack-tacker-and-service-function-chaining-sfc-with-kolla.html">OpenStack tacker and service function chaining sfc with kolla</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Deploy OpenStack designate with kolla-ansible</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2017-01-31-openstack-keystone-zero-downtime-upgrade-process-n-to-o.html">OpenStack keystone zero downtime upgrade process newton to ocata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-10-31-to-conditional-or-to-skip-that-is-the-ansible-question.html">To conditional or to skip, that’s the Ansible question</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-07-12-spacewalk-red-hat-satellite-v5-in-a-docker-container-poc.html">Spacewalk Red Hat Satellite v5 in a Docker container PoC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-07-04-midonet-integration-with-openstack-mitaka.html">Midonet integration with OpenStack Mitaka</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-06-15-rally-openstack-benchmarking-from-docker-containers.html">Rally OpenStack benchmarking from Docker containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-06-06-opendaylight-in-a-docker-container.html">OpenDaylight in a Docker container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-04-24-openstack-kolla-deployment-from-rdo-packages.html">OpenStack kolla deployment from RDO packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-24-magnum-in-rdo-openstack-liberty-manual-installation-from-source-code.html">Magnum in RDO OpenStack Liberty manual installation from source code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-17-ceph-ansible-baremetal-deployment.html">Ceph Ansible baremetal deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-02-nova-vnc-flows-under-the-hood.html">Nova VNC flows under the hood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-24-ansible-ini_file-module-simplifying-your-devops-life.html">Ansible INI file module, simplifying your DevOps life</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-15-working-with-affinityanti-affinity-groups-openstack.html">Working with affinity/anti-affinity groups OpenStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-02-migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty.html">Migrate keystone v2.0 to keystone v3 OpenStack Liberty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-01-27-configure-neutron-dvr-openstack-liberty.html">Configure neutron DVR OpenStack Liberty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-01-14-openstack-segregation-with-availability-zones-and-host-aggregates.html">OpenStack segregation with availability zones and host aggregates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-12-23-nova-docker-driver.html">Nova Docker driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-12-14-murano-in-rdo-openstack-manual-installation.html">Murano in RDO OpenStack manual installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-09-08-ceph-radosgw-admin-ops-how-to-use-it.html">Ceph RadosGW admin Ops, how to use it</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-08-13-multiple-store-locations-for-glance-images.html">Multiple store locations for glance images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-07-02-list-all-tenants-belonging-an-user.html">List all tenants belonging an user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-24-load-balancer-as-a-service-lbaas.html">Load balancer as a service OpenStack LbaaS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-16-openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use.html">OpenStack nova APi start error, could not bind to 0.0.0.0 address all ready in use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-09-delete-openstack-neutron-networks-solution-to-unable-to-complete-operation-on-subnet.html">Delete OpenStack neutron networks, fix to unable to complete operation on subnet</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="2017-08-28-openstack-tacker-and-service-function-chaining-sfc-with-kolla.html" title="previous chapter">OpenStack tacker and service function chaining sfc with kolla</a></li>
+      <li>Next: <a href="2017-01-31-openstack-keystone-zero-downtime-upgrade-process-n-to-o.html" title="next chapter">OpenStack keystone zero downtime upgrade process newton to ocata</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Eduardo Gonzalez.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/2017-02-22-deploy-openstack-designate-with-kolla-ansible.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

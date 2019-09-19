@@ -1,0 +1,440 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>OpenStack segregation with availability zones and host aggregates &#8212; egonzalez  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Nova Docker driver" href="2015-12-23-nova-docker-driver.html" />
+    <link rel="prev" title="Configure neutron DVR OpenStack Liberty" href="2016-01-27-configure-neutron-dvr-openstack-liberty.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="openstack-segregation-with-availability-zones-and-host-aggregates">
+<h1>OpenStack segregation with availability zones and host aggregates<a class="headerlink" href="#openstack-segregation-with-availability-zones-and-host-aggregates" title="Permalink to this headline">¶</a></h1>
+<p>When a new OpenStack cloud born, usually all servers run over the same
+hardware and specifications, often, all servers are in the same
+building, room, rack, even a chassis when the cloud is in the first
+growth paces.</p>
+<p>After a while, workloads increase and the current hardware is not enough
+to process that workloads. At this point, your hardware is old and new
+hardware is bought. This hardware has different storage disks, CPU, RAM
+and so on. You passed from 10’s of servers to 100’s. DataCenter racks,
+rooms and buildings are too small and the growing cloud needs redundancy
+between cities or countries.</p>
+<div class="line-block">
+<div class="line">OpenStack offers a few solutions for that purpose, called Regions,
+Cells, Availability Zones and Host Aggregates.</div>
+<div class="line">Now, we are going to focus on Availability Zones and Host Aggregates,
+which are the way to segregate computational workloads.</div>
+</div>
+<ul class="simple">
+<li>Host Aggregates:<ul>
+<li>Host Aggregates represent a logical set of
+properties/characteristics a group of hosts owns in the form of
+metadata. Imagine some of your servers have SSD disks and the
+other ones SATA, you can map those properties SSD/SATA to a group
+of hosts, when a image or flavor with the metaparameter associated
+is launched, Nova Scheduler will filter the available hosts with
+the meta parameter value and boot the instance on hosts with the
+desired property. Host Aggregates are managed by OpenStack admins.</li>
+</ul>
+</li>
+<li>Availability Zones<ul>
+<li>Availability Zones represent a logical partition of the
+infrastructure(not necessary but is the common use case) in the
+form of racks, rooms, buildings, etc. Customers can launch
+instances in the desired Availability Zone.</li>
+</ul>
+</li>
+</ul>
+<p>Usually, Host Aggregates are mapped to Availability Zones allowing
+customers to use the desired set of hardware or characteristics to boot
+instances.</p>
+<p>At the end of this guide you will know how to:</p>
+<ol class="arabic simple">
+<li>Create Availability Zones and Host Aggregates.</li>
+<li>Adding hosts to Host Aggregates and Availability Zones.</li>
+<li>Launch instances directly to Availability Zones.</li>
+<li>Configure nova scheduler for Host Aggregates usage.</li>
+<li>Configure Images and Flavors for scheduling to Host Aggregates.</li>
+<li>Launch instances based on flavors and image parameters.</li>
+</ol>
+<p>Let’s start: \00/</p>
+<div class="line-block">
+<div class="line">Create two Host Aggregate called <code class="docutils literal notranslate"><span class="pre">&quot;az1-ag&quot;/&quot;az2-ag&quot;</span></code>, this command
+also, will create two Availability Zones called <code class="docutils literal notranslate"><span class="pre">&quot;az1&quot;/&quot;az2&quot;</span></code>.</div>
+<div class="line">By default, when a Host Aggregate is created with an Availability
+Zone, a metadata key called <code class="docutils literal notranslate"><span class="pre">&quot;availability_zone=NAME_OF_AZ</span></code>” will be
+created.</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova aggregate-create az1-ag az1</span>
+<span class="o">+----+--------+-------------------+-------+-------------------------+</span>
+<span class="o">|</span> <span class="n">Id</span> <span class="o">|</span> <span class="n">Name</span>   <span class="o">|</span> <span class="n">Availability</span> <span class="n">Zone</span> <span class="o">|</span> <span class="n">Hosts</span> <span class="o">|</span> <span class="n">Metadata</span>                <span class="o">|</span>
+<span class="o">+----+--------+-------------------+-------+-------------------------+</span>
+<span class="o">|</span> <span class="mi">2</span>  <span class="o">|</span> <span class="n">az1</span><span class="o">-</span><span class="n">ag</span> <span class="o">|</span> <span class="n">az1</span>               <span class="o">|</span>       <span class="o">|</span> <span class="s1">&#39;availability_zone=az1&#39;</span> <span class="o">|</span>
+<span class="o">+----+--------+-------------------+-------+-------------------------+</span>
+<span class="c1"># nova aggregate-create az2-ag az2</span>
+<span class="o">+----+--------+-------------------+-------+-------------------------+</span>
+<span class="o">|</span> <span class="n">Id</span> <span class="o">|</span> <span class="n">Name</span>   <span class="o">|</span> <span class="n">Availability</span> <span class="n">Zone</span> <span class="o">|</span> <span class="n">Hosts</span> <span class="o">|</span> <span class="n">Metadata</span>                <span class="o">|</span>
+<span class="o">+----+--------+-------------------+-------+-------------------------+</span>
+<span class="o">|</span> <span class="mi">3</span>  <span class="o">|</span> <span class="n">az2</span><span class="o">-</span><span class="n">ag</span> <span class="o">|</span> <span class="n">az2</span>               <span class="o">|</span>       <span class="o">|</span> <span class="s1">&#39;availability_zone=az2&#39;</span> <span class="o">|</span>
+<span class="o">+----+--------+-------------------+-------+-------------------------+</span>
+</pre></div>
+</div>
+<p>Add one or more compute nodes to Host Aggregates.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova aggregate-add-host 2 compute1az</span>
+<span class="n">Host</span> <span class="n">compute1az</span> <span class="n">has</span> <span class="n">been</span> <span class="n">successfully</span> <span class="n">added</span> <span class="k">for</span> <span class="n">aggregate</span> <span class="mi">2</span>
+<span class="o">+----+--------+-------------------+--------------+-------------------------+</span>
+<span class="o">|</span> <span class="n">Id</span> <span class="o">|</span> <span class="n">Name</span>   <span class="o">|</span> <span class="n">Availability</span> <span class="n">Zone</span> <span class="o">|</span> <span class="n">Hosts</span>        <span class="o">|</span> <span class="n">Metadata</span>                <span class="o">|</span>
+<span class="o">+----+--------+-------------------+--------------+-------------------------+</span>
+<span class="o">|</span> <span class="mi">2</span>  <span class="o">|</span> <span class="n">az1</span><span class="o">-</span><span class="n">ag</span> <span class="o">|</span> <span class="n">az1</span>               <span class="o">|</span> <span class="s1">&#39;compute1az&#39;</span> <span class="o">|</span> <span class="s1">&#39;availability_zone=az1&#39;</span> <span class="o">|</span>
+<span class="o">+----+--------+-------------------+--------------+-------------------------+</span>
+<span class="c1"># nova aggregate-add-host 3 compute2az</span>
+<span class="n">Host</span> <span class="n">compute2az</span> <span class="n">has</span> <span class="n">been</span> <span class="n">successfully</span> <span class="n">added</span> <span class="k">for</span> <span class="n">aggregate</span> <span class="mi">3</span>
+<span class="o">+----+--------+-------------------+--------------+-------------------------+</span>
+<span class="o">|</span> <span class="n">Id</span> <span class="o">|</span> <span class="n">Name</span>   <span class="o">|</span> <span class="n">Availability</span> <span class="n">Zone</span> <span class="o">|</span> <span class="n">Hosts</span>        <span class="o">|</span> <span class="n">Metadata</span>                <span class="o">|</span>
+<span class="o">+----+--------+-------------------+--------------+-------------------------+</span>
+<span class="o">|</span> <span class="mi">3</span>  <span class="o">|</span> <span class="n">az2</span><span class="o">-</span><span class="n">ag</span> <span class="o">|</span> <span class="n">az2</span>               <span class="o">|</span> <span class="s1">&#39;compute2az&#39;</span> <span class="o">|</span> <span class="s1">&#39;availability_zone=az2&#39;</span> <span class="o">|</span>
+<span class="o">+----+--------+-------------------+--------------+-------------------------+</span>
+</pre></div>
+</div>
+<p>Details about a Host Aggregate can be reviewed with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova aggregate-details az1-ag</span>
+<span class="o">+----+--------+-------------------+--------------+-------------------------+</span>
+<span class="o">|</span> <span class="n">Id</span> <span class="o">|</span> <span class="n">Name</span>   <span class="o">|</span> <span class="n">Availability</span> <span class="n">Zone</span> <span class="o">|</span> <span class="n">Hosts</span>        <span class="o">|</span> <span class="n">Metadata</span>                <span class="o">|</span>
+<span class="o">+----+--------+-------------------+--------------+-------------------------+</span>
+<span class="o">|</span> <span class="mi">2</span>  <span class="o">|</span> <span class="n">az1</span><span class="o">-</span><span class="n">ag</span> <span class="o">|</span> <span class="n">az1</span>               <span class="o">|</span> <span class="s1">&#39;compute1az&#39;</span> <span class="o">|</span> <span class="s1">&#39;availability_zone=az1&#39;</span> <span class="o">|</span>
+<span class="o">+----+--------+-------------------+--------------+-------------------------+</span>
+<span class="c1"># nova aggregate-details az2-ag</span>
+<span class="o">+----+--------+-------------------+--------------+-------------------------+</span>
+<span class="o">|</span> <span class="n">Id</span> <span class="o">|</span> <span class="n">Name</span>   <span class="o">|</span> <span class="n">Availability</span> <span class="n">Zone</span> <span class="o">|</span> <span class="n">Hosts</span>        <span class="o">|</span> <span class="n">Metadata</span>                <span class="o">|</span>
+<span class="o">+----+--------+-------------------+--------------+-------------------------+</span>
+<span class="o">|</span> <span class="mi">3</span>  <span class="o">|</span> <span class="n">az2</span><span class="o">-</span><span class="n">ag</span> <span class="o">|</span> <span class="n">az2</span>               <span class="o">|</span> <span class="s1">&#39;compute2az&#39;</span> <span class="o">|</span> <span class="s1">&#39;availability_zone=az2&#39;</span> <span class="o">|</span>
+<span class="o">+----+--------+-------------------+--------------+-------------------------+</span>
+</pre></div>
+</div>
+<p>List Availability Zones and check status.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova availability-zone-list</span>
+<span class="o">+-----------------------+----------------------------------------+</span>
+<span class="o">|</span> <span class="n">Name</span>                  <span class="o">|</span> <span class="n">Status</span>                                 <span class="o">|</span>
+<span class="o">+-----------------------+----------------------------------------+</span>
+<span class="o">|</span> <span class="n">internal</span>              <span class="o">|</span> <span class="n">available</span>                              <span class="o">|</span>
+<span class="o">|</span> <span class="o">|-</span> <span class="n">controlleraz</span>       <span class="o">|</span>                                        <span class="o">|</span>
+<span class="o">|</span> <span class="o">|</span> <span class="o">|-</span> <span class="n">nova</span><span class="o">-</span><span class="n">conductor</span>   <span class="o">|</span> <span class="n">enabled</span> <span class="p">:</span><span class="o">-</span><span class="p">)</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">14</span><span class="n">T19</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mf">16.000000</span> <span class="o">|</span>
+<span class="o">|</span> <span class="o">|</span> <span class="o">|-</span> <span class="n">nova</span><span class="o">-</span><span class="n">consoleauth</span> <span class="o">|</span> <span class="n">enabled</span> <span class="p">:</span><span class="o">-</span><span class="p">)</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">14</span><span class="n">T19</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mf">16.000000</span> <span class="o">|</span>
+<span class="o">|</span> <span class="o">|</span> <span class="o">|-</span> <span class="n">nova</span><span class="o">-</span><span class="n">scheduler</span>   <span class="o">|</span> <span class="n">enabled</span> <span class="p">:</span><span class="o">-</span><span class="p">)</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">14</span><span class="n">T19</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mf">16.000000</span> <span class="o">|</span>
+<span class="o">|</span> <span class="o">|</span> <span class="o">|-</span> <span class="n">nova</span><span class="o">-</span><span class="n">cert</span>        <span class="o">|</span> <span class="n">enabled</span> <span class="p">:</span><span class="o">-</span><span class="p">)</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">14</span><span class="n">T19</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mf">13.000000</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">az2</span>                   <span class="o">|</span> <span class="n">available</span>                              <span class="o">|</span>
+<span class="o">|</span> <span class="o">|-</span> <span class="n">compute2az</span>         <span class="o">|</span>                                        <span class="o">|</span>
+<span class="o">|</span> <span class="o">|</span> <span class="o">|-</span> <span class="n">nova</span><span class="o">-</span><span class="n">compute</span>     <span class="o">|</span> <span class="n">enabled</span> <span class="p">:</span><span class="o">-</span><span class="p">)</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">14</span><span class="n">T19</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mf">12.000000</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">az1</span>                   <span class="o">|</span> <span class="n">available</span>                              <span class="o">|</span>
+<span class="o">|</span> <span class="o">|-</span> <span class="n">compute1az</span>         <span class="o">|</span>                                        <span class="o">|</span>
+<span class="o">|</span> <span class="o">|</span> <span class="o">|-</span> <span class="n">nova</span><span class="o">-</span><span class="n">compute</span>     <span class="o">|</span> <span class="n">enabled</span> <span class="p">:</span><span class="o">-</span><span class="p">)</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">14</span><span class="n">T19</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mf">12.000000</span> <span class="o">|</span>
+<span class="o">+-----------------------+----------------------------------------+</span>
+</pre></div>
+</div>
+<p>Other method you can use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova service-list</span>
+<span class="o">+----+------------------+--------------+----------+---------+-------+----------------------------+-----------------+</span>
+<span class="o">|</span> <span class="n">Id</span> <span class="o">|</span> <span class="n">Binary</span>           <span class="o">|</span> <span class="n">Host</span>         <span class="o">|</span> <span class="n">Zone</span>     <span class="o">|</span> <span class="n">Status</span>  <span class="o">|</span> <span class="n">State</span> <span class="o">|</span> <span class="n">Updated_at</span>                 <span class="o">|</span> <span class="n">Disabled</span> <span class="n">Reason</span> <span class="o">|</span>
+<span class="o">+----+------------------+--------------+----------+---------+-------+----------------------------+-----------------+</span>
+<span class="o">|</span> <span class="mi">1</span>  <span class="o">|</span> <span class="n">nova</span><span class="o">-</span><span class="n">consoleauth</span> <span class="o">|</span> <span class="n">controlleraz</span> <span class="o">|</span> <span class="n">internal</span> <span class="o">|</span> <span class="n">enabled</span> <span class="o">|</span> <span class="n">up</span>    <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">14</span><span class="n">T19</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mf">36.000000</span> <span class="o">|</span> <span class="o">-</span>               <span class="o">|</span>
+<span class="o">|</span> <span class="mi">2</span>  <span class="o">|</span> <span class="n">nova</span><span class="o">-</span><span class="n">scheduler</span>   <span class="o">|</span> <span class="n">controlleraz</span> <span class="o">|</span> <span class="n">internal</span> <span class="o">|</span> <span class="n">enabled</span> <span class="o">|</span> <span class="n">up</span>    <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">14</span><span class="n">T19</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mf">36.000000</span> <span class="o">|</span> <span class="o">-</span>               <span class="o">|</span>
+<span class="o">|</span> <span class="mi">3</span>  <span class="o">|</span> <span class="n">nova</span><span class="o">-</span><span class="n">conductor</span>   <span class="o">|</span> <span class="n">controlleraz</span> <span class="o">|</span> <span class="n">internal</span> <span class="o">|</span> <span class="n">enabled</span> <span class="o">|</span> <span class="n">up</span>    <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">14</span><span class="n">T19</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mf">35.000000</span> <span class="o">|</span> <span class="o">-</span>               <span class="o">|</span>
+<span class="o">|</span> <span class="mi">4</span>  <span class="o">|</span> <span class="n">nova</span><span class="o">-</span><span class="n">cert</span>        <span class="o">|</span> <span class="n">controlleraz</span> <span class="o">|</span> <span class="n">internal</span> <span class="o">|</span> <span class="n">enabled</span> <span class="o">|</span> <span class="n">up</span>    <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">14</span><span class="n">T19</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mf">33.000000</span> <span class="o">|</span> <span class="o">-</span>               <span class="o">|</span>
+<span class="o">|</span> <span class="mi">5</span>  <span class="o">|</span> <span class="n">nova</span><span class="o">-</span><span class="n">compute</span>     <span class="o">|</span> <span class="n">compute2az</span>   <span class="o">|</span> <span class="n">az2</span>      <span class="o">|</span> <span class="n">enabled</span> <span class="o">|</span> <span class="n">up</span>    <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">14</span><span class="n">T19</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mf">32.000000</span> <span class="o">|</span> <span class="o">-</span>               <span class="o">|</span>
+<span class="o">|</span> <span class="mi">6</span>  <span class="o">|</span> <span class="n">nova</span><span class="o">-</span><span class="n">compute</span>     <span class="o">|</span> <span class="n">compute1az</span>   <span class="o">|</span> <span class="n">az1</span>      <span class="o">|</span> <span class="n">enabled</span> <span class="o">|</span> <span class="n">up</span>    <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">14</span><span class="n">T19</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mf">32.000000</span> <span class="o">|</span> <span class="o">-</span>               <span class="o">|</span>
+<span class="o">+----+------------------+--------------+----------+---------+-------+----------------------------+-----------------+</span>
+</pre></div>
+</div>
+<p>Launch two instances using <code class="docutils literal notranslate"><span class="pre">&quot;--availability-zone</span> <span class="pre">AZ</span></code>” option, you can
+even select the compute node to use, just use
+<code class="docutils literal notranslate"><span class="pre">&quot;--availability-zone</span> <span class="pre">AZ:COMPUTE_NODE</span></code>”.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova boot --flavor m1.tiny --image cirros --nic net-id=6d62149e-74d3-4e52-9813-53ad207309f4 --availability-zone az1 instanceaz1</span>
+<span class="c1"># nova boot --flavor m1.tiny --image cirros --nic net-id=6d62149e-74d3-4e52-9813-53ad207309f4 --availability-zone az2 instanceaz2</span>
+</pre></div>
+</div>
+<p>Ensure the instances are running in the desired Availability Zone.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova show instanceaz1 | grep OS-EXT-AZ | awk &#39;{print$2&quot;:&quot;$4}&#39;</span>
+<span class="n">OS</span><span class="o">-</span><span class="n">EXT</span><span class="o">-</span><span class="n">AZ</span><span class="p">:</span><span class="n">availability_zone</span><span class="p">:</span><span class="n">az1</span>
+<span class="c1"># nova show instanceaz2 | grep OS-EXT-AZ | awk &#39;{print$2&quot;:&quot;$4}&#39;</span>
+<span class="n">OS</span><span class="o">-</span><span class="n">EXT</span><span class="o">-</span><span class="n">AZ</span><span class="p">:</span><span class="n">availability_zone</span><span class="p">:</span><span class="n">az2</span>
+</pre></div>
+</div>
+<p>List Glance images.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># glance image-list</span>
+<span class="o">+--------------------------------------+----------+</span>
+<span class="o">|</span> <span class="n">ID</span>                                   <span class="o">|</span> <span class="n">Name</span>     <span class="o">|</span>
+<span class="o">+--------------------------------------+----------+</span>
+<span class="o">|</span> <span class="n">a6d7a606</span><span class="o">-</span><span class="n">f725</span><span class="o">-</span><span class="mi">480</span><span class="n">a</span><span class="o">-</span><span class="mi">9</span><span class="n">b1b</span><span class="o">-</span><span class="mi">7</span><span class="n">b3ae39b93d4</span> <span class="o">|</span> <span class="n">cirros</span>   <span class="o">|</span>
+<span class="o">|</span> <span class="n">a6540d72</span><span class="o">-</span><span class="n">dff7</span><span class="o">-</span><span class="mi">4</span><span class="n">fb1</span><span class="o">-</span><span class="n">bc64</span><span class="o">-</span><span class="n">a8ea69e65178</span> <span class="o">|</span> <span class="n">imageaz1</span> <span class="o">|</span>
+<span class="o">|</span> <span class="mi">9</span><span class="n">c7e2d55</span><span class="o">-</span><span class="mi">0</span><span class="n">b96</span><span class="o">-</span><span class="mf">43e2</span><span class="o">-</span><span class="mi">9231</span><span class="o">-</span><span class="mf">88e426</span><span class="n">edb350</span> <span class="o">|</span> <span class="n">imageaz2</span> <span class="o">|</span>
+<span class="o">+--------------------------------------+----------+</span>
+</pre></div>
+</div>
+<p>Update the images with custom properties, i use <code class="docutils literal notranslate"><span class="pre">&quot;availability_zone&quot;</span></code>
+because is the default meta parameter a Host Aggregate owns when is
+inside Availability Zones.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># glance image-update --property availability_zone=az1 a6540d72-dff7-4fb1-bc64-a8ea69e65178</span>
+<span class="o">+-------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">Property</span>          <span class="o">|</span> <span class="n">Value</span>                                <span class="o">|</span>
+<span class="o">+-------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">availability_zone</span> <span class="o">|</span> <span class="n">az1</span>                                  <span class="o">|</span>
+<span class="o">|</span> <span class="n">checksum</span>          <span class="o">|</span> <span class="mi">133</span><span class="n">eae9fb1c98f45894a4e60d8736619</span>     <span class="o">|</span>
+<span class="o">|</span> <span class="n">container_format</span>  <span class="o">|</span> <span class="n">bare</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">created_at</span>        <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">14</span><span class="n">T19</span><span class="p">:</span><span class="mi">59</span><span class="p">:</span><span class="mi">04</span><span class="n">Z</span>                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">disk_format</span>       <span class="o">|</span> <span class="n">qcow2</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>                <span class="o">|</span> <span class="n">a6540d72</span><span class="o">-</span><span class="n">dff7</span><span class="o">-</span><span class="mi">4</span><span class="n">fb1</span><span class="o">-</span><span class="n">bc64</span><span class="o">-</span><span class="n">a8ea69e65178</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">min_disk</span>          <span class="o">|</span> <span class="mi">0</span>                                    <span class="o">|</span>
+<span class="o">|</span> <span class="n">min_ram</span>           <span class="o">|</span> <span class="mi">0</span>                                    <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>              <span class="o">|</span> <span class="n">imageaz1</span>                             <span class="o">|</span>
+<span class="o">|</span> <span class="n">owner</span>             <span class="o">|</span> <span class="mi">0571</span><span class="n">c6769c3f46acb195eeb01b87ae38</span>     <span class="o">|</span>
+<span class="o">|</span> <span class="n">protected</span>         <span class="o">|</span> <span class="kc">False</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">size</span>              <span class="o">|</span> <span class="mi">13200896</span>                             <span class="o">|</span>
+<span class="o">|</span> <span class="n">status</span>            <span class="o">|</span> <span class="n">active</span>                               <span class="o">|</span>
+<span class="o">|</span> <span class="n">tags</span>              <span class="o">|</span> <span class="p">[]</span>                                   <span class="o">|</span>
+<span class="o">|</span> <span class="n">updated_at</span>        <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">14</span><span class="n">T20</span><span class="p">:</span><span class="mi">13</span><span class="p">:</span><span class="mi">05</span><span class="n">Z</span>                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">virtual_size</span>      <span class="o">|</span> <span class="kc">None</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">visibility</span>        <span class="o">|</span> <span class="n">private</span>                              <span class="o">|</span>
+<span class="o">+-------------------+--------------------------------------+</span>
+<span class="c1"># glance image-update --property availability_zone=az2 9c7e2d55-0b96-43e2-9231-88e426edb350</span>
+<span class="o">+-------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">Property</span>          <span class="o">|</span> <span class="n">Value</span>                                <span class="o">|</span>
+<span class="o">+-------------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">availability_zone</span> <span class="o">|</span> <span class="n">az2</span>                                  <span class="o">|</span>
+<span class="o">|</span> <span class="n">checksum</span>          <span class="o">|</span> <span class="mi">133</span><span class="n">eae9fb1c98f45894a4e60d8736619</span>     <span class="o">|</span>
+<span class="o">|</span> <span class="n">container_format</span>  <span class="o">|</span> <span class="n">bare</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">created_at</span>        <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">14</span><span class="n">T19</span><span class="p">:</span><span class="mi">59</span><span class="p">:</span><span class="mi">10</span><span class="n">Z</span>                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">disk_format</span>       <span class="o">|</span> <span class="n">qcow2</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="nb">id</span>                <span class="o">|</span> <span class="mi">9</span><span class="n">c7e2d55</span><span class="o">-</span><span class="mi">0</span><span class="n">b96</span><span class="o">-</span><span class="mf">43e2</span><span class="o">-</span><span class="mi">9231</span><span class="o">-</span><span class="mf">88e426</span><span class="n">edb350</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">min_disk</span>          <span class="o">|</span> <span class="mi">0</span>                                    <span class="o">|</span>
+<span class="o">|</span> <span class="n">min_ram</span>           <span class="o">|</span> <span class="mi">0</span>                                    <span class="o">|</span>
+<span class="o">|</span> <span class="n">name</span>              <span class="o">|</span> <span class="n">imageaz2</span>                             <span class="o">|</span>
+<span class="o">|</span> <span class="n">owner</span>             <span class="o">|</span> <span class="mi">0571</span><span class="n">c6769c3f46acb195eeb01b87ae38</span>     <span class="o">|</span>
+<span class="o">|</span> <span class="n">protected</span>         <span class="o">|</span> <span class="kc">False</span>                                <span class="o">|</span>
+<span class="o">|</span> <span class="n">size</span>              <span class="o">|</span> <span class="mi">13200896</span>                             <span class="o">|</span>
+<span class="o">|</span> <span class="n">status</span>            <span class="o">|</span> <span class="n">active</span>                               <span class="o">|</span>
+<span class="o">|</span> <span class="n">tags</span>              <span class="o">|</span> <span class="p">[]</span>                                   <span class="o">|</span>
+<span class="o">|</span> <span class="n">updated_at</span>        <span class="o">|</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">14</span><span class="n">T20</span><span class="p">:</span><span class="mi">13</span><span class="p">:</span><span class="mi">27</span><span class="n">Z</span>                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">virtual_size</span>      <span class="o">|</span> <span class="kc">None</span>                                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">visibility</span>        <span class="o">|</span> <span class="n">private</span>                              <span class="o">|</span>
+<span class="o">+-------------------+--------------------------------------+</span>
+</pre></div>
+</div>
+<p>Boot two instances, now we use images with custom properties, those
+properties will map to Availability Zones(you can use other type of
+parameters mapping to Host Aggregates characteristics).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova boot --flavor m1.tiny --image imageaz1 --nic net-id=6d62149e-74d3-4e52-9813-53ad207309f4 instanceimageaz1</span>
+<span class="c1"># nova boot --flavor m1.tiny --image imageaz2 --nic net-id=6d62149e-74d3-4e52-9813-53ad207309f4 instanceimageaz2</span>
+</pre></div>
+</div>
+<p>Ensure the instances booted in the desired Availability Zone.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova show instanceimageaz1 | grep OS-EXT-AZ | awk &#39;{print$2&quot;:&quot;$4}&#39;</span>
+<span class="n">OS</span><span class="o">-</span><span class="n">EXT</span><span class="o">-</span><span class="n">AZ</span><span class="p">:</span><span class="n">availability_zone</span><span class="p">:</span><span class="n">az1</span>
+<span class="c1"># nova show instanceimageaz2 | grep OS-EXT-AZ | awk &#39;{print$2&quot;:&quot;$4}&#39;</span>
+<span class="n">OS</span><span class="o">-</span><span class="n">EXT</span><span class="o">-</span><span class="n">AZ</span><span class="p">:</span><span class="n">availability_zone</span><span class="p">:</span><span class="n">az2</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Other method to launch instances is with parameters in flavors.</div>
+<div class="line">Create two flavors.</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova flavor-create --is-public true flavoraz1 6 512 1 1</span>
+<span class="o">+----+-----------+-----------+------+-----------+------+-------+-------------+-----------+</span>
+<span class="o">|</span> <span class="n">ID</span> <span class="o">|</span> <span class="n">Name</span>      <span class="o">|</span> <span class="n">Memory_MB</span> <span class="o">|</span> <span class="n">Disk</span> <span class="o">|</span> <span class="n">Ephemeral</span> <span class="o">|</span> <span class="n">Swap</span> <span class="o">|</span> <span class="n">VCPUs</span> <span class="o">|</span> <span class="n">RXTX_Factor</span> <span class="o">|</span> <span class="n">Is_Public</span> <span class="o">|</span>
+<span class="o">+----+-----------+-----------+------+-----------+------+-------+-------------+-----------+</span>
+<span class="o">|</span> <span class="mi">7</span>  <span class="o">|</span> <span class="n">flavoraz1</span> <span class="o">|</span> <span class="mi">512</span>       <span class="o">|</span> <span class="mi">1</span>    <span class="o">|</span> <span class="mi">0</span>         <span class="o">|</span>      <span class="o">|</span> <span class="mi">1</span>     <span class="o">|</span> <span class="mf">1.0</span>         <span class="o">|</span> <span class="kc">True</span>      <span class="o">|</span>
+<span class="o">+----+-----------+-----------+------+-----------+------+-------+-------------+-----------+</span>
+<span class="c1"># nova flavor-create --is-public true flavoraz2 7 512 1 1</span>
+<span class="o">+----+-----------+-----------+------+-----------+------+-------+-------------+-----------+</span>
+<span class="o">|</span> <span class="n">ID</span> <span class="o">|</span> <span class="n">Name</span>      <span class="o">|</span> <span class="n">Memory_MB</span> <span class="o">|</span> <span class="n">Disk</span> <span class="o">|</span> <span class="n">Ephemeral</span> <span class="o">|</span> <span class="n">Swap</span> <span class="o">|</span> <span class="n">VCPUs</span> <span class="o">|</span> <span class="n">RXTX_Factor</span> <span class="o">|</span> <span class="n">Is_Public</span> <span class="o">|</span>
+<span class="o">+----+-----------+-----------+------+-----------+------+-------+-------------+-----------+</span>
+<span class="o">|</span> <span class="mi">8</span>  <span class="o">|</span> <span class="n">flavoraz2</span> <span class="o">|</span> <span class="mi">512</span>       <span class="o">|</span> <span class="mi">1</span>    <span class="o">|</span> <span class="mi">0</span>         <span class="o">|</span>      <span class="o">|</span> <span class="mi">1</span>     <span class="o">|</span> <span class="mf">1.0</span>         <span class="o">|</span> <span class="kc">True</span>      <span class="o">|</span>
+<span class="o">+----+-----------+-----------+------+-----------+------+-------+-------------+-----------+</span>
+</pre></div>
+</div>
+<p>Add metadata to a Host Aggregate with some characteristic property as
+can be fast HD or cheap HW.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova aggregate-set-metadata az1-ag fast=true</span>
+<span class="n">Metadata</span> <span class="n">has</span> <span class="n">been</span> <span class="n">successfully</span> <span class="n">updated</span> <span class="k">for</span> <span class="n">aggregate</span> <span class="mf">2.</span>
+<span class="o">+----+--------+-------------------+--------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="n">Id</span> <span class="o">|</span> <span class="n">Name</span>   <span class="o">|</span> <span class="n">Availability</span> <span class="n">Zone</span> <span class="o">|</span> <span class="n">Hosts</span>        <span class="o">|</span> <span class="n">Metadata</span>                             <span class="o">|</span>
+<span class="o">+----+--------+-------------------+--------------+--------------------------------------+</span>
+<span class="o">|</span> <span class="mi">2</span>  <span class="o">|</span> <span class="n">az1</span><span class="o">-</span><span class="n">ag</span> <span class="o">|</span> <span class="n">az1</span>               <span class="o">|</span> <span class="s1">&#39;compute1az&#39;</span> <span class="o">|</span> <span class="s1">&#39;availability_zone=az1&#39;</span><span class="p">,</span> <span class="s1">&#39;fast=true&#39;</span> <span class="o">|</span>
+<span class="o">+----+--------+-------------------+--------------+--------------------------------------+</span>
+<span class="c1"># nova aggregate-set-metadata az2-ag cheap=true</span>
+<span class="n">Metadata</span> <span class="n">has</span> <span class="n">been</span> <span class="n">successfully</span> <span class="n">updated</span> <span class="k">for</span> <span class="n">aggregate</span> <span class="mf">3.</span>
+<span class="o">+----+--------+-------------------+--------------+---------------------------------------+</span>
+<span class="o">|</span> <span class="n">Id</span> <span class="o">|</span> <span class="n">Name</span>   <span class="o">|</span> <span class="n">Availability</span> <span class="n">Zone</span> <span class="o">|</span> <span class="n">Hosts</span>        <span class="o">|</span> <span class="n">Metadata</span>                              <span class="o">|</span>
+<span class="o">+----+--------+-------------------+--------------+---------------------------------------+</span>
+<span class="o">|</span> <span class="mi">3</span>  <span class="o">|</span> <span class="n">az2</span><span class="o">-</span><span class="n">ag</span> <span class="o">|</span> <span class="n">az2</span>               <span class="o">|</span> <span class="s1">&#39;compute2az&#39;</span> <span class="o">|</span> <span class="s1">&#39;availability_zone=az2&#39;</span><span class="p">,</span> <span class="s1">&#39;cheap=true&#39;</span> <span class="o">|</span>
+<span class="o">+----+--------+-------------------+--------------+---------------------------------------+</span>
+</pre></div>
+</div>
+<p>Update the previous created flavors with the associated metadata key
+with the Host Aggregate.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova flavor-key flavoraz1 set  aggregate_instance_extra_specs:fast=true</span>
+<span class="c1"># nova flavor-key flavoraz2 set  aggregate_instance_extra_specs:cheap=true</span>
+</pre></div>
+</div>
+<p>Ensure, the properties are properly created.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova flavor-show 7 | grep fast | awk &#39;{print$4$5}&#39;</span>
+<span class="p">{</span><span class="s2">&quot;aggregate_instance_extra_specs:fast&quot;</span><span class="p">:</span><span class="s2">&quot;true&quot;</span><span class="p">}</span>
+<span class="c1"># nova flavor-show 8 | grep cheap | awk &#39;{print$4$5}&#39;</span>
+<span class="p">{</span><span class="s2">&quot;aggregate_instance_extra_specs:cheap&quot;</span><span class="p">:</span><span class="s2">&quot;true&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">By default, Nova Scheduler don’t allow filtering by extra Specs
+inserted in flavors or images.</div>
+<div class="line">First, ensure the following scheduler filters are allowed in Control
+nodes.</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># egrep ^scheduler_default_filters /etc/nova/nova.conf</span>
+<span class="n">scheduler_default_filters</span><span class="o">=</span><span class="n">AggregateInstanceExtraSpecsFilter</span><span class="p">,</span><span class="n">RetryFilter</span><span class="p">,</span><span class="n">AvailabilityZoneFilter</span><span class="p">,</span><span class="n">RamFilter</span><span class="p">,</span><span class="n">ComputeFilter</span><span class="p">,</span><span class="n">ComputeCapabilitiesFilter</span><span class="p">,</span><span class="n">ImagePropertiesFilter</span><span class="p">,</span><span class="n">ServerGroupAntiAffinityFilter</span><span class="p">,</span><span class="n">ServerGroupAffinityFilter</span>
+</pre></div>
+</div>
+<p>If a change has been done in nova.conf file, restart nova services</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># openstack-service restart nova</span>
+</pre></div>
+</div>
+<p>Boot another two instaces, now using custom flavors</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova boot --flavor flavoraz1 --image cirros --nic net-id=6d62149e-74d3-4e52-9813-53ad207309f4 instanceflavoraz1</span>
+<span class="c1"># nova boot --flavor flavoraz2 --image cirros --nic net-id=6d62149e-74d3-4e52-9813-53ad207309f4 instanceflavoraz2</span>
+</pre></div>
+</div>
+<p>Check where the instances are running.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nova show instanceflavoraz1 | grep OS-EXT-AZ | awk &#39;{print$2&quot;:&quot;$4}&#39;</span>
+<span class="n">OS</span><span class="o">-</span><span class="n">EXT</span><span class="o">-</span><span class="n">AZ</span><span class="p">:</span><span class="n">availability_zone</span><span class="p">:</span><span class="n">az1</span>
+<span class="c1"># nova show instanceflavoraz2 | grep OS-EXT-AZ | awk &#39;{print$2&quot;:&quot;$4}&#39;</span>
+<span class="n">OS</span><span class="o">-</span><span class="n">EXT</span><span class="o">-</span><span class="n">AZ</span><span class="p">:</span><span class="n">availability_zone</span><span class="p">:</span><span class="n">az2</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">That’s all for now</div>
+<div class="line">Hope this guide helps.</div>
+<div class="line">Regards</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">egonzalez</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Post:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="2017-08-28-openstack-tacker-and-service-function-chaining-sfc-with-kolla.html">OpenStack tacker and service function chaining sfc with kolla</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2017-02-22-deploy-openstack-designate-with-kolla-ansible.html">Deploy OpenStack designate with kolla-ansible</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2017-01-31-openstack-keystone-zero-downtime-upgrade-process-n-to-o.html">OpenStack keystone zero downtime upgrade process newton to ocata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-10-31-to-conditional-or-to-skip-that-is-the-ansible-question.html">To conditional or to skip, that’s the Ansible question</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-07-12-spacewalk-red-hat-satellite-v5-in-a-docker-container-poc.html">Spacewalk Red Hat Satellite v5 in a Docker container PoC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-07-04-midonet-integration-with-openstack-mitaka.html">Midonet integration with OpenStack Mitaka</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-06-15-rally-openstack-benchmarking-from-docker-containers.html">Rally OpenStack benchmarking from Docker containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-06-06-opendaylight-in-a-docker-container.html">OpenDaylight in a Docker container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-04-24-openstack-kolla-deployment-from-rdo-packages.html">OpenStack kolla deployment from RDO packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-24-magnum-in-rdo-openstack-liberty-manual-installation-from-source-code.html">Magnum in RDO OpenStack Liberty manual installation from source code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-17-ceph-ansible-baremetal-deployment.html">Ceph Ansible baremetal deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-03-02-nova-vnc-flows-under-the-hood.html">Nova VNC flows under the hood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-24-ansible-ini_file-module-simplifying-your-devops-life.html">Ansible INI file module, simplifying your DevOps life</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-15-working-with-affinityanti-affinity-groups-openstack.html">Working with affinity/anti-affinity groups OpenStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-02-02-migrate-from-keystone-v2-0-to-keystone-v3-openstack-liberty.html">Migrate keystone v2.0 to keystone v3 OpenStack Liberty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2016-01-27-configure-neutron-dvr-openstack-liberty.html">Configure neutron DVR OpenStack Liberty</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">OpenStack segregation with availability zones and host aggregates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-12-23-nova-docker-driver.html">Nova Docker driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-12-14-murano-in-rdo-openstack-manual-installation.html">Murano in RDO OpenStack manual installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-09-08-ceph-radosgw-admin-ops-how-to-use-it.html">Ceph RadosGW admin Ops, how to use it</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-08-13-multiple-store-locations-for-glance-images.html">Multiple store locations for glance images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-07-02-list-all-tenants-belonging-an-user.html">List all tenants belonging an user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-24-load-balancer-as-a-service-lbaas.html">Load balancer as a service OpenStack LbaaS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-16-openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use.html">OpenStack nova APi start error, could not bind to 0.0.0.0 address all ready in use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2015-03-09-delete-openstack-neutron-networks-solution-to-unable-to-complete-operation-on-subnet.html">Delete OpenStack neutron networks, fix to unable to complete operation on subnet</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="2016-01-27-configure-neutron-dvr-openstack-liberty.html" title="previous chapter">Configure neutron DVR OpenStack Liberty</a></li>
+      <li>Next: <a href="2015-12-23-nova-docker-driver.html" title="next chapter">Nova Docker driver</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Eduardo Gonzalez.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/2016-01-14-openstack-segregation-with-availability-zones-and-host-aggregates.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
