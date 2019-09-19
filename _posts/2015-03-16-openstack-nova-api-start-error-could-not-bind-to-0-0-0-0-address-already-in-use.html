@@ -1,0 +1,64 @@
+---
+layout: post
+title: Openstack-nova-api start error (Could not bind to 0.0.0.0, Address already
+  in use)
+date: 2015-03-16 17:23:45.000000000 +01:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- OpenStack
+tags:
+- address already in use
+- api
+- could
+- dead but pid file exists
+- error
+- not bind
+- nova
+- nova-api
+- nova-wsgi
+- openstack
+- update-rc.d
+meta:
+  _edit_last: '2'
+  _publicize_facebook_user: https://www.facebook.com/dudu.gonzalez90
+  _publicize_twitter_user: "@egongu90"
+  _wpas_mess: Openstack-nova-api start error (Could not bind to 0.0.0.0, Address already
+    in use)
+  _wpas_done_all: '1'
+  _wpas_skip_5226565: '1'
+  _wpas_skip_10228321: '1'
+  _wpas_skip_8706018: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1568931540;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:1140;}i:1;a:1:{s:2:"id";i:1257;}i:2;a:1:{s:2:"id";i:927;}}}}
+  dsq_thread_id: '6094460614'
+author:
+  login: egongu90
+  email: egongu90@hotmail.com
+  display_name: Editor
+  first_name: ''
+  last_name: ''
+permalink: "/openstack-nova-api-start-error-could-not-bind-to-0-0-0-0-address-already-in-use/"
+---
+<p>&nbsp;</p>
+<p>Openstack-nova-api doesn't start, this error is  from the services boot priority in many times.</p>
+<blockquote><p># service openstack-nova-api start</p>
+<p>2015-03-03 15:05:06.402 3313 ERROR nova.wsgi [-] Could not bind to<br />
+0.0.0.0:8775<br />
+2015-03-03 15:05:06.402 3313 CRITICAL nova [-] error: [Errno 98] Address<br />
+already in use</p>
+<p># service openstack-nova-api status</p>
+<p>openstack-nova-api dead but pid file exists*</p></blockquote>
+<p>This Error happens because openstack-nova-api and openstack-nova-metadata-api use the same ports.<br />
+You can start nova-api stopping metadata-api service and starting nova-api before, then start again metadata-api service.</p>
+<blockquote><p># service openstack-nova-metadata-api stop<br />
+# service openstack-nova-api start<br />
+# service openstack-nova-metadata-api</p></blockquote>
+<p>This should fix your issue. After this you can set up boot order to this processes</p>
+<blockquote><p># update-rc.d openstack-nova-api defaults &lt;order&gt;</p></blockquote>
+<p>Example: If openstack-nova-metadata-api got an order boot of S90openstack-nova-metadata-api, you should use update-rc to set nova-api start before nova-metadata-api</p>
+<blockquote><p># update-rc.d openstack-nova-api defaults 90</p></blockquote>
+<p>This will set the priority of nova-api with the priority of nova-metadata-api, wich means that nova-api will run before metadata-api.</p>
+<p>&nbsp;</p>

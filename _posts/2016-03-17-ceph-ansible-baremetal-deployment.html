@@ -1,0 +1,520 @@
+---
+layout: post
+title: Ceph-ansible baremetal deployment
+date: 2016-03-17 22:47:17.000000000 +01:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- Linux
+- Various
+tags:
+- ansible
+- baremetal
+- cep
+- deployment
+meta:
+  _edit_last: '2'
+  _aioseop_opengraph_settings: a:13:{s:32:"aioseop_opengraph_settings_title";s:33:"Ceph-ansible
+    baremetal deployment";s:31:"aioseop_opengraph_settings_desc";s:72:"How many times
+    you tried to install Ceph? How many fails with no reason?";s:32:"aioseop_opengraph_settings_image";s:80:"http://egonzalez.org/wp-content/uploads/2014/08/IMG_811278467062542-150x150.jpeg";s:36:"aioseop_opengraph_settings_customimg";s:80:"http://egonzalez.org/wp-content/uploads/2014/08/IMG_811278467062542-150x150.jpeg";s:37:"aioseop_opengraph_settings_imagewidth";s:0:"";s:38:"aioseop_opengraph_settings_imageheight";s:0:"";s:32:"aioseop_opengraph_settings_video";s:0:"";s:37:"aioseop_opengraph_settings_videowidth";s:0:"";s:38:"aioseop_opengraph_settings_videoheight";s:0:"";s:35:"aioseop_opengraph_settings_category";s:8:"activity";s:34:"aioseop_opengraph_settings_section";s:0:"";s:30:"aioseop_opengraph_settings_tag";s:0:"";s:34:"aioseop_opengraph_settings_setcard";s:7:"summary";}
+  _publicize_twitter_user: "@egongu90"
+  _oembed_39c487f9fbf70237e66856a7796ab46b: "{{unknown}}"
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1568927530;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:1213;}i:1;a:1:{s:2:"id";i:1014;}i:2;a:1:{s:2:"id";i:1160;}}}}
+  _wpas_done_all: '1'
+  _wpas_skip_5226565: '1'
+  _wpas_skip_10228321: '1'
+  _wpas_skip_12345373: '1'
+  _wpas_skip_8706018: '1'
+  _oembed_a5cc0bc37533c126b8ebd9cb69f09156: "{{unknown}}"
+  _aioseop_keywords: ceph,ansible,baremetal,deployment
+  _aioseop_description: How many times you tried to install Ceph? How many fails with
+    no reason?
+  _aioseop_title: Ceph ansible baremetal deployment
+  _oembed_2f873087d6f0757bad6b60624c3862c9: "{{unknown}}"
+  _oembed_45252fa0b6afe0ea738d3bc81c1bde19: "{{unknown}}"
+  dsq_thread_id: '6094296992'
+author:
+  login: egongu90
+  email: egongu90@hotmail.com
+  display_name: Editor
+  first_name: ''
+  last_name: ''
+permalink: "/ceph-ansible-baremetal-deployment/"
+---
+<p>How many times you tried to install Ceph? How many fails with no reason?<br />
+All Ceph operator should agree with me when i say that Ceph installer doesn't really works as expected so far.<br />
+Yes, i'm talking about ceph-deploy and the main reason why i'm posting this guide about deploying Ceph with Ansible.</p>
+<p>At this post, i will show how to install a Ceph cluster with Ansible on baremetal servers.<br />
+My configuration is as follows:</p>
+<ol>
+<li type="disc">3 x ceph monitors 8GB of RAM each one</li>
+<li type="disc">3 x OSD nodes 16GB of RAM and 3x100 GB of Disk</li>
+<li type="disc">1 x RadosGateway node 8GB of RAM</li>
+</ol>
+<p>First, download Ceph-Ansible playbooks</p>
+<pre>
+git clone https://github.com/ceph/ceph-ansible/
+Cloning into 'ceph-ansible'...
+remote: Counting objects: 5764, done.
+remote: Compressing objects: 100% (38/38), done.
+remote: Total 5764 (delta 7), reused 0 (delta 0), pack-reused 5726
+Receiving objects: 100% (5764/5764), 1.12 MiB | 1.06 MiB/s, done.
+Resolving deltas: 100% (3465/3465), done.
+Checking connectivity... done.
+</pre>
+<p>Move to the newly created folder called ceph-ansible</p>
+<pre>
+cd ceph-ansible/
+</pre>
+<p>Copy sample vars files, we will configure our environment in these variable files.</p>
+<pre>
+cp site.yml.sample site.yml
+cp group_vars/all.sample group_vars/all
+cp group_vars/mons.sample group_vars/mons
+cp group_vars/osds.sample group_vars/osds
+</pre>
+<p>Next step is configure the inventory with our servers, i don't really like use /etc/ansible/host file, i prefer create a new file per environment inside playbook's folder.</p>
+<p>Create a file with the following content, use you own IPs to match your servers on the desired role inside the cluster</p>
+<pre>
+[root@ansible ~]# vi inventory_hosts
+
+[mons]
+192.168.1.48
+192.168.1.49
+192.168.1.52
+
+[osds]
+192.168.1.50
+192.168.1.53
+192.168.1.54
+
+[rgws]
+192.168.1.55
+
+</pre>
+<p>Test connectivity to you servers pinging them through Ansible ping module</p>
+<pre>
+[root@ansible ~]# ansible -m ping -i inventory_hosts all
+192.168.1.48 | success >> {
+    "changed": false,
+    "ping": "pong"
+}
+
+192.168.1.50 | success >> {
+    "changed": false,
+    "ping": "pong"
+}
+
+192.168.1.55 | success >> {
+    "changed": false,
+    "ping": "pong"
+}
+
+192.168.1.53 | success >> {
+    "changed": false,
+    "ping": "pong"
+}
+
+192.168.1.49 | success >> {
+    "changed": false,
+    "ping": "pong"
+}
+
+192.168.1.54 | success >> {
+    "changed": false,
+    "ping": "pong"
+}
+
+192.168.1.52 | success >> {
+    "changed": false,
+    "ping": "pong"
+}
+</pre>
+<p>Edit site.yml file, i will remove/comment mds nodes since i'm not going to use them.</p>
+<pre>
+[root@ansible ~]# vi site.yml
+
+- hosts: mons
+  become: True
+  roles:
+  - ceph-mon
+
+- hosts: agents
+  become: True
+  roles:
+  - ceph-agent
+
+- hosts: osds
+  become: True
+  roles:
+  - ceph-osd
+
+#- hosts: mdss
+#  become: True
+#  roles:
+#  - ceph-mds
+
+- hosts: rgws
+  become: True
+  roles:
+  - ceph-rgw
+
+- hosts: restapis
+  become: True
+  roles:
+  - ceph-restapi
+
+</pre>
+<p>Edit main variable file, here we are going to configure our environment</p>
+<pre>
+[root@ansible ~]# vi group_vars/all
+</pre>
+<p>Here we configure from where ceph packages are going to be installed, for now we use upstream code with the stable release Infernalis.</p>
+<pre>
+## Configure package origin
+ceph_origin: upstream
+ceph_stable: true
+ceph_stable_release: infernalis
+</pre>
+<p>Configure interface on which monitor will be listening</p>
+<pre>
+## Monitor options
+monitor_interface: eth2
+</pre>
+<p>Here we configure some OSD options, like journal size and what networks will be used by public and cluster data replication</p>
+<pre>
+## OSD options
+journal_size: 1024
+public_network: 192.168.1.0/24
+cluster_network: 192.168.200.0/24
+</pre>
+<p>Edit osds variable file</p>
+<pre>
+[root@ansible ~]# vi group_vars/osds
+</pre>
+<p>I will use auto discovery option to allow ceph ansible select empy or not used devices in my servers to create OSDs.</p>
+<pre>
+# Declare devices
+osd_auto_discovery: True
+journal_collocation: True
+</pre>
+<p>Of course you can use other options, i'll highly suggest you to read variable comments, as they provide valuable information about usage.<br />
+We're ready to deploy  ceph with ansible with our custom inventory_hosts file.</p>
+<pre>
+[root@ansible ~]# ansible-playbook site.yml -i inventory_hosts
+</pre>
+<p>After a while, you will have a fully functional ceph cluster.</p>
+<p>Maybe you find some issues or bugs when running the playbooks.<br />
+There is a lot of efforts to fix issues on upstream repository. If a new bug is encountered, please, post a issue right here.<br />
+https://github.com/ceph/ceph-ansible/issues</p>
+<p>You can check your cluster status with ceph -s. we can see all OSDs are up and pgs active/clean.</p>
+<pre>
+[root@ceph-mon1 ~]# ceph -s
+    cluster 5ff692ab-2150-41a4-8b6d-001a4da21c9c
+     health HEALTH_OK
+     monmap e1: 3 mons at {ceph-mon1=192.168.200.141:6789/0,ceph-mon2=192.168.200.180:6789/0,ceph-mon3=192.168.200.232:6789/0}
+            election epoch 6, quorum 0,1,2 ceph-mon1,ceph-mon2,ceph-mon3
+     osdmap e10: 9 osds: 9 up, 9 in
+            flags sortbitwise
+      pgmap v32: 64 pgs, 1 pools, 0 bytes data, 0 objects
+            102256 kB used, 896 GB / 896 GB avail
+                  64 active+clean
+</pre>
+<p>We are going to do some tests.<br />
+Create a pool</p>
+<pre>
+[root@ceph-mon1 ~]# ceph osd pool create test 128 128
+pool 'test' created
+</pre>
+<p>Create a file big file</p>
+<pre>
+[root@ceph-mon1 ~]# dd if=/dev/zero of=/tmp/sample.txt bs=2M count=1000
+1000+0 records in
+1000+0 records out
+2097152000 bytes (2.1 GB) copied, 16.7386 s, 125 MB/s
+</pre>
+<p>Upload the file to rados</p>
+<pre>
+[root@ceph-mon1 ~]# rados -p test put sample /tmp/sample.txt 
+</pre>
+<p>Check om which placement groups your file is saved</p>
+<pre>
+[root@ceph-mon1 ~]# ceph osd map test sample
+osdmap e13 pool 'test' (1) object 'sample' -> pg 1.bddbf0b9 (1.39) -> up ([1,0], p1) acting ([1,0], p1)
+</pre>
+<p>Query the placement group where you file was uploaded, a similar output will prompts</p>
+<pre>
+[root@ceph-mon1 ~]# ceph pg 1.39 query
+{
+    "state": "active+clean",
+    "snap_trimq": "[]",
+    "epoch": 13,
+    "up": [
+        1,
+        0
+    ],
+    "acting": [
+        1,
+        0
+    ],
+    "actingbackfill": [
+        "0",
+        "1"
+    ],
+    "info": {
+        "pgid": "1.39",
+        "last_update": "13'500",
+        "last_complete": "13'500",
+        "log_tail": "0'0",
+        "last_user_version": 500,
+        "last_backfill": "MAX",
+        "last_backfill_bitwise": 0,
+        "purged_snaps": "[]",
+        "history": {
+            "epoch_created": 11,
+            "last_epoch_started": 12,
+            "last_epoch_clean": 13,
+            "last_epoch_split": 0,
+            "last_epoch_marked_full": 0,
+            "same_up_since": 11,
+            "same_interval_since": 11,
+            "same_primary_since": 11,
+            "last_scrub": "0'0",
+            "last_scrub_stamp": "2016-03-16 21:13:08.883121",
+            "last_deep_scrub": "0'0",
+            "last_deep_scrub_stamp": "2016-03-16 21:13:08.883121",
+            "last_clean_scrub_stamp": "0.000000"
+        },
+        "stats": {
+            "version": "13'500",
+            "reported_seq": "505",
+            "reported_epoch": "13",
+            "state": "active+clean",
+            "last_fresh": "2016-03-16 21:24:40.930724",
+            "last_change": "2016-03-16 21:14:09.874086",
+            "last_active": "2016-03-16 21:24:40.930724",
+            "last_peered": "2016-03-16 21:24:40.930724",
+            "last_clean": "2016-03-16 21:24:40.930724",
+            "last_became_active": "0.000000",
+            "last_became_peered": "0.000000",
+            "last_unstale": "2016-03-16 21:24:40.930724",
+            "last_undegraded": "2016-03-16 21:24:40.930724",
+            "last_fullsized": "2016-03-16 21:24:40.930724",
+            "mapping_epoch": 11,
+            "log_start": "0'0",
+            "ondisk_log_start": "0'0",
+            "created": 11,
+            "last_epoch_clean": 13,
+            "parent": "0.0",
+            "parent_split_bits": 0,
+            "last_scrub": "0'0",
+            "last_scrub_stamp": "2016-03-16 21:13:08.883121",
+            "last_deep_scrub": "0'0",
+            "last_deep_scrub_stamp": "2016-03-16 21:13:08.883121",
+            "last_clean_scrub_stamp": "0.000000",
+            "log_size": 500,
+            "ondisk_log_size": 500,
+            "stats_invalid": "0",
+            "stat_sum": {
+                "num_bytes": 2097152000,
+                "num_objects": 1,
+                "num_object_clones": 0,
+                "num_object_copies": 2,
+                "num_objects_missing_on_primary": 0,
+                "num_objects_degraded": 0,
+                "num_objects_misplaced": 0,
+                "num_objects_unfound": 0,
+                "num_objects_dirty": 1,
+                "num_whiteouts": 0,
+                "num_read": 0,
+                "num_read_kb": 0,
+                "num_write": 500,
+                "num_write_kb": 2048000,
+                "num_scrub_errors": 0,
+                "num_shallow_scrub_errors": 0,
+                "num_deep_scrub_errors": 0,
+                "num_objects_recovered": 0,
+                "num_bytes_recovered": 0,
+                "num_keys_recovered": 0,
+                "num_objects_omap": 0,
+                "num_objects_hit_set_archive": 0,
+                "num_bytes_hit_set_archive": 0,
+                "num_flush": 0,
+                "num_flush_kb": 0,
+                "num_evict": 0,
+                "num_evict_kb": 0,
+                "num_promote": 0,
+                "num_flush_mode_high": 0,
+                "num_flush_mode_low": 0,
+                "num_evict_mode_some": 0,
+                "num_evict_mode_full": 0
+            },
+            "up": [
+                1,
+                0
+            ],
+            "acting": [
+                1,
+                0
+            ],
+            "blocked_by": [],
+            "up_primary": 1,
+            "acting_primary": 1
+        },
+        "empty": 0,
+        "dne": 0,
+        "incomplete": 0,
+        "last_epoch_started": 12,
+        "hit_set_history": {
+            "current_last_update": "0'0",
+            "history": []
+        }
+    },
+    "peer_info": [
+        {
+            "peer": "0",
+            "pgid": "1.39",
+            "last_update": "13'500",
+            "last_complete": "13'500",
+            "log_tail": "0'0",
+            "last_user_version": 0,
+            "last_backfill": "MAX",
+            "last_backfill_bitwise": 0,
+            "purged_snaps": "[]",
+            "history": {
+                "epoch_created": 11,
+                "last_epoch_started": 12,
+                "last_epoch_clean": 13,
+                "last_epoch_split": 0,
+                "last_epoch_marked_full": 0,
+                "same_up_since": 0,
+                "same_interval_since": 0,
+                "same_primary_since": 0,
+                "last_scrub": "0'0",
+                "last_scrub_stamp": "2016-03-16 21:13:08.883121",
+                "last_deep_scrub": "0'0",
+                "last_deep_scrub_stamp": "2016-03-16 21:13:08.883121",
+                "last_clean_scrub_stamp": "0.000000"
+            },
+            "stats": {
+                "version": "0'0",
+                "reported_seq": "0",
+                "reported_epoch": "0",
+                "state": "inactive",
+                "last_fresh": "0.000000",
+                "last_change": "0.000000",
+                "last_active": "0.000000",
+                "last_peered": "0.000000",
+                "last_clean": "0.000000",
+                "last_became_active": "0.000000",
+                "last_became_peered": "0.000000",
+                "last_unstale": "0.000000",
+                "last_undegraded": "0.000000",
+                "last_fullsized": "0.000000",
+                "mapping_epoch": 0,
+                "log_start": "0'0",
+                "ondisk_log_start": "0'0",
+                "created": 0,
+                "last_epoch_clean": 0,
+                "parent": "0.0",
+                "parent_split_bits": 0,
+                "last_scrub": "0'0",
+                "last_scrub_stamp": "0.000000",
+                "last_deep_scrub": "0'0",
+                "last_deep_scrub_stamp": "0.000000",
+                "last_clean_scrub_stamp": "0.000000",
+                "log_size": 0,
+                "ondisk_log_size": 0,
+                "stats_invalid": "0",
+                "stat_sum": {
+                    "num_bytes": 0,
+                    "num_objects": 0,
+                    "num_object_clones": 0,
+                    "num_object_copies": 0,
+                    "num_objects_missing_on_primary": 0,
+                    "num_objects_degraded": 0,
+                    "num_objects_misplaced": 0,
+                    "num_objects_unfound": 0,
+                    "num_objects_dirty": 0,
+                    "num_whiteouts": 0,
+                    "num_read": 0,
+                    "num_read_kb": 0,
+                    "num_write": 0,
+                    "num_write_kb": 0,
+                    "num_scrub_errors": 0,
+                    "num_shallow_scrub_errors": 0,
+                    "num_deep_scrub_errors": 0,
+                    "num_objects_recovered": 0,
+                    "num_bytes_recovered": 0,
+                    "num_keys_recovered": 0,
+                    "num_objects_omap": 0,
+                    "num_objects_hit_set_archive": 0,
+                    "num_bytes_hit_set_archive": 0,
+                    "num_flush": 0,
+                    "num_flush_kb": 0,
+                    "num_evict": 0,
+                    "num_evict_kb": 0,
+                    "num_promote": 0,
+                    "num_flush_mode_high": 0,
+                    "num_flush_mode_low": 0,
+                    "num_evict_mode_some": 0,
+                    "num_evict_mode_full": 0
+                },
+                "up": [],
+                "acting": [],
+                "blocked_by": [],
+                "up_primary": -1,
+                "acting_primary": -1
+            },
+            "empty": 0,
+            "dne": 0,
+            "incomplete": 0,
+            "last_epoch_started": 12,
+            "hit_set_history": {
+                "current_last_update": "0'0",
+                "history": []
+            }
+        }
+    ],
+    "recovery_state": [
+        {
+            "name": "Started\/Primary\/Active",
+            "enter_time": "2016-03-16 21:13:36.769083",
+            "might_have_unfound": [],
+            "recovery_progress": {
+                "backfill_targets": [],
+                "waiting_on_backfill": [],
+                "last_backfill_started": "MIN",
+                "backfill_info": {
+                    "begin": "MIN",
+                    "end": "MIN",
+                    "objects": []
+                },
+                "peer_backfill_info": [],
+                "backfills_in_flight": [],
+                "recovering": [],
+                "pg_backend": {
+                    "pull_from_peer": [],
+                    "pushing": []
+                }
+            },
+            "scrub": {
+                "scrubber.epoch_start": "0",
+                "scrubber.active": 0,
+                "scrubber.waiting_on": 0,
+                "scrubber.waiting_on_whom": []
+            }
+        },
+        {
+            "name": "Started",
+            "enter_time": "2016-03-16 21:13:09.216260"
+        }
+    ],
+    "agent_state": {}
+}
+</pre>
+<p>That's all for now.<br />
+Regards, Eduardo Gonzalez</p>

@@ -1,0 +1,64 @@
+---
+layout: post
+title: Tutorial seguridad Man In The Middle
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- Various
+tags:
+- ARP
+- Hacking
+- MITM
+- Seguridad
+- Sniffing
+- Tutorial
+meta:
+  _publicize_pending: '1'
+  _wpas_done_2632354: '1'
+  _publicize_done_external: a:1:{s:8:"facebook";a:1:{i:1161837279;b:1;}}
+  publicize_twitter_user: egongu90
+  _wpas_done_2632362: '1'
+  _edit_last: '2'
+author:
+  login: egongu90
+  email: egongu90@hotmail.com
+  display_name: Editor
+  first_name: ''
+  last_name: ''
+permalink: "/tutorial-seguridad-man-in-the-middle/"
+---
+<p>En este mundo informatizado nada es seguro, y con los ataque man in the middle es muy difícil detectarlos y evitarlos, ya que las aplicaciones que realizan estos ataques lo hacen de forma pasiva, y no dejan rastro del ataque.<!--more--></p>
+<p>Es en la información de texto plano donde cae la mayoría de los ataques, puesto que es accesible desde cualquier equipo de la red mediante un sniffer.</p>
+<h2>DETECCIÓN</h2>
+<p>Son pocos los metodos de detección de este tipo de ataques</p>
+<p>Teniendo acceso al equipo atacante, se pueden ver los procesos de este y observar que tenga un sniffer activo.Aunque este método es prácticamente improbable.</p>
+<p>Analizando el retardo del envió de paquetes a una IP cualquiera mediante Ping. Creando conexiones TCP falsas y probando de nuevo el ping, si aumenta el retardo bastante puede que se tenga un sniffer en la red.</p>
+<p>Esto se basa en realizar un ping a una IP pero con la MAC falsa. Para ello se agrega a la tabla ARP la MAC errónea y la IP verdadera mediante este comando</p>
+<ul>
+<li>Arp -s (IP) (MAC)</li>
+</ul>
+<p>Al estar la MAC errónea al realizar ping no debería llegar el paquete, pero si tenemos un sniffer en linea el paquete llegara a su destino, que en este caso es el equipo atacante.</p>
+<p>Mediante aplicaciones para estas funciones:</p>
+<ul>
+<li>Antisnif</li>
+<li>Sentinel</li>
+<li>CPM</li>
+<li>SniffDet</li>
+<li>NEPED</li>
+<li>Prom iscan</li>
+<li>Prom isdetec</li>
+<li>ProDETECT</li>
+</ul>
+<h2>PROTECCIÓN</h2>
+<p>La protección a estas intrusiones de la intimidad y documentos privados es el cifrar la información mediante algún tipo de encriptado, que evite que el equipo que no sea el receptor  pueda identificar la información.</p>
+<p>Las técnicas de protección pueden ser:</p>
+<ul>
+<li>PGP</li>
+<li>SSL</li>
+<li>SSH</li>
+</ul>
+<p>Referencias MAN IN THE MIDDLE, ATAQUE Y DETECCION de David Galisteo Cantero y Raul Moya Reyes</p>

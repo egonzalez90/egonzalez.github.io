@@ -1,0 +1,114 @@
+---
+layout: post
+title: To Conditional or To Skip, that is the Ansible question
+date: 2016-10-31 20:49:37.000000000 +01:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- Various
+tags:
+- analysis
+- ansible
+- code
+- conditional
+- logic
+- opinion
+- skip
+- syntax
+- 'True'
+- when
+- with_first_found
+meta:
+  _wpcom_is_markdown: '1'
+  _edit_last: '2'
+  _aioseop_opengraph_settings: a:14:{s:32:"aioseop_opengraph_settings_title";s:55:"To
+    Conditional or To Skip, that is the Ansible question";s:31:"aioseop_opengraph_settings_desc";s:108:"Have
+    you ever think about if an Ansible task should be skipped with a conditional or
+    without (hidden skip)?.";s:32:"aioseop_opengraph_settings_image";s:72:"http://egonzalez.org/wp-content/uploads/2014/08/IMG_811278467062542.jpeg";s:36:"aioseop_opengraph_settings_customimg";s:72:"http://egonzalez.org/wp-content/uploads/2014/08/IMG_811278467062542.jpeg";s:37:"aioseop_opengraph_settings_imagewidth";s:0:"";s:38:"aioseop_opengraph_settings_imageheight";s:0:"";s:32:"aioseop_opengraph_settings_video";s:0:"";s:37:"aioseop_opengraph_settings_videowidth";s:0:"";s:38:"aioseop_opengraph_settings_videoheight";s:0:"";s:35:"aioseop_opengraph_settings_category";s:8:"activity";s:34:"aioseop_opengraph_settings_section";s:0:"";s:30:"aioseop_opengraph_settings_tag";s:0:"";s:34:"aioseop_opengraph_settings_setcard";s:7:"summary";s:44:"aioseop_opengraph_settings_customimg_twitter";s:0:"";}
+  _publicize_twitter_user: "@egongu90"
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1568922576;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:1192;}i:1;a:1:{s:2:"id";i:1160;}i:2;a:1:{s:2:"id";i:1213;}}}}
+  _wpas_done_all: '1'
+  _jetpack_dont_email_post_to_subs: '1'
+  _aioseop_keywords: ansible,Ansible conditional,skip,when,with_first_found,opinion,logic,syntax,code,analysis,True
+  _aioseop_description: Have you ever think about if an Ansible task should be skipped
+    with a conditional or without (hidden skip)?.
+  _aioseop_title: To Conditional or To Skip, that is the Ansible question
+  _wpas_skip_5226565: '1'
+  _wpas_skip_10228321: '1'
+  _wpas_skip_12345373: '1'
+  _wpas_skip_8706018: '1'
+  dsq_thread_id: '6096232419'
+author:
+  login: egongu90
+  email: egongu90@hotmail.com
+  display_name: Editor
+  first_name: ''
+  last_name: ''
+permalink: "/to-conditional-or-to-skip-that-is-the-ansible-question/"
+---
+<p>Have you ever think about if an Ansible task should be skipped with a conditional or without (hidden skip)?.<br />
+Well, this post will analyse both methods.</p>
+<p>Let's use a example to create the same result and analyse the both methods:</p>
+<p>In OpenStack Kolla we found that sometimes operators need to customise policy.json files. That's fine, but the problem is that policy.json files are installed with the services by default and we don't need/want to maintain policy.json files in our repository because for sure will cause bugs from outdated policy files in the future.</p>
+<p>What's the proposed solution to this? Allow operators use their own policy files only when their files exists in a custom configuration folder. If custom files are not present, default policy.json files are already present as part of the software installation. ( Actually this change is under review )</p>
+<h2>To Conditional method</h2>
+<p>Code snippet:</p>
+<pre>  - name: Check if file exists
+    stat:
+      path: "/tmp/custom_file.json"
+    register: check_custom_file_exist
+
+  - name: Copy custom policy when exist
+    template:
+      src: "/tmp/custom_file.json"
+      dest: "/tmp/destination_file.json"
+    when: "{{ check_custom_file_exist.stat.exists }}"
+</pre>
+<p>The first task checks if the file is present and register the stat result.<br />
+The second task, copy the file only when the registered result of the previous task is True. (exists == True)</p>
+<p>Outputs the following when the file is not present:</p>
+<pre>PLAY [localhost] ***************************************************************
+
+TASK [Check if file exists] ****************************************************
+ok: [localhost]
+
+TASK [Copy custom policy when exist] *******************************************
+skipping: [localhost]
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=1    changed=0    unreachable=0    failed=0  
+</pre>
+<p>We can see the copy file task is skipped with a skipping message.</p>
+<h2>To Skip method</h2>
+<p>Code snippet:</p>
+<pre>  - name: Copy custom policy when exist
+    template:
+      src: "{{ item }}"
+      dest: "/tmp/destination_file.json"
+    with_first_found:
+    - files:
+      - custom_file.json
+      skip: True
+</pre>
+<p>This playbook contains a single task, this task will use the first found file in a list of files. If no file is present will skip the task.</p>
+<p>Output from this execution:</p>
+<pre>PLAY [localhost] ***************************************************************
+
+TASK [Copy custom policy when exist] *******************************************
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=0    changed=0    unreachable=0    failed=0 
+</pre>
+<p>We can see that no task is executed when custom files are not present, no output from the task (hidden skip).</p>
+<h2>Analysis and own opinion</h2>
+<p>Both methods do the same, both copy custom files when are present and both skip copy task when are not present.<br />
+What are the differences between both methods?</p>
+<p>To_skip method is simpler to read and unified in a single task, to_conditional is created within two tasks.<br />
+To_conditional method takes longer to be executed as it has to check the existence of a file and then evaluate a conditional.</p>
+<p>You may think that to_skip method is better than to_conditional method, that's right in terms of code syntax and execution times. But...<br />
+As both, operator and infrastructure developer, I always use to_conditional method because when I'm deploying something new, I want to know what is executed and what not. In to_skip method you don't know because there is no output provided from the task(not really true) but in to_conditional method it clearly says Skipping.</p>
+<p>Execution times are not a problem in most use cases, as is not commonly used this kind of tasks in CM systems, only a few tasks will need this type of logic.</p>
+<p>Regards, Eduardo Gonzalez</p>

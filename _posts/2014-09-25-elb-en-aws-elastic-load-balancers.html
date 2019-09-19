@@ -1,0 +1,67 @@
+---
+layout: post
+title: ELB en AWS (Elastic Load Balancers)
+date: 2014-09-25 16:43:42.000000000 +02:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- OpenStack
+tags:
+- amazon
+- automatizar
+- AWS
+- Balancers
+- cloud
+- crear
+- distribuir
+- ELB
+- http
+- instancias
+- Load
+- Services; Elastic
+- trafico
+- virtualizacion
+- web
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '631'
+  snap_MYURL: ''
+  snapEdIT: '1'
+  snapFB: N;
+  snapTW: N;
+  _wpas_done_all: '1'
+  _wpas_skip_5226565: '1'
+  _wpas_skip_4949654: '1'
+  _wpas_skip_8706018: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1568756471;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:635;}i:1;a:1:{s:2:"id";i:674;}i:2;a:1:{s:2:"id";i:630;}}}}
+  dsq_thread_id: '6239307173'
+author:
+  login: egongu90
+  email: egongu90@hotmail.com
+  display_name: Editor
+  first_name: ''
+  last_name: ''
+permalink: "/elb-en-aws-elastic-load-balancers/"
+---
+<p>Hoy mostraré como crear Elastic Load Balancer (ELB) en Amazon Web Services el cual nos permitirá distribuir automáticamente el trafico entre las aplicaciones de las distintas instancias y obtener una mejor tolerancia a fallos.<!--more--></p>
+<p>Primero nos logearemos en AWS e iremos a la pestaña EC2, una vez a, aquí pulsaremos sobre Load Balancers del menú izquierdo.</p>
+<p>Se nos abrirá esta ventana en la que pulsaremos Create Load Balancer para configurar un ELB nuevo. En esta misa ventana nos mostraría los ELB ya creados</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/011.png"><img class="aligncenter size-full wp-image-685" src="{{ site.baseurl }}/assets/011.png" alt="01" width="1277" height="600" /></a></p>
+<p>Una vez abierto Create Load Balancer, rellenaremos el Nombre del ELB a crear y estableceremos los protocolos que soportara el ELB, por defecto viene activado HTTP por el puerto 80</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/021.png"><img class="aligncenter size-full wp-image-686" src="{{ site.baseurl }}/assets/021.png" alt="02" width="951" height="520" /></a></p>
+<p>En esta próxima pantalla configuraremos los análisis de salud de nuestras instancias, para ello ajustaremos los parámetros inferiores a nuestro gusto</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/031.png"><img class="aligncenter size-full wp-image-687" src="{{ site.baseurl }}/assets/031.png" alt="03" width="947" height="588" /></a></p>
+<p>Aquí asignaremos o crearemos un Security Group, en mi caso utilizare uno ya existente</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/041.png"><img class="aligncenter size-full wp-image-688" src="{{ site.baseurl }}/assets/041.png" alt="04" width="1001" height="384" /></a></p>
+<p>Lo ultimo que configuraremos serán las instancias que harán uso del ELB, seleccionamos las que queramos y pulsaremos en Continue</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/051.png"><img class="aligncenter size-full wp-image-689" src="{{ site.baseurl }}/assets/051.png" alt="05" width="963" height="653" /></a></p>
+<p>Finalizaremos estableciendo una etiqueta a nuestro ELB</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/061.png"><img class="aligncenter size-full wp-image-690" src="{{ site.baseurl }}/assets/061.png" alt="06" width="941" height="394" /></a></p>
+<p>Antes de terminar de crear el ELB, nos mostrara una resumen de la configuración, si estuviéramos de acuerdo pulsaríamos en Create, de lo contrario modificaremos alguna de las partes anteriores</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/071.png"><img class="aligncenter size-full wp-image-691" src="{{ site.baseurl }}/assets/071.png" alt="07" width="939" height="727" /></a></p>
+<p>Esta seria una imagen del ELB creado, tendremos que esperar un rato hasta que este activo, una vez activo veremos In Service el Status de las Instancias, aunque en algunas ocasiones aunque este In Service aun no tenemos conexión a través del ELB</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2014/09/081.png"><img class="aligncenter size-full wp-image-692" src="{{ site.baseurl }}/assets/081.png" alt="08" width="1053" height="771" /></a></p>
+<p>Un saludo</p>

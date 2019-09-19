@@ -1,0 +1,126 @@
+---
+layout: post
+title: Working with affinity/anti-affinity groups OpenStack
+date: 2016-02-15 21:05:37.000000000 +01:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- OpenStack
+tags:
+- affinity
+- anti-affinity
+- filter
+- groups
+- liberty
+- nova
+- openstack
+- rdo
+- scheduler
+- ServerGroupAffinityFilter
+- ServerGroupAntiAffinityFilter
+- working
+meta:
+  _edit_last: '2'
+  _aioseop_opengraph_settings: a:13:{s:32:"aioseop_opengraph_settings_title";s:52:"Working
+    with affinity/anti-affinity groups OpenStack";s:31:"aioseop_opengraph_settings_desc";s:101:"Working
+    with affinity/anti-affinity groups OpenStack guide, how to use affinity group
+    rules with nova";s:32:"aioseop_opengraph_settings_image";s:87:"http://egonzalez.org/wp-content/uploads/2015/09/learn-about-openstack-badge-140x150.png";s:36:"aioseop_opengraph_settings_customimg";s:87:"http://egonzalez.org/wp-content/uploads/2015/09/learn-about-openstack-badge-140x150.png";s:37:"aioseop_opengraph_settings_imagewidth";s:0:"";s:38:"aioseop_opengraph_settings_imageheight";s:0:"";s:32:"aioseop_opengraph_settings_video";s:0:"";s:37:"aioseop_opengraph_settings_videowidth";s:0:"";s:38:"aioseop_opengraph_settings_videoheight";s:0:"";s:35:"aioseop_opengraph_settings_category";s:4:"blog";s:34:"aioseop_opengraph_settings_section";s:0:"";s:30:"aioseop_opengraph_settings_tag";s:0:"";s:34:"aioseop_opengraph_settings_setcard";s:7:"summary";}
+  _publicize_twitter_user: "@egongu90"
+  _thumbnail_id: '1027'
+  _wpas_done_all: '1'
+  _wpas_mess: Working with affinity/anti-affinity groups OpenStack
+  _aioseop_keywords: affinity, anti-affinity, groups, nova, openstack, liberty, working,
+    rdo, scheduler,  filter, ServerGroupAntiAffinityFilter, ServerGroupAffinityFilter
+  _aioseop_description: Working with affinity/anti-affinity groups OpenStack guide,
+    how to use affinity groups with nova
+  _aioseop_title: Working with affinity/anti-affinity groups OpenStack
+  _wpas_skip_5226565: '1'
+  _wpas_skip_10228321: '1'
+  _wpas_skip_12345373: '1'
+  _wpas_skip_8706018: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1568921543;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:1098;}i:1;a:1:{s:2:"id";i:1087;}i:2;a:1:{s:2:"id";i:1140;}}}}
+  dsq_thread_id: '6095529076'
+author:
+  login: egongu90
+  email: egongu90@hotmail.com
+  display_name: Editor
+  first_name: ''
+  last_name: ''
+permalink: "/working-with-affinityanti-affinity-groups-openstack/"
+---
+<p>In a previous post, you learned how to segregate resources with <a href="http://egonzalez.org/openstack-segregation-with-availability-zones-and-host-aggregates/" target="_blank">Availability Zones and Host Aggregates</a>, those methods allows the end user to specify where and on which types of resources their instances should be running.</p>
+<p>At this post, you will learn how specify to nova where nova-scheduler should schedule your instances based on two policies. These policies define if instances should share the same hypervisor (affinity rule) or if not depending of user needs(anti-affinity rule).</p>
+<p>First, you need to modify nova.conf and allow nova-scheduler to filter based on affinity rules. Add <code>ServerGroupAntiAffinityFilter</code> and <code>ServerGroupAffinityFilter</code> filters to scheduler default filter option.</p>
+<pre>
+# vi /etc/nova.conf
+
+scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,CoreFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter
+</pre>
+<p>Restart nova-scheduler to apply changes</p>
+<pre>
+systemctl restart openstack-nova-scheduler
+</pre>
+<p>Once nova-scheduler has been restarted, we can create a group of servers based on affinity policy (All instances at this group will be launched in the same hypervisor)</p>
+<pre>
+nova server-group-create instancestogethergroup affinity
++--------------------------------------+------------------------+---------------+---------+----------+
+| Id                                   | Name                   | Policies      | Members | Metadata |
++--------------------------------------+------------------------+---------------+---------+----------+
+| 27abe662-c37e-431c-9715-0d2137fc5519 | instancestogethergroup | [u'affinity'] | []      | {}       |
++--------------------------------------+------------------------+---------------+---------+----------+
+</pre>
+<p>Now create two instances, add <code>--hint group=GROUP-ID</code> option to specify the group where instances will be members. </p>
+<pre>
+nova boot --image a6d7a606-f725-480a-9b1b-7b3ae39b93d4 --flavor m1.tiny --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df --hint group=27abe662-c37e-431c-9715-0d2137fc5519 affinity1
+nova boot --image a6d7a606-f725-480a-9b1b-7b3ae39b93d4 --flavor m1.tiny --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df --hint group=27abe662-c37e-431c-9715-0d2137fc5519 affinity2
+</pre>
+<p>Ensure the instances are properly mapped to the group.</p>
+<pre>
+nova server-group-get 27abe662-c37e-431c-9715-0d2137fc5519 
++--------------------------------------+------------------------+---------------+------------------------------------------------------------------------------------+----------+
+| Id                                   | Name                   | Policies      | Members                                                                            | Metadata |
++--------------------------------------+------------------------+---------------+------------------------------------------------------------------------------------+----------+
+| 27abe662-c37e-431c-9715-0d2137fc5519 | instancestogethergroup | [u'affinity'] | [u'b8b72a0a-c981-430e-a909-13d23d928655', u'8affefff-0072-47e3-8d11-2ddf26e48b82'] | {}       |
++--------------------------------------+------------------------+---------------+------------------------------------------------------------------------------------+----------+
+</pre>
+<p>Once instances are running, ensure they share the same hypervisor as we specify in the affinity policy.</p>
+<pre>
+# nova show affinity1 | grep hypervisor_hostname
+| OS-EXT-SRV-ATTR:hypervisor_hostname  | compute2az
+# nova show affinity2 | grep hypervisor_hostname
+| OS-EXT-SRV-ATTR:hypervisor_hostname  | compute2az  
+</pre>
+<p>Now we create an anti-affinity policy based group.</p>
+<pre>
+nova server-group-create farinstancesgroup anti-affinity
++--------------------------------------+-------------------+--------------------+---------+----------+
+| Id                                   | Name              | Policies           | Members | Metadata |
++--------------------------------------+-------------------+--------------------+---------+----------+
+| 988a9fd2-3a97-481e-b083-fee36b33009d | farinstancesgroup | [u'anti-affinity'] | []      | {}       |
++--------------------------------------+-------------------+--------------------+---------+----------+
+</pre>
+<p>Launch two instances and attach them to the anti-affinity group.</p>
+<pre>
+nova boot --image a6d7a606-f725-480a-9b1b-7b3ae39b93d4 --flavor m1.tiny --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df --hint group=988a9fd2-3a97-481e-b083-fee36b33009d anti-affinity1
+nova boot --image a6d7a606-f725-480a-9b1b-7b3ae39b93d4 --flavor m1.tiny --nic net-id=154da7a8-fa49-415e-9d35-c840b144a8df --hint group=988a9fd2-3a97-481e-b083-fee36b33009d anti-affinity2
+</pre>
+<p>Ensure the instances are in the anti-affinity group</p>
+<pre>
+nova server-group-get 988a9fd2-3a97-481e-b083-fee36b33009d 
++--------------------------------------+-------------------+--------------------+------------------------------------------------------------------------------------+----------+
+| Id                                   | Name              | Policies           | Members                                                                            | Metadata |
++--------------------------------------+-------------------+--------------------+------------------------------------------------------------------------------------+----------+
+| 988a9fd2-3a97-481e-b083-fee36b33009d | farinstancesgroup | [u'anti-affinity'] | [u'cfb45193-9a7c-436f-ac2d-59a7a9a854ae', u'25dc8671-0c9a-4774-90cf-7394380f91ef'] | {}       |
++--------------------------------------+-------------------+--------------------+------------------------------------------------------------------------------------+----------+
+</pre>
+<p>Once instances are running, ensure they are in different hypervisors as we specify in the anti-affinity policy.</p>
+<pre>
+# nova show anti-affinity1 | grep hypervisor_hostname
+| OS-EXT-SRV-ATTR:hypervisor_hostname  | compute2az
+# nova show anti-affinity2 | grep hypervisor_hostname
+| OS-EXT-SRV-ATTR:hypervisor_hostname  | compute1az   
+</pre>
+<p>Regards, Eduardo Gonzalez</p>

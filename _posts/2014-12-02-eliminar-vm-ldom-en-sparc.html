@@ -1,0 +1,64 @@
+---
+layout: post
+title: Eliminar VM (LDOM) en SPARC
+date: 2014-12-02 14:51:11.000000000 +01:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- Virtualizacion
+tags:
+- eliminar
+- ldm list
+- ldm remove
+- ldom
+- list-bindings
+- oracle
+- quitar
+- remove
+- solaris
+- sparc
+- VM
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '853'
+  _publicize_facebook_user: https://www.facebook.com/dudu.gonzalez90
+  _publicize_twitter_user: "@hidanstillalive"
+  _wpas_done_all: '1'
+  _wpas_skip_5226565: '1'
+  _wpas_skip_4949654: '1'
+  _wpas_skip_8706018: '1'
+  _wpas_skip_10228321: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1568781861;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:559;}i:1;a:1:{s:2:"id";i:541;}i:2;a:1:{s:2:"id";i:527;}}}}
+  dsq_thread_id: '6108527150'
+author:
+  login: egongu90
+  email: egongu90@hotmail.com
+  display_name: Editor
+  first_name: ''
+  last_name: ''
+permalink: "/eliminar-vm-ldom-en-sparc/"
+---
+<p>Primero comprobaremos que maquinas tenemos y el estado de ellas</p>
+<blockquote><p>ldm list</p></blockquote>
+<p>A continuación, si la maquina que queremos borrar esta encendida la apagaremos</p>
+<blockquote><p>ldm stop LDOM</p></blockquote>
+<p>&nbsp;</p>
+<p>Lo siguiente será quitar la consola de la maquina</p>
+<blockquote><p>ldm unbind LDOM</p></blockquote>
+<p>Listaremos la configuración de la maquina y buscaremos los discos que tenga asignados, normalmente está al final del archivo</p>
+<blockquote><p>ldm list-bindings LDOM</p></blockquote>
+<p>Quitaremos el controlador del disco de la maquina</p>
+<blockquote><p>ldm remove-vdiskserverdevice VOLUMEN@LDOM</p></blockquote>
+<p>Eliminaremos el disco de la configuración de la maquina</p>
+<blockquote><p>ldm remove-vdisk DISKNAME LDOM</p></blockquote>
+<p>Eliminamos las NIC</p>
+<blockquote><p>ldm remove-vnet NIC_NAME LDOM</p></blockquote>
+<p>Borramos VDS</p>
+<blockquote><p>ldm remove-vds LDOM</p></blockquote>
+<p>Eliminamos configuración de la maquina</p>
+<blockquote><p>ldm remove-domain LDOM</p></blockquote>
+<p>Borramos los datos de la maquina, esto se hace eliminando la carpeta donde están las maquinas guardadas</p>
+<blockquote><p>rm -R /ruta/carpeta/LDOM/</p></blockquote>

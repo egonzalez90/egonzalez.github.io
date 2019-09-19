@@ -1,0 +1,76 @@
+---
+layout: post
+title: Obtener acceso a equipos explotando vulnerabilidad Java
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- Linux
+tags:
+- acceso
+- backtrack
+- chrome
+- exploit
+- google chrome
+- hacker
+- Hacking
+- Ingenieria Social
+- java
+- java_signed_applet
+- kali linux
+- metasplot
+- obtencion
+- phishing
+- Seguridad
+- vulnerability
+meta:
+  _publicize_pending: '1'
+  publicize_facebook_url: https://facebook.com/10201926268575964
+  publicize_twitter_user: suicidezombiie
+  _wpas_done_5226565: '1'
+  _publicize_done_external: a:1:{s:8:"facebook";a:1:{i:1161837279;b:1;}}
+  publicize_twitter_url: http://t.co/DmBTtvNcuX
+  _wpas_done_4949654: '1'
+  publicize_tumblr_url: http://suicidezombiie.tumblr.com.tumblr.com/post/70907701912
+  _wpas_done_5226570: '1'
+  _wpas_skip_5226565: '1'
+  _wpas_skip_4949654: '1'
+  _wpas_skip_5226570: '1'
+  _edit_last: '2'
+  _thumbnail_id: '258'
+  ac_featured_article: ''
+  ac_show_post_thumbnail: ''
+  _login_radius_meta: a:1:{s:7:"sharing";i:0;}
+  snap_MYURL: ''
+  snapEdIT: '1'
+  snapFB: N;
+  snapTW: N;
+author:
+  login: egongu90
+  email: egongu90@hotmail.com
+  display_name: Editor
+  first_name: ''
+  last_name: ''
+permalink: "/obtener-acceso-a-equipos-explotando-vulnerabilidad-java/"
+---
+<p>En este tutorial veremos como obtener acceso a equipos externos explotando una vulnerabilidad de Java, para obtener el control deberemos de utilizar  ingeniería social o phishing.<!--more--></p>
+<p>Necesitaremos un equipo con Metasploit instalado y activo. Yo uso Kali Linux.</p>
+<p>Lo primero que deberemos hacer sera abrir la consola y ejecutar el comando msfconsole, que iniciara metasploit<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/12/selection_002.png"><img class="aligncenter size-full wp-image-233" src="{{ site.baseurl }}/assets/selection_002.png" alt="Selection_002" width="678" height="325" /></a></p>
+<p>Una vez abierto metasploit introduciremos el comando search y el exploit que queremos utilizar, nosotros buscaremos java_signed_applet<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/12/selection_003.png"><img class="aligncenter size-full wp-image-234" src="{{ site.baseurl }}/assets/selection_003.png" alt="Selection_003" width="800" height="179" /></a>Una vez encontrado el exploit, copiaremos la ruta de este y utilizaremos el comando</p>
+<p>use exploit/multi/browser/java_signed_applet</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/12/selection_004.png"><img class="aligncenter size-full wp-image-235" src="{{ site.baseurl }}/assets/selection_004.png" alt="Selection_004" width="553" height="29" /></a>Ahora utilizaremos el comando show options para ver todas las opciones que ofrece este exploit <a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/12/selection_005.png"><img class="aligncenter size-full wp-image-236" src="{{ site.baseurl }}/assets/selection_005.png" alt="Selection_005" width="800" height="472" /></a></p>
+<p>Ahora mediante el comando set iremos configurando las opciones del exploit. Utilizaremos las opciones que se ven en la imagen, en las opciones en las que he puesto una dirección IP se utilizara la que se quiera utilizar para que el objetivo establezca conexión con nosotros. Yo he usado IPs locales, pero se podria utilizar con una IP publica<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/12/selection_008.png"><img class="aligncenter size-full wp-image-237" src="{{ site.baseurl }}/assets/selection_008.png" alt="Selection_008" width="725" height="258" /></a>Una vez configuradas las opciones se iniciara con el comando exploit<a href="http://egonzalez.org/wp-content/uploads/2013/12/selection_009.png"><img class="aligncenter size-full wp-image-238" src="{{ site.baseurl }}/assets/selection_009.png" alt="Selection_009" width="549" height="239" /></a>Esto generara un proceso de espera de conexiones a la dirección IP que habíamos establecido.</p>
+<p>Lo normal seria utilizar ingeniería social o phishing para esconder la IP y que el objetivo no se de cuenta de donde esta entrando, otra opción es configurar un servidor con un nombre de dominio asignado a la misma IP, entonces cargara una pagina web y nadie se enterara de lo que le están haciendo. Si solo ponemos la IP le saldrá una ventana, en la que deberá aceptar, en el otro caso seria menos raro porque hay paginas web que te solicitan que aceptes esa misma ventana</p>
+<p>Una vez aceptado el mensaje en el navegador del cliente, nos aparecerá este código dentro de la consola de metasploit<a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/12/selection_010.png"><img class="aligncenter size-full wp-image-239" src="{{ site.baseurl }}/assets/selection_010.png" alt="Selection_010" width="800" height="87" /></a></p>
+<p>Ahora elegiremos la sesión en la que queramos conectarnos, lo normal seria utilizar la primera sesión, pero se puede utilizar la sesión que queramos, siempre y cuando haya alguna activa.</p>
+<p>Para seleccionar la sesión utilizaremos el comando sessions -i "numerodesesion"</p>
+<p><a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/12/selection_011.png"><img class="aligncenter size-full wp-image-240" src="{{ site.baseurl }}/assets/selection_011.png" alt="Selection_011" width="447" height="49" /></a>Ahora ya tendríamos el control sobre el equipo objetivo, veremos las opciones que tenemos para hacer dentro de este con el comando help</p>
+<p>Esta es una parte de las opciones, hay varias lineas mas de opciones ordenadas por las diferentes cosas que podremos hacer, como la red, sistemas de archivos, gestión del sistema... <a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/12/selection_012.png"><img class="aligncenter size-full wp-image-241" src="{{ site.baseurl }}/assets/selection_012.png" alt="Selection_012" width="778" height="597" /></a></p>
+<p>Nosotros lo estamos haciendo para comprobar la seguridad y no vamos a hacer algo malo sobre el sistema, por lo que para comprobar que esto funciona simplemente apagaremos el equipo <a href="http://vps38574.vps.ovh.ca/wp-content/uploads/2013/12/selection_013.png"><img class="aligncenter size-full wp-image-242" src="{{ site.baseurl }}/assets/selection_013.png" alt="Selection_013" width="711" height="101" /></a></p>
+<p>Esto demuestra que el equipo se apaga y cierra la sesión con nuestro exploit.</p>
+<p>Para evitar este tipo de entradas a nuestros equipos deberemos tener actualizado siempre Java, aunque como da muchos fallos de seguridad, lo mejor seria desinstalarlo siempre que no se necesite para ninguna herramienta.</p>
+<p>Este tutorial no pretende mostrar un uso malintencionado de esta herramienta, es para que los usuarios entiendan los riesgos y malos usos que puede tener un sistema desactualizado.</p>
+<p>Yo no respondo a ningún delito que pueda realizar cualquier pirata informático que haya utilizado este tutorial para la realización de un crimen, esto es simplemente informativo, puesto que el conocimiento es libre, el uso de ese conocimiento es parte de la moral de cada persona</p>

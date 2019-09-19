@@ -1,0 +1,373 @@
+---
+layout: post
+title: Murano in RDO OpenStack - Manual Installation
+date: 2015-12-14 20:04:26.000000000 +01:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- OpenStack
+tags:
+- app
+- application catalog
+- centos
+- create
+- deploy
+- environment
+- install
+- liberty
+- manual
+- murano
+- openstack
+- packstack
+- rdo
+- red hat
+meta:
+  _edit_last: '2'
+  _publicize_twitter_user: "@egongu90"
+  _wpas_done_all: '1'
+  _wpas_skip_5226565: '1'
+  _wpas_skip_10228321: '1'
+  _wpas_skip_12345373: '1'
+  _wpas_skip_8706018: '1'
+  _thumbnail_id: '1027'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1568626638;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:1204;}i:1;a:1:{s:2:"id";i:1257;}i:2;a:1:{s:2:"id";i:1239;}}}}
+  dsq_thread_id: '6094297092'
+author:
+  login: egongu90
+  email: egongu90@hotmail.com
+  display_name: Editor
+  first_name: ''
+  last_name: ''
+permalink: "/murano-in-rdo-openstack-manual-installation/"
+---
+<p>Want to install and use Murano in a RDO OpenStack environment? Here are the steps to do it.</p>
+<p>The first thing we need to do, is to know what is Murano:<br />
+Murano is an application catalog who gives the users the capacity to launch pre-configured s/instances/jobs/g with apps in an OpenStack infrastructure.<br />
+As the final user just select an application from a catalog with a minimal configuration, and Murano will take the role to orchestrate the background jobs(create instances, configure apps, connect networks, etc)<br />
+For more information about application catalog project refer to this site:<br />
+<a href="https://wiki.openstack.org/wiki/Murano/ApplicationCatalog" target="_blank">https://wiki.openstack.org/wiki/Murano/ApplicationCatalog</a></p>
+<p>At this tutorial, i will use the following s/configurations/versions/g:</p>
+<ul>
+<li>Centos 7.1</li>
+<li>RDO Liberty release</li>
+<li>Hosts installed with packstack/ML2 network</li>
+</ul>
+<p>&nbsp;</p>
+<p>Let's start installing some pre requisites</p>
+<pre>
+sudo yum install -y gcc python-setuptools python-devel git postgresql-devel libffi-devel openssl-devel
+</pre>
+<p>Install pip</p>
+<pre>
+sudo easy_install pip
+</pre>
+<p>Install tox and upgrade six</p>
+<pre>
+sudo pip install tox
+sudo pip install --upgrade six
+</pre>
+<p>Create a database for murano</p>
+<pre>
+mysql -u root -p
+CREATE DATABASE murano;
+</pre>
+<p>Create murano user at MySQL</p>
+<pre>
+GRANT ALL PRIVILEGES ON murano.* TO 'murano'@'localhost' IDENTIFIED BY 'MURANODB_PASS';
+GRANT ALL PRIVILEGES ON murano.* TO 'murano'@'%' IDENTIFIED BY 'MURANODB_PASS';
+</pre>
+<p>Clone murano from liberty/stable branch</p>
+<pre>
+git clone -b stable/liberty git://git.openstack.org/openstack/murano
+</pre>
+<p>Install all requirements</p>
+<pre>
+cd ~/murano/
+sudo  pip install -r requirements.txt
+</pre>
+<p>Install murano</p>
+<pre>
+sudo python setup.py install
+</pre>
+<p>Create sample configuration file</p>
+<pre>
+oslo-config-generator --config-file etc/oslo-config-generator/murano.conf
+</pre>
+<p>Create murano directory and copy the sample content on it</p>
+<pre>
+mkdir /etc/murano
+cp ~/murano/etc/murano/* /etc/murano/
+</pre>
+<p>Rename sample configuration to murano.conf</p>
+<pre>
+mv /etc/murano/murano.conf.sample /etc/murano/murano.conf
+</pre>
+<p>Edit the configuration file like this, adjust the configuration as your environment needs.<br />
+<code><br />
+vi /etc/murano/murano.conf<br />
+</code></p>
+<pre>
+[oslo_messaging_rabbit]
+
+rabbit_host=RABBITMQ_IP
+rabbit_port=5672
+rabbit_hosts=RABBITMQ_IP:5672
+rabbit_use_ssl=False
+rabbit_userid=guest
+rabbit_password=guest
+rabbit_virtual_host=/
+rabbit_ha_queues=False
+rabbit_notification_exchange=openstack
+rabbit_notification_topic=notifications
+
+[database]
+connection = mysql://murano:MURANODB_PASS@MYSQL_IP/murano
+
+[keystone_authtoken]
+auth_uri=http://KEYSTONE_IP:5000/v2.0
+identity_uri=http://KEYSTONE_IP:35357
+admin_user=murano
+admin_password=MURANO_PASS
+admin_tenant_name=services
+
+[murano]
+url = http://MURANO_IP:8082
+
+[rabbitmq]
+
+host=RABBITMQ_IP
+login=guest
+password=guest
+virtual_host=/
+</pre>
+<p>Create murano user</p>
+<pre>
+openstack user create --password MURANO_PASS murano
+</pre>
+<p>Add murano user to services tenant with admin privileges</p>
+<pre>
+openstack role add --project services --user murano admin
+</pre>
+<p>Create a service for application-catalog</p>
+<pre>
+openstack service create --name muranoapi --description "Murano Project" application-catalog
+</pre>
+<p>Associate an endpoint to application-catalog service</p>
+<pre>
+openstack endpoint create --region RegionOne --publicurl 'http://MURANO_IP:8082/' --adminurl 'http://MURANO_IP:8082/' --internalurl 'http://http://MURANO_IP:8082/' MURANO_SERVICE_ID
+</pre>
+<p>Sync the database</p>
+<pre>
+murano-db-manage --config-file /etc/murano/murano.conf upgrade
+</pre>
+<p>Open a new terminal and start murano-api service</p>
+<pre>
+murano-api --config-file /etc/murano/murano.conf
+</pre>
+<p>Import base murano package</p>
+<pre>
+murano-manage --config-file /etc/murano/murano.conf import-package murano/meta/io.murano
+</pre>
+<p>In a new terminal, start murano-engine service</p>
+<pre>
+murano-engine --config-file /etc/murano/murano.conf
+</pre>
+<p>Clone stable liberty module for horizon</p>
+<pre>
+git clone -b stable/liberty git://git.openstack.org/openstack/murano-dashboard
+</pre>
+<p>Install base requirements</p>
+<pre>
+cd ~/murano-dashboard
+pip install -r requirements.txt
+</pre>
+<p>Install murano-dashboard module</p>
+<pre>
+sudo python setup.py install
+</pre>
+<p>Enable murano-dashboard at horizon</p>
+<pre>
+cp muranodashboard/local/_50_murano.py /usr/share/openstack-dashboard/openstack_dashboard/enabled/
+</pre>
+<p>Restart apache to apply changes</p>
+<pre>
+systemctl restart httpd
+</pre>
+<p>Import ApacheHttpServer package</p>
+<pre>
+murano --murano-repo-url="http://storage.apps.openstack.org/" package-import io.murano.apps.apache.ApacheHttpServer
+</pre>
+<p>You can find more packages at: <a href="http://apps.openstack.org/#tab=murano-apps" target="_blank">http://apps.openstack.org/#tab=murano-apps</a></p>
+<p>This will add a Debian image to glance image service, wait until the image is in active status</p>
+<p>Create a file with the following content, modify the variables with your own needs<br />
+<code><br />
+vi object_model_patch.json<br />
+</code></p>
+<pre>
+[
+    { "op": "add", "path": "/-", "value":
+        {
+            "instance": {
+                "availabilityZone": "nova",
+                "name": "APP_NAME",
+                "image": "GLANCE_IMAGE_ID",
+                "keyname": "KEY_PAIR",
+                "flavor": "FLAVOR",
+                "assignFloatingIp": false,
+                "?": {
+                    "type": "io.murano.resources.LinuxMuranoInstance",
+                    "id": "===id1==="
+                }
+            },
+            "name": "ApacheHttpServer",
+            "enablePHP": true,
+            "?": {
+                "type": "io.murano.apps.apache.ApacheHttpServer",
+                "id": "===id2==="
+            }
+        }
+    }
+]
+</pre>
+<p>Create an environment</p>
+<pre>murano environment-create --join-subnet-id SUBNET_ID ENVIRONMENT_NAME</pre>
+<pre>
+murano environment-create --join-subnet-id e2c5175a-d5bc-4eb7-91ba-67ac9120c64a test
++----------------------------------+------+---------------------+---------------------+
+| ID                               | Name | Created             | Updated             |
++----------------------------------+------+---------------------+---------------------+
+| 68a19d233d2d42459faf64d375d995e5 | test | 2015-12-11T13:09:57 | 2015-12-11T13:09:57 |
++----------------------------------+------+---------------------+---------------------+
+</pre>
+<p>Create a session for temporal working on the environment</p>
+<pre>murano environment-session-create ENVIRONMENT_ID</pre>
+<pre>murano environment-session-create 68a19d233d2d42459faf64d375d995e5
+Created new session:
++----------+----------------------------------+
+| Property | Value                            |
++----------+----------------------------------+
+| id       | b0f5e39a9c4c419c9ee7fdb6c92c37a6 |
++----------+----------------------------------+
+</pre>
+<p>Add the file with the apps configuration</p>
+<pre>murano environment-apps-edit --session-id SESSION_ID ENVIRONMENT_ID FILE_NAME</pre>
+<pre>murano environment-apps-edit --session-id b0f5e39a9c4c419c9ee7fdb6c92c37a6 68a19d233d2d42459faf64d375d995e5 object_model_patch.json 
+</pre>
+<p>Deploy the environment</p>
+<pre>murano environment-deploy ENVIRONMENT_ID --session-id SESSION_ID</pre>
+<pre>murano environment-deploy 68a19d233d2d42459faf64d375d995e5 --session-id b0f5e39a9c4c419c9ee7fdb6c92c37a6
++-----------+-------------------------------------------------------------+
+| Property  | Value                                                       |
++-----------+-------------------------------------------------------------+
+| created   | 2015-12-11T13:09:57                                         |
+| id        | 68a19d233d2d42459faf64d375d995e5                            |
+| name      | test                                                        |
+| services  | [                                                           |
+|           |   {                                                         |
+|           |     "instance": {                                           |
+|           |       "availabilityZone": "nova",                           |
+|           |       "name": "test",                                       |
+|           |       "assignFloatingIp": false,                            |
+|           |       "keyname": "",                                        |
+|           |       "flavor": "twogb",                                    |
+|           |       "image": "9049eb0c-081e-4d56-9413-72fdc6f8d8bf",      |
+|           |       "?": {                                                |
+|           |         "type": "io.murano.resources.LinuxMuranoInstance",  |
+|           |         "id": "30f5a591a58a468fbf4d7ef4755e0512"            |
+|           |       }                                                     |
+|           |     },                                                      |
+|           |     "name": "ApacheHttpServer",                             |
+|           |     "enablePHP": true,                                      |
+|           |     "?": {                                                  |
+|           |       "status": "deploying",                                |
+|           |       "type": "io.murano.apps.apache.ApacheHttpServer",     |
+|           |       "id": "98b994565c634f7e97d5f365203ce222"              |
+|           |     }                                                       |
+|           |   }                                                         |
+|           | ]                                                           |
+| status    | deploying                                                   |
+| tenant_id | 3a5d50fac9a3462fa4d76b8b84677c3f                            |
+| updated   | 2015-12-11T13:09:57                                         |
+| version   | 0                                                           |
++-----------+-------------------------------------------------------------+
+</pre>
+<p>Now, you can check at nova the building status of the instances</p>
+<pre>nova list
++--------------------------------------+-----------------------------------------+--------+------------+-------------+----------+
+| ID                                   | Name                                    | Status | Task State | Power State | Networks |
++--------------------------------------+-----------------------------------------+--------+------------+-------------+----------+
+| a68cedfb-7b4c-47a6-96fb-6b64a85a8ca6 | murano-mmnpdii1ozz7r2-test-5np5cvfeoiyh | BUILD  | scheduling | NOSTATE     |          |
++--------------------------------------+-----------------------------------------+--------+------------+-------------+----------+
+</pre>
+<p>After a while, the instance is up and running</p>
+<pre>nova list
++--------------------------------------+-----------------------------------------+--------+------------+-------------+------------------+
+| ID                                   | Name                                    | Status | Task State | Power State | Networks         |
++--------------------------------------+-----------------------------------------+--------+------------+-------------+------------------+
+| a68cedfb-7b4c-47a6-96fb-6b64a85a8ca6 | murano-mmnpdii1ozz7r2-test-5np5cvfeoiyh | ACTIVE | -          | Running     | private=10.0.0.8 |
++--------------------------------------+-----------------------------------------+--------+------------+-------------+------------------+
+</pre>
+<p>Once the instance is active, murano will configure the application inside, wait until the status is ready.</p>
+<pre>murano environment-show f392de2004e24ff7b2a08f05df0599b8
++-----------+---------------------------------------------------------------+
+| Property  | Value                                                         |
++-----------+---------------------------------------------------------------+
+| created   | 2015-12-11T13:43:23                                           |
+| id        | 68a19d233d2d42459faf64d375d995e5                              |
+| name      | test                                                          |
+| services  | [                                                             |
+|           |   {                                                           |
+|           |     "instance": {                                             |
+|           |       "availabilityZone": "nova",                             |
+|           |       "openstackId": "91615340-e1d3-428e-848f-38a762004d33",  |
+|           |       "name": "test",                                         |
+|           |       "securityGroupName": null,                              |
+|           |       "image": "9049eb0c-081e-4d56-9413-72fdc6f8d8bf",        |
+|           |       "assignFloatingIp": false,                              |
+|           |       "floatingIpAddress": null,                              |
+|           |       "keyname": "",                                          |
+|           |       "?": {                                                  |
+|           |         "classVersion": "0.0.0",                              |
+|           |         "name": null,                                         |
+|           |         "package": "io.murano",                               |
+|           |         "type": "io.murano.resources.LinuxMuranoInstance",    |
+|           |         "_actions": {},                                       |
+|           |         "id": "30f5a591a58a468fbf4d7ef4755e0512"              |
+|           |       },                                                      |
+|           |       "ipAddresses": [                                        |
+|           |         "10.0.0.8"                                            |
+|           |       ],                                                      |
+|           |       "flavor": "twogb",                                      |
+|           |       "networks": {                                           |
+|           |         "useFlatNetwork": false,                              |
+|           |         "primaryNetwork": null,                               |
+|           |         "useEnvironmentNetwork": true,                        |
+|           |         "customNetworks": []                                  |
+|           |       },                                                      |
+|           |       "sharedIps": []                                         |
+|           |     },                                                        |
+|           |     "name": "ApacheHttpServer",                               |
+|           |     "?": {                                                    |
+|           |       "classVersion": "0.0.0",                                |
+|           |       "status": "ready",                                      |
+|           |       "name": null,                                           |
+|           |       "package": "io.murano.apps.apache.ApacheHttpServer",    |
+|           |       "type": "io.murano.apps.apache.ApacheHttpServer",       |
+|           |       "_actions": {},                                         |
+|           |       "id": "98b994565c634f7e97d5f365203ce222"                |
+|           |     },                                                        |
+|           |     "enablePHP": true                                         |
+|           |   }                                                           |
+|           | ]                                                             |
+| status    | ready                                                         |
+| tenant_id | 3a5d50fac9a3462fa4d76b8b84677c3f                              |
+| updated   | 2015-12-11T13:47:35                                           |
+| version   | 1                                                             |
++-----------+---------------------------------------------------------------+
+</pre>
+<p>That's all you need to have up and running a Murano application catalog, for now there is no rpm package to ease the installation, so you need to install from source like we done.<br />
+A thing you can do, is create systemd files to manage murano services in a easier way.</p>
+<p>Regards, Eduardo Gonzalez</p>

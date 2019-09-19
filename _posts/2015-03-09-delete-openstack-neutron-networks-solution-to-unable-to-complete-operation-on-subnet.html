@@ -1,0 +1,115 @@
+---
+layout: post
+title: 'Delete openstack Neutron networks (Solution to: Unable to complete operation
+  on subnet)'
+date: 2015-03-09 16:58:33.000000000 +01:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- OpenStack
+tags:
+- cannot be deleted directly via the port API
+- delete
+- error
+- floatingip
+- guide
+- has owner network:floatingip
+- net
+- network
+- neutron
+- openstack
+- port
+- router
+- solution
+- step by step
+- subnet
+- Unable to complete operation on subnet
+meta:
+  _edit_last: '2'
+  _publicize_facebook_user: https://www.facebook.com/dudu.gonzalez90
+  _publicize_twitter_user: "@egongu90"
+  _wpas_done_all: '1'
+  _wpas_skip_5226565: '1'
+  _wpas_skip_10228321: '1'
+  _wpas_skip_8706018: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1568915547;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:1124;}i:1;a:1:{s:2:"id";i:1257;}i:2;a:1:{s:2:"id";i:965;}}}}
+  dsq_thread_id: '6094297052'
+author:
+  login: egongu90
+  email: egongu90@hotmail.com
+  display_name: Editor
+  first_name: ''
+  last_name: ''
+permalink: "/delete-openstack-neutron-networks-solution-to-unable-to-complete-operation-on-subnet/"
+---
+<pre>[root@rdoicehouse ~(keystone_admin)]# neutron router-list
++--------------------------------------+------------------+-----------------------------------------------------------------------------+
+| id                                   | name             | external_gateway_info                                                       |
++--------------------------------------+------------------+-----------------------------------------------------------------------------+
+| e34d94ad-7fe1-4704-8156-d255a2daa167 | demodeleterouter | {"network_id": "8b2ceda2-4d77-4c5c-ae21-6a7ba133e4fc", "enable_snat": true} |
++--------------------------------------+------------------+-----------------------------------------------------------------------------+
+
+[root@rdoicehouse ~(keystone_admin)]# neutron router-gateway-clear e34d94ad-7fe1-4704-8156-d255a2daa167
+Removed gateway from router e34d94ad-7fe1-4704-8156-d255a2daa167
+
+[root@rdoicehouse ~(keystone_admin)]# neutron router-port-list e34d94ad-7fe1-4704-8156-d255a2daa167
+
+If Apply: 
+          [[ neutron router-interface-delete &lt;router-id&gt; &lt;subnet-id&gt; ]]
+
+[root@rdoicehouse ~(keystone_admin)]# neutron router-delete e34d94ad-7fe1-4704-8156-d255a2daa167
+Deleted router: e34d94ad-7fe1-4704-8156-d255a2daa167
+
+[root@rdoicehouse ~(keystone_admin)]# neutron subnet-list
++--------------------------------------+------------------+------------------+--------------------------------------------------------+
+| id                                   | name             | cidr             | allocation_pools                                       |
++--------------------------------------+------------------+------------------+--------------------------------------------------------+
+| d50e28f7-47ee-4bdf-8594-e1108f25586b | demosubnetdelete | 192.168.137.0/24 | {"start": "192.168.137.100", "end": "192.168.137.120"} |
+| c93fd5a7-d672-4b0c-8f2e-6e74f487e45d | private_subnet   | 10.0.0.0/24      | {"start": "10.0.0.2", "end": "10.0.0.254"}             |
++--------------------------------------+------------------+------------------+--------------------------------------------------------+
+[root@rdoicehouse ~(keystone_admin)]# neutron subnet-delete d50e28f7-47ee-4bdf-8594-e1108f25586b
+409-{u'NeutronError': {u'message': u'Unable to complete operation on subnet d50e28f7-47ee-4bdf-8594-e1108f25586b. One or more ports have an IP allocation from this subnet.', u'type': u'SubnetInUse', u'detail': u''}}
+
+[root@rdoicehouse ~(keystone_admin)]# neutron port-list
++--------------------------------------+------+-------------------+----------------------------------------------------------------------------------------+
+| id                                   | name | mac_address       | fixed_ips                                                                              |
++--------------------------------------+------+-------------------+----------------------------------------------------------------------------------------+
+| 4655e13a-9767-4750-8f44-4eee8410ca70 |      | fa:16:3e:03:c7:cf | {"subnet_id": "d50e28f7-47ee-4bdf-8594-e1108f25586b", "ip_address": "192.168.137.103"} |
+| 767f2f83-f99a-46d1-b2c2-2e47bae4bb90 |      | fa:16:3e:ff:94:28 | {"subnet_id": "d50e28f7-47ee-4bdf-8594-e1108f25586b", "ip_address": "192.168.137.102"} |
++--------------------------------------+------+-------------------+----------------------------------------------------------------------------------------+
+
+[root@rdoicehouse ~(keystone_admin)]# neutron port-delete 767f2f83-f99a-46d1-b2c2-2e47bae4bb90
+Deleted port: 767f2f83-f99a-46d1-b2c2-2e47bae4bb90
+
+[root@rdoicehouse ~(keystone_admin)]# neutron port-delete 4655e13a-9767-4750-8f44-4eee8410ca70
+409-{u'NeutronError': {u'message': u'Port 4655e13a-9767-4750-8f44-4eee8410ca70 has owner network:floatingip and therefore cannot be deleted directly via the port API.', u'type': u'L3PortInUse', u'detail': u''}}
+
+[root@rdoicehouse ~(keystone_admin)]# neutron floatingip-list
++--------------------------------------+------------------+---------------------+---------+
+| id                                   | fixed_ip_address | floating_ip_address | port_id |
++--------------------------------------+------------------+---------------------+---------+
+| 0a74679b-b469-4ae5-97a0-08c3aeeb2129 |                  | 192.168.137.103     |         |
++--------------------------------------+------------------+---------------------+---------+
+
+[root@rdoicehouse ~(keystone_admin)]# neutron floatingip-delete 0a74679b-b469-4ae5-97a0-08c3aeeb2129
+Deleted floatingip: 0a74679b-b469-4ae5-97a0-08c3aeeb2129
+
+[root@rdoicehouse ~(keystone_admin)]# neutron port-list
+
+[root@rdoicehouse ~(keystone_admin)]# neutron subnet-delete d50e28f7-47ee-4bdf-8594-e1108f25586b
+Deleted subnet: d50e28f7-47ee-4bdf-8594-e1108f25586b
+
+[root@rdoicehouse ~(keystone_admin)]# neutron net-list
++--------------------------------------+------------+--------------------------------------------------+
+| id                                   | name       | subnets                                          |
++--------------------------------------+------------+--------------------------------------------------+
+| 77dd5a93-b63e-44be-84d6-f6ef4fd8771b | private    | c93fd5a7-d672-4b0c-8f2e-6e74f487e45d 10.0.0.0/24 |
+| 8b2ceda2-4d77-4c5c-ae21-6a7ba133e4fc | demodelete |                                                  |
++--------------------------------------+------------+--------------------------------------------------+
+[root@rdoicehouse ~(keystone_admin)]# neutron net-delete 8b2ceda2-4d77-4c5c-ae21-6a7ba133e4fc
+Deleted network: 8b2ceda2-4d77-4c5c-ae21-6a7ba133e4fc
+
+</pre>
