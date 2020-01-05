@@ -5,6 +5,7 @@ Welcome to egonzalez's blog!
    :maxdepth: 1
    :caption: Post:
 
+   2020-01-05-hacking-cheatsheet.rst
    2017-08-28-openstack-tacker-and-service-function-chaining-sfc-with-kolla
    2017-02-22-deploy-openstack-designate-with-kolla-ansible
    2017-01-31-openstack-keystone-zero-downtime-upgrade-process-n-to-o
